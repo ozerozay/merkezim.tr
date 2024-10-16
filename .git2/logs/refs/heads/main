@@ -1,0 +1,8 @@
+0000000000000000000000000000000000000000 aeb15319e7bb98a536622ca678bfcdaed411ef43 Özer Özay <ozerozay@gmail.com> 1725547741 +0300	commit (initial): Set up a fresh Laravel app
+aeb15319e7bb98a536622ca678bfcdaed411ef43 aeb15319e7bb98a536622ca678bfcdaed411ef43 Özer Özay <ozerozay@gmail.com> 1725547741 +0300	Branch: renamed refs/heads/master to refs/heads/main
+aeb15319e7bb98a536622ca678bfcdaed411ef43 240edff7cbab9b175a4f20c9cf9fdaeefc57d1e8 Özer Özay <ozerozay@gmail.com> 1725547754 +0300	commit: Install Pest
+240edff7cbab9b175a4f20c9cf9fdaeefc57d1e8 48e48cc9d8258dfbe1a916f64b22a5db9202dc30 Özer Özay <ozerozay@gmail.com> 1727080103 +0300	commit: test
+48e48cc9d8258dfbe1a916f64b22a5db9202dc30 0f8041eac16d244c9e0c77c7e0bb8d3e19040c0b Özer Özay <ozerozay@gmail.com> 1727679261 +0300	commit: test
+0f8041eac16d244c9e0c77c7e0bb8d3e19040c0b 2c24234545be4243e607bc09e1a7e13bf3b122fc Özer Özay <ozerozay@gmail.com> 1728292708 +0300	commit: test
+2c24234545be4243e607bc09e1a7e13bf3b122fc fc124d4b556f73529c34c79741409e7409a7cc5d Özer Özay <ozerozay@gmail.com> 1728320768 +0300	commit: test
+fc124d4b556f73529c34c79741409e7409a7cc5d 0a1240e4427efd67f30bd1156d2a5f847ab53ab9 Özer Özay <ozerozay@gmail.com> 1729089992 +0300	commit: test

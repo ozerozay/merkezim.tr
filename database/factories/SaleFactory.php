@@ -1,0 +1,43 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Sale;
+use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class SaleFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Sale::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'unique_id' => fake()->word(),
+            'date' => fake()->date(),
+            'status' => fake()->word(),
+            'price' => fake()->randomFloat(2, 0, 9999),
+            'price_real' => fake()->word(),
+            'staffs' => fake()->word(),
+            'freeze_date' => fake()->word(),
+            'sale_no' => fake()->word(),
+            'message' => fake()->sentence(20),
+            'expire_date' => fake()->word(),
+            'deleted_at' => fake()->dateTime(),
+            'branch_id' => \App\Models\Branch::factory(),
+            'sale_type_id' => \App\Models\SaleType::factory(),
+            'user_id' => \App\Models\User::factory(),
+            'client_id' => \App\Models\User::factory(),
+        ];
+    }
+}
