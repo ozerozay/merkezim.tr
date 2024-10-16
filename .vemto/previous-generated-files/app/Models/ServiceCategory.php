@@ -29,9 +29,14 @@ class ServiceCategory extends Model
         ];
     }
 
+    public function services()
+    {
+        return $this->hasMany(Service::class, 'category_id');
+    }
+
     public function coupons()
     {
-        return $this->hasMany(Coupon::class, 'category_id');
+        return $this->hasMany(Coupon::class);
     }
 
     protected static function booted(): void

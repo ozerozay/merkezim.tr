@@ -24,11 +24,12 @@ class ClientServiceFactory extends Factory
     {
         return [
             'total' => fake()->randomFloat(2, 0, 9999),
-            'remaining' => fake()->word(),
-            'gift' => fake()->word(),
+            'remaining' => fake()->randomNumber(0),
+            'gift' => fake()->boolean(),
             'message' => fake()->sentence(20),
             'status' => fake()->word(),
             'deleted_at' => fake()->dateTime(),
+            'service_id' => \App\Models\Service::factory(),
             'branch_id' => \App\Models\Branch::factory(),
             'client_id' => \App\Models\User::factory(),
             'sale_id' => \App\Models\Sale::factory(),

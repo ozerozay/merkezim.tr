@@ -47,6 +47,26 @@ class Branch extends Model
         return $this->hasMany(Masraf::class);
     }
 
+    public function kasas()
+    {
+        return $this->hasMany(Kasa::class);
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public function serviceRooms()
+    {
+        return $this->hasMany(ServiceRoom::class);
+    }
+
     public function branch_staff_active()
     {
         return $this->query()

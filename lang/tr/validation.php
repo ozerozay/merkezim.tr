@@ -206,6 +206,7 @@ return [
         'price_real' => 'Gerçek tutar',
         'message' => 'Mesaj',
         'service_ids' => 'Hizmetler',
+        'seans' => 'Seans',
     ],
 
 ];

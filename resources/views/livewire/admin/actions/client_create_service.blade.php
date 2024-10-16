@@ -1,6 +1,6 @@
 <?php
 
-use App\Actions\Client\CreateServicesAction;
+use App\Actions\Client\CreateServiceAction;
 use App\Actions\Client\GetClientByUniqueID;
 use App\Actions\User\CheckClientBranchAction;
 use Illuminate\Support\Facades\Validator;
@@ -91,7 +91,7 @@ class extends Component
 
         CheckClientBranchAction::run($this->client);
 
-        CreateServicesAction::run($validator->validated(), auth()->user()->id);
+        CreateServiceAction::run($validator->validated(), auth()->user()->id);
 
         $this->success('Hizmetler eklendi.');
 

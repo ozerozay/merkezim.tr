@@ -35,6 +35,10 @@ class TransactionFactory extends Factory
             'user_id' => \App\Models\User::factory(),
             'client_id' => \App\Models\User::factory(),
             'masraf_id' => \App\Models\Masraf::factory(),
+            'transacable_type' => fake()->randomElement([
+                \App\Models\Sale::class,
+            ]),
+            'transacable_id' => \App\Models\Sale::factory(),
         ];
     }
 }

@@ -26,7 +26,7 @@ class PackageItemFactory extends Factory
             'quantity' => fake()->randomNumber(),
             'deleted_at' => fake()->dateTime(),
             'service_id' => \App\Models\Service::factory(),
-            'package_id' => \App\Models\Package::factory(),
+            'service_id' => \App\Models\Package::factory(),
         ];
     }
 }

@@ -20,6 +20,7 @@ return [
     'central_domains' => [
         '127.0.0.1',
         'localhost',
+        'merkezim.tr.test',
     ],
 
     /**
@@ -52,7 +53,7 @@ return [
          * Tenant database names are created like this:
          * prefix + tenant_id + suffix.
          */
-        'prefix' => 'merkez',
+        'prefix' => 'merkez_',
         'suffix' => '',
 
         /**

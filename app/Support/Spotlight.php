@@ -43,7 +43,7 @@ class Spotlight
             ->map(function (User $user) {
                 return [
                     'name' => $user->name,
-                    'description' => 'Danışan',
+                    'description' => 'DANIŞAN - '.$user->client_branch->name,
                     'link' => route('admin.client.profil.index', ['user' => $user->id]),
                     'avatar' => $user->avatar,
                 ];

@@ -26,14 +26,12 @@ class OfferItemFactory extends Factory
             'itemable_type' => fake()->text(255),
             'itemable_id' => fake()->randomNumber(),
             'quantity' => fake()->randomNumber(),
-            'offer_itemable_id' => fake()->randomNumber(),
-            'offer_itemable_type' => fake()->text(255),
             'offer_id' => \App\Models\Offer::factory(),
-            'offer_itemable_type' => fake()->randomElement([
-                \App\Models\Service::class,
+            'itemable_type' => fake()->randomElement([
                 \App\Models\Package::class,
+                \App\Models\Service::class,
             ]),
-            'offer_itemable_id' => \App\Models\Service::factory(),
+            'itemable_id' => \App\Models\Package::factory(),
         ];
     }
 }

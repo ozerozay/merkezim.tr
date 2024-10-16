@@ -12,12 +12,15 @@ class TenantSeeder extends Seeder
      */
     public function run(): void
     {
-        $tenant = Tenant::create([
-            'id' => 'marge',
-        ]);
+        if (! Tenant::where('id', 'marge')->exists()) {
+            $tenant = Tenant::create([
+                'id' => 'marge',
+            ]);
 
-        $tenant->domains()->create([
-            'domain' => 'marge',
-        ]);
+            $tenant->domains()->create([
+                'domain' => 'marge',
+            ]);
+        }
+
     }
 }

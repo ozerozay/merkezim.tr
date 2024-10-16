@@ -7,11 +7,13 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Livewire;
 use Stancl\JobPipeline\JobPipeline;
 use Stancl\Tenancy\Events;
 use Stancl\Tenancy\Jobs;
 use Stancl\Tenancy\Listeners;
 use Stancl\Tenancy\Middleware;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 
 class TenancyServiceProvider extends ServiceProvider
 {
@@ -75,10 +77,19 @@ class TenancyServiceProvider extends ServiceProvider
             Events\EndingTenancy::class => [],
             Events\TenancyEnded::class => [
                 Listeners\RevertToCentralContext::class,
+                function (Events\TenancyEnded $event) {
+                    $permissionRegistrar = app(\Spatie\Permission\PermissionRegistrar::class);
+                    $permissionRegistrar->cacheKey = 'spatie.permission.cache';
+                },
             ],
 
             Events\BootstrappingTenancy::class => [],
-            Events\TenancyBootstrapped::class => [],
+            Events\TenancyBootstrapped::class => [
+                function (Events\TenancyBootstrapped $event) {
+                    $permissionRegistrar = app(\Spatie\Permission\PermissionRegistrar::class);
+                    $permissionRegistrar->cacheKey = 'spatie.permission.cache.tenant.'.$event->tenancy->tenant->getTenantKey();
+                },
+            ],
             Events\RevertingToCentralContext::class => [],
             Events\RevertedToCentralContext::class => [],
 
@@ -89,6 +100,7 @@ class TenancyServiceProvider extends ServiceProvider
 
             // Fired only when a synced resource is changed in a different DB than the origin DB (to avoid infinite loops)
             Events\SyncedResourceChangedInForeignDatabase::class => [],
+
         ];
     }
 
@@ -103,6 +115,14 @@ class TenancyServiceProvider extends ServiceProvider
         $this->mapRoutes();
 
         $this->makeTenancyMiddlewareHighestPriority();
+
+        Livewire::setUpdateRoute(function ($handle) {
+            return Route::post('/livewire/update', $handle)
+                ->middleware(
+                    'web',
+                    InitializeTenancyByDomain::class,
+                );
+        });
     }
 
     protected function bootEvents()

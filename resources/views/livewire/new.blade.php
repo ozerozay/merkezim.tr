@@ -11,6 +11,35 @@ new
     <x-header title="Merkezim" separator progress-indicator>
 
     </x-header>
+    <div class="container mx-auto p-4">
+        <!-- Resource Header -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="text-lg font-bold">Employee 1</div>
+          <div class="text-lg font-bold">Employee 2</div>
+        </div>
+        
+        <!-- Calendar -->
+        <div class="grid grid-cols-2 gap-4 mt-4">
+          <div class="p-4 border rounded-lg shadow">
+            <h3 class="text-md font-semibold">October 2024</h3>
+            <div class="grid grid-cols-7 gap-2 mt-4">
+              <!-- Repeat this block for each day -->
+              <div class="p-2 bg-blue-100 rounded-lg">1</div>
+              <div class="p-2 bg-gray-100 rounded-lg">2</div>
+              <!-- Days... -->
+            </div>
+          </div>
+      
+          <div class="p-4 border rounded-lg shadow">
+            <h3 class="text-md font-semibold">October 2024</h3>
+            <div class="grid grid-cols-7 gap-2 mt-4">
+              <div class="p-2 bg-blue-100 rounded-lg">1</div>
+              <div class="p-2 bg-gray-100 rounded-lg">2</div>
+              <!-- Days... -->
+            </div>
+          </div>
+        </div>
+      </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 
         <div class="card bg-base-100 shadow-xl">

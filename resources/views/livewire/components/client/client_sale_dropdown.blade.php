@@ -1,7 +1,6 @@
 <?php
 
-use App\Models\Sale;
-use App\SaleStatus;
+use App\Actions\Client\GetClientActiveSale;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Modelable;
 use Livewire\Attributes\On;
@@ -32,11 +31,7 @@ new class extends Component
     public function getSales($client, $status = null)
     {
         $this->sale_id = null;
-        $this->sales = Sale::query()
-            ->select(['id', 'unique_id', 'client_id', 'status', 'date'])
-            ->where('client_id', $client)
-            ->where('status', $status ?? SaleStatus::success)
-            ->get();
+        $this->sales = GetClientActiveSale::run($client, $status);
     }
 };
 
@@ -50,6 +45,7 @@ new class extends Component
     option-label="unique_id"
     label="Aktif Satışları"
     icon="o-magnifying-glass"
+    no-result-text="Aktif satışı bulunmuyor."
     single
     searchable />
 </div>

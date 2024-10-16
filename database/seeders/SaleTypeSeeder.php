@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\SaleType;
+use App\Tenant;
 use Illuminate\Database\Seeder;
 
 class SaleTypeSeeder extends Seeder
@@ -12,14 +13,17 @@ class SaleTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        SaleType::create([
-            'name' => 'İNTERNET',
-            'active' => true,
-        ]);
+        Tenant::first()->run(function () {
+            SaleType::create([
+                'name' => 'İNTERNET',
+                'active' => true,
+            ]);
 
-        SaleType::create([
-            'name' => 'İKİNCİ ÜYELİK',
-            'active' => true,
-        ]);
+            SaleType::create([
+                'name' => 'İKİNCİ ÜYELİK',
+                'active' => true,
+            ]);
+        });
+
     }
 }

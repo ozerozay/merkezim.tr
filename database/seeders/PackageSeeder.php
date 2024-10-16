@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Package;
+use App\Tenant;
 use Illuminate\Database\Seeder;
 
 class PackageSeeder extends Seeder
@@ -12,11 +13,14 @@ class PackageSeeder extends Seeder
      */
     public function run(): void
     {
-        Package::create([
-            'branch_ids' => [1, 2],
-            'name' => 'EPİLASYON TÜM VÜCUT',
-            'price' => 1000,
-            'buy_time' => 0,
-        ]);
+        Tenant::first()->run(function () {
+            Package::create([
+                'branch_ids' => [1, 2],
+                'name' => 'EPİLASYON TÜM VÜCUT',
+                'price' => 1000,
+                'buy_time' => 0,
+            ]);
+        });
+
     }
 }

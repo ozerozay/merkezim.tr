@@ -31,6 +31,8 @@ class StaffMuhasebeFactory extends Factory
             'muhasebe_type' => fake()->text(255),
             'deleted_at' => fake()->dateTime(),
             'user_id' => \App\Models\User::factory(),
+            'muhasebe_type' => fake()->randomElement([\App\Models\Prim::class]),
+            'muhasebe_id' => \App\Models\Prim::factory(),
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Actions\Sale;
 use App\Actions\Client\CreateServiceAction;
 use App\Actions\Client\CreateTaksitAction;
 use App\Actions\Helper\CreateSaleUniqueID;
+use App\Actions\User\CheckApproveAction;
 use App\Exceptions\AppException;
 use App\Models\Package;
 use App\Models\Sale;
@@ -117,7 +118,7 @@ class CreateSaleAction
             throw $e;
         } catch (\Throwable $e) {
             DB::rollBack();
-            throw new AppException('Hata oluştu.');
+            throw new AppException('Hata oluştu.'.$e->getMessage());
         }
     }
 }

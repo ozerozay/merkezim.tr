@@ -25,6 +25,11 @@ class Service extends Model
         ];
     }
 
+    public function clientServices()
+    {
+        return $this->hasMany(ClientService::class);
+    }
+
     public function category()
     {
         return $this->belongsTo(ServiceCategory::class, 'category_id');

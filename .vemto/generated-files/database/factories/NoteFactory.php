@@ -25,7 +25,7 @@ class NoteFactory extends Factory
         return [
             'message' => fake()->sentence(20),
             'deleted_at' => fake()->dateTime(),
-            'client_id' => \App\Models\User::factory(),
+            'user_id' => \App\Models\User::factory(),
             'client_id' => \App\Models\User::factory(),
         ];
     }

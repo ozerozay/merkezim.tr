@@ -23,12 +23,12 @@ class OfferFactory extends Factory
     public function definition(): array
     {
         return [
-            'unique_id' => fake()->word(),
-            'expire_date' => fake()->word(),
+            'unique_id' => fake()->text(9),
+            'expire_date' => fake()->date(),
             'price' => fake()->randomFloat(2, 0, 9999),
             'status' => fake()->word(),
             'message' => fake()->sentence(20),
-            'month' => fake()->word(),
+            'month' => fake()->monthName(),
             'deleted_at' => fake()->dateTime(),
             'user_id' => \App\Models\User::factory(),
             'client_id' => \App\Models\User::factory(),

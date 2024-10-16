@@ -24,7 +24,7 @@ class PrimFactory extends Factory
     {
         return [
             'type' => fake()->word(),
-            'amount' => fake()->word(),
+            'amount' => fake()->randomNumber(0),
             'active' => fake()->boolean(),
             'deleted_at' => fake()->dateTime(),
             'user_id' => \App\Models\User::factory(),

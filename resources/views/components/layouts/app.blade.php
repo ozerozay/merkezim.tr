@@ -37,19 +37,13 @@
     <x-main>
         {{-- SIDEBAR --}}
         <x-slot:sidebar drawer="main-drawer" collapse-text="Küçült" collapsible class="bg-base-100 lg:bg-inherit">
-
-            {{-- BRAND --}}
-            <x-app-brand class="p-5 pt-3" />
-
             {{-- MENU --}}
-            <x-menu activate-by-route>
-
+            <x-menu class="mt-2" activate-by-route>
                 {{-- User --}}
                 @if($user = auth()->user())
-
                 <x-list-item :item="$user" no-separator no-hover class="-mx-2 !-my-2 rounded">
                     <x-slot:value>
-                        CİHAT ÖZER ÖZAY
+                        {{ auth()->user()->name }}
                     </x-slot:value>
                     <x-slot:sub-value>
                         MARGE GÜZELLİK
@@ -103,9 +97,7 @@
                     </x-menu-sub>
                 </x-menu-sub>
                 <x-menu-item title="Çıkış" icon="tabler.logout" no-wire-navigate link="/logout" />
-
                 @endif
-
             </x-menu>
         </x-slot:sidebar>
 

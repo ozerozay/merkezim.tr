@@ -13,6 +13,11 @@ class ClientService extends Model
 
     protected $guarded = ['id'];
 
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
+
     public function branch()
     {
         return $this->belongsTo(Branch::class);
@@ -36,5 +41,10 @@ class ClientService extends Model
     public function userServices()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function clientServiceUses()
+    {
+        return $this->hasMany(ClientServiceUse::class);
     }
 }

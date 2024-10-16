@@ -2,86 +2,299 @@
 
 namespace App\Livewire;
 
-use Livewire\Attributes\Layout;
-use Livewire\Component;
+use Livewire\Volt\Component;
 
-new
-    #[Layout('components.layouts.main')]
-    class extends Component {};
+new class extends Component
+{
+    public bool $showDrawer3 = false;
+
+    public function ssss()
+    {
+        $this->showDrawer3 = true;
+        //dump('burda');
+    }
+};
 ?>
 <div>
-    <x-header title="Merkezim" separator progress-indicator>
-
+@php
+        $user1 = App\Models\User::inRandomOrder()->first();
+        $user2 = App\Models\User::inRandomOrder()->first();
+    @endphp
+    <x-header title="18 EKİM 2024" separator progress-indicator>
+    <x-slot:actions>
+        <x-button icon="o-calendar" class="btn-outline" label="Tarih Seç" responsive />
+        <x-button icon="tabler.building-store" class="btn-outline" label="Şube Seç" responsive />
+        <x-button icon="tabler.filter" class="btn-outline" label="Filtrele" responsive />
+        <x-button icon="tabler.sort-descending" class="btn-outline" label="Sırala" responsive />
+        <x-button icon="o-plus" class="btn-primary" label="Randevu Oluştur" responsive />
+        
+    </x-slot:actions>
     </x-header>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-
-        <div class="card bg-base-100 shadow-xl">
-            <figure>
-                <img
-                    src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                    alt="Shoes" />
-            </figure>
-            <div class="card-body">
-                <h2 class="card-title">
-                    MARGE GÜZELLİK21
-                    <div class="badge badge-secondary">Yeni</div>
-                </h2>
-                <p>If a dog chews shoes whose shoes does he choose?</p>
-                <div class="card-actions justify-end">
-                    <div class="badge badge-primary">Randevu</div>
-                    <div class="badge badge-primary">₺₺₺</div>
-                    <div class="badge badge-primary">Şişli</div>
-                </div>
-            </div>
+    <x-drawer
+    wire:model="showDrawer3"
+    title="Hello"
+    subtitle="Livewire"
+    separator
+    with-close-button
+    close-on-escape
+    class="w-11/12 lg:w-1/3"
+>
+    <div>Hey!</div>
+ 
+    <x-slot:actions>
+        <x-button label="Cancel" @click="$wire.showDrawer3 = false" />
+        <x-button label="Confirm" class="btn-primary" icon="o-check" />
+    </x-slot:actions>
+</x-drawer>
+    <div class="container mx-auto">
+        <div class="shadow-lg rounded-lg">
+          
+      
+          <!-- Günlük Ajanda Grid Yapısı -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- 18 Ekim 2024 -->
+             <x-card separator title="Epilasyon 1">
+                <x:slot:menu>
+                    Kalan: 16
+                </x:slot:menu>
+             <x-list-item :item="$user1" no-separator class="cursor-pointer" no-hover wire:click='ssss()'>
+             
+                <x-slot:avatar>
+                    <x-badge value="12:00" class="badge-primary" /><br />
+                    <x-badge value="12:45" class="badge-primary" /><br />
+                </x-slot:avatar>
+                <x-slot:value>
+                    CİHAT ÖZER ÖZAY
+                </x-slot:value>
+                <x-slot:sub-value>
+                    (45dk) Hizmet Randevusu 
+                </x-slot:sub-value>
+               
+            </x-list-item>
+            <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
+                <x-slot:avatar>
+                    <x-badge value="12:00" class="badge-primary" /><br />
+                    <x-badge value="12:45" class="badge-primary" /><br />
+                </x-slot:avatar>
+                <x-slot:value>
+                    CİHAT ÖZER ÖZAY
+                </x-slot:value>
+                <x-slot:sub-value>
+                    (45dk) Hizmet Randevusu 
+                </x-slot:sub-value>
+                <x-slot:actions>
+                    <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner />
+                </x-slot:actions>
+            </x-list-item>
+            <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
+                <x-slot:avatar>
+                    <x-badge value="12:00" class="badge-warning" /><br />
+                    <x-badge value="12:45" class="badge-warning" /><br />
+                </x-slot:avatar>
+                <x-slot:value>
+                    CİHAT ÖZER ÖZAY
+                </x-slot:value>
+                <x-slot:sub-value>
+                    (45dk) Hizmet Randevusu 
+                </x-slot:sub-value>
+                <x-slot:actions>
+                    <x-badge value="Gecikti" class="badge-warning" /><br />
+                </x-slot:actions>
+            </x-list-item>
+            <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
+                <x-slot:avatar>
+                    <x-badge value="12:00" class="badge-primary" /><br />
+                    <x-badge value="12:45" class="badge-primary" /><br />
+                </x-slot:avatar>
+                <x-slot:value>
+                    CİHAT ÖZER ÖZAY
+                </x-slot:value>
+                <x-slot:sub-value>
+                    (45dk) Hizmet Randevusu 
+                </x-slot:sub-value>
+                <x-slot:actions>
+                    <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner />
+                </x-slot:actions>
+            </x-list-item>
+            <x-hr />
+            <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
+                <x-slot:avatar>
+                    <x-badge value="12:00" class="badge-primary" /><br />
+                    <x-badge value="12:45" class="badge-primary" /><br />
+                </x-slot:avatar>
+                <x-slot:value>
+                    CİHAT ÖZER ÖZAY
+                </x-slot:value>
+                <x-slot:sub-value>
+                    (45dk) Hizmet Randevusu 
+                </x-slot:sub-value>
+                <x-slot:actions>
+                    <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner />
+                </x-slot:actions>
+            </x-list-item>
+             </x-card>
+             <x-card separator title="Epilasyon 1">
+                <x:slot:menu>
+                    Kalan: 16
+                </x:slot:menu>
+             <x-list-item :item="$user1" no-separator class="cursor-pointer" no-hover wire:click='ssss()'>
+             
+                <x-slot:avatar>
+                    <x-badge value="12:00" class="badge-primary" /><br />
+                    <x-badge value="12:45" class="badge-primary" /><br />
+                </x-slot:avatar>
+                <x-slot:value>
+                    CİHAT ÖZER ÖZAY
+                </x-slot:value>
+                <x-slot:sub-value>
+                    (45dk) Hizmet Randevusu 
+                </x-slot:sub-value>
+               
+            </x-list-item>
+            <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
+                <x-slot:avatar>
+                    <x-badge value="12:00" class="badge-primary" /><br />
+                    <x-badge value="12:45" class="badge-primary" /><br />
+                </x-slot:avatar>
+                <x-slot:value>
+                    CİHAT ÖZER ÖZAY
+                </x-slot:value>
+                <x-slot:sub-value>
+                    (45dk) Hizmet Randevusu 
+                </x-slot:sub-value>
+                <x-slot:actions>
+                    <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner />
+                </x-slot:actions>
+            </x-list-item>
+            <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
+                <x-slot:avatar>
+                    <x-badge value="12:00" class="badge-warning" /><br />
+                    <x-badge value="12:45" class="badge-warning" /><br />
+                </x-slot:avatar>
+                <x-slot:value>
+                    CİHAT ÖZER ÖZAY
+                </x-slot:value>
+                <x-slot:sub-value>
+                    (45dk) Hizmet Randevusu 
+                </x-slot:sub-value>
+                <x-slot:actions>
+                    <x-badge value="Gecikti" class="badge-warning" /><br />
+                </x-slot:actions>
+            </x-list-item>
+            <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
+                <x-slot:avatar>
+                    <x-badge value="12:00" class="badge-primary" /><br />
+                    <x-badge value="12:45" class="badge-primary" /><br />
+                </x-slot:avatar>
+                <x-slot:value>
+                    CİHAT ÖZER ÖZAY
+                </x-slot:value>
+                <x-slot:sub-value>
+                    (45dk) Hizmet Randevusu 
+                </x-slot:sub-value>
+                <x-slot:actions>
+                    <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner />
+                </x-slot:actions>
+            </x-list-item>
+            <x-hr />
+            <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
+                <x-slot:avatar>
+                    <x-badge value="12:00" class="badge-primary" /><br />
+                    <x-badge value="12:45" class="badge-primary" /><br />
+                </x-slot:avatar>
+                <x-slot:value>
+                    CİHAT ÖZER ÖZAY
+                </x-slot:value>
+                <x-slot:sub-value>
+                    (45dk) Hizmet Randevusu 
+                </x-slot:sub-value>
+                <x-slot:actions>
+                    <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner />
+                </x-slot:actions>
+            </x-list-item>
+             </x-card>
+             <x-card separator title="Epilasyon 1">
+                <x:slot:menu>
+                    Kalan: 16
+                </x:slot:menu>
+             <x-list-item :item="$user1" no-separator class="cursor-pointer" no-hover wire:click='ssss()'>
+             
+                <x-slot:avatar>
+                    <x-badge value="12:00" class="badge-primary" /><br />
+                    <x-badge value="12:45" class="badge-primary" /><br />
+                </x-slot:avatar>
+                <x-slot:value>
+                    CİHAT ÖZER ÖZAY
+                </x-slot:value>
+                <x-slot:sub-value>
+                    (45dk) Hizmet Randevusu 
+                </x-slot:sub-value>
+               
+            </x-list-item>
+            <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
+                <x-slot:avatar>
+                    <x-badge value="12:00" class="badge-primary" /><br />
+                    <x-badge value="12:45" class="badge-primary" /><br />
+                </x-slot:avatar>
+                <x-slot:value>
+                    CİHAT ÖZER ÖZAY
+                </x-slot:value>
+                <x-slot:sub-value>
+                    (45dk) Hizmet Randevusu 
+                </x-slot:sub-value>
+                <x-slot:actions>
+                    <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner />
+                </x-slot:actions>
+            </x-list-item>
+            <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
+                <x-slot:avatar>
+                    <x-badge value="12:00" class="badge-warning" /><br />
+                    <x-badge value="12:45" class="badge-warning" /><br />
+                </x-slot:avatar>
+                <x-slot:value>
+                    CİHAT ÖZER ÖZAY
+                </x-slot:value>
+                <x-slot:sub-value>
+                    (45dk) Hizmet Randevusu 
+                </x-slot:sub-value>
+                <x-slot:actions>
+                    <x-badge value="Gecikti" class="badge-warning" /><br />
+                </x-slot:actions>
+            </x-list-item>
+            <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
+                <x-slot:avatar>
+                    <x-badge value="12:00" class="badge-primary" /><br />
+                    <x-badge value="12:45" class="badge-primary" /><br />
+                </x-slot:avatar>
+                <x-slot:value>
+                    CİHAT ÖZER ÖZAY
+                </x-slot:value>
+                <x-slot:sub-value>
+                    (45dk) Hizmet Randevusu 
+                </x-slot:sub-value>
+                <x-slot:actions>
+                    <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner />
+                </x-slot:actions>
+            </x-list-item>
+            <x-hr />
+            <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
+                <x-slot:avatar>
+                    <x-badge value="12:00" class="badge-primary" /><br />
+                    <x-badge value="12:45" class="badge-primary" /><br />
+                </x-slot:avatar>
+                <x-slot:value>
+                    CİHAT ÖZER ÖZAY
+                </x-slot:value>
+                <x-slot:sub-value>
+                    (45dk) Hizmet Randevusu 
+                </x-slot:sub-value>
+                <x-slot:actions>
+                    <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner />
+                </x-slot:actions>
+            </x-list-item>
+             </x-card>
+          </div>
         </div>
-        <div class="card bg-base-100 shadow-xl">
-
-            <div class="card-body">
-                <h2 class="card-title">Shoes!</h2>
-                <p>If a dog chews shoes whose shoes does he choose?</p>
-                <div class="card-actions justify-end">
-                    <button class="btn btn-primary">Buy Now</button>
-                </div>
-            </div>
-        </div>
-        <x-card title="Tayfun Bakırhan Kadın & Erkek Kuaförü" subtitle="Kuaför" shadow>
-            <x-slot:actions>
-                <div class="rating  rating-half">
-                    <input type="radio" name="rating-10" class="rating-hidden" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-1 bg-green-500" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-2 bg-green-500" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-1 bg-green-500"
-                        checked="checked" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-2 bg-green-500" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-1 bg-green-500" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-2 bg-green-500" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-1 bg-green-500" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-2 bg-green-500" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-1 bg-green-500" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-2 bg-green-500" />
-                </div>
-            </x-slot:actions>
-        </x-card>
-        <x-card title="Marge Güzellik" subtitle="Güzellik Salonu" shadow separator>
-
-            Lazer Epilasyon, Cilt Bakımı
-            <x-slot:actions>
-                <div class="rating  rating-half">
-                    <input type="radio" name="rating-10" class="rating-hidden" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-1 bg-green-500" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-2 bg-green-500" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-1 bg-green-500"
-                        checked="checked" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-2 bg-green-500" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-1 bg-green-500" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-2 bg-green-500" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-1 bg-green-500" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-2 bg-green-500" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-1 bg-green-500" />
-                    <input type="radio" name="rating-10" class="mask mask-heart mask-half-2 bg-green-500" />
-                </div>
-            </x-slot:actions>
-        </x-card>
-    </div>
-
+      </div>
+  
 </div>

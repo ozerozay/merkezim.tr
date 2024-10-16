@@ -23,16 +23,16 @@ class SaleFactory extends Factory
     public function definition(): array
     {
         return [
-            'unique_id' => fake()->word(),
+            'unique_id' => fake()->text(9),
             'date' => fake()->date(),
             'status' => fake()->word(),
             'price' => fake()->randomFloat(2, 0, 9999),
-            'price_real' => fake()->word(),
-            'staffs' => fake()->word(),
-            'freeze_date' => fake()->word(),
-            'sale_no' => fake()->word(),
+            'price_real' => fake()->randomNumber(1),
+            'staffs' => [],
+            'freeze_date' => fake()->date(),
+            'sale_no' => fake()->randomNumber(0),
             'message' => fake()->sentence(20),
-            'expire_date' => fake()->word(),
+            'expire_date' => fake()->date(),
             'deleted_at' => fake()->dateTime(),
             'branch_id' => \App\Models\Branch::factory(),
             'sale_type_id' => \App\Models\SaleType::factory(),

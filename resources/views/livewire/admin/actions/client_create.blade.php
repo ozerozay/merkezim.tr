@@ -4,7 +4,7 @@ use App\Actions\Client\CreateClientAction;
 use App\Models\Branch;
 use App\Traits\HasCssClassAttribute;
 use Carbon\Carbon;
-use Livewire\Attributes\Rule;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Title;
 use Livewire\Volt\Component;
 use Mary\Traits\Toast;
@@ -15,35 +15,26 @@ class extends Component
 {
     use HasCssClassAttribute, Toast;
 
-    #[Rule('required')]
     public $name = '';
 
-    #[Rule('required')]
     public $branch_id = null;
 
-    #[Rule('required')]
     public $country = '90';
 
-    #[Rule('required|digits:10|unique:users,phone')]
     public $phone;
 
-    #[Rule('nullable|digits:11')]
     public $tckimlik;
 
-    #[Rule('nullable|before:now')]
     public $birth_date;
 
     public $il;
 
     public $ilce;
 
-    #[Rule('required')]
     public $gender = 1;
 
-    #[Rule('nullable')]
     public $adres;
 
-    #[Rule('nullable|email')]
     public $email;
 
     public function mount()
@@ -54,7 +45,39 @@ class extends Component
 
     public function save(): void
     {
-        CreateClientAction::run($this->validate());
+        $validator = Validator::make([
+            'name' => $this->name,
+            'branch_id' => $this->branch_id,
+            'country' => $this->country,
+            'phone' => $this->phone,
+            'tckimlik' => $this->tckimlik,
+            'birth_date' => $this->birth_date,
+            'il' => $this->il,
+            'ilce' => $this->ilce,
+            'gender' => $this->gender,
+            'adres' => $this->adres,
+            'email' => $this->email,
+        ], [
+            'name' => 'required',
+            'branch_id' => 'required|exists:branches,id',
+            'country' => 'required',
+            'phone' => 'required|digits:10|unique:users,phone',
+            'tckimlik' => 'nullable|digits:11',
+            'birth_date' => 'nullable|before:now',
+            'il' => 'nullable',
+            'ilce' => 'nullable',
+            'gender' => 'required',
+            'adres' => 'nullable',
+            'email' => 'nullable|email',
+        ]);
+
+        if ($validator->fails()) {
+            $this->error($validator->messages()->first());
+
+            return;
+        }
+
+        CreateClientAction::run($validator->validated());
 
         $this->resetExcept('label', 'class');
         $this->reset();

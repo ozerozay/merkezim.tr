@@ -24,12 +24,13 @@ class ClientTaksitFactory extends Factory
     {
         return [
             'total' => fake()->randomFloat(2, 0, 9999),
-            'remaining' => fake()->word(),
+            'remaining' => fake()->randomNumber(1),
             'date' => fake()->date(),
             'deleted_at' => fake()->dateTime(),
             'client_id' => \App\Models\User::factory(),
             'branch_id' => \App\Models\Branch::factory(),
             'sale_id' => \App\Models\Sale::factory(),
+            'client_id' => \App\Models\User::factory(),
         ];
     }
 }

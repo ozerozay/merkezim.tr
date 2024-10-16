@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Kasa;
+use App\Tenant;
 use Illuminate\Database\Seeder;
 
 class KasaSeeder extends Seeder
@@ -12,14 +13,17 @@ class KasaSeeder extends Seeder
      */
     public function run(): void
     {
-        Kasa::create([
-            'branch_id' => 1,
-            'name' => 'MERKEZ KASA',
-        ]);
+        Tenant::first()->run(function () {
+            Kasa::create([
+                'branch_id' => 1,
+                'name' => 'MERKEZ KASA',
+            ]);
 
-        Kasa::create([
-            'branch_id' => 1,
-            'name' => 'İŞ BANKASI',
-        ]);
+            Kasa::create([
+                'branch_id' => 1,
+                'name' => 'İŞ BANKASI',
+            ]);
+        });
+
     }
 }

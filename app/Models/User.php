@@ -4,18 +4,18 @@ namespace App\Models;
 
 use App\Peren;
 use App\Traits\StringHelper;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 class User extends Authenticatable
 {
-    use HasFactory;
-    use HasJsonRelationships;
     use HasRoles;
+    use HasFactory;
     use Notifiable;
+    use HasJsonRelationships;
 
     /**
      * The attributes that aren't mass assignable.
@@ -50,16 +50,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Get all of the client_notes.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function client_notes()
-    {
-        return $this->hasMany(Note::class, 'client_id');
-    }
-
-    /**
      * Get all of the client_coupons.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -77,16 +67,6 @@ class User extends Authenticatable
     public function offers()
     {
         return $this->hasMany(Offer::class);
-    }
-
-    /**
-     * Get all of the client_offers.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function client_offers()
-    {
-        return $this->hasMany(Offer::class, 'client_id');
     }
 
     /**
@@ -140,16 +120,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Get all of the client_transactions.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function client_transactions()
-    {
-        return $this->hasMany(Transaction::class, 'client_id');
-    }
-
-    /**
      * Get all of the prims.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -170,13 +140,83 @@ class User extends Authenticatable
     }
 
     /**
-     * Get all of the clientService.
+     * Get the client_branch.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function client_branch()
+    {
+        return $this->belongsTo(Branch::class, 'branch_id');
+    }
+
+    /**
+     * Get all of the notes.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function clientService()
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
+    }
+
+    /**
+     * Get all of the client_notes.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function client_notes()
+    {
+        return $this->hasMany(Note::class, 'client_id');
+    }
+
+    /**
+     * Get all of the coupons.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function coupons()
+    {
+        return $this->hasMany(Coupon::class);
+    }
+
+    /**
+     * Get all of the client_transactions.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function client_transactions()
+    {
+        return $this->hasMany(Transaction::class, 'client_id');
+    }
+
+    /**
+     * Get all of the userService.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userService()
     {
         return $this->hasMany(ClientService::class, 'user_id');
+    }
+
+    /**
+     * Get all of the serviceUses.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function serviceUses()
+    {
+        return $this->hasMany(ClientServiceUse::class, 'user_id');
+    }
+
+    /**
+     * Get all of the clientServiceUses.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function clientServiceUses()
+    {
+        return $this->hasMany(ClientServiceUse::class, 'client_id');
     }
 
     protected static function booted(): void
@@ -193,15 +233,12 @@ class User extends Authenticatable
         });
     }
 
-    public function search() {}
+    public function search()
+    {
+    }
 
     public function staff_branch()
     {
         return $this->belongsToJson(Branch::class, 'staff_branches');
-    }
-
-    public function client_branch()
-    {
-        return $this->belongsTo(Branch::class, 'branch_id');
     }
 }

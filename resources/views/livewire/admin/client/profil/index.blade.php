@@ -62,21 +62,27 @@ new class extends Component
         <x-slot:actions>
             <x-dropdown label="İŞLEMLER" responsive icon="o-cog-6-tooth" class="btn-primary" right>
                 <x-menu-item title="Bilgilerini Düzenle" />
+                <x-menu-item title="Etiket Belirle" />
+                @can('action_client_add_note')
+                <x-menu-item title="Not Al" link="{{ route('admin.actions.client_note_add', ['client' => $user->id]) }}" />
+                @endcan
                 <x-menu-separator />
                 @can('action_client_create_service')
                 <x-menu-item title="Hizmet Yükle" link="{{ route('admin.actions.client_create_service', ['client' => $user->id]) }}" />
                 @endcan
-                <x-menu-item title="Hizmet Kullandır" />
+                @can('action_client_use_service')
+                <x-menu-item title="Hizmet Kullandır" link="{{ route('admin.actions.client_use_service', ['client' => $user->id]) }}" />
+                @endcan
                 <x-menu-item title="Hizmet Aktar" />
+                <x-menu-separator />
+                <x-menu-item title="Hizmet Sat" />
+                <x-menu-item title="Adisyon" />
+                <x-menu-item title=" Ürün Sat" />
                 <x-menu-separator />
                 <x-menu-item title="Taksit Oluştur" />
                 <x-menu-item title="Teklif Oluştur" />
-                <x-menu-item title="Hizmet Sat" />
-                <x-menu-item title="Adisyon" />
                 <x-menu-item wire:click="client_coupon_open" title="Kupon Oluştur" />
                 <x-menu-item title="Randevu Oluştur" />
-                <x-menu-item wire:click="client_note_open" title="Not Al" />
-                <x-menu-item title=" Ürün Sat" />
                 <x-menu-item title="Destek Oluştur" />
                 <x-menu-separator />
                 <x-menu-item @click.stop="">

@@ -24,6 +24,14 @@ return new class extends Migration {
                 ->on('masraf')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+            $table->bigInteger('masraf_id')->nullable();
+            $table->dropColumn('masraf_id');
+            $table->bigInteger('masraf_id')->nullable();
+            $table->dropColumn('masraf_id');
+            $table->bigInteger('masraf_id')->nullable();
+            $table->dropColumn('masraf_id');
+            $table->bigInteger('masraf_id')->nullable();
+            $table->dropColumn('masraf_id');
         });
     }
 
@@ -37,6 +45,30 @@ return new class extends Migration {
         Schema::table('transactions', function (Blueprint $table) {
             $table->dropColumn('masraf_id');
             $table->dropForeign('transactions_masraf_id_foreign');
+            $table->dropColumn('masraf_id');
+            $table
+                ->bigInteger('masraf_id')
+                ->unsigned()
+                ->index()
+                ->after('type');
+            $table->dropColumn('masraf_id');
+            $table
+                ->bigInteger('masraf_id')
+                ->unsigned()
+                ->index()
+                ->after('type');
+            $table->dropColumn('masraf_id');
+            $table
+                ->bigInteger('masraf_id')
+                ->unsigned()
+                ->index()
+                ->after('type');
+            $table->dropColumn('masraf_id');
+            $table
+                ->bigInteger('masraf_id')
+                ->unsigned()
+                ->index()
+                ->after('type');
         });
     }
 };

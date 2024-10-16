@@ -452,6 +452,7 @@ class extends Component
         }
 
         CreateSaleAction::run($validator->validated());
+        
         $this->success('Satış oluşturuldu.');
     }
 };

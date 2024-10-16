@@ -46,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
             'masraf' => 'App\Models\Masraf',
             'prim' => 'App\Models\Prim',
             'staff_muhasebe' => 'App\Models\StaffMuhasebe',
+            'client_service_use' => 'App\Models\ClientServiceUse',
         ]);
     }
 }

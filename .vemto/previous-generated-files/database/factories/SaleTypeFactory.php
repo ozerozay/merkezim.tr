@@ -23,7 +23,7 @@ class SaleTypeFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->unique->name(),
+            'name' => fake()->name(),
             'active' => fake()->boolean(),
             'deleted_at' => fake()->dateTime(),
         ];

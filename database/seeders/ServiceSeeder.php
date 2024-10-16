@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Service;
+use App\Tenant;
 use Illuminate\Database\Seeder;
 
 class ServiceSeeder extends Seeder
@@ -12,36 +13,39 @@ class ServiceSeeder extends Seeder
      */
     public function run(): void
     {
-        Service::create([
-            'category_id' => 1,
-            'name' => 'KOLTUK ALTI',
-            'seans' => 1,
-            'duration' => 10,
-            'price' => 150,
-        ]);
+        Tenant::first()->run(function () {
+            Service::create([
+                'category_id' => 1,
+                'name' => 'KOLTUK ALTI',
+                'seans' => 1,
+                'duration' => 10,
+                'price' => 150,
+            ]);
 
-        Service::create([
-            'category_id' => 1,
-            'name' => 'GENİTAL',
-            'seans' => 1,
-            'duration' => 10,
-            'price' => 150,
-        ]);
+            Service::create([
+                'category_id' => 1,
+                'name' => 'GENİTAL',
+                'seans' => 1,
+                'duration' => 10,
+                'price' => 150,
+            ]);
 
-        Service::create([
-            'category_id' => 1,
-            'name' => 'ALT BACAK',
-            'seans' => 1,
-            'duration' => 10,
-            'price' => 150,
-        ]);
+            Service::create([
+                'category_id' => 1,
+                'name' => 'ALT BACAK',
+                'seans' => 1,
+                'duration' => 10,
+                'price' => 150,
+            ]);
 
-        Service::create([
-            'category_id' => 1,
-            'name' => 'ÜST BACAK',
-            'seans' => 1,
-            'duration' => 10,
-            'price' => 150,
-        ]);
+            Service::create([
+                'category_id' => 1,
+                'name' => 'ÜST BACAK',
+                'seans' => 1,
+                'duration' => 10,
+                'price' => 150,
+            ]);
+        });
+
     }
 }

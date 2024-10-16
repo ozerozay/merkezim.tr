@@ -39,4 +39,6 @@ new class extends Component
     }
 };
 ?>
+<div>
 <x-select label="Cinsiyet" icon="o-user" :options="$genders" wire:model="gender" />
+</div>

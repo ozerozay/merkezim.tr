@@ -30,9 +30,9 @@ class CouponFactory extends Factory
             'end_date' => fake()->date(),
             'min_order' => fake()->randomNumber(1),
             'deleted_at' => fake()->dateTime(),
+            'user_id' => \App\Models\User::factory(),
             'client_id' => \App\Models\User::factory(),
-            'client_id' => \App\Models\User::factory(),
-            'category_id' => \App\Models\ServiceCategory::factory(),
+            'service_category_id' => \App\Models\ServiceCategory::factory(),
         ];
     }
 }
