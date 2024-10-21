@@ -1,0 +1,9 @@
+{
+    "conflicts": [
+        {
+            "id": "549689bb-1095-49bf-8a2a-727650377ac9",
+            "currentContent": "<?php\n\nnamespace Database\\Seeders;\n\nuse App\\Models\\Service;\nuse App\\Tenant;\nuse Illuminate\\Database\\Seeder;\n\nclass ServiceSeeder extends Seeder\n{\n    /**\n     * Run the database seeds.\n     */\n    public function run(): void\n    {\n        Tenant::first()->run(function () {\n            Service::create([\n                'category_id' => 1,\n                'name' => 'KOLTUK ALTI',\n                'seans' => 1,\n                'duration' => 10,\n                'price' => 150,\n            ]);\n\n            Service::create([\n                'category_id' => 1,\n                'name' => 'GENİTAL',\n                'seans' => 1,\n                'duration' => 10,\n                'price' => 150,\n            ]);\n\n            Service::create([\n                'category_id' => 1,\n                'name' => 'ALT BACAK',\n                'seans' => 1,\n                'duration' => 10,\n                'price' => 150,\n            ]);\n\n            Service::create([\n                'category_id' => 1,\n                'name' => 'ÜST BACAK',\n                'seans' => 1,\n                'duration' => 10,\n                'price' => 150,\n            ]);\n        });\n\n    }\n}\n",
+            "newContent": "<?php\n\nnamespace Database\\Seeders;\n\nuse App\\Models\\Service;\nuse Illuminate\\Database\\Seeder;\n\nclass ServiceSeeder extends Seeder\n{\n    /**\n     * Run the database seeds.\n     */\n    public function run(): void\n    {\n        Service::factory()\n            ->count(5)\n            ->create();\n    }\n}\n"
+        }
+    ]
+}

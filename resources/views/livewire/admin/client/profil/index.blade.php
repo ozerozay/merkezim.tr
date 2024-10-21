@@ -61,29 +61,48 @@ new class extends Component
         </x-slot:middle>
         <x-slot:actions>
             <x-dropdown label="İŞLEMLER" responsive icon="o-cog-6-tooth" class="btn-primary" right>
-                <x-menu-item title="Bilgilerini Düzenle" />
-                <x-menu-item title="Etiket Belirle" />
+                <x-menu-item icon="tabler.edit" title="Bilgilerini Düzenle" />
+                @can('action_client_add_label')
+                <x-menu-item icon="tabler.tag-starred" title="Etiket Belirle" link="{{ route('admin.actions.client_add_label', ['client' => $user->id]) }}" />
+                @endcan
                 @can('action_client_add_note')
-                <x-menu-item title="Not Al" link="{{ route('admin.actions.client_note_add', ['client' => $user->id]) }}" />
+                <x-menu-item icon="tabler.notes" title="Not Al" link="{{ route('admin.actions.client_note_add', ['client' => $user->id]) }}" />
                 @endcan
+                <x-menu-item icon="tabler.building-warehouse" title="Şube Değiştir" link="{{ route('admin.actions.client_note_add', ['client' => $user->id]) }}" />
                 <x-menu-separator />
-                @can('action_client_create_service')
-                <x-menu-item title="Hizmet Yükle" link="{{ route('admin.actions.client_create_service', ['client' => $user->id]) }}" />
-                @endcan
-                @can('action_client_use_service')
-                <x-menu-item title="Hizmet Kullandır" link="{{ route('admin.actions.client_use_service', ['client' => $user->id]) }}" />
-                @endcan
-                <x-menu-item title="Hizmet Aktar" />
+                <x-menu-sub title="Hizmet" icon="o-plus">
+                    @can('action_client_create_service')
+                    <x-menu-item icon="o-plus" title="Hizmet Yükle" link="{{ route('admin.actions.client_create_service', ['client' => $user->id]) }}" />
+                    @endcan
+                    @can('action_client_use_service')
+                    <x-menu-item icon="tabler.minus" title="Hizmet Kullandır" link="{{ route('admin.actions.client_use_service', ['client' => $user->id]) }}" />
+                    @endcan
+                    @can('action_client_transfer_service')
+                    <x-menu-item icon="tabler.transfer" title="Hizmet Aktar" link="{{ route('admin.actions.client_transfer_service', ['client' => $user->id]) }}" />
+                    @endcan
+                </x-menu-sub>
                 <x-menu-separator />
-                <x-menu-item title="Hizmet Sat" />
-                <x-menu-item title="Adisyon" />
-                <x-menu-item title=" Ürün Sat" />
+                <x-menu-sub title="Satış" icon="tabler.brand-mastercard">
+                    <x-menu-item icon="o-banknotes" title="Hizmet Sat" />
+                    @can('action_adisyon_create')
+                    <x-menu-item icon="o-banknotes" title="Adisyon" link="{{ route('admin.actions.adisyon_create', ['client' => $user->id]) }}" />
+                    @endcan
+                    <x-menu-item icon="o-banknotes" title=" Ürün Sat" />
+                </x-menu-sub>
                 <x-menu-separator />
-                <x-menu-item title="Taksit Oluştur" />
-                <x-menu-item title="Teklif Oluştur" />
-                <x-menu-item wire:click="client_coupon_open" title="Kupon Oluştur" />
-                <x-menu-item title="Randevu Oluştur" />
-                <x-menu-item title="Destek Oluştur" />
+                <x-menu-sub title="Oluştur" icon="o-plus">
+                    <x-menu-item icon="tabler.cash-banknote" title="Taksit Oluştur" />
+                    <x-menu-item icon="tabler.cash-banknote" title="Kilitli Taksit Oluştur" />
+                    <x-menu-item icon="tabler.confetti" title="Teklif Oluştur" />
+                    <x-menu-item icon="tabler.gift-card" wire:click="client_coupon_open" title="Kupon Oluştur" />
+                    <x-menu-item icon="tabler.calendar-plus" title="Randevu Oluştur" />
+                    <x-menu-item icon="tabler.help-hexagon" title="Destek Oluştur" />
+                </x-menu-sub>
+                <x-menu-separator />
+                <x-menu-sub title="İletişim" icon="tabler.brand-whatsapp">
+                    <x-menu-item icon="tabler.device-mobile-message" title="SMS" />
+                    <x-menu-item icon="tabler.brand-whatsapp" title="Whatsapp Mesajı" />
+                </x-menu-sub>
                 <x-menu-separator />
                 <x-menu-item @click.stop="">
                     <x-toggle label="Engelle" right />

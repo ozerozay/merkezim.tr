@@ -39,10 +39,10 @@ class UseServiceAction
             DB::commit();
 
         } catch (AppException $e) {
-            throw $e;
+            throw ToastException::error($e);
         } catch (\Throwable $e) {
             DB::rollBack();
-            throw new AppException('Hata oluştu.');
+            throw ToastException::error('İşlem tamamlanamadı.');
         }
     }
 }

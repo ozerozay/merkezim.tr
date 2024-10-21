@@ -82,6 +82,20 @@ class RoleSeeder extends Seeder
             ]);
 
             Permission::create([
+                'name' => 'action_client_transfer_service',
+                'description' => 'Hizmet Aktar',
+                'route' => 'admin.actions.client_transfer_service',
+                'visible' => true,
+            ]);
+
+            Permission::create([
+                'name' => 'action_client_add_label',
+                'description' => 'Danışan Etiket',
+                'route' => 'admin.actions.client_add_label',
+                'visible' => true,
+            ]);
+
+            Permission::create([
                 'name' => 'clients',
                 'description' => 'Danışanlar',
                 'route' => 'admin.clients',
@@ -93,6 +107,22 @@ class RoleSeeder extends Seeder
                 'description' => 'Danışan Profil',
                 'route' => 'admin.client.profil',
                 'visible' => false,
+            ]);
+
+            Permission::create([
+                'name' => 'action_adisyon_create',
+                'description' => 'Adisyon',
+                'route' => 'admin.actions.adisyon_create',
+                'visible' => true,
+            ]);
+
+            /* ------------------------------- */
+
+            Permission::create([
+                'name' => 'change_sale_price',
+                'description' => 'Satış Tutarını Değiştirebilme',
+                'route' => '',
+                'visible' => true,
             ]);
 
             $adminRole->syncPermissions(Permission::all());

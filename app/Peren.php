@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
 
 class Peren
 {
+    public static string $approve_request_ok = 'Talebiniz alındı, onaylandıktan sonra aktif edilecektir.';
+
     public static function parseDate($date)
     {
         return $date != null ? Carbon::parse($date)->format('Y-m-d') : null;

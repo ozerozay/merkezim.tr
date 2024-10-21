@@ -207,6 +207,10 @@ return [
         'message' => 'Mesaj',
         'service_ids' => 'Hizmetler',
         'seans' => 'Seans',
+        'pay_price' => 'Tutar',
+        'pay_kasa_id' => 'Kasa',
+        'pay_date' => 'Tarih',
+        'package_id' => 'Paket',
     ],
 
 ];

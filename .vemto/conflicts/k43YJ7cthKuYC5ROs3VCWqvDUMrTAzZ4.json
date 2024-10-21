@@ -1,0 +1,9 @@
+{
+    "conflicts": [
+        {
+            "id": "f0f938d3-9816-464e-82b4-db3a4b194210",
+            "currentContent": "<?php\n\nnamespace Database\\Seeders;\n\nuse App\\Models\\Kasa;\nuse App\\Tenant;\nuse Illuminate\\Database\\Seeder;\n\nclass KasaSeeder extends Seeder\n{\n    /**\n     * Run the database seeds.\n     */\n    public function run(): void\n    {\n        Tenant::first()->run(function () {\n            Kasa::create([\n                'branch_id' => 1,\n                'name' => 'MERKEZ KASA',\n            ]);\n\n            Kasa::create([\n                'branch_id' => 1,\n                'name' => 'İŞ BANKASI',\n            ]);\n        });\n\n    }\n}\n",
+            "newContent": "<?php\n\nnamespace Database\\Seeders;\n\nuse App\\Models\\Kasa;\nuse Illuminate\\Database\\Seeder;\n\nclass KasaSeeder extends Seeder\n{\n    /**\n     * Run the database seeds.\n     */\n    public function run(): void\n    {\n        Kasa::factory()\n            ->count(5)\n            ->create();\n    }\n}\n"
+        }
+    ]
+}

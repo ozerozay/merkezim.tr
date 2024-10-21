@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Service;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Rule;
 use Livewire\Volt\Component;
 use Mary\Traits\Toast;
@@ -11,7 +12,7 @@ new class extends Component
 
     public bool $show = false;
 
-    public $branch = null;
+    public $branch_ids = null;
 
     #[Rule('required', as: 'Hizmet')]
     public $service_id = [];
@@ -22,14 +23,21 @@ new class extends Component
     #[Rule('required')]
     public int $quantity = 1;
 
+    public $service_collection;
+
+    public function mount()
+    {
+        $this->service_collection = $this->services();
+    }
+
     public function services()
     {
-        $branch_id = $this->branch;
+        $branch_id = $this->branch_ids;
 
         return Service::query()
             ->where('active', true)
             ->whereHas('category.branches', function ($q) use ($branch_id) {
-                $q->where('id', $branch_id);
+                $q->whereIn('id', $branch_id);
             })
             ->whereHas('category', function ($q) {
                 $q->where('active', true);
@@ -46,11 +54,18 @@ new class extends Component
         $this->service_id = [];
     }
 
-    public function with(): array
+    /*public function with(): array
     {
         return [
             'services' => $this->services(),
         ];
+    }*/
+
+    #[On('reload-add-service')]
+    public function reload_add_service($branch): void
+    {
+        $this->branch_ids = $branch;
+        $this->service_collection = $this->services();
     }
 };
 
@@ -65,7 +80,7 @@ new class extends Component
             <x-choices-offline
                 label="Hizmet"
                 wire:model="service_id"
-                :options="$services"
+                :options="$service_collection"
                 option-sub-label="category.name"
                 option-avatar="cover"
                 icon="o-magnifying-glass"

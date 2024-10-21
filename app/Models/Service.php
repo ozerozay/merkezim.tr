@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Service extends Model
 {
@@ -25,18 +25,23 @@ class Service extends Model
         ];
     }
 
-    public function clientServices()
-    {
-        return $this->hasMany(ClientService::class);
-    }
-
     public function category()
     {
         return $this->belongsTo(ServiceCategory::class, 'category_id');
     }
 
+    public function clientServices()
+    {
+        return $this->hasMany(ClientService::class);
+    }
+
     public function offerItem()
     {
-        return $this->morphOne(OfferItem::class, 'offer_itemable');
+        return $this->morphOne(OfferItem::class, 'itemable');
+    }
+
+    public function adisyonServices()
+    {
+        return $this->hasMany(AdisyonService::class);
     }
 }

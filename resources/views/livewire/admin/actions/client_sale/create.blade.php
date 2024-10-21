@@ -86,7 +86,7 @@ class extends Component
     #[On('client-selected')]
     public function client_selected($client)
     {
-        $this->branch = User::find($client)->branch_id ?? null;
+        $this->branch = [User::find($client)->branch_id ?? null];
     }
 
     #[On('service-added')]
@@ -96,7 +96,7 @@ class extends Component
 
         foreach ($services as $s) {
             if ($this->selected_services->count() > 0 && ($info['gift'] != true) && $this->selected_services->contains(function ($q) use ($s) {
-                return $q['type'] == 'service' && $q['id'] == $s->id;
+                return $q['type'] == 'service' && $q['service_id'] == $s->id;
             })) {
                 $this->error($s->name.' bulunuyor, değişikliği tablodan yapın.');
                 break;
@@ -123,7 +123,7 @@ class extends Component
 
         if ($package) {
             if (($info['gift'] != true) && $this->selected_services->contains(function ($q) use ($package) {
-                return $q['type'] == 'package' && $q['id'] == $package->id;
+                return $q['type'] == 'package' && $q['package_id'] == $package->id;
             })) {
                 $this->error($package->name.' bulunuyor, değişikliği tablodan yapın.');
 
@@ -190,8 +190,6 @@ class extends Component
     {
         return [
             ['key' => 'name', 'label' => 'Ad'],
-            ['key' => 'type', 'label' => 'Çeşit'],
-            ['key' => 'gift', 'label' => 'Hediye'],
             ['key' => 'quantity', 'label' => 'Adet'],
         ];
     }
@@ -452,7 +450,7 @@ class extends Component
         }
 
         CreateSaleAction::run($validator->validated());
-        
+
         $this->success('Satış oluşturuldu.');
     }
 };
@@ -464,7 +462,7 @@ class extends Component
         <div class="grid lg:grid-cols-2 gap-8">
             <x-card title="Danışan ve Satış" separator progress-indicator shadow>
                 <x-form>
-                    <livewire:components.form.client_dropdown wire:model="client_id" />
+                    <livewire:components.form.client_dropdown wire:model.live="client_id" />
                     <livewire:components.form.sale_type_dropdown wire:model="sale_type_id" />
                     <x-datepicker label="Satış Tarihi" wire:model="sale_date" icon="o-calendar"
                         :config="$config_sale_date" />
@@ -475,20 +473,13 @@ class extends Component
                     <x-input label="Satış notunuz" wire:model="message" />
                 </x-form>
             </x-card>
-            <x-card title="Hizmet" separator progress-indicator shadow>
-                @if (!is_null($branch))
+                @if($branch)
                 <x-card title="Hizmetler" separator progress-indicator shadow>
                     <x-table :headers="$headers" :rows="$selected_services">
                         @scope('cell_quantity', $item, $quantities)
                         <x-select wire:model.number="selected_services.{{ $loop->index }}.quantity"
                             :options="$quantities" wire:change="updateQuantity({{ $item['id'] }}, $event.target.value)"
                             class="select-sm !w-20" />
-                        @endscope
-                        @scope('cell_gift', $service)
-                        {{ $service['gift'] ? 'Hediye' : '-'}}
-                        @endscope
-                        @scope('cell_type', $service)
-                        {{ $service['type'] == 'package' ? 'Paket' : 'Hizmet' }}
                         @endscope
                         @scope('actions', $service)
                         <x-button icon="o-trash" wire:click="deleteItem({{ $service['id'] }}, '{{ $service['type'] }}')"
@@ -499,16 +490,15 @@ class extends Component
                         </x-slot:empty>
                     </x-table>
                     <x:slot:menu>
-                        <livewire:admin.actions.client_offer.add_service :branch="$branch" />
-                        <livewire:admin.actions.client_offer.add_package :branch="$branch" />
+                        <livewire:admin.actions.client_offer.add_service :branch_ids="$branch" />
+                        <livewire:admin.actions.client_offer.add_package :branch_ids="$branch" />
                     </x:slot:menu>
                     <x:slot:actions>
                         Toplam : {{ LiveHelper::price_text($this->totalPrice()) }}
                     </x:slot:actions>
+                
                 </x-card>
                 @endif
-
-            </x-card>
         </div>
         <x:slot:actions>
             @if ($this->totalPrice() > 0 || $this->price > 1)

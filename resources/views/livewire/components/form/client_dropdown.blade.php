@@ -13,6 +13,10 @@ new class extends Component
 
     public Collection $users;
 
+    public $label = 'Danışan';
+
+    public $dis = 'client-selected';
+
     public function mount()
     {
         $this->search();
@@ -31,6 +35,7 @@ new class extends Component
             ->whereIn('branch_id', auth()->user()->staff_branches)
             ->take(5)
             ->latest()
+            ->with('client_branch:id,name')
             ->get()
             ->merge($selectedOption);
     }
@@ -40,10 +45,10 @@ new class extends Component
 <x-choices
     wire:model="client_id"
     :options="$users"
-    option-sub-label="unique_id"
-    label="Danışan"
+    option-sub-label="client_branch.name"
+    :label="$label"
     icon="o-magnifying-glass"
-    @change-selection="$dispatch('client-selected', {client: $event.detail.value})"
+    @change-selection="$dispatch('{{ $dis }}', {client: $event.detail.value})"
     single
     searchable />
 </div>

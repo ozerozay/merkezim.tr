@@ -5,7 +5,7 @@ namespace App\Actions\Sale;
 use App\Actions\Client\CreateServiceAction;
 use App\Actions\Client\CreateTaksitAction;
 use App\Actions\Helper\CreateSaleUniqueID;
-use App\Actions\User\CheckApproveAction;
+use App\Actions\User\CheckUserInstantApprove;
 use App\Exceptions\AppException;
 use App\Models\Package;
 use App\Models\Sale;
@@ -17,6 +17,7 @@ use App\TransactionType;
 use Carbon\Carbon;
 use DB;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Mary\Exceptions\ToastException;
 
 class CreateSaleAction
 {
@@ -109,16 +110,16 @@ class CreateSaleAction
                 ]);
             }
 
-            if (CheckApproveAction::run($info['user_id'])) {
+            if (CheckUserInstantApprove::run($info['user_id'])) {
                 ApproveSaleAction::run($sale->id, $info['user_id']);
             }
 
             DB::commit();
         } catch (AppException $e) {
-            throw $e;
+            throw ToastException::error($e);
         } catch (\Throwable $e) {
             DB::rollBack();
-            throw new AppException('Hata oluştu.'.$e->getMessage());
+            throw ToastException::error('İşlem tamamlanamadı.');
         }
     }
 }

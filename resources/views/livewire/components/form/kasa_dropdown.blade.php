@@ -27,7 +27,7 @@ new class extends Component
         } else {
             $this->kasas = Kasa::query()
                 ->where('active', true)
-                ->where('branch_id', $this->branch)
+                ->whereIn('branch_id', $this->branch)
                 ->with('branch')
                 ->get();
         }

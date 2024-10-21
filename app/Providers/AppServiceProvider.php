@@ -47,6 +47,10 @@ class AppServiceProvider extends ServiceProvider
             'prim' => 'App\Models\Prim',
             'staff_muhasebe' => 'App\Models\StaffMuhasebe',
             'client_service_use' => 'App\Models\ClientServiceUse',
+            'label' => 'App\Models\Label',
+            'approve' => 'App\Models\Approve',
+            'adisyon' => 'App\Models\Adisyon',
+            'adisyon_service' => 'App\Models\AdisyonService',
         ]);
     }
 }

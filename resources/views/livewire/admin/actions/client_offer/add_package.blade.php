@@ -11,7 +11,7 @@ new class extends Component
 
     public bool $show = false;
 
-    public $branch = null;
+    public $branch_ids = null;
 
     #[Rule('required', as: 'Paket')]
     public $package_id = null;
@@ -24,12 +24,12 @@ new class extends Component
 
     public function packages()
     {
-        $branch_id = $this->branch;
+        $branch_id = $this->branch_ids;
 
         return Package::query()
             ->where('active', true)
             ->whereHas('branches', function ($q) use ($branch_id) {
-                $q->where('id', $branch_id);
+                $q->whereIn('id', $branch_id);
             })
             ->orderBy('name')
             ->get();

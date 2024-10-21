@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Peren;
-use App\Traits\StringHelper;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -46,6 +44,8 @@ class User extends Authenticatable
             'active' => 'boolean',
             'first_login' => 'boolean',
             'staff_branches' => 'json',
+            'labels' => 'json',
+            'instant_approve' => 'boolean',
         ];
     }
 
@@ -219,18 +219,44 @@ class User extends Authenticatable
         return $this->hasMany(ClientServiceUse::class, 'client_id');
     }
 
-    protected static function booted(): void
+    /**
+     * Get all of the approves.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function approves()
     {
-        static::creating(function (User $user) {
-            $user->name = StringHelper::strUpper($user->name);
-            $user->unique_id = Peren::unique_user_number();
-            $user->birth_date = Peren::parseDate($user->birth_date);
-        });
+        return $this->hasMany(Approve::class);
+    }
 
-        static::updating(function (User $user) {
-            $user->name = StringHelper::strUpper($user->name);
-            $user->birth_date = Peren::parseDate($user->birth_date);
-        });
+    /**
+     * Get all of the approved_by.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function approved_by()
+    {
+        return $this->hasMany(Approve::class, 'approved_by');
+    }
+
+    /**
+     * Get all of the adisyons.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function adisyons()
+    {
+        return $this->hasMany(Adisyon::class);
+    }
+
+    /**
+     * Get all of the clientAdisyons.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function clientAdisyons()
+    {
+        return $this->hasMany(Adisyon::class, 'client_id');
     }
 
     public function search()
@@ -240,5 +266,10 @@ class User extends Authenticatable
     public function staff_branch()
     {
         return $this->belongsToJson(Branch::class, 'staff_branches');
+    }
+
+    public function client_labels()
+    {
+        return $this->belongsToJson(Label::class, 'labels');
     }
 }

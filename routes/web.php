@@ -33,6 +33,10 @@ Route::middleware('auth')->group(function () {
                 ->name('admin.actions.client_create_service')
                 ->middleware('can:action_client_create_service');
 
+            Volt::route('/add_label', 'admin.actions.client_add_label')
+                ->name('admin.actions.client_add_label')
+                ->middleware('can:actions_client_add_label');
+
             Volt::route('/client_create', 'admin.actions.client_create')
                 ->name('admin.actions.client_create')
                 ->middleware('can:action_client_create');

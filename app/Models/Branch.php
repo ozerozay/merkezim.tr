@@ -67,6 +67,11 @@ class Branch extends Model
         return $this->hasMany(ServiceRoom::class);
     }
 
+    public function adisyons()
+    {
+        return $this->hasMany(Adisyon::class);
+    }
+
     public function branch_staff_active()
     {
         return $this->query()

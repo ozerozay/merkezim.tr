@@ -57,6 +57,14 @@ Route::middleware([
                     ->name('admin.actions.client_create_service')
                     ->middleware('can:action_client_create_service');
 
+                Volt::route('/transfer_service', 'admin.actions.client_transfer_service')
+                    ->name('admin.actions.client_transfer_service')
+                    ->middleware('can:action_client_transfer_service');
+
+                Volt::route('/add_label', 'admin.actions.client_add_label')
+                    ->name('admin.actions.client_add_label')
+                    ->middleware('can:action_client_add_label');
+
                 Volt::route('/use_service', 'admin.actions.client_use_service')
                     ->name('admin.actions.client_use_service')
                     ->middleware('can:action_client_use_service');
@@ -79,6 +87,10 @@ Route::middleware([
                         ->name('admin.actions.client_offer_create');
 
                 })->middleware('can:action_client_offer');
+
+                Volt::route('/adisyon', 'admin.actions.adisyon.index')
+                    ->name('admin.actions.adisyon_create')
+                    ->middleware('can:action_adisyon_create');
 
             });
 

@@ -3,6 +3,10 @@
 use App\Actions\Client\GetClientByUniqueID;
 use App\Actions\Client\UseServiceAction;
 use App\Actions\User\CheckClientBranchAction;
+use App\Actions\User\CheckUserInstantApprove;
+use App\Actions\User\CreateApproveRequestAction;
+use App\ApproveTypes;
+use App\Peren;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
@@ -43,8 +47,10 @@ class extends Component
 
         if ($this->client_model) {
             $this->client = $this->client_model->id;
-            $this->service_ids = [];
+
         }
+        $this->service_ids = [];
+        $this->dispatch('reload-services', ['client' => $this->client])->to('components.client.client_service_multi_dropdown');
     }
 
     public function save()
@@ -72,9 +78,15 @@ class extends Component
 
         CheckClientBranchAction::run($this->client);
 
-        UseServiceAction::run($validator->validated());
+        if (CheckUserInstantApprove::run(auth()->user()->id)) {
+            UseServiceAction::run($validator->validated());
 
-        $this->success('Hizmetler kullandırıldı.');
+            $this->success('Hizmetler kullandırıldı.');
+        } else {
+            CreateApproveRequestAction::run($validator->validated(), auth()->user()->id, ApproveTypes::client_use_service, $this->message);
+
+            $this->success(Peren::$approve_request_ok);
+        }
 
         $this->reset('service_ids', 'message');
 
@@ -87,7 +99,7 @@ class extends Component
     <x-card title="Hizmet Kullandır" progress-indicator separator>
         <x-form wire:submit="save">
         <livewire:components.form.client_dropdown wire:model.live="client" />
-        @if ($client != null)
+        @if ($client_model != null)
         <livewire:components.client.client_service_multi_dropdown wire:model="service_ids" :client_id="$client" />
         <livewire:components.form.number_dropdown wire:model="seans" label="Adet" :includeZero="false" />
         <x-input label="Açıklama" wire:model="message" />

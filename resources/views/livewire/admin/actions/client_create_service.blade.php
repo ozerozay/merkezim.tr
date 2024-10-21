@@ -3,6 +3,10 @@
 use App\Actions\Client\CreateServiceAction;
 use App\Actions\Client\GetClientByUniqueID;
 use App\Actions\User\CheckClientBranchAction;
+use App\Actions\User\CheckUserInstantApprove;
+use App\Actions\User\CreateApproveRequestAction;
+use App\ApproveTypes;
+use App\Peren;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
@@ -80,7 +84,7 @@ class extends Component
             'total' => 'required|integer',
             'remaining' => 'required|integer',
             'gift' => 'required|boolean',
-            'message' => 'nullable',
+            'message' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -91,9 +95,15 @@ class extends Component
 
         CheckClientBranchAction::run($this->client);
 
-        CreateServiceAction::run($validator->validated(), auth()->user()->id);
+        if (CheckUserInstantApprove::run(auth()->user()->id)) {
+            CreateServiceAction::run($validator->validated(), auth()->user()->id);
 
-        $this->success('Hizmetler eklendi.');
+            $this->success('Hizmetler eklendi.');
+        } else {
+            CreateApproveRequestAction::run($validator->validated(), auth()->user()->id, ApproveTypes::client_add_service, $this->message);
+
+            $this->success(Peren::$approve_request_ok);
+        }
 
         $this->reset('service_ids', 'message');
     }
@@ -104,7 +114,7 @@ class extends Component
     <x-card title="Hizmet Yükle" progress-indicator separator>
     <x-form wire:submit="save">
         <livewire:components.form.client_dropdown wire:model.live="client" />
-        @if ($client != null)
+        @if ($client_model != null)
         <livewire:components.client.client_sale_dropdown wire:model="sale_id" :client_id="$client" />
         <livewire:components.form.service_multi_dropdown wire:model="service_ids" :branch_id="$branch" :gender="$gender" />
         <livewire:components.form.number_dropdown wire:model="seans" label="Adet" :includeZero="false" />

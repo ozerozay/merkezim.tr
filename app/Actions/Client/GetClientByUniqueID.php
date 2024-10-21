@@ -9,10 +9,10 @@ class GetClientByUniqueID
 {
     use AsAction;
 
-    public function handle($unique_id, $id)
+    public function handle($unique_id, $id, $select = [])
     {
         return User::query()
-            ->select(['id', 'name', 'unique_id', 'branch_id', 'gender'])
+            ->select(['id', 'name', 'unique_id', 'branch_id', 'gender', ...$select])
             ->where(function ($q) use ($unique_id, $id) {
                 $q->where('unique_id', $unique_id)->orWhere('id', $id);
             })

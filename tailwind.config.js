@@ -18,7 +18,7 @@ export default {
     // Add daisyUI
     plugins: [require("daisyui")],
     daisyui: {
-        themes: ["light", "dark"],
+        themes: ["light", "dark", "cupcake", "emerald"],
     },
     darkMode: 'class', 
 }
