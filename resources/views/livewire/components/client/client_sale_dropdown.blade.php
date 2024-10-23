@@ -17,6 +17,8 @@ new class extends Component
 
     public Collection $sales;
 
+    public $label = 'Aktif Satışları';
+
     public function mount()
     {
         $this->getsales($this->client_id);
@@ -43,7 +45,7 @@ new class extends Component
     :options="$sales"
     option-sub-label="date"
     option-label="unique_id"
-    label="Aktif Satışları"
+    :label="$label"
     icon="o-magnifying-glass"
     no-result-text="Aktif satışı bulunmuyor."
     single

@@ -25,9 +25,11 @@ class extends Component
         $validator = Validator::make([
             'client_id' => $this->client,
             'message' => $this->message,
+            'user_id' => auth()->user()->id,
         ], [
             'client_id' => 'required|exists:users,id',
             'message' => 'required',
+            'user_id' => 'required|exists:users,id'
         ]);
 
         if ($validator->fails()) {

@@ -222,6 +222,8 @@ return [
         'discount_type' => 'İndirim çeşidi',
         'expire_date' => 'Son geçerlilik tarihi',
         'month' => 'Ay',
+        'first_date' => 'İlk tarih',
+        'amount' => 'Miktar',
     ],
 
 ];

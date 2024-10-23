@@ -28,7 +28,7 @@ class NotePolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return true; // $user->can('action_client_add_note');
     }
 
     /**
@@ -44,7 +44,7 @@ class NotePolicy
      */
     public function delete(User $user, Note $model): bool
     {
-        return true;
+        return true; //$user->can('note_delete');
     }
 
     /**

@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
+Volt::route('/anasayfa', 'merkezim.anasayfa');
+
+/*
 Volt::route('/login', 'login')->name('login');
 
 //Route::get('/login', Login::class)->name('login');
@@ -17,7 +20,7 @@ Route::get('/logout', function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Volt::route('/', 'test');
+    //Volt::route('/', 'test');
     Volt::route('/new', 'new')->name('new');
     Volt::route('/merkez', 'merkezim.merkez')->name('merkezim.merkez');
 
@@ -66,10 +69,10 @@ Route::middleware('auth')->group(function () {
             Volt::route('/{user}/home', 'admin.client.profil.anasayfa')->name('admin.client.profil.anasayfa')->middleware('can:client_profil');
         });
 
-        /*Route::prefix('client')->group(function () {
+        Route::prefix('client')->group(function () {
             Volt::route('/', 'admin.client.index')->name('admin.client.index');
             Volt::route('/{user?}', 'admin.client.profil.index')->name('admin.client.profil.index');
-        });*/
+        });
 
         Route::prefix('sale')->group(function () {
             Volt::route('/create/{client?}', 'admin.sale.create')->name('admin.sale.create');
@@ -94,3 +97,4 @@ Route::middleware('auth')->group(function () {
 Route::get('/per', function () {
     dd(Auth::user()->getAllPermissions());
 });
+*/

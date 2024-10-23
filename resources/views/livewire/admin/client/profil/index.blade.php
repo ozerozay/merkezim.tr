@@ -2,11 +2,14 @@
 
 use App\Models\User;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Volt\Component;
 use Mary\Traits\Toast;
 
-new class extends Component
+new
+#[Title('Danışan')]
+class extends Component
 {
     use Toast;
 
@@ -19,8 +22,7 @@ new class extends Component
 
     public function updatedTab()
     {
-        //$this->success($this->tab);
-
+        $this->success($this->tab);
     }
 
     public function renderComponent($tab) {}
@@ -52,10 +54,13 @@ new class extends Component
 ?>
 
 <div>
-    <x-header seperator progress-indicator>
+    <x-header separator progress-indicator>
         <x-slot:title>
-            {{ $user->name ?? '' }} - {{ $user->phone ?? '' }}
+            {{ $user->name ?? '' }}
         </x-slot:title>
+        <x-slot:subtitle>
+            {{ $user->phone ?? '' }} - {{ $user->client_branch->name ?? '' }}
+        </x-slot:subtitle>
         <x-slot:middle class="!justify-end">
 
         </x-slot:middle>
@@ -105,14 +110,23 @@ new class extends Component
                 <x-menu-separator />
                 <x-menu-sub title="Oluştur" icon="o-plus">
                     @can('action_client_create_taksit')
-                    <x-menu-item icon="tabler.cash-banknote" link="{{ route('admin.actions.client_create_taksit', ['client' => $user->id]) }}" title="Taksit Oluştur" />
+                    <x-menu-item icon="tabler.cash-banknote"
+                        link="{{ route('admin.actions.client_create_taksit', ['client' => $user->id]) }}"
+                        title="Taksit Oluştur" />
                     @endcan
-                    <x-menu-item icon="tabler.cash-banknote" title="Kilitli Taksit Oluştur" />
-                    @can('action_create_coupon')
-                    <x-menu-item icon="tabler.confetti" link="{{ route('admin.actions.client_create_offer', ['client' => $user->id]) }}" title="Teklif Oluştur" />
+                    @can('action_client_create_taksit')
+                    <x-menu-item icon="tabler.cash-banknote" title="Kilitli Taksit Oluştur"
+                        link="{{ route('admin.actions.client_create_taksit', ['client' => $user->id]) }}" />
                     @endcan
                     @can('action_create_coupon')
-                    <x-menu-item icon="tabler.gift-card" link="{{ route('admin.actions.create_coupon', ['client' => $user->id]) }}" title="Kupon Oluştur" />
+                    <x-menu-item icon="tabler.confetti"
+                        link="{{ route('admin.actions.client_create_offer', ['client' => $user->id]) }}"
+                        title="Teklif Oluştur" />
+                    @endcan
+                    @can('action_create_coupon')
+                    <x-menu-item icon="tabler.gift-card"
+                        link="{{ route('admin.actions.create_coupon', ['client' => $user->id]) }}"
+                        title="Kupon Oluştur" />
                     @endcan
                     <x-menu-item icon="tabler.calendar-plus" title="Randevu Oluştur" />
                     <x-menu-item icon="tabler.help-hexagon" title="Destek Oluştur" />
@@ -152,14 +166,100 @@ new class extends Component
             <div>Musics</div>
         </x-tab>
         <x-tab name="tab-teklif" label="Teklif">
-            <div>Musics</div>
+           
         </x-tab>
         <x-tab name="tab-kupon" label="Kupon">
-            <div>Musics</div>
+            <div class="mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                <!-- Aktif Kupon -->
+                <div class="card bg-green-100 shadow-xl">
+                  <div class="card-body flex flex-col">
+                    <h2 class="card-title text-green-600">%25 İNDİRİM KUPONU</h2>
+                    <p class="text-green-500">Kupon kodu: <span class="font-mono">SAVE20</span></p>
+                    <p class="text-gray-600">Bitiş: 2024-12-31</p>
+                    <p class="text-sm text-gray-500">John Doe</p>
+                    <div class="card-actions justify-end">
+                      <span class="badge badge-success">Aktif</span>
+                    </div>
+                  </div>
+                </div>
+              
+                <!-- Süresi Dolmuş Kupon -->
+                <div class="card bg-red-100 shadow-xl">
+                  <div class="card-body flex flex-col">
+                    <h2 class="card-title text-red-600">10% Off on Clothing</h2>
+                    <p class="text-red-500">Kupon kodu: <span class="font-mono">SAVE10</span></p>
+                    <p class="text-gray-600">Son kullanma tarihi: 2023-08-31</p>
+                    <p class="text-sm text-gray-500">Oluşturan: Jane Smith</p>
+                    <div class="card-actions justify-end">
+                      <span class="badge badge-error">Süresi Doldu</span>
+                    </div>
+                  </div>
+                </div>
+              
+                <!-- Kullanılmış Kupon -->
+                <div class="card bg-gray-100 shadow-xl">
+                  <div class="card-body flex flex-col">
+                    <h2 class="card-title text-gray-600">15% Off on Accessories</h2>
+                    <p class="text-gray-500">Kupon kodu: <span class="font-mono">SAVE15</span></p>
+                    <p class="text-gray-600">Son kullanma tarihi: 2024-03-15</p>
+                    <p class="text-sm text-gray-500">Oluşturan: Sarah Lee</p>
+                    <div class="card-actions justify-end">
+                      <span class="badge badge-neutral">Kullanıldı</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card bg-green-100 shadow-xl">
+                    <div class="card-body flex flex-col">
+                      <h2 class="card-title text-green-600">%25 İNDİRİM KUPONU</h2>
+                      <p class="text-green-500">Kupon kodu: <span class="font-mono">SAVE20</span></p>
+                      <p class="text-gray-600">Son kullanma tarihi: 2024-12-31</p>
+                      <p class="text-sm text-gray-500">Oluşturan: John Doe</p>
+                      <div class="card-actions justify-end">
+                        <span class="badge badge-success">Aktif</span>
+                      </div>
+                    </div>
+                  </div>
+                
+                  <!-- Süresi Dolmuş Kupon -->
+                  <div class="card bg-red-100 shadow-xl">
+                    <div class="card-body flex flex-col">
+                      <h2 class="card-title text-red-600">10% Off on Clothing</h2>
+                      <p class="text-red-500">Kupon kodu: <span class="font-mono">SAVE10</span></p>
+                      <p class="text-gray-600">Son kullanma tarihi: 2023-08-31</p>
+                      <p class="text-sm text-gray-500">Oluşturan: Jane Smith</p>
+                      <div class="card-actions justify-end">
+                        <span class="badge badge-error">Süresi Doldu</span>
+                      </div>
+                    </div>
+                  </div>
+                
+                  <!-- Kullanılmış Kupon -->
+                  <div class="card bg-gray-100 shadow-xl">
+                    <div class="card-body flex flex-col">
+                      <h2 class="card-title text-gray-600">15% Off on Accessories</h2>
+                      <p class="text-gray-500">Kupon kodu: <span class="font-mono">SAVE15</span></p>
+                      <p class="text-gray-600">Son kullanma tarihi: 2024-03-15</p>
+                      <p class="text-sm text-gray-500">Oluşturan: Sarah Lee</p>
+                      <div class="card-actions justify-end">
+                        <span class="badge badge-neutral">Kullanıldı</span>
+                      </div>
+                    </div>
+                  </div>
+                
+              
+              </div>
+              
         </x-tab>
-        <x-tab name="tab-not" label="Not">
-            <div>Musics</div>
+        @can('client_profil_note')
+        <x-tab name="note" label="Not">
+            @if ($tab == 'note')
+            <livewire:admin.client.profil.pages.note :client="$user->id" lazy />
+            @endif
         </x-tab>
+        @endcan
+
     </x-tabs>
 
     <livewire:admin.client.actions.add_note wire:model="client_note" />

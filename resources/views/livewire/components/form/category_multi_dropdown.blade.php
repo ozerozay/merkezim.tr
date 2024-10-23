@@ -19,7 +19,9 @@ new class extends Component {
     }
 };
 ?>
+<div>
 <x-choices-offline
     label="Kategoriler"
     wire:model="category_ids"
     :options="$categories" />
+</div>

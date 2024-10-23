@@ -145,7 +145,25 @@ class RoleSeeder extends Seeder
                 'name' => 'change_sale_price',
                 'description' => 'Satış Tutarını Değiştirebilme',
                 'route' => '',
-                'visible' => true,
+                'visible' => false,
+            ]);
+
+            /* ------------------------------- */
+
+            Permission::create([
+                'name' => 'client_profil_note',
+                'description' => 'Danışan Profil - Not',
+                'route' => '',
+                'visible' => false,
+            ]);
+
+            /* ------------------------------- */
+
+            Permission::create([
+                'name' => 'note_delete',
+                'description' => 'Not Silebilme',
+                'route' => '',
+                'visible' => false,
             ]);
 
             $adminRole->syncPermissions(Permission::all());

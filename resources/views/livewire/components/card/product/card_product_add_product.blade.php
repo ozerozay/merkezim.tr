@@ -22,7 +22,6 @@ new class extends Component
     #[On('card-product-add-product-update-collection')]
     public function updateProductCollection($product_collection)
     {
-        dump($product_collection);
         $this->product_collection = $product_collection;
     }
 

@@ -28,6 +28,7 @@
         "nunomaduro/collision": "^8.0",
         "pestphp/pest": "^2.35",
         "pestphp/pest-plugin-laravel": "^2.4",
+        "wire-elements/wire-spy": "^0.0.9",
         "wulfheart/laravel-actions-ide-helper": "^0.8.0"
     },
     "autoload": {

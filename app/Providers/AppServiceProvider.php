@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Note;
+use App\Policies\NotePolicy;
+use Gate;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+        Gate::policy(Note::class, NotePolicy::class);
 
         Relation::enforceMorphMap([
             'service' => 'App\Models\Service',
