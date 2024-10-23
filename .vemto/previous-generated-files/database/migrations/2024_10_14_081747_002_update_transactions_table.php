@@ -24,14 +24,12 @@ return new class extends Migration {
                 ->on('masraf')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->bigInteger('masraf_id')->nullable();
-            $table->dropColumn('masraf_id');
-            $table->bigInteger('masraf_id')->nullable();
-            $table->dropColumn('masraf_id');
-            $table->bigInteger('masraf_id')->nullable();
-            $table->dropColumn('masraf_id');
-            $table->bigInteger('masraf_id')->nullable();
-            $table->dropColumn('masraf_id');
+            $table
+                ->bigInteger('client_id')
+                ->unsigned()
+                ->nullable()
+                ->index()
+                ->change();
         });
     }
 
@@ -69,6 +67,11 @@ return new class extends Migration {
                 ->unsigned()
                 ->index()
                 ->after('type');
+            $table
+                ->bigInteger('client_id')
+                ->unsigned()
+                ->index()
+                ->change();
         });
     }
 };

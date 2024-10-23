@@ -32,7 +32,9 @@ class RoleSeeder extends Seeder
                 'name' => 'CİHAT ÖZER ÖZAY',
                 'tckimlik' => '34222447480',
                 'adres' => 'asdasda',
+                'unique_id' => '123456789',
                 'gender' => true,
+                'first_login' => false,
                 'birth_date' => date('Y-m-d'),
                 'staff_branches' => [1, 2],
             ]);
@@ -47,9 +49,16 @@ class RoleSeeder extends Seeder
             ]);
 
             Permission::create([
-                'name' => 'action_client_offer',
+                'name' => 'action_client_create_offer',
                 'description' => 'Teklif Oluştur',
-                'route' => 'admin.actions.client_offer_customer',
+                'route' => 'admin.actions.client_create_offer',
+                'visible' => true,
+            ]);
+
+            Permission::create([
+                'name' => 'action_client_create_taksit',
+                'description' => 'Taksit Oluştur',
+                'route' => 'admin.actions.client_create_taksit',
                 'visible' => true,
             ]);
 
@@ -96,6 +105,13 @@ class RoleSeeder extends Seeder
             ]);
 
             Permission::create([
+                'name' => 'action_client_product_sale',
+                'description' => 'Danışan Ürün Sat',
+                'route' => 'admin.actions.client_product_sale',
+                'visible' => true,
+            ]);
+
+            Permission::create([
                 'name' => 'clients',
                 'description' => 'Danışanlar',
                 'route' => 'admin.clients',
@@ -107,6 +123,13 @@ class RoleSeeder extends Seeder
                 'description' => 'Danışan Profil',
                 'route' => 'admin.client.profil',
                 'visible' => false,
+            ]);
+
+            Permission::create([
+                'name' => 'action_adisyon_create',
+                'description' => 'Adisyon',
+                'route' => 'admin.actions.adisyon_create',
+                'visible' => true,
             ]);
 
             Permission::create([

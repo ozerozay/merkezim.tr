@@ -1,8 +1,15 @@
 <?php
 
+use App\Actions\Adisyon\CreateAdisyonAction;
+use App\Actions\User\CheckClientBranchAction;
+use App\Actions\User\CheckUserInstantApprove;
+use App\Actions\User\CreateApproveRequestAction;
+use App\ApproveTypes;
+use App\Peren;
 use App\Traits\LiveHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
@@ -53,8 +60,10 @@ class extends Component
     {
         $this->selected_services = collect();
         $this->selected_cash = collect();
-        $this->dispatch('card-service-client-selected', $client)->to('components.card.service.card_service_select');
-        $this->dispatch('card-cash-client-selected', $client)->to('components.card.cash.card_cash_select');
+        if ($client != null) {
+            $this->dispatch('card-service-client-selected', $client)->to('components.card.service.card_service_select');
+            $this->dispatch('card-cash-client-selected', $client)->to('components.card.cash.card_cash_select');
+        }
     }
 
     public function totalPrice()
@@ -62,12 +71,10 @@ class extends Component
         if ($this->price > 0) {
             return $this->price;
         }
-        $totalP = 0.0;
-        foreach ($this->selected_services as $s) {
-            $totalP += $s['price'] * $s['quantity'];
-        }
 
-        return $totalP;
+        return $this->selected_services->sum(function ($q) {
+            return $q['gift'] ? 0 : $q['price'] * $q['quantity'];
+        });
     }
 
     #[On('card-service-selected-services-updated')]
@@ -86,6 +93,65 @@ class extends Component
     public function dispatchMaxPriceChanged()
     {
         $this->dispatch('card-cash-max-price-changed', $this->totalPrice())->to('components.card.cash.card_cash_select');
+    }
+
+    public function totalCashPrice()
+    {
+        return $this->selected_cash->sum('price');
+    }
+
+    public function save()
+    {
+        if ($this->selected_services->count() == 0) {
+            $this->error('Hizmet seçmelisiniz.');
+
+            return;
+        }
+
+        if ($this->totalPrice() > $this->totalCashPrice()) {
+            $this->error('Tüm tutarı yapılandırmanız gerekiyor.'.($this->totalPrice() - $this->totalCashPrice()).'₺');
+
+            return;
+        }
+
+        $validator = Validator::make([
+            'client_id' => $this->client_id,
+            'adisyon_date' => $this->adisyon_date,
+            'message' => $this->message,
+            'price' => $this->totalPrice(),
+            'staff_ids' => $this->staff_ids,
+            'services' => $this->selected_services->toArray(),
+            'cashes' => $this->selected_cash->toArray(),
+            'user_id' => auth()->user()->id,
+        ], [
+            'client_id' => 'nullable|exists:users,id',
+            'adisyon_date' => 'required|before:tomorrow',
+            'message' => 'required',
+            'price' => 'required|decimal:0,2',
+            'staff_ids' => 'nullable|array',
+            'services' => 'required|array',
+            'cashes' => 'nullable|array',
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        if ($validator->fails()) {
+            $this->error($validator->messages()->first());
+
+            return;
+        }
+
+        CheckClientBranchAction::run($this->client_id);
+
+        if (CheckUserInstantApprove::run(auth()->user()->id)) {
+            CreateAdisyonAction::run($validator->validated());
+
+            $this->success('Adisyon oluşturuldu.');
+        } else {
+            CreateApproveRequestAction::run($validator->validated(), auth()->user()->id, ApproveTypes::create_adisyon, $this->message);
+
+            $this->success(Peren::$approve_request_ok);
+        }
+
     }
 };
 
@@ -109,7 +175,7 @@ class extends Component
             <livewire:components.card.cash.card_cash_select wire:model="selected_cash" :client="$client_id" />
         </div>
         <x:slot:actions>
-            <x-button label="Gönder" type="submit" spinner="save" icon="o-paper-airplane" class="btn-primary" />
+            <x-button label="Gönder" wire:click="save" spinner="save" icon="o-paper-airplane" class="btn-primary" />
         </x:slot:actions>
     </x-card>
 </div>

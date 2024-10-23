@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Coupon extends Model
 {
@@ -22,10 +21,5 @@ class Coupon extends Model
     public function client()
     {
         return $this->belongsTo(User::class, 'client_id');
-    }
-
-    public function category()
-    {
-        return $this->belongsTo(ServiceCategory::class, 'service_category_id');
     }
 }

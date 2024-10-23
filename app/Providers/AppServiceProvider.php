@@ -51,6 +51,8 @@ class AppServiceProvider extends ServiceProvider
             'approve' => 'App\Models\Approve',
             'adisyon' => 'App\Models\Adisyon',
             'adisyon_service' => 'App\Models\AdisyonService',
+            'sale_product' => 'App\Models\SaleProduct',
+            'sale_product_item' => 'App\Models\SaleProductItem',
         ]);
     }
 }

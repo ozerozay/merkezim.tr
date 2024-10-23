@@ -1,9 +1,0 @@
-{
-    "conflicts": [
-        {
-            "id": "0af14c96-97e2-4e10-897f-9d919e83301f",
-            "currentContent": "<?php\n\nnamespace Database\\Seeders;\n\nuse App\\Models\\Package;\nuse App\\Tenant;\nuse Illuminate\\Database\\Seeder;\n\nclass PackageSeeder extends Seeder\n{\n    /**\n     * Run the database seeds.\n     */\n    public function run(): void\n    {\n        Tenant::first()->run(function () {\n            Package::create([\n                'branch_ids' => [1, 2],\n                'name' => 'EPİLASYON TÜM VÜCUT',\n                'price' => 1000,\n                'buy_time' => 0,\n            ]);\n        });\n\n    }\n}\n",
-            "newContent": "<?php\n\nnamespace Database\\Seeders;\n\nuse App\\Models\\Package;\nuse Illuminate\\Database\\Seeder;\n\nclass PackageSeeder extends Seeder\n{\n    /**\n     * Run the database seeds.\n     */\n    public function run(): void\n    {\n        Package::factory()\n            ->count(5)\n            ->create();\n    }\n}\n"
-        }
-    ]
-}

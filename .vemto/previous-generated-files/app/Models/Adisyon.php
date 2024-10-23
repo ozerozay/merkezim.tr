@@ -21,6 +21,7 @@ class Adisyon extends Model
     {
         return [
             'staff_ids' => 'json',
+            'price' => 'float',
         ];
     }
 
@@ -42,5 +43,15 @@ class Adisyon extends Model
     public function adisyonServices()
     {
         return $this->hasMany(AdisyonService::class);
+    }
+
+    public function transactions()
+    {
+        return $this->morphMany(Transaction::class, 'transacable');
+    }
+
+    public function staffs()
+    {
+        return $this->belongsToJson(User::class, 'staff_ids');
     }
 }

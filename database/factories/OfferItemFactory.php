@@ -26,6 +26,7 @@ class OfferItemFactory extends Factory
             'itemable_type' => fake()->text(255),
             'itemable_id' => fake()->randomNumber(),
             'quantity' => fake()->randomNumber(),
+            'gift' => fake()->word(),
             'offer_id' => \App\Models\Offer::factory(),
             'itemable_type' => fake()->randomElement([
                 \App\Models\Package::class,

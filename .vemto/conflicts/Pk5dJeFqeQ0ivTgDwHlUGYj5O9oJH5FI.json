@@ -1,9 +1,0 @@
-{
-    "conflicts": [
-        {
-            "id": "f2634174-f454-477f-9a8b-ef8fbf7467eb",
-            "currentContent": "<?php\n\nnamespace Database\\Seeders;\n\nuse App\\Models\\SaleType;\nuse App\\Tenant;\nuse Illuminate\\Database\\Seeder;\n\nclass SaleTypeSeeder extends Seeder\n{\n    /**\n     * Run the database seeds.\n     */\n    public function run(): void\n    {\n        Tenant::first()->run(function () {\n            SaleType::create([\n                'name' => 'İNTERNET',\n                'active' => true,\n            ]);\n\n            SaleType::create([\n                'name' => 'İKİNCİ ÜYELİK',\n                'active' => true,\n            ]);\n        });\n\n    }\n}\n",
-            "newContent": "<?php\n\nnamespace Database\\Seeders;\n\nuse App\\Models\\SaleType;\nuse Illuminate\\Database\\Seeder;\n\nclass SaleTypeSeeder extends Seeder\n{\n    /**\n     * Run the database seeds.\n     */\n    public function run(): void\n    {\n        SaleType::factory()\n            ->count(5)\n            ->create();\n    }\n}\n"
-        }
-    ]
-}

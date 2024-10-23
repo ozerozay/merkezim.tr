@@ -24,6 +24,7 @@ return new class extends Migration {
                 ->unsigned()
                 ->index();
             $table->integer('quantity')->unsigned();
+            $table->boolean('gift')->default(false);
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
 

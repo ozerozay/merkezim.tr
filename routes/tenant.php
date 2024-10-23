@@ -73,20 +73,34 @@ Route::middleware([
                     ->name('admin.actions.client_create')
                     ->middleware('can:action_client_create');
 
-                Route::prefix('/sale')->group(function () {
-                    Volt::route('/create', 'admin.actions.client_sale.create')
-                        ->name('admin.actions.client_sale_create');
+                Volt::route('/product_sale', 'admin.actions.client_product_sale')
+                    ->name('admin.actions.client_product_sale')
+                    ->middleware('can:action_client_product_sale');
 
-                })->middleware('can:action_client_sale');
+                Volt::route('/sale_create', 'admin.actions.client_sale.create')
+                    ->name('admin.actions.client_sale_create')
+                    ->middleware('can:action_client_sale');
 
-                Route::prefix('/offer')->group(function () {
+                Volt::route('/coupon_create', 'admin.actions.create_coupon')
+                    ->name('admin.actions.create_coupon')
+                    ->middleware('can:action_create_coupon');
+
+                Volt::route('/offer_create', 'admin.actions.client_create_offer')
+                    ->name('admin.actions.client_create_offer')
+                    ->middleware('can:action_client_create_offer');
+
+                Volt::route('/taksit_create', 'admin.actions.client_create_taksit')
+                    ->name('admin.actions.client_create_taksit')
+                    ->middleware('can:action_client_create_taksit');
+
+                /*Route::prefix('/offer')->group(function () {
 
                     Volt::route('/customer', 'admin.actions.client_offer.customer')
                         ->name('admin.actions.client_offer_customer');
                     Volt::route('/create', 'admin.actions.client_offer.create')
                         ->name('admin.actions.client_offer_create');
 
-                })->middleware('can:action_client_offer');
+                })->middleware('can:action_client_offer');*/
 
                 Volt::route('/adisyon', 'admin.actions.adisyon.index')
                     ->name('admin.actions.adisyon_create')

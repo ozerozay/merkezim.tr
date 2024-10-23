@@ -37,6 +37,7 @@ class TransactionFactory extends Factory
             'masraf_id' => \App\Models\Masraf::factory(),
             'transacable_type' => fake()->randomElement([
                 \App\Models\Sale::class,
+                \App\Models\Adisyon::class,
             ]),
             'transacable_id' => \App\Models\Sale::factory(),
         ];

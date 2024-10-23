@@ -63,38 +63,57 @@ new class extends Component
             <x-dropdown label="İŞLEMLER" responsive icon="o-cog-6-tooth" class="btn-primary" right>
                 <x-menu-item icon="tabler.edit" title="Bilgilerini Düzenle" />
                 @can('action_client_add_label')
-                <x-menu-item icon="tabler.tag-starred" title="Etiket Belirle" link="{{ route('admin.actions.client_add_label', ['client' => $user->id]) }}" />
+                <x-menu-item icon="tabler.tag-starred" title="Etiket Belirle"
+                    link="{{ route('admin.actions.client_add_label', ['client' => $user->id]) }}" />
                 @endcan
                 @can('action_client_add_note')
-                <x-menu-item icon="tabler.notes" title="Not Al" link="{{ route('admin.actions.client_note_add', ['client' => $user->id]) }}" />
+                <x-menu-item icon="tabler.notes" title="Not Al"
+                    link="{{ route('admin.actions.client_note_add', ['client' => $user->id]) }}" />
                 @endcan
-                <x-menu-item icon="tabler.building-warehouse" title="Şube Değiştir" link="{{ route('admin.actions.client_note_add', ['client' => $user->id]) }}" />
+                <x-menu-item icon="tabler.building-warehouse" title="Şube Değiştir"
+                    link="{{ route('admin.actions.client_note_add', ['client' => $user->id]) }}" />
                 <x-menu-separator />
                 <x-menu-sub title="Hizmet" icon="o-plus">
                     @can('action_client_create_service')
-                    <x-menu-item icon="o-plus" title="Hizmet Yükle" link="{{ route('admin.actions.client_create_service', ['client' => $user->id]) }}" />
+                    <x-menu-item icon="o-plus" title="Hizmet Yükle"
+                        link="{{ route('admin.actions.client_create_service', ['client' => $user->id]) }}" />
                     @endcan
                     @can('action_client_use_service')
-                    <x-menu-item icon="tabler.minus" title="Hizmet Kullandır" link="{{ route('admin.actions.client_use_service', ['client' => $user->id]) }}" />
+                    <x-menu-item icon="tabler.minus" title="Hizmet Kullandır"
+                        link="{{ route('admin.actions.client_use_service', ['client' => $user->id]) }}" />
                     @endcan
                     @can('action_client_transfer_service')
-                    <x-menu-item icon="tabler.transfer" title="Hizmet Aktar" link="{{ route('admin.actions.client_transfer_service', ['client' => $user->id]) }}" />
+                    <x-menu-item icon="tabler.transfer" title="Hizmet Aktar"
+                        link="{{ route('admin.actions.client_transfer_service', ['client' => $user->id]) }}" />
                     @endcan
                 </x-menu-sub>
                 <x-menu-separator />
                 <x-menu-sub title="Satış" icon="tabler.brand-mastercard">
-                    <x-menu-item icon="o-banknotes" title="Hizmet Sat" />
-                    @can('action_adisyon_create')
-                    <x-menu-item icon="o-banknotes" title="Adisyon" link="{{ route('admin.actions.adisyon_create', ['client' => $user->id]) }}" />
+                    @can('action_client_sale')
+                    <x-menu-item icon="o-banknotes" title="Hizmet"
+                        link="{{ route('admin.actions.client_sale_create', ['client' => $user->id]) }}" />
                     @endcan
-                    <x-menu-item icon="o-banknotes" title=" Ürün Sat" />
+                    @can('action_adisyon_create')
+                    <x-menu-item icon="o-banknotes" title="Adisyon"
+                        link="{{ route('admin.actions.adisyon_create', ['client' => $user->id]) }}" />
+                    @endcan
+                    @can('action_client_product_sale')
+                    <x-menu-item icon="o-banknotes" title="Ürün"
+                        link="{{ route('admin.actions.client_product_sale', ['client' => $user->id]) }}" />
+                    @endcan
                 </x-menu-sub>
                 <x-menu-separator />
                 <x-menu-sub title="Oluştur" icon="o-plus">
-                    <x-menu-item icon="tabler.cash-banknote" title="Taksit Oluştur" />
+                    @can('action_client_create_taksit')
+                    <x-menu-item icon="tabler.cash-banknote" link="{{ route('admin.actions.client_create_taksit', ['client' => $user->id]) }}" title="Taksit Oluştur" />
+                    @endcan
                     <x-menu-item icon="tabler.cash-banknote" title="Kilitli Taksit Oluştur" />
-                    <x-menu-item icon="tabler.confetti" title="Teklif Oluştur" />
-                    <x-menu-item icon="tabler.gift-card" wire:click="client_coupon_open" title="Kupon Oluştur" />
+                    @can('action_create_coupon')
+                    <x-menu-item icon="tabler.confetti" link="{{ route('admin.actions.client_create_offer', ['client' => $user->id]) }}" title="Teklif Oluştur" />
+                    @endcan
+                    @can('action_create_coupon')
+                    <x-menu-item icon="tabler.gift-card" link="{{ route('admin.actions.create_coupon', ['client' => $user->id]) }}" title="Kupon Oluştur" />
+                    @endcan
                     <x-menu-item icon="tabler.calendar-plus" title="Randevu Oluştur" />
                     <x-menu-item icon="tabler.help-hexagon" title="Destek Oluştur" />
                 </x-menu-sub>

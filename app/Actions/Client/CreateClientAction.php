@@ -15,6 +15,7 @@ class CreateClientAction
     {
         $info['name'] = $this->strUpper($info['name']);
         $info['unique_id'] = CreateUserUniqueID::run();
+        $info['first_login'] = false;
 
         User::create($info);
     }

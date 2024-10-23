@@ -211,6 +211,17 @@ return [
         'pay_kasa_id' => 'Kasa',
         'pay_date' => 'Tarih',
         'package_id' => 'Paket',
+        'adisyon_date' => 'Tarih',
+        'cashes' => 'Peşinat',
+        'products' => 'Ürünler',
+        'discount_amount' => 'İndirim miktarı',
+        'min_order' => 'Minimum sipariş tutarı',
+        'end_date' => 'Son geçerlilik tarihi',
+        'count' => 'Miktar',
+        'code' => 'Kod',
+        'discount_type' => 'İndirim çeşidi',
+        'expire_date' => 'Son geçerlilik tarihi',
+        'month' => 'Ay',
     ],
 
 ];

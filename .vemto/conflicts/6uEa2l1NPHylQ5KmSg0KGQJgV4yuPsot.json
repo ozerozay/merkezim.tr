@@ -1,0 +1,9 @@
+{
+    "conflicts": [
+        {
+            "id": "b859ec0f-e0f5-426a-8e9b-18aa30aab988",
+            "currentContent": "<?php\n\nnamespace Database\\Seeders;\n\nuse App\\Tenant;\nuse Illuminate\\Database\\Seeder;\n\nclass TenantSeeder extends Seeder\n{\n    /**\n     * Run the database seeds.\n     */\n    public function run(): void\n    {\n        if (! Tenant::where('id', 'marge')->exists()) {\n            $tenant = Tenant::create([\n                'id' => 'marge',\n            ]);\n\n            $tenant->domains()->create([\n                'domain' => 'marge',\n            ]);\n        }\n\n    }\n}\n",
+            "newContent": "<?php\n\nnamespace Database\\Seeders;\n\nuse App\\Models\\Tenant;\nuse Illuminate\\Database\\Seeder;\n\nclass TenantSeeder extends Seeder\n{\n    /**\n     * Run the database seeds.\n     */\n    public function run(): void\n    {\n        Tenant::factory()\n            ->count(5)\n            ->create();\n    }\n}\n"
+        }
+    ]
+}

@@ -259,6 +259,26 @@ class User extends Authenticatable
         return $this->hasMany(Adisyon::class, 'client_id');
     }
 
+    /**
+     * Get all of the saleProducts.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function saleProducts()
+    {
+        return $this->hasMany(SaleProduct::class);
+    }
+
+    /**
+     * Get all of the clientSaleProducts.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function clientSaleProducts()
+    {
+        return $this->hasMany(SaleProduct::class, 'client_id');
+    }
+
     public function search()
     {
     }

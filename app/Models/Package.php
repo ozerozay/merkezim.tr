@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 class Package extends Model
 {
     use HasFactory;
-    use SoftDeletes;
     use HasJsonRelationships;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 
@@ -33,7 +33,7 @@ class Package extends Model
 
     public function offerItem()
     {
-        return $this->morphOne(OfferItem::class, 'offer_itemable');
+        return $this->morphOne(OfferItem::class, 'itemable');
     }
 
     public function clientServices()

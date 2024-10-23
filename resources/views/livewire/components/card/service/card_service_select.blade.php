@@ -66,12 +66,9 @@ new class extends Component
     #[Computed]
     public function totalPrice()
     {
-        $totalP = 0.0;
-        foreach ($this->selected_services as $s) {
-            $totalP += $s['price'] * $s['quantity'];
-        }
-
-        return $totalP;
+        return $this->selected_services->sum(function ($q) {
+            return $q['gift'] ? 0 : $q['price'] * $q['quantity'];
+        });
     }
 
     #[On('card-service-added')]
@@ -115,8 +112,11 @@ new class extends Component
 
                 return;
             }
+            $lastId = $this->selected_services->last() != null ? $this->selected_services->last()['id'] + 1 : 1;
+
             $this->selected_services->push([
-                'id' => $package->id,
+                'id' => $lastId,
+                'package_id' => $package->id,
                 'type' => 'package',
                 'gift' => $info['gift'],
                 'name' => $package->name,

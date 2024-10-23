@@ -32,7 +32,6 @@ class CouponFactory extends Factory
             'deleted_at' => fake()->dateTime(),
             'user_id' => \App\Models\User::factory(),
             'client_id' => \App\Models\User::factory(),
-            'service_category_id' => \App\Models\ServiceCategory::factory(),
         ];
     }
 }

@@ -27,7 +27,6 @@ new class extends Component
 
     public function addService()
     {
-
         $validator = Validator::make([
             'service_id' => $this->service_id,
             'gift' => $this->gift,

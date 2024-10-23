@@ -23,9 +23,9 @@ class AdisyonServiceFactory extends Factory
     public function definition(): array
     {
         return [
-            'deleted_at' => fake()->dateTime(),
             'total' => fake()->randomFloat(2, 0, 9999),
             'gift' => fake()->word(),
+            'deleted_at' => fake()->dateTime(),
             'adisyon_id' => \App\Models\Adisyon::factory(),
             'service_id' => \App\Models\Service::factory(),
         ];

@@ -4,20 +4,20 @@ namespace App\Models;
 
 use App\Traits\BranchActive;
 use App\Traits\StringHelper;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Auth;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 class ServiceCategory extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
     use BranchActive;
+    use HasFactory;
     use HasJsonRelationships;
+    use SoftDeletes;
 
-    protected $fillable = ['branch_ids', 'name', 'active', 'price', 'earn'];
+    protected $guarded = ['id'];
 
     protected function casts(): array
     {
@@ -32,11 +32,6 @@ class ServiceCategory extends Model
     public function services()
     {
         return $this->hasMany(Service::class, 'category_id');
-    }
-
-    public function coupons()
-    {
-        return $this->hasMany(Coupon::class);
     }
 
     protected static function booted(): void

@@ -27,6 +27,7 @@ new class extends Component
         $selectedOption = User::where('unique_id', $this->client_id)->get();
 
         $this->users = User::query()
+            ->select(['id', 'name', 'branch_id', 'phone', 'unique_id'])
             ->where(function ($subQuery) use ($value) {
                 $subQuery->where('name', 'like', '%'.StringHelper::strUpper($value).'%')
                     ->orWhere('unique_id', 'like', '%'.$value.'%')

@@ -13,11 +13,6 @@ return new class extends Migration {
         Schema::create('coupons', function (Blueprint $table) {
             $table->id();
             $table
-                ->bigInteger('service_category_id')
-                ->unsigned()
-                ->nullable()
-                ->index();
-            $table
                 ->bigInteger('user_id')
                 ->unsigned()
                 ->nullable()
@@ -29,19 +24,14 @@ return new class extends Migration {
                 ->index();
             $table->string('code', 20)->unique();
             $table->boolean('discount_type');
-            $table->integer('count')->nullable();
+            $table->integer('count')->default(1);
             $table->integer('discount_amount');
             $table->date('end_date')->nullable();
             $table->decimal('min_order')->nullable();
-            $table->bigInteger('category_id')->unsigned();
             $table->timestamp('deleted_at')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
 
-            $table
-                ->foreign('service_category_id')
-                ->references('id')
-                ->on('service_categories');
             $table
                 ->foreign('user_id')
                 ->references('id')
@@ -50,12 +40,6 @@ return new class extends Migration {
                 ->foreign('client_id')
                 ->references('id')
                 ->on('users');
-            $table
-                ->foreign('category_id')
-                ->references('id')
-                ->on('service_categories')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
         });
     }
 

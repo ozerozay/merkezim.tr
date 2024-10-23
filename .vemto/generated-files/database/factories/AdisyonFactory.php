@@ -23,11 +23,12 @@ class AdisyonFactory extends Factory
     public function definition(): array
     {
         return [
-            'deleted_at' => fake()->dateTime(),
             'unique_id' => fake()->word(),
             'date' => fake()->date(),
             'staff_ids' => fake()->word(),
             'message' => fake()->sentence(20),
+            'price' => fake()->randomFloat(2, 0, 9999),
+            'deleted_at' => fake()->dateTime(),
             'user_id' => \App\Models\User::factory(),
             'client_id' => \App\Models\User::factory(),
             'branch_id' => \App\Models\Branch::factory(),

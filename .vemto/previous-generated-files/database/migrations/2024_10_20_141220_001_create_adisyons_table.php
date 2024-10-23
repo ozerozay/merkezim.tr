@@ -13,23 +13,29 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('adisyons', function (Blueprint $table) {
-            $table->id();
             $table->string('unique_id', 9)->unique();
             $table
                 ->bigInteger('branch_id')
                 ->unsigned()
-                ->nullable();
-            $table->bigInteger('user_id')->unsigned();
+                ->nullable()
+                ->index();
+            $table
+                ->bigInteger('user_id')
+                ->unsigned()
+                ->index();
             $table
                 ->bigInteger('client_id')
                 ->unsigned()
-                ->nullable();
+                ->nullable()
+                ->index();
             $table->date('date');
             $table->json('staff_ids')->nullable();
-            $table->string('message');
+            $table->string('message', 255);
+            $table->decimal('price');
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
             $table->timestamp('deleted_at')->nullable();
+            $table->id();
 
             $table
                 ->foreign('user_id')
