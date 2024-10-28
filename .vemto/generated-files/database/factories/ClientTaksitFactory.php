@@ -26,6 +26,7 @@ class ClientTaksitFactory extends Factory
             'total' => fake()->randomFloat(2, 0, 9999),
             'remaining' => fake()->randomNumber(1),
             'date' => fake()->date(),
+            'status' => fake()->word(),
             'deleted_at' => fake()->dateTime(),
             'client_id' => \App\Models\User::factory(),
             'branch_id' => \App\Models\Branch::factory(),

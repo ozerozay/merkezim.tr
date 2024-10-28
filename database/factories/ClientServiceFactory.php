@@ -28,6 +28,7 @@ class ClientServiceFactory extends Factory
             'gift' => fake()->boolean(),
             'message' => fake()->sentence(20),
             'status' => fake()->word(),
+            'expire_date' => fake()->word(),
             'deleted_at' => fake()->dateTime(),
             'service_id' => \App\Models\Service::factory(),
             'branch_id' => \App\Models\Branch::factory(),
@@ -35,6 +36,7 @@ class ClientServiceFactory extends Factory
             'sale_id' => \App\Models\Sale::factory(),
             'package_id' => \App\Models\Package::factory(),
             'user_id' => \App\Models\User::factory(),
+            'offer_id' => \App\Models\Offer::factory(),
         ];
     }
 }

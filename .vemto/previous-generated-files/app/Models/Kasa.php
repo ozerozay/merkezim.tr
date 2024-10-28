@@ -30,4 +30,14 @@ class Kasa extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function girisMahsups()
+    {
+        return $this->hasMany(Mahsup::class, 'giris_kasa_id');
+    }
+
+    public function cikisMahsups()
+    {
+        return $this->hasMany(Mahsup::class, 'cikis_kasa_id');
+    }
 }

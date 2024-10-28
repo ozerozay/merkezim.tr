@@ -152,22 +152,44 @@ class extends Component
             @endif
         </x-tab>
         <x-tab name="service" label="Hizmet">
-            @if ($tab == 'service')
-            <livewire:admin.client.profil.service :client_id="$user->id" />
+            @can('client_profil_service')
+            <x-tab name="service" label="Hizmet">
+                @if ($tab == 'service')
+                <livewire:admin.client.profil.pages.service :client="$user->id" lazy />
+                @endif
+            </x-tab>
+            @endcan
+        </x-tab>
+        @can('client_profil_sale')
+        <x-tab name="sale" label="Satış">
+            @if ($tab == 'sale')
+            <livewire:admin.client.profil.pages.sale :client="$user->id" lazy />
             @endif
         </x-tab>
-        <x-tab name="tab-satis" label="Satış">
-            <div>Musics</div>
+        @endcan
+        @can('client_profil_taksit')
+        <x-tab name="taksit" label="Taksit">
+            @if ($tab == 'taksit')
+            <livewire:admin.client.profil.pages.taksit :client="$user->id" lazy />
+            @endif
         </x-tab>
-        <x-tab name="tab-taksit" label="Taksit">
-            <div>Musics</div>
+        @endcan
+        <x-tab name="randevu" label="Randevu">
+            <div>Randevu</div>
         </x-tab>
-        <x-tab name="tab-randevu" label="Randevu">
-            <div>Musics</div>
+        <x-tab name="product" label="Ürün">
+            <div>Ürün</div>
         </x-tab>
-        <x-tab name="tab-teklif" label="Teklif">
-           
+        <x-tab name="adisyon" label="Adisyon">
+            <div>Adisyon</div>
         </x-tab>
+        @can('client_profil_offer')
+        <x-tab name="offer" label="Teklif">
+            @if ($tab == 'offer')
+            <livewire:admin.client.profil.pages.offer :client="$user->id" lazy />
+            @endif
+        </x-tab>
+        @endcan
         <x-tab name="tab-kupon" label="Kupon">
             <div class="mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 

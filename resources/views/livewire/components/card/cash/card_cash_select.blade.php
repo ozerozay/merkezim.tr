@@ -52,12 +52,7 @@ new class extends Component
     #[Computed]
     public function totalPrice()
     {
-        $totalP = 0.0;
-        foreach ($this->selected_cash as $s) {
-            $totalP += $s['price'];
-        }
-
-        return $totalP;
+        return $this->selected_cash->sum('price');
     }
 
     #[On('card-cash-added')]

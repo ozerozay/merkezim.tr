@@ -14,6 +14,8 @@ new class extends Component
 
     public $branch = null;
 
+    public $label = 'Kasa';
+
     public function mount()
     {
         if ($this->branch == null) {
@@ -35,5 +37,5 @@ new class extends Component
 };
 ?>
 <div>
-    <x-choices-offline label="Kasa" option-sub-label="branch.name" single wire:model="kasa_id" :options="$kasas" />
+    <x-choices-offline :label="$label" option-sub-label="branch.name" single wire:model="kasa_id" :options="$kasas" />
 </div>

@@ -4,7 +4,6 @@ use App\Actions\Sale\CreateSaleAction;
 use App\Exceptions\AppException;
 use App\Models\Package;
 use App\Models\Service;
-use App\Models\User;
 use App\Traits\LiveHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -13,6 +12,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Url;
 use Livewire\Volt\Component;
 use Mary\Traits\Toast;
 
@@ -22,9 +22,8 @@ class extends Component
 {
     use Toast;
 
-    public $client;
-
-    public $client_id;
+    #[Url(as: 'client')]
+    public $client_id = null;
 
     public $sale_type_id = null;
 
@@ -42,52 +41,91 @@ class extends Component
 
     public $selected_services;
 
-    public $pay_nakit;
+    public $selected_cash;
 
-    public $taksits;
+    public $selected_taksits;
 
     public $config_sale_date = ['altFormat' => 'd/m/Y', 'locale' => 'tr'];
 
     public $config_taksit_date = ['altFormat' => 'd/m/Y', 'locale' => 'tr'];
 
-    protected $queryString = [
-        'client',
-    ];
-
     public function mount()
     {
-        Carbon::now();
+        //Carbon::now();
+        //LiveHelper::class;
         $this->config_sale_date['maxDate'] = Carbon::now()->format('Y-m-d');
         $this->config_taksit_date['minDate'] = Carbon::now()->format('Y-m-d');
         $this->sale_date = Carbon::now()->format('Y-m-d');
         $this->selected_services = collect();
-        $this->pay_nakit = collect();
-        $this->taksits = collect();
-        //LiveHelper::class
-        /*$client_model = User::where('unique_id', $this->client)->first();
+        $this->selected_cash = collect();
+        $this->selected_taksits = collect();
 
-        if ($client_model) {
-            if (! User::checkClientBranch($client_model->id)) {
-                $this->error('Bu danışan için yetkiniz bulunmuyor.');
-
-                return redirect()->route('admin.actions.client_sale_customer');
-            } else {
-                $this->client_id = $client_model->id;
-                $this->branch = $client_model->branch_id;
-                $this->config_sale_date['maxDate'] = Carbon::now()->format('Y-m-d');
-                $this->sale_date = Carbon::now()->format('Y-m-d');
-                $this->selected_services = collect();
-            }
-        } else {
-            return redirect()->route('admin.actions.client_sale_customer');
-        }*/
     }
 
     #[On('client-selected')]
     public function client_selected($client)
     {
-        $this->branch = [User::find($client)->branch_id ?? null];
+        $this->selected_services = collect();
+        $this->selected_cash = collect();
+        $this->selected_taksits = collect();
+        if ($client != null) {
+            $this->dispatch('card-service-client-selected', $client)->to('components.card.service.card_service_select');
+            $this->dispatch('card-cash-client-selected', $client)->to('components.card.cash.card_cash_select');
+        }
     }
+
+    public function updatedPrice($price)
+    {
+        $this->dispatchMaxPriceChanged();
+    }
+
+    public function totalPrice()
+    {
+        if ($this->price > 0) {
+            return $this->price;
+        }
+
+        return $this->selected_services->sum(function ($q) {
+            return $q['gift'] ? 0 : $q['price'] * $q['quantity'];
+        });
+    }
+
+    #[On('card-service-selected-services-updated')]
+    public function selectedServicesUpdate($selected_services)
+    {
+        $this->selected_services = collect($selected_services);
+        $this->dispatchMaxPriceChanged();
+    }
+
+    #[On('card-cash-selected-cash-updated')]
+    public function selectedCashUpdate($selected_cash)
+    {
+        $this->selected_cash = collect($selected_cash);
+        $this->dispatchMaxPriceChangedTaksit();
+    }
+
+    #[On('card-sale-taksit-selected-taksit-updated')]
+    public function selectedTaksitUpdate($selected_taksits)
+    {
+        $this->selected_taksits = collect($selected_taksits);
+    }
+
+    public function dispatchMaxPriceChanged()
+    {
+        $this->dispatch('card-cash-max-price-changed', $this->totalPrice())->to('components.card.cash.card_cash_select');
+
+    }
+
+    public function dispatchMaxPriceChangedTaksit()
+    {
+        $this->dispatch('card-sale-taksit-max-price-changed', $this->totalPrice() - $this->totalCashPrice())->to('components.card.sale_taksit.card_sale_taksit_select');
+    }
+
+    public function totalCashPrice()
+    {
+        return $this->selected_cash->sum('price');
+    }
+    /*
 
     #[On('service-added')]
     public function service_add($info)
@@ -143,20 +181,6 @@ class extends Component
                 'price' => $package->price,
             ]);
         }
-    }
-
-    #[Computed()]
-    public function totalPrice()
-    {
-        $totalP = 0.0;
-        foreach ($this->selected_services as $s) {
-            if (! $s['gift']) {
-                $totalP += $s['price'] * $s['quantity'];
-            }
-        }
-
-        return $totalP;
-
     }
 
     public function deleteItem($id, $type)
@@ -219,7 +243,7 @@ class extends Component
             'quantities' => $this->quantities(),
             'headers_nakit' => $this->headers_nakit(),
             'headers_taksit' => $this->headers_taksit(),
-            'pay_nakit' => $this->pay_nakit,
+            //'pay_nakit' => $this->pay_nakit,
         ];
     }
 
@@ -239,13 +263,13 @@ class extends Component
     #[Computed]
     public function yapilandirilan()
     {
-        if ($this->taksits->count() > 0) {
+        if ($this->selected_taksits->count() > 0) {
             return $this->yapilandirilacak();
         }
 
         $tutar = 0.0;
 
-        foreach ($this->pay_nakit as $p) {
+        foreach ($this->selected_cash as $p) {
             $tutar += $p['price'];
         }
 
@@ -308,51 +332,6 @@ class extends Component
 
     }
 
-    #[On('taksitlendir')]
-    public function add_taksit($info)
-    {
-        $kalan = $this->kalan();
-
-        $taksit_sayisi = $info['taksit_sayi'];
-
-        $taksit_para = $kalan / $taksit_sayisi;
-
-        $taksit_tarih = $info['taksit_date'];
-
-        $taksit_para_ondalik = number_format($taksit_para, 2, '.', '');
-
-        for ($i = 0; $i < $taksit_sayisi; $i++) {
-            $this->taksits->push([
-                'id' => $i,
-                'price' => $taksit_para_ondalik,
-                'date' => Carbon::parse($taksit_tarih)->addMonths($i)->format('d/m/Y'),
-            ]);
-        }
-
-        $cikan_taksit = 0.0;
-
-        foreach ($this->taksits as $t) {
-            $cikan_taksit += $t['price'];
-        }
-
-        $eklenecek = $kalan - $cikan_taksit;
-
-        $lastItemKey = $this->taksits->keys()->last();
-
-        $this->taksits = $this->taksits->map(function ($item, $key) use ($lastItemKey, $eklenecek) {
-            if ($key === $lastItemKey) {
-                return [
-                    'id' => $item['id'],
-                    'price' => $item['price'] + $eklenecek,
-                    'date' => $item['date'],
-                ];  // Yeni değer
-            }
-
-            return $item;
-        });
-
-    }
-
     public function cancel_taksit()
     {
         $this->taksits = collect();
@@ -370,6 +349,10 @@ class extends Component
             return $item;
         });
     }
+
+
+
+        */
 
     public function change_section()
     {
@@ -399,6 +382,9 @@ class extends Component
                 return;
             }
 
+            $this->dispatchMaxPriceChanged();
+            $this->dispatchMaxPriceChangedTaksit();
+
             $this->section = 2;
 
         }
@@ -406,8 +392,8 @@ class extends Component
 
     public function backService()
     {
-        $this->taksits = collect();
-        $this->pay_nakit = collect();
+        $this->selected_taksits = collect();
+        $this->selected_cash = collect();
         $this->section = 1;
     }
 
@@ -422,8 +408,8 @@ class extends Component
             'staff_ids' => $this->staff_ids,
             'sale_price' => $this->price,
             'services' => $this->selected_services,
-            'nakits' => $this->pay_nakit,
-            'taksits' => $this->taksits,
+            'nakits' => $this->selected_cash,
+            'taksits' => $this->selected_taksits,
             'price_real' => $this->totalPrice(),
             'message' => $this->message,
             'user_id' => auth()->user()->id,
@@ -469,36 +455,14 @@ class extends Component
                     <livewire:components.form.staff_multi_dropdown wire:model="staff_ids" />
                     <x-input label="Satış Tutarı (Tutarı değiştirmek istemiyorsanız 0 bırakın.)"
                         wire:model.live.debounce.500ms="price" suffix="₺" money />
-                    <livewire:components.form.number_dropdown suffix="AY" label="Paket Kullanım Süresi (Ay) - 0 sınırsız" includeZero="true" wire:model="expire_date" />
+                    <livewire:components.form.number_dropdown suffix="AY"
+                        label="Paket Kullanım Süresi (Ay) - 0 sınırsız" includeZero="true" wire:model="expire_date" />
                     <x-input label="Satış notunuz" wire:model="message" />
                 </x-form>
             </x-card>
-                @if($branch)
-                <x-card title="Hizmetler" separator progress-indicator shadow>
-                    <x-table :headers="$headers" :rows="$selected_services">
-                        @scope('cell_quantity', $item, $quantities)
-                        <x-select wire:model.number="selected_services.{{ $loop->index }}.quantity"
-                            :options="$quantities" wire:change="updateQuantity({{ $item['id'] }}, $event.target.value)"
-                            class="select-sm !w-20" />
-                        @endscope
-                        @scope('actions', $service)
-                        <x-button icon="o-trash" wire:click="deleteItem({{ $service['id'] }}, '{{ $service['type'] }}')"
-                            spinner class="btn-ghost text-error btn-sm" />
-                        @endscope
-                        <x-slot:empty>
-                            <x-icon name="o-cube" label="Hizmet ekleyin veya paket ekleyin." />
-                        </x-slot:empty>
-                    </x-table>
-                    <x:slot:menu>
-                        <livewire:admin.actions.client_offer.add_service :branch_ids="$branch" />
-                        <livewire:admin.actions.client_offer.add_package :branch_ids="$branch" />
-                    </x:slot:menu>
-                    <x:slot:actions>
-                        Toplam : {{ LiveHelper::price_text($this->totalPrice()) }}
-                    </x:slot:actions>
-                
-                </x-card>
-                @endif
+            @if($client_id)
+            <livewire:components.card.service.card_service_select wire:model="selected_services" :client="$client_id" />
+            @endif
         </div>
         <x:slot:actions>
             @if ($this->totalPrice() > 0 || $this->price > 1)
@@ -511,70 +475,17 @@ class extends Component
     </x-card>
     @else
     <x-card title="Satış" separator shadow>
-        <x:slot:menu>
-            <x-button label="TOPLAM"
-                badge="{{ LiveHelper::price_text($this->kalan()) }} / {{ LiveHelper::price_text($this->yapilandirilacak()) }}" />
-        </x:slot:menu>
         <div class="grid lg:grid-cols-2 gap-8">
-            <x-card title="Peşinat" separator shadow>
-                <x-slot:menu>
-                    @if ($this->kalan() > 0)
-                    <livewire:admin.actions.client_sale.add_nakit :config_sale_date="$config_sale_date"
-                        :branch="$branch" />
-                    @endif
-
-                </x-slot:menu>
-                <x-table :headers="$headers_nakit" :rows="$pay_nakit">
-                    @scope('cell_price', $nakit)
-                    {{ LiveHelper::price_text($nakit['price']) }}
-                    @endscope
-                    @scope('actions', $nakit)
-                    <x-button icon="o-trash" wire:click="delete_pay({{ $nakit['id'] }})" spinner
-                        class="btn-ghost text-error btn-sm" />
-                    @endscope
-                    <x-slot:empty>
-                        <x-icon name="o-cube" label="Peşinat ekleyin." />
-                    </x-slot:empty>
-                </x-table>
-            </x-card>
-            <x-card title="Taksit" separator shadow>
-                <x-slot:menu>
-
-                    @if ($this->taksits->count() > 0)
-                    <x-button icon="o-trash" label="Taksitlendirmeyi İptal Et" spinner
-                        class="btn-ghost text-error btn-sm" wire:confirm="Emin misiniz ?" wire:click="cancel_taksit" />
-                    @else
-                    @if ($this->kalan() > 0)
-                    <livewire:admin.actions.client_sale.add_taksit :config_taksit_date="$config_taksit_date" />
-                    @endif
-                    @endif
-
-                </x-slot:menu>
-                <x-table :headers="$headers_taksit" :rows="$taksits">
-                    @scope('cell_price', $nakit)
-                    {{ LiveHelper::price_text($nakit['price']) }}
-                    @endscope
-                    @scope('cell_date', $taksit, $config_taksit_date)
-                    <livewire:admin.actions.client_sale.change_taksit_date wire:key="taskit$taksit['id']" :config_taksit_date="$config_taksit_date"
-                        :t_id="$taksit['id']" :taksit_date="$taksit['date']">
-                        @endscope
-                        <x-slot:empty>
-                            <x-icon name="o-cube" label="Taksitlendirin." />
-                        </x-slot:empty>
-                </x-table>
-            </x-card>
+            <livewire:components.card.cash.card_cash_select wire:model="selected_cash" :client="$client_id"
+                :maxPrice="$this->totalPrice()" />
+            <livewire:components.card.sale_taksit.card_sale_taksit_select wire:model="selected_taksits"
+                :maxPrice="$this->totalPrice() - $this->totalCashPrice()" />
         </div>
         <x:slot:actions>
             <x-button icon="o-arrow-uturn-left" spinner label="Geri Dön" wire:click="backService"
                 class="btn-ghost text-warning btn-sm"
                 wire:confirm="Ödeme yapılandırması iptal edilecektir, geri dönmek istiyor musunuz ?" />
-                @if ($this->kalan() > 0)
-            <x-button icon="o-check" spinner label="Tutarı Yapılandırın" disabled
-                 class="btn-primary btn-sm" />
-                 @else
-                 <x-button icon="o-check" spinner label="Satışı Tamamla"
-                    class="btn-primary btn-sm" wire:click="save_sale" />
-                 @endif
+            <x-button icon="o-check" spinner label="Satışı Tamamla" class="btn-primary btn-sm" wire:click="save_sale" />
         </x:slot:actions>
     </x-card>
     @endif

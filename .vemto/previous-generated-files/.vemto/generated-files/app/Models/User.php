@@ -279,6 +279,16 @@ class User extends Authenticatable
         return $this->hasMany(SaleProduct::class, 'client_id');
     }
 
+    /**
+     * Get all of the mahsups.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function mahsups()
+    {
+        return $this->hasMany(Mahsup::class);
+    }
+
     public function search()
     {
     }

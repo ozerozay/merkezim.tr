@@ -58,6 +58,7 @@ class AppServiceProvider extends ServiceProvider
             'adisyon_service' => 'App\Models\AdisyonService',
             'sale_product' => 'App\Models\SaleProduct',
             'sale_product_item' => 'App\Models\SaleProductItem',
+            'mahsup' => 'App\Models\Mahsup',
         ]);
     }
 }

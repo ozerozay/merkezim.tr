@@ -5,6 +5,7 @@ namespace App\Actions\Client;
 use App\Exceptions\AppException;
 use App\Models\User;
 use App\Peren;
+use App\SaleStatus;
 use DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Mary\Exceptions\ToastException;
@@ -31,6 +32,7 @@ class CreateManuelTaksitAction
                     'sale_id' => $info['sale_id'],
                     'total' => $taksit['price'],
                     'remaining' => $taksit['price'],
+                    'status' => SaleStatus::success,
                     'date' => Peren::parseDateField($taksit['date']),
                 ]);
             }

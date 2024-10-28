@@ -2,47 +2,12 @@
 
 namespace App\Models;
 
-use App\OfferStatus;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * 
- *
- * @property int $id
- * @property string $unique_id
- * @property int|null $user_id
- * @property int $client_id
- * @property string|null $expire_date
- * @property string $price
- * @property OfferStatus $status
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\User $client
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OfferItem> $items
- * @property-read int|null $items_count
- * @property-read \App\Models\User|null $user
- * @method static \Database\Factories\OfferFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|Offer newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Offer newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Offer onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Offer query()
- * @method static \Illuminate\Database\Eloquent\Builder|Offer whereClientId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Offer whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Offer whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Offer whereExpireDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Offer whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Offer wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Offer whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Offer whereUniqueId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Offer whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Offer whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Offer withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Offer withoutTrashed()
- * @mixin \Eloquent
- */
 class Offer extends Model
 {
     use HasFactory;
@@ -55,13 +20,16 @@ class Offer extends Model
     protected function casts(): array
     {
         return [
-            'status' => OfferStatus::class,
+            'status' => 'App\OfferStatus',
         ];
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withDefault([
+            'id' => 0,
+            'name' => 'SİSTEM',
+        ]);
     }
 
     public function client()
@@ -72,5 +40,31 @@ class Offer extends Model
     public function items()
     {
         return $this->hasMany(OfferItem::class, 'offer_id');
+    }
+
+    public function transactions()
+    {
+        return $this->morphMany(Transaction::class, 'transacable');
+    }
+
+    public function clientServices()
+    {
+        return $this->hasMany(ClientService::class);
+    }
+
+    protected function dateHumanCreated(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?Carbon $value) => $this->created_at->format('d/m/Y')
+        );
+    }
+
+    protected function dateHumanExpire(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?Carbon $value) => $this->expire_date == null
+                ? 'SÜRESİZ'
+                : Carbon::parse($this->expire_date)->format('d/m/Y')
+        );
     }
 }

@@ -23,12 +23,16 @@ class Peren
         return $date != null ? Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d') : null;
     }
 
-    public static function dateConfig($min)
+    public static function dateConfig($min = null, $max = null)
     {
         $config = ['altFormat' => 'd/m/Y', 'locale' => 'tr'];
 
         if ($min) {
             $config['minDate'] = $min;
+        }
+
+        if ($max) {
+            $config['maxDate'] = $max;
         }
 
         return $config;

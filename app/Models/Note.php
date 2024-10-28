@@ -17,7 +17,10 @@ class Note extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withDefault([
+            'id' => 0,
+            'name' => 'SİSTEM',
+        ]);
     }
 
     public function client()

@@ -12,5 +12,9 @@ enum ApproveTypes: string
     case create_product_sale = 'create_product_sale';
     case create_coupon = 'create_coupon';
     case create_offer = 'create_offer';
+    case update_offer = 'update_offer';
+    case cancel_offer = 'cancel_offer';
+    case approve_offer = 'approve_offer';
     case create_taksit = 'create_taksit';
+    case mahsup = 'mahsup';
 }

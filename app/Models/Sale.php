@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use App\Observers\SaleObserver;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
+#[ObservedBy([SaleObserver::class])]
 class Sale extends Model
 {
     use HasFactory;
@@ -24,6 +28,7 @@ class Sale extends Model
     {
         return [
             'staffs' => 'json',
+            'status' => 'App\SaleStatus',
         ];
     }
 
@@ -70,5 +75,12 @@ class Sale extends Model
     public function transactions()
     {
         return $this->morphMany(Transaction::class, 'transacable');
+    }
+
+    protected function dateHumanCreated(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?Carbon $value) => $this->created_at->format('d/m/Y')
+        );
     }
 }

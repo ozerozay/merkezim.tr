@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Transaction extends Model
 {
@@ -38,6 +38,16 @@ class Transaction extends Model
     public function masraf()
     {
         return $this->belongsTo(Masraf::class);
+    }
+
+    public function mahsupGiris()
+    {
+        return $this->hasMany(Mahsup::class, 'transaction_giris_id');
+    }
+
+    public function mahsupCikis()
+    {
+        return $this->hasMany(Mahsup::class, 'transaction_cikis_id');
     }
 
     public function transacable()

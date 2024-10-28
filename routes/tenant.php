@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Models\Offer;
+use App\Models\Sale;
+use App\SaleStatus;
 use App\Support\Spotlight;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -31,6 +34,23 @@ Route::middleware([
     Route::get('/spotlight', [Spotlight::class, 'search'])->name('mary.spotlight');
 
     //Route::get('/login', Login::class)->name('login');
+
+    Route::get('c', function () {
+        $sale = Sale::where('id', 5)->first();
+
+        $sale->status = SaleStatus::success;
+        $sale->save();
+    });
+
+    Route::get('/tt', function () {
+
+        $offer = Offer::where('id', 8)->with('items')->first();
+
+        foreach ($offer->items as $item) {
+            dump($item);
+        }
+
+    });
 
     Route::get('/logout', function () {
         Auth::logout();
@@ -106,6 +126,12 @@ Route::middleware([
                     ->name('admin.actions.adisyon_create')
                     ->middleware('can:action_adisyon_create');
 
+            });
+
+            Route::prefix('kasa')->group(function () {
+                Volt::route('/', 'admin.kasa.index')->name('admin.kasa')->middleware('can:page_kasa');
+                Volt::route('/mahsup', 'admin.actions.kasa.mahsup')->name('admin.kasa.mahsup')->middleware('can:kasa_mahsup');
+                Volt::route('/payment', 'admin.actions.kasa.make_payment')->name('admin.kasa.make_payment')->middleware('can:kasa_make_payment');
             });
 
             Route::prefix('client')->group(function () {

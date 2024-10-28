@@ -40,9 +40,19 @@ class Transaction extends Model
         return $this->belongsTo(Masraf::class);
     }
 
-    public function user()
+    public function mahsupGiris()
     {
-        return $this->belongsTo(User::class, 'client_id');
+        return $this->hasMany(Mahsup::class, 'transaction_giris_id');
+    }
+
+    public function mahsupCikis()
+    {
+        return $this->hasMany(Mahsup::class, 'transaction_cikis_id');
+    }
+
+    public function transacable()
+    {
+        return $this->morphTo();
     }
 
     public function transacable()

@@ -35,7 +35,13 @@ return new class extends Migration {
                 ->unsigned()
                 ->index();
             $table->date('date');
-            $table->enum('status', ['waiting', 'success', 'cancel', 'freeze']);
+            $table->enum('status', [
+                'waiting',
+                'success',
+                'cancel',
+                'freeze',
+                'expired',
+            ]);
             $table->decimal('price');
             $table->decimal('price_real');
             $table->json('staffs')->nullable();

@@ -1,11 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -15,15 +14,29 @@ return new class extends Migration
     {
         Schema::create('client_taksits', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('client_id')->unsigned();
-            $table->bigInteger('branch_id')->unsigned();
+            $table
+                ->bigInteger('client_id')
+                ->unsigned()
+                ->index();
+            $table
+                ->bigInteger('branch_id')
+                ->unsigned()
+                ->index();
             $table
                 ->bigInteger('sale_id')
                 ->unsigned()
-                ->nullable();
+                ->nullable()
+                ->index();
             $table->decimal('total');
             $table->decimal('remaining');
             $table->date('date');
+            $table->enum('status', [
+                'waiting',
+                'success',
+                'cancel',
+                'freeze',
+                'expired',
+            ]);
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
             $table->timestamp('deleted_at')->nullable();

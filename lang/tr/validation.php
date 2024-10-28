@@ -209,6 +209,8 @@ return [
         'seans' => 'Seans',
         'pay_price' => 'Tutar',
         'pay_kasa_id' => 'Kasa',
+        'kasa_id' => 'Kasa',
+        'masraf_id' => 'Masraf',
         'pay_date' => 'Tarih',
         'package_id' => 'Paket',
         'adisyon_date' => 'Tarih',
@@ -224,6 +226,8 @@ return [
         'month' => 'Ay',
         'first_date' => 'İlk tarih',
         'amount' => 'Miktar',
+        'giris_kasa_id' => 'Giriş kasası',
+        'cikis_kasa_id' => 'Çıkış kasası',
     ],
 
 ];

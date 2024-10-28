@@ -133,9 +133,16 @@ class RoleSeeder extends Seeder
             ]);
 
             Permission::create([
-                'name' => 'action_adisyon_create',
-                'description' => 'Adisyon',
-                'route' => 'admin.actions.adisyon_create',
+                'name' => 'kasa_mahsup',
+                'description' => 'Mahsup',
+                'route' => 'admin.kasa.mahsup',
+                'visible' => true,
+            ]);
+
+            Permission::create([
+                'name' => 'kasa_make_payment',
+                'description' => 'Ödeme Yap',
+                'route' => 'admin.kasa.make_payment',
                 'visible' => true,
             ]);
 
@@ -157,11 +164,62 @@ class RoleSeeder extends Seeder
                 'visible' => false,
             ]);
 
+            Permission::create([
+                'name' => 'client_profil_offer',
+                'description' => 'Danışan Profil - Teklif',
+                'route' => '',
+                'visible' => false,
+            ]);
+
+            Permission::create([
+                'name' => 'client_profil_service',
+                'description' => 'Danışan Profil - Hizmet',
+                'route' => '',
+                'visible' => false,
+            ]);
+
+            Permission::create([
+                'name' => 'client_profil_taksit',
+                'description' => 'Danışan Profil - Taksit',
+                'route' => '',
+                'visible' => false,
+            ]);
+
+            Permission::create([
+                'name' => 'client_profil_sale',
+                'description' => 'Danışan Profil - Satış',
+                'route' => '',
+                'visible' => false,
+            ]);
+
+            /* ------------------------------- */
+
+            Permission::create([
+                'name' => 'page_kasa',
+                'description' => 'Kasa',
+                'route' => 'admin.kasa',
+                'visible' => true,
+            ]);
+
             /* ------------------------------- */
 
             Permission::create([
                 'name' => 'note_delete',
                 'description' => 'Not Silebilme',
+                'route' => '',
+                'visible' => false,
+            ]);
+
+            Permission::create([
+                'name' => 'offer_process',
+                'description' => 'Teklif - Düzenleme, Silme, Onaylama',
+                'route' => '',
+                'visible' => false,
+            ]);
+
+            Permission::create([
+                'name' => 'service_process',
+                'description' => 'Hizmet - Düzenleme, Silme, Aktarma',
                 'route' => '',
                 'visible' => false,
             ]);

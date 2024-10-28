@@ -67,6 +67,10 @@ class ApproveSaleAction
                 'status' => SaleStatus::success,
             ]);
 
+            $sale->clientTaksits()->update([
+                'status' => SaleStatus::success,
+            ]);
+
             $sale->status = SaleStatus::success;
             $sale->save();
 

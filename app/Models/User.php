@@ -2,18 +2,18 @@
 
 namespace App\Models;
 
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 class User extends Authenticatable
 {
-    use HasFactory;
-    use HasJsonRelationships;
     use HasRoles;
+    use HasFactory;
     use Notifiable;
+    use HasJsonRelationships;
 
     /**
      * The attributes that aren't mass assignable.
@@ -166,7 +166,7 @@ class User extends Authenticatable
      */
     public function client_notes()
     {
-        return $this->hasMany(Note::class, 'client_id')->latest();
+        return $this->hasMany(Note::class, 'client_id');
     }
 
     /**
@@ -279,7 +279,19 @@ class User extends Authenticatable
         return $this->hasMany(SaleProduct::class, 'client_id');
     }
 
-    public function search() {}
+    /**
+     * Get all of the mahsups.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function mahsups()
+    {
+        return $this->hasMany(Mahsup::class);
+    }
+
+    public function search()
+    {
+    }
 
     public function staff_branch()
     {

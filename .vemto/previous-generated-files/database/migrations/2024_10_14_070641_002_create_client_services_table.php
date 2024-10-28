@@ -32,6 +32,11 @@ return new class extends Migration {
                 ->nullable()
                 ->index();
             $table
+                ->bigInteger('offer_id')
+                ->unsigned()
+                ->nullable()
+                ->index();
+            $table
                 ->bigInteger('package_id')
                 ->unsigned()
                 ->nullable()
@@ -43,8 +48,16 @@ return new class extends Migration {
             $table
                 ->bigInteger('user_id')
                 ->unsigned()
-                ->nullable();
-            $table->enum('status', ['success', 'waiting', 'cancel', 'freeze']);
+                ->nullable()
+                ->index();
+            $table->enum('status', [
+                'success',
+                'waiting',
+                'cancel',
+                'freeze',
+                'expired',
+            ]);
+            $table->date('expire_date')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
             $table->timestamp('deleted_at')->nullable();
@@ -83,6 +96,12 @@ return new class extends Migration {
                 ->foreign('user_id')
                 ->references('id')
                 ->on('users')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table
+                ->foreign('offer_id')
+                ->references('id')
+                ->on('offers')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });

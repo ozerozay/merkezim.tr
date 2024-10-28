@@ -93,6 +93,7 @@ class CreateSaleAction
                     'sale_id' => $sale->id,
                     'total' => $taksit['price'],
                     'remaining' => $taksit['price'],
+                    'status' => SaleStatus::waiting,
                     'date' => Peren::parseDateField($taksit['date']),
                 ]);
             }
@@ -103,7 +104,7 @@ class CreateSaleAction
                     'branch_id' => $client->branch_id,
                     'user_id' => $info['user_id'],
                     'client_id' => $client->id,
-                    'date' => $pesinat['date'],
+                    'date' => Peren::parseDateField($pesinat['date']),
                     'price' => $pesinat['price'],
                     'message' => $sale->sale_no.' nolu sözleşmeden alınan peşinat',
                     'type' => TransactionType::pesinat,
@@ -119,7 +120,7 @@ class CreateSaleAction
             throw ToastException::error($e);
         } catch (\Throwable $e) {
             DB::rollBack();
-            throw ToastException::error('İşlem tamamlanamadı.');
+            throw ToastException::error('İşlem tamamlanamadı.'.$e->getMessage());
         }
     }
 }

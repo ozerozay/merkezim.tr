@@ -22,7 +22,7 @@ class extends Component
 {
     use Toast;
 
-    #[Url(as: 'client_id')]
+    #[Url(as: 'client')]
     public $client_id = null;
 
     public $sale_date;
