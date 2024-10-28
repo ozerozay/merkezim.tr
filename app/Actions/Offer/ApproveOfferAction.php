@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpUnreachableStatementInspection */
+
 namespace App\Actions\Offer;
 
 use App\Actions\Client\CreateServiceAction;

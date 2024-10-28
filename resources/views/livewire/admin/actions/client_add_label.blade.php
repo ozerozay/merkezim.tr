@@ -15,8 +15,7 @@ use Mary\Traits\Toast;
 
 new
 #[Title('Etiket Belirle')]
-class extends Component
-{
+class extends Component {
     use Toast;
 
     #[Url]
@@ -24,7 +23,7 @@ class extends Component
 
     public $client_model = null;
 
-    public $client_labels = [];
+    public array $client_labels = [];
 
     public function mount()
     {
@@ -67,7 +66,6 @@ class extends Component
 
         if (CheckUserInstantApprove::run(auth()->user()->id)) {
             UpdateClientLabels::run($validator->validated());
-
             $this->success('Etiketler güncellendi.');
         } else {
             CreateApproveRequestAction::run($validator->validated(), auth()->user()->id, ApproveTypes::client_update_label, '');
@@ -82,12 +80,13 @@ class extends Component
 <div>
     <x-card title="Etiket Belirle" progress-indicator separator>
         <x-form wire:submit="save">
-            <livewire:components.form.client_dropdown wire:model.live="client" />
+            <livewire:components.form.client_dropdown wire:model.live="client"/>
             @if ($client_model != null)
-            <livewire:components.client.client_label_multi_dropdown wire:model="client_labels" :client_id="$client" />
+                <livewire:components.client.client_label_multi_dropdown wire:model="client_labels"
+                                                                        :client_id="$client"/>
             @endif
             <x:slot:actions>
-                <x-button label="Gönder" type="submit" spinner="save" icon="o-paper-airplane" class="btn-primary" />
+                <x-button label="Gönder" type="submit" spinner="save" icon="o-paper-airplane" class="btn-primary"/>
             </x:slot:actions>
         </x-form>
     </x-card>

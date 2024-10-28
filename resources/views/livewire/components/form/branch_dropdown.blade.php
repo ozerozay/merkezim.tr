@@ -4,10 +4,9 @@ use App\Models\Branch;
 use Livewire\Attributes\Modelable;
 use Livewire\Volt\Component;
 
-new class extends Component
-{
+new class extends Component {
     #[Modelable]
-    public $branch_id;
+    public int $branch_id;
 
     public $branches;
 
@@ -23,6 +22,6 @@ new class extends Component
 ?>
 <div>
     @if ($this->branches->count() > 1)
-    <x-choices-offline label="Şube" single wire:model="branch_id" :options="$branches" />
+        <x-choices-offline label="Şube" single wire:model="branch_id" :options="$branches"/>
     @endif
 </div>
