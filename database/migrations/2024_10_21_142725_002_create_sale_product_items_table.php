@@ -14,10 +14,17 @@ return new class extends Migration {
     {
         Schema::create('sale_product_items', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('sale_product_id')->unsigned();
-            $table->bigInteger('product_id')->unsigned();
+            $table
+                ->bigInteger('sale_product_id')
+                ->unsigned()
+                ->index();
+            $table
+                ->bigInteger('product_id')
+                ->unsigned()
+                ->index();
             $table->integer('quantity')->unsigned();
             $table->decimal('price');
+            $table->boolean('gift')->default(false);
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
             $table->timestamp('deleted_at')->nullable();

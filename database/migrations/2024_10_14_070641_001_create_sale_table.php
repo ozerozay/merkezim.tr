@@ -49,6 +49,7 @@ return new class extends Migration {
             $table->integer('sale_no');
             $table->text('message')->nullable();
             $table->date('expire_date')->nullable();
+            $table->json('coupons')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
             $table->timestamp('deleted_at')->nullable();

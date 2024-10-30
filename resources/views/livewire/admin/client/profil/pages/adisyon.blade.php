@@ -1,16 +1,11 @@
 <?php
 
-use App\Actions\Client\GetClientTaksits;
-use App\Models\ClientTaksit;
-use App\TaksitStatus;
-use App\Traits\LiveHelper;
 use App\Traits\WithViewPlaceHolder;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Livewire\Volt\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
-new class extends Component {
+new class extends \Livewire\Volt\Component {
+
     use Toast, WithPagination, WithViewPlaceHolder;
 
     public ?int $client;
@@ -21,26 +16,25 @@ new class extends Component {
 
     public function getData()
     {
-        return GetClientTaksits::run(client: $this->client, paginate: true, order: $this->sortBy);
+        return \App\Actions\Client\GetClientAdisyons::run(client: $this->client, paginate: true, order: $this->sortBy);
     }
 
     public function headers(): array
     {
         return [
             ['key' => 'date', 'label' => 'Tarih', 'sortBy' => 'date'],
-            ['key' => 'status', 'label' => 'Durum', 'sortBy' => 'status'],
-            ['key' => 'sale.unique_id', 'label' => 'Satış', 'sortBy' => 'sale_id'],
-            ['key' => 'remaining', 'label' => 'Kalan', 'sortBy' => 'remaining'],
-            ['key' => 'total', 'label' => 'Toplam', 'sortBy' => 'total'],
+            ['key' => 'unique_id', 'label' => 'Satış', 'sortBy' => 'sale_id'],
+            ['key' => 'adisyon_services_count', 'label' => 'Hizmet', 'sortable' => false],
+            ['key' => 'price', 'label' => 'Tutar', 'sortBy' => 'price'],
+            ['key' => 'message', 'label' => 'Açıklama', 'sortBy' => 'message'],
         ];
     }
 
     public function showSettings($id): void
     {
-        $this->dispatch('drawer-taksit-update-id', $id)->to('components.drawers.drawer_taksit');
+        $this->dispatch('drawer-adisyon-update-id', $id)->to('components.drawers.drawer_adisyon');
         $this->editing = true;
     }
-
 
     public function with(): array
     {
@@ -55,6 +49,7 @@ new class extends Component {
         ];
     }
 };
+
 ?>
 <div>
     <livewire:components.card.statistic.card_statistic :data="$statistic"/>
@@ -68,24 +63,12 @@ new class extends Component {
             <x-card>
                 <x-table :headers="$headers" :rows="$data" :sort-by="$sortBy" striped with-pagination>
                     <x-slot:empty>
-                        <x-icon name="o-cube" label="Taksit bulunmuyor."/>
+                        <x-icon name="o-cube" label="Adisyon bulunmuyor."/>
                     </x-slot:empty>
-                    @scope('cell_sale.unique_id', $taksit)
-                    <p>{{ $taksit->sale->sale_no}} - {{$taksit->sale->unique_id}}</p>
-                    @endscope
-                    @scope('cell_status', $taksit)
-                    <x-badge :value="$taksit->status->label()" class="badge-{{ $taksit->status->color() }}"/>
-                    @endscope
                     @scope('cell_date', $taksit)
                     {{  $taksit->date_human }}
                     @endscope
-                    @scope('cell_total', $taksit)
-                    @price($taksit->total)
-                    @endscope
-                    @scope('cell_remaining', $taksit)
-                    @price($taksit->remaining)
-                    @endscope
-                    @can('taksit_process')
+                    @can('adisyon_process')
                         @scope('actions', $taksit)
                         <x-button icon="tabler.settings"
                                   wire:click="showSettings({{ $taksit->id }})"
@@ -98,55 +81,55 @@ new class extends Component {
     @else
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             @if ($data->count() == 0)
-                <p class="text-center">Taksit bulunmuyor.</p>
+                <p class="text-center">Adisyon bulunmuyor.</p>
             @endif
             @foreach ($data as $taksit)
                 <x-card title="{{ $taksit->date_human }}" separator class="mb-2">
-                    @can('taksit_process')
+                    @can('adisyon_process')
                         <x-slot:menu>
                             <x-button icon="tabler.settings"
                                       wire:click="showSettings({{ $taksit->id }})"
                                       class="btn-circle btn-sm btn-primary"/>
                         </x-slot:menu>
                     @endcan
-                    <x-list-item :item="$taksit">
-                        <x-slot:value>
-                            Durum
-                        </x-slot:value>
-                        <x-slot:actions>
-                            <x-badge :value="$taksit->status->label()" class="badge-{{ $taksit->status->color() }}"/>
-                        </x-slot:actions>
-                    </x-list-item>
+
                     <x-list-item :item="$taksit">
                         <x-slot:value>
                             Satış
                         </x-slot:value>
                         <x-slot:actions>
-                            <p>{{ $taksit->sale->sale_no}} - {{$taksit->sale->unique_id}}</p>
+                            <p>{{ $taksit->unique_id}}</p>
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$taksit">
                         <x-slot:value>
-                            Toplam
+                            Hizmet Sayısı
                         </x-slot:value>
                         <x-slot:actions>
-                            @price($taksit->total)
+                            {{$taksit->adisyon_services_count}}
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$taksit">
                         <x-slot:value>
-                            Kalan
+                            Tutar
                         </x-slot:value>
                         <x-slot:actions>
-                            @price($taksit->remaining)
+                            @price($taksit->price)
+                        </x-slot:actions>
+                    </x-list-item>
+                    <x-list-item :item="$taksit">
+                        <x-slot:value>
+                            Açıklama
+                        </x-slot:value>
+                        <x-slot:actions>
+                            {{$taksit->message}}
                         </x-slot:actions>
                     </x-list-item>
                 </x-card>
             @endforeach
         </div>
-        <x-pagination :rows="$data"/>
     @endif
-    @can('taksit_process')
-        <livewire:components.drawers.drawer_taksit wire:model="editing"/>
+    @can('adisyon_process')
+        <livewire:components.drawers.drawer_adisyon wire:model="editing"/>
     @endcan
 </div>

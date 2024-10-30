@@ -45,25 +45,24 @@ class CreateSaleProductAction
                 'price' => $info['price'],
             ]);
 
-            $product_ids = collect($info['products']);
+            $product_ids = $info['products'];
 
-            $products = Product::whereIn('id', $product_ids->pluck('product_id'))->get();
-
-            foreach ($products as $product) {
-                $product_info = $product_ids->firstWhere('product_id', $product->id);
-                if ($product->stok < $product_info['quantity']) {
-                    throw new AppException($product->name.' ürününden yeterli stok bulunmuyor.');
+            foreach ($product_ids as $product) {
+                $product_info = Product::where('id', $product['product_id'])->first();
+                if ($product_info->stok < $product['quantity']) {
+                    throw new AppException($product_info->name.' ürününden yeterli stok bulunmuyor.');
                     break;
                 }
 
                 $sale_product->saleProductItems()->create([
-                    'product_id' => $product->id,
-                    'quantity' => $product_info['quantity'],
-                    'price' => $product_info['price'],
+                    'product_id' => $product_info->id,
+                    'quantity' => $product['quantity'],
+                    'price' => $product['price'],
+                    'gift' => $product['gift'],
                 ]);
 
-                $product->stok = $product->stok - $product_info['quantity'];
-                $product->save();
+                $product_info->stok = $product_info->stok - $product['quantity'];
+                $product_info->save();
             }
 
             foreach ($info['cashes'] as $c) {

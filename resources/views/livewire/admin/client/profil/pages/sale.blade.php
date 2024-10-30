@@ -10,24 +10,21 @@ use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
 new class extends Component {
-    use Toast, WithPagination;
+    use Toast, WithPagination, \App\Traits\WithViewPlaceHolder;
 
-    public $client;
+    public ?int $client;
 
-    public $client_sales;
+    public ?int $selected;
 
-    public bool $sale_edit = false;
+    public bool $editing = false;
 
-    public ?Sale $selected_sale;
-
-    public $view = 'table';
-
-    public array $sortBy = ['column' => 'date', 'direction' => 'asc'];
-
-    public function headers()
+    public function getData()
     {
-        //LiveHelper::class;
+        return GetClientSales::run($this->client, true, $this->sortBy);
+    }
 
+    public function headers(): array
+    {
         return [
             ['key' => 'date', 'label' => 'Tarih', 'sortBy' => 'date'],
             ['key' => 'sale_no', 'label' => 'No', 'sortBy' => 'sale_no'],
@@ -44,10 +41,8 @@ new class extends Component {
         ];
     }
 
-    public function headersTaksits()
+    public function headersTaksits(): array
     {
-        //LiveHelper::class;
-
         return [
             ['key' => 'date', 'label' => 'Tarih', 'sortBy' => 'date'],
             ['key' => 'status', 'label' => 'Durum', 'sortBy' => 'status'],
@@ -57,10 +52,8 @@ new class extends Component {
         ];
     }
 
-    public function headersServices()
+    public function headersServices(): array
     {
-
-        //SaleStatus::cancel;
         return [
             ['key' => 'service.name', 'label' => 'Hizmet', 'sortBy' => 'service_id'],
             ['key' => 'date_human_created', 'label' => 'Tarih', 'sortBy' => 'created_at'],
@@ -74,98 +67,46 @@ new class extends Component {
         ];
     }
 
-    public function getSales(): LengthAwarePaginator
+    public function showSettings($id): void
     {
-        return GetClientSales::run($this->client, true, $this->sortBy);
+        $this->dispatch('drawer-sale-update-id', $id)->to('components.drawers.drawer_sale');
+        $this->editing = true;
     }
 
     public function with()
     {
-        $sales = $this->getSales();
-
-        $total_active_taksit_total = $sales->where('status', SaleStatus::success)->sum('total_taksit');
-        $total_active_taksit_remaining = $sales->where('status', SaleStatus::success)->sum('total_taksit_remaining');
-        $total_active_late_payment = $sales->where('status', SaleStatus::success)->sum('total_late_payment');
-        $total_paid = $sales->where('status', SaleStatus::success)->sum('pesinat') + ($total_active_taksit_total - $total_active_taksit_remaining);
-        $total_price_real = $sales->where('status', SaleStatus::success)->sum('price_real');
-        $total_service = $sales->where('status', SaleStatus::success)->sum('total_service');
-        $total_service_remaining = $sales->where('status', SaleStatus::success)->sum('total_service_remaining');
-
         return [
-            'sales' => $sales,
+            'data' => $this->getData(),
             'headers' => $this->headers(),
-            'total_active_taksit_remaining' => $total_active_taksit_remaining,
-            'total_active_late_payment' => $total_active_late_payment,
-            'total_paid' => $total_paid,
-            'total_price_real' => $total_price_real,
-            'total_service_remaining' => $total_service_remaining,
-            'total_service' => $total_service,
             'headersTaksits' => $this->headersTaksits(),
-            'headersServices' => $this->headersServices()
+            'headersServices' => $this->headersServices(),
+            'statistic' => []
         ];
     }
-
-    public function placeholder()
-    {
-        return view('livewire.components.card.loading.loading');
-    }
-
-    public function changeView(): void
-    {
-        $this->view = $this->view == 'table' ? 'list' : 'table';
-    }
-
-    public bool $drawerModel = false;
-
-    public function showDrawer($sale): void
-    {
-        $this->dispatch('sale-drawer-update-saleID', $sale)->to('components.drawers.sale_drawer');
-        $this->drawerModel = true;
-    }
-
-    public string $group = 'group1';
-
-    public $expanded = [];
-    public $expandedService = [];
 };
 
 ?>
 <div>
-    <div class="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        <x-stat title="Toplam Tutar" value="{{ LiveHelper::price_text($total_active_taksit_remaining) }}"
-                icon="o-credit-card"/>
-        <x-stat title="Kalan Ödeme" value="{{ LiveHelper::price_text($total_active_taksit_remaining) }}"
-                icon="o-credit-card"/>
-        <x-stat title="Yapılan Ödeme" value="{{ LiveHelper::price_text($total_paid) }}" icon="o-credit-card"/>
-        <x-stat title="Gecikmiş Ödeme" value="{{ LiveHelper::price_text($total_active_late_payment) }}"
-                icon="o-credit-card"/>
-    </div>
-    <div class="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-5">
-        <x-stat title="Toplam Seans" :value="$total_service" icon="tabler.info-circle"/>
-        <x-stat title="Kullanılan Seans" :value="($total_service - $total_service_remaining)"
-                icon="tabler.info-circle"/>
-        <x-stat title="Kalan Seans" :value="$total_service_remaining" class="text-red-500"
-                icon="tabler.info-circle"/>
-    </div>
+    <livewire:components.card.statistic.card_statistic :data="$statistic"/>
     <div class="flex justify-end mb-4 mt-5 gap-2">
+        <p>Sıralama işlemlerini tablo görünümünden yapabilirsiniz.</p>
         <x-button wire:click="changeView" label="{{ $view == 'table' ? 'LİSTE' : 'TABLO' }}"
                   icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline"/>
-
     </div>
-    @if ($view == 'table')
+    @if ($view)
         <div>
             <x-card>
-                <x-table :headers="$headers" :rows="$sales" wire:model="expanded" :sort-by="$sortBy" striped
+                <x-table :headers="$headers" :rows="$data" wire:model="expanded" :sort-by="$sortBy" striped
                          with-pagination expandable>
-                    @scope('expansion', $sale, $headersTaksits, $headersServices, $expandedService)
+                    @scope('expansion', $sale, $headersTaksits, $headersServices)
                     <div class="bg-base-200 p-8 font-bold">
-                       
+
                         <x-table :headers="$headersTaksits" :rows="$sale->clientTaksits" striped>
                             <x-slot:empty>
                                 <x-icon name="o-cube" label="Taksit bulunmuyor."/>
                             </x-slot:empty>
                             @scope('cell_sale.unique_id', $taksit)
-                            {{ $taksit->sale->unique_id ?? '-' }}
+                            {{ $taksit->sale->unique_id }}
                             @endscope
                             @scope('cell_status', $taksit)
                             <x-badge :value="$taksit->status->label()" class="badge-{{ $taksit->status->color() }}"/>
@@ -178,9 +119,9 @@ new class extends Component {
                             @endscope
                         </x-table>
                         <x-hr/>
-                        <x-table :headers="$headersServices" :rows="$sale->clientServices" wire:model="expandedService"
+                        <x-table :headers="$headersServices" :rows="$sale->clientServices"
                                  striped
-                                 expandable>
+                        >
                             <x-slot:empty>
                                 <x-icon name="o-cube" label="Hizmet bulunmuyor."/>
                             </x-slot:empty>
@@ -189,24 +130,6 @@ new class extends Component {
                             @endscope
                             @scope('cell_package.name', $service)
                             {{ $service->package->name ?? 'Yok' }}
-                            @endscope
-                            @scope('expansion', $service)
-                            Personel : {{ $service->userServices->name ?? '' }}
-                            <div class="bg-base-200 p-8 font-bold">
-                                @foreach ($service->clientServiceUses as $uses)
-                                    <x-list-item :item="$uses" no-separator no-hover>
-                                        <x-slot:avatar>
-                                            <x-badge value="{{ $uses->seans }} seans" class="badge-primary"/>
-                                        </x-slot:avatar>
-                                        <x-slot:value>
-                                            {{ $uses->date_human_created }} - {{ $uses->message }}
-                                        </x-slot:value>
-                                        <x-slot:sub-value>
-                                            {{ $uses->user->name ?? '' }}
-                                        </x-slot:sub-value>
-                                    </x-list-item>
-                                @endforeach
-                            </div>
                             @endscope
                             @scope('cell_status', $service)
                             <x-badge :value="$service->status->label()" class="badge-{{ $service->status->color() }}"/>
@@ -230,6 +153,9 @@ new class extends Component {
                     @scope('cell_status', $sale)
                     <x-badge :value="$sale->status->label()" class="badge-{{ $sale->status->color() }}"/>
                     @endscope
+                    @scope('cell_unique_id', $taksit)
+                    {{ $taksit->sale_no }} - {{ $taksit->unique_id  }}
+                    @endscope
                     @scope('cell_price', $taksit)
                     {{ LiveHelper::price_text($taksit->price) }}
                     @endscope
@@ -251,16 +177,27 @@ new class extends Component {
                     <x-slot:empty>
                         <x-icon name="o-cube" label="Satış bulunmuyor."/>
                     </x-slot:empty>
-                    @scope('actions', $sale)
-                    <x-button icon="tabler.settings" wire:click="showDrawer({{ $sale->id }})"
-                              class="btn-circle btn-sm btn-primary"/>
-                    @endscope
+                    @can('sale_process')
+                        @scope('actions', $sale)
+                        <x-button icon="tabler.settings"
+                                  wire:click="showSettings({{ $sale->id }})"
+                                  class="btn-circle btn-sm btn-primary"/>
+                        @endscope
+                    @endcan
                 </x-table>
             </x-card>
             @else
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    @foreach ($sales as $sale)
+                    @foreach ($data as $sale)
                         <x-card title="{{ $sale->sale_no }} - {{ $sale->date }}" separator class="mb-2">
+                            @can('sale_process')
+                                <x-slot:menu>
+                                    <x-button icon="tabler.settings"
+                                              wire:click="showSettings({{ $sale->id }})"
+                                              class="btn-circle btn-sm btn-primary"/>
+
+                                </x-slot:menu>
+                            @endcan
                             <x-list-item :item="$sale">
                                 <x-slot:value>
                                     Durum
@@ -283,7 +220,7 @@ new class extends Component {
                                     Benzersiz
                                 </x-slot:value>
                                 <x-slot:actions>
-                                    {{ $sale->unique_id }}
+                                    {{$sale->sale_no}} - {{ $sale->unique_id }}
                                 </x-slot:actions>
                             </x-list-item>
                             <x-list-item :item="$sale">
@@ -354,5 +291,7 @@ new class extends Component {
                     @endforeach
                 </div>
             @endif
-            <livewire:components.drawers.sale_drawer wire:model="drawerModel" lazy/>
+            @can('sale_process')
+                <livewire:components.drawers.drawer_sale wire:model="editing"/>
+            @endcan
         </div>

@@ -27,6 +27,7 @@ class SaleProductFactory extends Factory
             'date' => fake()->date(),
             'message' => fake()->sentence(20),
             'price' => fake()->randomFloat(2, 0, 9999),
+            'staff_ids' => fake()->word(),
             'deleted_at' => fake()->dateTime(),
             'user_id' => \App\Models\User::factory(),
             'client_id' => \App\Models\User::factory(),

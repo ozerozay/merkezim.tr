@@ -6,8 +6,9 @@ use Carbon\Carbon;
 use Livewire\Volt\Component;
 use Mary\Traits\Toast;
 
-new class extends Component
-{
+new
+#[\Livewire\Attributes\Title('Kasa')]
+class extends Component {
     use Toast;
 
     public $config2 = ['altFormat' => 'd/m/Y', 'locale' => 'tr', 'mode' => 'range'];
@@ -26,10 +27,14 @@ new class extends Component
 
     public $headers;
 
+    public $first_date_string;
+
+    public $last_date_string;
+
     public function mount()
     {
         //LiveHelper::class;
-        $this->date = Carbon::now()->format('Y-m-d 00:00').' - '.Carbon::now()->format('Y-m-d 00:00');
+        $this->date = Carbon::now()->format('Y-m-d 00:00') . ' - ' . Carbon::now()->format('Y-m-d 00:00');
         $this->staff_branches = auth()->user()->staff_branch;
         foreach ($this->staff_branches as $branch) {
             $this->branches[$branch->id] =
@@ -46,6 +51,7 @@ new class extends Component
     {
         $this->headers = [
             ['key' => 'kasa_adi', 'label' => 'Kasa', 'sortable' => false],
+            ['key' => 'kasa_id', 'label' => 'Kasa', 'sortable' => false, 'hidden' => true],
             ['key' => 'devir', 'label' => 'Devir', 'sortable' => false],
             ['key' => 'tahsilat', 'label' => 'Tahsilat', 'sortable' => false],
             ['key' => 'odenen', 'label' => 'Ödeme', 'sortable' => false],
@@ -68,12 +74,15 @@ new class extends Component
                 $first_date = $last_date = Carbon::createFromFormat('Y-m-d H:i', $split_date[0])->format('Y-m-d');
             }
 
+            $this->first_date_string = $first_date;
+            $this->last_date_string = $last_date;
+
             $transactions_sql = Kasa::query()
                 ->whereIn('kasas.branch_id', $this->branch_sql)
                 ->where('kasas.active', true)
                 ->leftJoin('transactions', 'kasas.id', '=', 'transactions.kasa_id')
                 ->leftJoin('branches', 'branches.id', '=', 'kasas.branch_id')
-                ->selectRaw('branches.name as branch_name,branches.id as branch_id,kasas.name as kasa_adi,
+                ->selectRaw('branches.name as branch_name,branches.id as branch_id,kasas.name as kasa_adi, kasas.id as id,
     SUM(CASE WHEN transactions.date < ? THEN transactions.price ELSE 0 END) as devir,
     SUM(CASE WHEN (transactions.date <= DATE(?) and transactions.date >= DATE(?)) AND transactions.price < 0 THEN transactions.price ELSE 0 END) as odenen,
     SUM(CASE WHEN (transactions.date <= ? and transactions.date >= ?) AND transactions.price > 0 THEN transactions.price ELSE 0 END) as tahsilat
@@ -84,7 +93,7 @@ new class extends Component
 
             //dump(collect($this->transactions));
         } catch (\Throwable $e) {
-            $this->error('Tekrar deneyin.'.$e->getMessage());
+            $this->error('Tekrar deneyin.' . $e->getMessage());
         }
     }
 
@@ -116,6 +125,8 @@ new class extends Component
 
         $this->getTransactions();
     }
+
+    public array $expanded = [];
 };
 
 ?>
@@ -124,33 +135,33 @@ new class extends Component
         <x-slot:actions>
             <x-dropdown label="Tarih">
                 <x-slot:trigger>
-                    <x-button icon="tabler.filter" class="btn-outline" label="Filtrele" responsive />
+                    <x-button icon="tabler.filter" class="btn-outline" label="Filtrele" responsive/>
                 </x-slot:trigger>
                 <x-form wire:submit="filter">
-                <x-menu-item @click.stop="">
-                <x-datepicker label="Tarih" wire:model="date" icon="o-calendar" :config="$config2" inline />
-                </x-menu-item>
-                <x-menu-separator />
-                @foreach(auth()->user()->staff_branch as $branch)
-                <x-menu-item @click.stop="">
-                    <x-checkbox wire:model="branches.{{ $branch->id }}.checked" label="{{ $branch->name }}" />
-                </x-menu-item>
-                @endforeach
-                <x:slot:actions>
-                <x-button class="btn-outline" type="submit" label="Gönder" responsive />
-                </x:slot:actions>
+                    <x-menu-item @click.stop="">
+                        <x-datepicker label="Tarih" wire:model="date" icon="o-calendar" :config="$config2" inline/>
+                    </x-menu-item>
+                    <x-menu-separator/>
+                    @foreach(auth()->user()->staff_branch as $branch)
+                        <x-menu-item @click.stop="">
+                            <x-checkbox wire:model="branches.{{ $branch->id }}.checked" label="{{ $branch->name }}"/>
+                        </x-menu-item>
+                    @endforeach
+                    <x:slot:actions>
+                        <x-button class="btn-outline" type="submit" label="Gönder"/>
+                    </x:slot:actions>
                 </x-form>
 
             </x-dropdown>
             <x-dropdown label="Kasa İşlemleri">
                 <x-slot:trigger>
-                <x-button icon="tabler.settings" class="btn-primary" label="Kasa İşlemleri" responsive />
+                    <x-button icon="tabler.settings" class="btn-primary" label="Kasa İşlemleri" responsive/>
                 </x-slot:trigger>
-                <x-menu-item title="Tahsilat" />
-                <x-menu-item title="Not Al" />
-                <x-menu-item title="Mahsup" />
-                <x-menu-item title="Ödeme Yap" />
-                <x-menu-item title="Ödeme Al" />
+                <x-menu-item title="Tahsilat"/>
+                <x-menu-item title="Not Al"/>
+                <x-menu-item title="Mahsup"/>
+                <x-menu-item title="Ödeme Yap"/>
+                <x-menu-item title="Ödeme Al"/>
             </x-dropdown>
         </x-slot:actions>
     </x-header>
@@ -158,37 +169,54 @@ new class extends Component
         $collected_transaction = collect($transactions)->flatten(1);
     @endphp
     <div class="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-5">
-        <x-stat title="Devir" value="{{ LiveHelper::price_text($collected_transaction->sum('devir')) }}" icon="o-credit-card" />
-        <x-stat title="Tahsilat" value="{{ LiveHelper::price_text($collected_transaction->sum('tahsilat')) }}" icon="o-credit-card" />
-        <x-stat title="Ödeme" value="{{ LiveHelper::price_text($collected_transaction->sum('odenen')) }}" icon="o-credit-card" />
-        <x-stat title="Bakiye" value="{{ LiveHelper::price_text($collected_transaction->sum('bakiye')) }}" icon="o-credit-card" />
+        <x-stat title="Devir" value="{{ LiveHelper::price_text($collected_transaction->sum('devir')) }}"
+                icon="o-credit-card"/>
+        <x-stat title="Tahsilat" value="{{ LiveHelper::price_text($collected_transaction->sum('tahsilat')) }}"
+                icon="o-credit-card"/>
+        <x-stat title="Ödeme" value="{{ LiveHelper::price_text($collected_transaction->sum('odenen')) }}"
+                icon="o-credit-card"/>
+        <x-stat title="Bakiye" value="{{ LiveHelper::price_text($collected_transaction->sum('bakiye')) }}"
+                icon="o-credit-card"/>
     </div>
     @foreach($transactions as $sube)
-    @php
-        $collected = collect($sube);
-    @endphp
-    <x-card :title="$sube[0]['branch_name']" class="mb-2">
-    <div class="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        <x-stat title="Devir" value="{{ LiveHelper::price_text($collected->sum('devir')) }}" icon="o-credit-card" />
-        <x-stat title="Tahsilat" value="{{ LiveHelper::price_text($collected->sum('tahsilat')) }}" icon="o-credit-card" />
-        <x-stat title="Ödeme" value="{{ LiveHelper::price_text($collected->sum('odenen')) }}" icon="o-credit-card" />
-        <x-stat title="Bakiye" value="{{ LiveHelper::price_text($collected->sum('bakiye')) }}" icon="o-credit-card" />
-    </div>
-    <x-hr />
-    <x-table :headers="$headers" :rows="$sube" :sort-by="$sortBy" striped>
-        @scope('cell_bakiye', $tra)
-        {{ LiveHelper::price_text($tra['devir'] + $tra['tahsilat'] + $tra['odenen']) }}
-        @endscope
-        @scope('cell_devir', $tra)
-        {{ LiveHelper::price_text($tra['devir']) }}
-        @endscope
-        @scope('cell_tahsilat', $transaction)
-        {{ LiveHelper::price_text($transaction['tahsilat']) }}
-        @endscope
-        @scope('cell_odenen', $transaction)
-        {{ LiveHelper::price_text($transaction['odenen']) }}
-        @endscope
-    </x-table>
-    </x-card>
+        @php
+            $collected = collect($sube);
+        @endphp
+        <x-card :title="$sube[0]['branch_name']" class="mb-2">
+            <div class="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <x-stat title="Devir" value="{{ LiveHelper::price_text($collected->sum('devir')) }}"
+                        icon="o-credit-card"/>
+                <x-stat title="Tahsilat" value="{{ LiveHelper::price_text($collected->sum('tahsilat')) }}"
+                        icon="o-credit-card"/>
+                <x-stat title="Ödeme" value="{{ LiveHelper::price_text($collected->sum('odenen')) }}"
+                        icon="o-credit-card"/>
+                <x-stat title="Bakiye" value="{{ LiveHelper::price_text($collected->sum('bakiye')) }}"
+                        icon="o-credit-card"/>
+            </div>
+            <x-hr/>
+            <x-table :headers="$headers" :rows="$sube" :sort-by="$sortBy"
+                     wire:model="expanded"
+                     expandable
+                     link="kasa/detail?kasa={id}&start={{ $first_date_string  }}&end={{ $last_date_string  }}"
+                     striped>
+                @scope('cell_bakiye', $tra)
+                {{ LiveHelper::price_text($tra['devir'] + $tra['tahsilat'] + $tra['odenen']) }}
+                @endscope
+                @scope('cell_devir', $tra)
+                {{ LiveHelper::price_text($tra['devir']) }}
+                @endscope
+                @scope('cell_tahsilat', $transaction)
+                {{ LiveHelper::price_text($transaction['tahsilat']) }}
+                @endscope
+                @scope('cell_odenen', $transaction)
+                {{ LiveHelper::price_text($transaction['odenen']) }}
+                @endscope
+                @scope('expansion', $transaction)
+                <div class="bg-base-200 p-8 font-bold">
+                    Hello,
+                </div>
+                @endscope
+            </x-table>
+        </x-card>
     @endforeach
 </div>

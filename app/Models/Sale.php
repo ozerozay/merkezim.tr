@@ -28,6 +28,7 @@ class Sale extends Model
     {
         return [
             'staffs' => 'json',
+            'coupons' => 'json',
             'status' => 'App\SaleStatus',
         ];
     }
@@ -70,6 +71,11 @@ class Sale extends Model
     public function staffs()
     {
         return $this->belongsToJson(Branch::class, 'staffs');
+    }
+
+    public function coupons()
+    {
+        return $this->belongsToJson(Coupon::class, 'coupons');
     }
 
     public function transactions()

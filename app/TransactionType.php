@@ -12,4 +12,18 @@ enum TransactionType: string
     case payment_client = 'payment_client';
     case payment_staff = 'payment_staff';
     case payment_masraf = 'payment_masraf';
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::pesinat => 'Peşinat',
+            self::staff_pay => 'Personel Ödeme',
+            self::adisyon_pesinat => 'Adisyon Peşinat',
+            self::product_pesinat => 'Ürün Peşinat',
+            self::mahsup => 'Mahsup',
+            self::payment_client => 'Danışan',
+            self::payment_staff => 'Personel',
+            self::payment_masraf => 'Masraf',
+        };
+    }
 }

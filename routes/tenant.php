@@ -130,6 +130,7 @@ Route::middleware([
 
             Route::prefix('kasa')->group(function () {
                 Volt::route('/', 'admin.kasa.index')->name('admin.kasa')->middleware('can:page_kasa');
+                Volt::route('/detail', 'admin.kasa.detail')->name('admin.kasa.detail')->middleware('can:page_kasa_detail');
                 Volt::route('/mahsup', 'admin.actions.kasa.mahsup')->name('admin.kasa.mahsup')->middleware('can:kasa_mahsup');
                 Volt::route('/payment', 'admin.actions.kasa.make_payment')->name('admin.kasa.make_payment')->middleware('can:kasa_make_payment');
             });

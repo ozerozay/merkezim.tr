@@ -33,6 +33,7 @@ class SaleFactory extends Factory
             'sale_no' => fake()->randomNumber(0),
             'message' => fake()->sentence(20),
             'expire_date' => fake()->date(),
+            'coupons' => fake()->word(),
             'deleted_at' => fake()->dateTime(),
             'branch_id' => \App\Models\Branch::factory(),
             'sale_type_id' => \App\Models\SaleType::factory(),

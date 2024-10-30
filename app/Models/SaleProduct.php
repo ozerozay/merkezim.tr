@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 class SaleProduct extends Model
 {
     use HasFactory;
+    use HasJsonRelationships;
     use SoftDeletes;
 
     protected $table = 'sale_product';
@@ -16,6 +20,14 @@ class SaleProduct extends Model
     protected $guarded = ['id'];
 
     protected $dates = ['date'];
+
+    protected function casts(): array
+    {
+        return [
+            'staff_ids' => 'json',
+            'price' => 'float',
+        ];
+    }
 
     public function user()
     {
@@ -45,5 +57,12 @@ class SaleProduct extends Model
     public function staffs()
     {
         return $this->belongsToJson(User::class, 'staff_ids');
+    }
+
+    protected function dateHuman(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?Carbon $value) => Carbon::parse($this->date)->format('d/m/Y')
+        );
     }
 }

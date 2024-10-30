@@ -35,9 +35,6 @@
         "wulfheart/laravel-actions-ide-helper": "^0.8.0"
     },
     "autoload": {
-        "files": [
-            "app/Helpers.php"
-        ],
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",

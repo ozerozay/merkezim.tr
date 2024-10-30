@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 class Adisyon extends Model
 {
     use HasFactory;
-    use SoftDeletes;
     use HasJsonRelationships;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 
@@ -53,5 +55,12 @@ class Adisyon extends Model
     public function staffs()
     {
         return $this->belongsToJson(User::class, 'staff_ids');
+    }
+
+    protected function dateHuman(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?Carbon $value) => Carbon::parse($this->date)->format('d/m/Y')
+        );
     }
 }

@@ -25,6 +25,7 @@ class SaleProductItemFactory extends Factory
         return [
             'quantity' => fake()->randomNumber(),
             'price' => fake()->randomFloat(2, 0, 9999),
+            'gift' => fake()->word(),
             'deleted_at' => fake()->dateTime(),
             'sale_product_id' => \App\Models\SaleProduct::factory(),
             'product_id' => \App\Models\Product::factory(),

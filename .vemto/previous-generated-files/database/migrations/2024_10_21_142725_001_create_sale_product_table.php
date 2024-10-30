@@ -30,6 +30,7 @@ return new class extends Migration {
             $table->date('date');
             $table->string('message', 255)->nullable();
             $table->decimal('price');
+            $table->json('staff_ids')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
             $table->timestamp('deleted_at')->nullable();

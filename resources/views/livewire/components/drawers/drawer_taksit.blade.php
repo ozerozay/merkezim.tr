@@ -51,9 +51,45 @@ new class extends Component {
 
     public function edit(): void
     {
-        dump($this->validate(
-            ['message' => 'required']
-        ));
+        $validator = Validator::make([
+            'date' => $this->date,
+            'message' => $this->message,
+            'id' => $this->id,
+        ], [
+            'date' => 'required|date',
+            'message' => 'required',
+            'id' => 'required|exists:client_taksits'
+        ]);
+        if ($validator->fails()) {
+            $this->error($validator->messages()->first());
+            return;
+        }
+
+        \App\Actions\Taksit\UpdateTaksitDateAction::run($validator->validated());
+
+        $this->isOpen = false;
+        $this->reset('message');
+        $this->success('Taksit düzenlendi.');
+
+    }
+
+    public function delete(): void
+    {
+        $validator = Validator::make([
+            'id' => $this->id,
+        ], [
+            'id' => 'required|exists:client_taksits'
+        ]);
+        if ($validator->fails()) {
+            $this->error($validator->messages()->first());
+            return;
+        }
+
+        \App\Actions\Taksit\DeleteTaksitAction::run($validator->validated());
+
+        $this->isOpen = false;
+        $this->reset('messageDelete');
+        $this->success('Taksit silindi.');
     }
 
 
@@ -87,13 +123,13 @@ new class extends Component {
                         <x-icon name="o-minus-circle" label="Sil"/>
                     </x-slot:heading>
                     <x-slot:content>
-                        <x-form>
+                        <x-form wire:submit="delete">
                             <x-alert title="Emin misiniz ?" description="Taksit silme işlemi geri alınamaz."
                                      icon="o-minus-circle"
                                      class="alert-error"/>
                             <x-input label="Açıklama" wire:model="messageDelete"/>
                             <x-slot:actions>
-                                <x-button label="Gönder" class="btn-error"/>
+                                <x-button label="Gönder" type="submit" class="btn-error"/>
                             </x-slot:actions>
                         </x-form>
                     </x-slot:content>
