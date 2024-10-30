@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 class Sale extends Model
 {
     use HasFactory;
-    use SoftDeletes;
     use HasJsonRelationships;
+    use SoftDeletes;
 
     protected $table = 'sale';
 
@@ -59,5 +59,10 @@ class Sale extends Model
     public function staffs()
     {
         return $this->belongsToJson(Branch::class, 'staffs');
+    }
+
+    public function transactions()
+    {
+        return $this->morphMany(Transaction::class, 'transacable');
     }
 }

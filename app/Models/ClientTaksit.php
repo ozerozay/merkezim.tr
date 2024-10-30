@@ -15,7 +15,7 @@ class ClientTaksit extends Model
 
     protected $guarded = ['id'];
 
-    protected $dates = ['date'];
+    protected array $dates = ['date'];
 
     protected function casts(): array
     {
@@ -24,7 +24,7 @@ class ClientTaksit extends Model
         ];
     }
 
-    public function client()
+    public function client(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'client_id');
     }
@@ -48,6 +48,13 @@ class ClientTaksit extends Model
     {
         return Attribute::make(
             get: fn (?Carbon $value) => $this->created_at->format('d/m/Y')
+        );
+    }
+
+    protected function dateHuman(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?Carbon $value) => Carbon::parse($this->date)->format('d/m/Y')
         );
     }
 }

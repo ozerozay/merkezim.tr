@@ -6,6 +6,7 @@ use App\Models\Note;
 use App\Policies\NotePolicy;
 use Gate;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -60,5 +61,9 @@ class AppServiceProvider extends ServiceProvider
             'sale_product_item' => 'App\Models\SaleProductItem',
             'mahsup' => 'App\Models\Mahsup',
         ]);
+
+        Blade::directive('price', function ($price) {
+            return "<?php echo \Illuminate\Support\Number::currency((float) $price, in: 'TRY', locale: 'tr'); ?>";
+        });
     }
 }

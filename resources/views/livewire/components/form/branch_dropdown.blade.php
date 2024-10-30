@@ -10,7 +10,7 @@ new class extends Component {
 
     public $branches;
 
-    public function mount()
+    public function mount(): void
     {
         $this->branches = (new Branch)->branch_staff_active()
             ->get();

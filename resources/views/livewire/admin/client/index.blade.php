@@ -11,8 +11,7 @@ use Livewire\Volt\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
-new class extends Component
-{
+new class extends Component {
     use ResetsPaginationWhenPropsChanges, Toast, WithPagination;
 
     #[Url]
@@ -33,10 +32,10 @@ new class extends Component
 
         return User::query()
             ->select(['id', 'name', 'unique_id', 'branch_id', 'created_at'])
-            ->when($this->search, fn (Builder $q) => $q->where(function ($subQuery) use ($search) {
-                $subQuery->where('name', 'like', '%'.StringHelper::strUpper($search).'%')
-                    ->orWhere('unique_id', 'like', '%'.$search.'%')
-                    ->orWhere('phone', 'like', '%'.$search.'%');
+            ->when($this->search, fn(Builder $q) => $q->where(function ($subQuery) use ($search) {
+                $subQuery->where('name', 'like', '%' . StringHelper::strUpper($search) . '%')
+                    ->orWhere('unique_id', 'like', '%' . $search . '%')
+                    ->orWhere('phone', 'like', '%' . $search . '%');
             }))
             ->whereHas('client_branch', function ($q) {
                 $q->whereIn('id', auth()->user()->staff_branches);
@@ -70,15 +69,15 @@ new class extends Component
 <div>
     <x-header title="Danışan" seperator progress-indicator>
         <x-slot:middle class="!justify-end">
-            <x-input placeholder="Ara..." wire:model.live.debounce="search" icon="o-magnifying-glass" clearable />
+            <x-input placeholder="Ara..." wire:model.live.debounce="search" icon="o-magnifying-glass" clearable/>
         </x-slot:middle>
         <x-slot:actions>
-            <livewire:admin.client.actions.create />
         </x-slot:actions>
     </x-header>
     <x-card>
-        <x-table :headers="$headers" :rows="$clients" striped link="{{ route('admin.clients') }}/{id}" :sort-by="$sortBy"
-            with-pagination>
+        <x-table :headers="$headers" :rows="$clients" striped link="{{ route('admin.clients') }}/{id}"
+                 :sort-by="$sortBy"
+                 with-pagination>
         </x-table>
     </x-card>
 </div>

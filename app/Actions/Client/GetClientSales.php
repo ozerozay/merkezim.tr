@@ -20,7 +20,7 @@ class GetClientSales
             $query = Sale::query()
                 ->where('client_id', $client)
                 ->orderBy(...array_values($order))
-                ->with('staffs:id,name')
+                ->with(['staffs:id,name', 'clientTaksits', 'clientServices.service:id,name', 'clientServices.clientServiceUses'])
                 ->withSum(['clientTaksits as total_taksit_remaining' => function ($q) {
                     $q->where('status', SaleStatus::success);
                 }], 'remaining')

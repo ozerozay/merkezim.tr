@@ -9,8 +9,7 @@ use Livewire\Volt\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
-new class extends Component
-{
+new class extends Component {
     use Toast, WithPagination;
 
     public $client;
@@ -45,6 +44,36 @@ new class extends Component
         ];
     }
 
+    public function headersTaksits()
+    {
+        //LiveHelper::class;
+
+        return [
+            ['key' => 'date', 'label' => 'Tarih', 'sortBy' => 'date'],
+            ['key' => 'status', 'label' => 'Durum', 'sortBy' => 'status'],
+            ['key' => 'sale.unique_id', 'label' => 'Satış', 'sortBy' => 'sale_id'],
+            ['key' => 'remaining', 'label' => 'Kalan', 'sortBy' => 'remaining'],
+            ['key' => 'total', 'label' => 'Toplam', 'sortBy' => 'total'],
+        ];
+    }
+
+    public function headersServices()
+    {
+
+        //SaleStatus::cancel;
+        return [
+            ['key' => 'service.name', 'label' => 'Hizmet', 'sortBy' => 'service_id'],
+            ['key' => 'date_human_created', 'label' => 'Tarih', 'sortBy' => 'created_at'],
+            ['key' => 'status', 'label' => 'Durum', 'sortBy' => 'status'],
+            ['key' => 'sale.unique_id', 'label' => 'Satış', 'sortBy' => 'sale_id'],
+            ['key' => 'package.name', 'label' => 'Paket', 'sortBy' => 'sale_id'],
+            ['key' => 'total', 'label' => 'Toplam', 'sortBy' => 'total'],
+            ['key' => 'remaining', 'label' => 'Kalan', 'sortBy' => 'remaining'],
+            ['key' => 'gift', 'label' => 'Hediye', 'sortBy' => 'gift'],
+            ['key' => 'message', 'label' => 'Açıklama', 'sortBy' => 'message'],
+        ];
+    }
+
     public function getSales(): LengthAwarePaginator
     {
         return GetClientSales::run($this->client, true, $this->sortBy);
@@ -71,6 +100,8 @@ new class extends Component
             'total_price_real' => $total_price_real,
             'total_service_remaining' => $total_service_remaining,
             'total_service' => $total_service,
+            'headersTaksits' => $this->headersTaksits(),
+            'headersServices' => $this->headersServices()
         ];
     }
 
@@ -79,192 +110,249 @@ new class extends Component
         return view('livewire.components.card.loading.loading');
     }
 
-    public function changeView()
+    public function changeView(): void
     {
         $this->view = $this->view == 'table' ? 'list' : 'table';
     }
 
-    public bool $showDrawer1 = false;
+    public bool $drawerModel = false;
 
-    public function showDrawer($sale)
+    public function showDrawer($sale): void
     {
-        $this->showDrawer1 = true;
+        $this->dispatch('sale-drawer-update-saleID', $sale)->to('components.drawers.sale_drawer');
+        $this->drawerModel = true;
     }
 
     public string $group = 'group1';
+
+    public $expanded = [];
+    public $expandedService = [];
 };
 
 ?>
 <div>
     <div class="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        <x-stat title="Toplam Tutar" value="{{ LiveHelper::price_text($total_active_taksit_remaining) }}" icon="o-credit-card" />
-        <x-stat title="Kalan Ödeme" value="{{ LiveHelper::price_text($total_active_taksit_remaining) }}" icon="o-credit-card" />
-        <x-stat title="Yapılan Ödeme" value="{{ LiveHelper::price_text($total_paid) }}" icon="o-credit-card" />
-        <x-stat title="Gecikmiş Ödeme" value="{{ LiveHelper::price_text($total_active_late_payment) }}" icon="o-credit-card" />
+        <x-stat title="Toplam Tutar" value="{{ LiveHelper::price_text($total_active_taksit_remaining) }}"
+                icon="o-credit-card"/>
+        <x-stat title="Kalan Ödeme" value="{{ LiveHelper::price_text($total_active_taksit_remaining) }}"
+                icon="o-credit-card"/>
+        <x-stat title="Yapılan Ödeme" value="{{ LiveHelper::price_text($total_paid) }}" icon="o-credit-card"/>
+        <x-stat title="Gecikmiş Ödeme" value="{{ LiveHelper::price_text($total_active_late_payment) }}"
+                icon="o-credit-card"/>
     </div>
     <div class="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-5">
-        <x-stat title="Toplam Seans" :value="$total_service" icon="tabler.info-circle" />
-        <x-stat title="Kullanılan Seans" :value="($total_service - $total_service_remaining)" icon="tabler.info-circle" />
+        <x-stat title="Toplam Seans" :value="$total_service" icon="tabler.info-circle"/>
+        <x-stat title="Kullanılan Seans" :value="($total_service - $total_service_remaining)"
+                icon="tabler.info-circle"/>
         <x-stat title="Kalan Seans" :value="$total_service_remaining" class="text-red-500"
-            icon="tabler.info-circle" />
+                icon="tabler.info-circle"/>
     </div>
     <div class="flex justify-end mb-4 mt-5 gap-2">
         <x-button wire:click="changeView" label="{{ $view == 'table' ? 'LİSTE' : 'TABLO' }}"
-            icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline" />
+                  icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline"/>
 
     </div>
     @if ($view == 'table')
-    <div>
-        <x-card>
-            <x-table :headers="$headers" :rows="$sales" :sort-by="$sortBy" striped with-pagination>
-          
-                @scope('cell_status', $sale)
-                <x-badge :value="$sale->status->label()" class="badge-{{ $sale->status->color() }}" />
-                @endscope
-                @scope('cell_price', $taksit)
-                {{ LiveHelper::price_text($taksit->price) }}
-                @endscope
-                @scope('cell_pesinat', $taksit)
-                {{ LiveHelper::price_text($taksit->pesinat) }}
-                @endscope
-                @scope('cell_total_late_payment', $taksit)
-                {{ LiveHelper::price_text($taksit->total_late_payment) }}
-                @endscope
-                @scope('cell_price_real', $taksit)
-                {{ LiveHelper::price_text($taksit->price_real) }}
-                @endscope
-                @scope('cell_total_taksit_remaining', $taksit)
-                {{ LiveHelper::price_text($taksit->total_taksit_remaining) }}
-                @endscope
-                @scope('cell_total_taksit', $taksit)
-                {{ LiveHelper::price_text($taksit->total_taksit) }}
-                @endscope
-                <x-slot:empty>
-                    <x-icon name="o-cube" label="Satış bulunmuyor." />
-                </x-slot:empty>
-                @scope('actions', $sale)
-                <x-button icon="tabler.settings" wire:click="showDrawer({{ $sale->id }})" class="btn-circle btn-sm btn-primary" />
-                @endscope
-            </x-table>
-        </x-card>
-    @else
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        @foreach ($sales as $sale)
-        <x-card title="{{ $sale->sale_no }} - {{ $sale->date }}" separator class="mb-2">
-        <x-list-item :item="$sale">
-                <x-slot:value>
-                    Durum
-                </x-slot:value>
-                <x-slot:actions>
-                    <x-badge :value="$sale->status->label()" class="badge-{{ $sale->status->color() }}" />
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sale">
-                <x-slot:value>
-                    Tarih
-                </x-slot:value>
-                <x-slot:actions>
-                    {{ $sale->date }}
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sale">
-                <x-slot:value>
-                    Benzersiz
-                </x-slot:value>
-                <x-slot:actions>
-                    {{ $sale->unique_id }}
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sale">
-                <x-slot:value>
-                    Tutar
-                </x-slot:value>
-                <x-slot:actions>
-                {{ LiveHelper::price_text($sale->price) }}
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sale">
-                <x-slot:value>
-                    Gerçek Tutar
-                </x-slot:value>
-                <x-slot:actions>
-                {{ LiveHelper::price_text($sale->price_real) }}
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sale">
-                <x-slot:value>
-                    Peşinat
-                </x-slot:value>
-                <x-slot:actions>
-                {{ LiveHelper::price_text($sale->pesinat) }}
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sale">
-                <x-slot:value>
-                    Toplam
-                </x-slot:value>
-                <x-slot:actions>
-                {{ LiveHelper::price_text($sale->total_taksit) }}
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sale">
-                <x-slot:value>
-                    Gecikmiş
-                </x-slot:value>
-                <x-slot:actions>
-                {{ LiveHelper::price_text($sale->late_payment) }}
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sale">
-                <x-slot:value>
-                    Kalan
-                </x-slot:value>
-                <x-slot:actions>
-                {{ LiveHelper::price_text($sale->total_taksit_remaining) }}
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sale">
-                <x-slot:value>
-                    Toplam Seans
-                </x-slot:value>
-                <x-slot:actions>
-                {{ $sale->total_service }}
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sale">
-                <x-slot:value>
-                    Kalan Seans
-                </x-slot:value>
-                <x-slot:actions>
-                {{ $sale->total_service_remaining }}
-                </x-slot:actions>
-            </x-list-item>
-        </x-card>
-        @endforeach
-    </div>
-    @endif
-    <x-drawer wire:model="showDrawer1" title="Satış İşlemleri" separator with-close-button right class="w-full lg:w-1/3">
-    <x-accordion wire:model="group">
-    <x-collapse name="group1">
-        <x-slot:heading>Bilgilerini Düzenle</x-slot:heading>
-        <x-slot:content>Hello 1</x-slot:content>
-    </x-collapse>
-    <x-collapse name="group2">
-        <x-slot:heading>Durumunu Düzenle</x-slot:heading>
-        <x-slot:content>Hello 1</x-slot:content>
-    </x-collapse>
-    <x-collapse name="group3">
-        <x-slot:heading>Hizmetler</x-slot:heading>
-        <x-slot:content>Hello 2</x-slot:content>
-    </x-collapse>
-    <x-collapse name="group4">
-        <x-slot:heading>Taksitler</x-slot:heading>
-        <x-slot:content>Hello 3</x-slot:content>
-    </x-collapse>
-    <x-collapse name="group5">
-        <x-slot:heading>Tahsilat</x-slot:heading>
-        <x-slot:content>Hello 3</x-slot:content>
-    </x-collapse>
-</x-accordion>
-</x-drawer>
-</div>
+        <div>
+            <x-card>
+                <x-table :headers="$headers" :rows="$sales" wire:model="expanded" :sort-by="$sortBy" striped
+                         with-pagination expandable>
+                    @scope('expansion', $sale, $headersTaksits, $headersServices, $expandedService)
+                    <div class="bg-base-200 p-8 font-bold">
+                       
+                        <x-table :headers="$headersTaksits" :rows="$sale->clientTaksits" striped>
+                            <x-slot:empty>
+                                <x-icon name="o-cube" label="Taksit bulunmuyor."/>
+                            </x-slot:empty>
+                            @scope('cell_sale.unique_id', $taksit)
+                            {{ $taksit->sale->unique_id ?? '-' }}
+                            @endscope
+                            @scope('cell_status', $taksit)
+                            <x-badge :value="$taksit->status->label()" class="badge-{{ $taksit->status->color() }}"/>
+                            @endscope
+                            @scope('cell_total', $taksit)
+                            {{ LiveHelper::price_text($taksit->total) }}
+                            @endscope
+                            @scope('cell_remaining', $taksit)
+                            {{ LiveHelper::price_text($taksit->remaining) }}
+                            @endscope
+                        </x-table>
+                        <x-hr/>
+                        <x-table :headers="$headersServices" :rows="$sale->clientServices" wire:model="expandedService"
+                                 striped
+                                 expandable>
+                            <x-slot:empty>
+                                <x-icon name="o-cube" label="Hizmet bulunmuyor."/>
+                            </x-slot:empty>
+                            @scope('cell_sale.unique_id', $service)
+                            {{ $service->sale->unique_id ?? 'Yok' }}
+                            @endscope
+                            @scope('cell_package.name', $service)
+                            {{ $service->package->name ?? 'Yok' }}
+                            @endscope
+                            @scope('expansion', $service)
+                            Personel : {{ $service->userServices->name ?? '' }}
+                            <div class="bg-base-200 p-8 font-bold">
+                                @foreach ($service->clientServiceUses as $uses)
+                                    <x-list-item :item="$uses" no-separator no-hover>
+                                        <x-slot:avatar>
+                                            <x-badge value="{{ $uses->seans }} seans" class="badge-primary"/>
+                                        </x-slot:avatar>
+                                        <x-slot:value>
+                                            {{ $uses->date_human_created }} - {{ $uses->message }}
+                                        </x-slot:value>
+                                        <x-slot:sub-value>
+                                            {{ $uses->user->name ?? '' }}
+                                        </x-slot:sub-value>
+                                    </x-list-item>
+                                @endforeach
+                            </div>
+                            @endscope
+                            @scope('cell_status', $service)
+                            <x-badge :value="$service->status->label()" class="badge-{{ $service->status->color() }}"/>
+                            @endscope
+                            @scope('cell_gift', $service)
+                            @if ($service->gift)
+                                <x-icon name="o-check" class="text-green-500"/>
+                            @endif
+                            @endscope
+                            @scope('cell_remaining', $service)
+                            @if ($service->remaining < 1)
+                                <x-icon name="o-x-circle" class="text-red-500"/>
+                            @else
+                                {{ $service->remaining }}
+                            @endif
+                            @endscope
+
+                        </x-table>
+                    </div>
+                    @endscope
+                    @scope('cell_status', $sale)
+                    <x-badge :value="$sale->status->label()" class="badge-{{ $sale->status->color() }}"/>
+                    @endscope
+                    @scope('cell_price', $taksit)
+                    {{ LiveHelper::price_text($taksit->price) }}
+                    @endscope
+                    @scope('cell_pesinat', $taksit)
+                    {{ LiveHelper::price_text($taksit->pesinat) }}
+                    @endscope
+                    @scope('cell_total_late_payment', $taksit)
+                    {{ LiveHelper::price_text($taksit->total_late_payment) }}
+                    @endscope
+                    @scope('cell_price_real', $taksit)
+                    {{ LiveHelper::price_text($taksit->price_real) }}
+                    @endscope
+                    @scope('cell_total_taksit_remaining', $taksit)
+                    {{ LiveHelper::price_text($taksit->total_taksit_remaining) }}
+                    @endscope
+                    @scope('cell_total_taksit', $taksit)
+                    {{ LiveHelper::price_text($taksit->total_taksit) }}
+                    @endscope
+                    <x-slot:empty>
+                        <x-icon name="o-cube" label="Satış bulunmuyor."/>
+                    </x-slot:empty>
+                    @scope('actions', $sale)
+                    <x-button icon="tabler.settings" wire:click="showDrawer({{ $sale->id }})"
+                              class="btn-circle btn-sm btn-primary"/>
+                    @endscope
+                </x-table>
+            </x-card>
+            @else
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    @foreach ($sales as $sale)
+                        <x-card title="{{ $sale->sale_no }} - {{ $sale->date }}" separator class="mb-2">
+                            <x-list-item :item="$sale">
+                                <x-slot:value>
+                                    Durum
+                                </x-slot:value>
+                                <x-slot:actions>
+                                    <x-badge :value="$sale->status->label()"
+                                             class="badge-{{ $sale->status->color() }}"/>
+                                </x-slot:actions>
+                            </x-list-item>
+                            <x-list-item :item="$sale">
+                                <x-slot:value>
+                                    Tarih
+                                </x-slot:value>
+                                <x-slot:actions>
+                                    {{ $sale->date }}
+                                </x-slot:actions>
+                            </x-list-item>
+                            <x-list-item :item="$sale">
+                                <x-slot:value>
+                                    Benzersiz
+                                </x-slot:value>
+                                <x-slot:actions>
+                                    {{ $sale->unique_id }}
+                                </x-slot:actions>
+                            </x-list-item>
+                            <x-list-item :item="$sale">
+                                <x-slot:value>
+                                    Tutar
+                                </x-slot:value>
+                                <x-slot:actions>
+                                    {{ LiveHelper::price_text($sale->price) }}
+                                </x-slot:actions>
+                            </x-list-item>
+                            <x-list-item :item="$sale">
+                                <x-slot:value>
+                                    Gerçek Tutar
+                                </x-slot:value>
+                                <x-slot:actions>
+                                    {{ LiveHelper::price_text($sale->price_real) }}
+                                </x-slot:actions>
+                            </x-list-item>
+                            <x-list-item :item="$sale">
+                                <x-slot:value>
+                                    Peşinat
+                                </x-slot:value>
+                                <x-slot:actions>
+                                    {{ LiveHelper::price_text($sale->pesinat) }}
+                                </x-slot:actions>
+                            </x-list-item>
+                            <x-list-item :item="$sale">
+                                <x-slot:value>
+                                    Toplam
+                                </x-slot:value>
+                                <x-slot:actions>
+                                    {{ LiveHelper::price_text($sale->total_taksit) }}
+                                </x-slot:actions>
+                            </x-list-item>
+                            <x-list-item :item="$sale">
+                                <x-slot:value>
+                                    Gecikmiş
+                                </x-slot:value>
+                                <x-slot:actions>
+                                    {{ LiveHelper::price_text($sale->late_payment) }}
+                                </x-slot:actions>
+                            </x-list-item>
+                            <x-list-item :item="$sale">
+                                <x-slot:value>
+                                    Kalan
+                                </x-slot:value>
+                                <x-slot:actions>
+                                    {{ LiveHelper::price_text($sale->total_taksit_remaining) }}
+                                </x-slot:actions>
+                            </x-list-item>
+                            <x-list-item :item="$sale">
+                                <x-slot:value>
+                                    Toplam Seans
+                                </x-slot:value>
+                                <x-slot:actions>
+                                    {{ $sale->total_service }}
+                                </x-slot:actions>
+                            </x-list-item>
+                            <x-list-item :item="$sale">
+                                <x-slot:value>
+                                    Kalan Seans
+                                </x-slot:value>
+                                <x-slot:actions>
+                                    {{ $sale->total_service_remaining }}
+                                </x-slot:actions>
+                            </x-list-item>
+                        </x-card>
+                    @endforeach
+                </div>
+            @endif
+            <livewire:components.drawers.sale_drawer wire:model="drawerModel" lazy/>
+        </div>

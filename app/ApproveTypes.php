@@ -17,4 +17,5 @@ enum ApproveTypes: string
     case approve_offer = 'approve_offer';
     case create_taksit = 'create_taksit';
     case mahsup = 'mahsup';
+    case payment = 'payment';
 }

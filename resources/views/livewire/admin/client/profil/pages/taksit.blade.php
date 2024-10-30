@@ -4,31 +4,28 @@ use App\Actions\Client\GetClientTaksits;
 use App\Models\ClientTaksit;
 use App\TaksitStatus;
 use App\Traits\LiveHelper;
+use App\Traits\WithViewPlaceHolder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Volt\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
-new class extends Component
-{
-    use Toast, WithPagination;
+new class extends Component {
+    use Toast, WithPagination, WithViewPlaceHolder;
 
-    public $client;
+    public ?int $client;
 
-    public $client_taksits;
+    public ?int $selected;
 
-    public bool $taksit_edit = false;
+    public bool $editing = false;
 
-    public ?ClientTaksit $selected_taksit;
-
-    public $view = 'table';
-
-    public array $sortBy = ['column' => 'date', 'direction' => 'asc'];
-
-    public function headers()
+    public function getData()
     {
-        //LiveHelper::class;
+        return GetClientTaksits::run(client: $this->client, paginate: true, order: $this->sortBy);
+    }
 
+    public function headers(): array
+    {
         return [
             ['key' => 'date', 'label' => 'Tarih', 'sortBy' => 'date'],
             ['key' => 'status', 'label' => 'Durum', 'sortBy' => 'status'],
@@ -38,119 +35,111 @@ new class extends Component
         ];
     }
 
-    public function getTaksits(): LengthAwarePaginator
+    public function showSettings($id): void
     {
-        return GetClientTaksits::run($this->client, true, $this->sortBy);
+        $this->dispatch('drawer-taksit-update-id', $id)->to('components.drawers.drawer_taksit');
+        $this->editing = true;
     }
 
-    public function with()
+
+    public function with(): array
     {
-        $taksits = $this->getTaksits();
-
-        $late_payment = $taksits->where('status', TaksitStatus::late_payment)->sum('remaining');
-
-        $remaining_payment = $taksits->where('status', TaksitStatus::success)->sum('remaining');
-
-        $total_payment = $taksits->whereIn('status', [TaksitStatus::success, TaksitStatus::waiting, TaksitStatus::late_payment])->sum('total');
-
         return [
-            'taksits' => $this->getTaksits(),
+            'data' => $this->getData(),
             'headers' => $this->headers(),
-            'late_payment' => $late_payment,
-            'remaining_payment' => $remaining_payment,
-            'total_payment' => $total_payment,
+            'statistic' => [
+                ['name' => 'Toplam', 'value' => 0, 'number' => true],
+                ['name' => 'Kalan', 'value' => 0, 'number' => true],
+                ['name' => 'Gecikmiş', 'value' => 0, 'number' => true, 'red' => true],
+            ],
         ];
     }
-
-    public function placeholder()
-    {
-        return view('livewire.components.card.loading.loading');
-    }
-
-    public function changeView()
-    {
-        $this->view = $this->view == 'table' ? 'list' : 'table';
-    }
-
-    public array $expanded = [];
 };
 ?>
 <div>
-    <div class="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
-        <x-stat title="Toplam Aktif" value="{{ LiveHelper::price_text($total_payment) }}" icon="o-credit-card" />
-        <x-stat title="Kalan Ödeme" value="{{ LiveHelper::price_text($remaining_payment) }}" icon="o-credit-card" />
-        <x-stat title="Gecikmiş Ödeme" value="{{ LiveHelper::price_text($late_payment) }}" class="text-red-500"
-            icon="o-credit-card" />
-    </div>
+    <livewire:components.card.statistic.card_statistic :data="$statistic"/>
     <div class="flex justify-end mb-4 mt-5 gap-2">
         <p>Sıralama işlemlerini tablo görünümünden yapabilirsiniz.</p>
         <x-button wire:click="changeView" label="{{ $view == 'table' ? 'LİSTE' : 'TABLO' }}"
-            icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline" />
-
+                  icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline"/>
     </div>
-    @if ($view == 'table')
-    <div>
-        <x-card>
-            <x-table :headers="$headers" :rows="$taksits" :sort-by="$sortBy" striped with-pagination>
-                <x-slot:empty>
-                    <x-icon name="o-cube" label="Taksit bulunmuyor." />
-                </x-slot:empty>
-                @scope('cell_sale.unique_id', $taksit)
-                {{ $taksit->sale->unique_id ?? '-' }}
-                @endscope
-                @scope('cell_status', $taksit)
-                <x-badge :value="$taksit->status->label()" class="badge-{{ $taksit->status->color() }}" />
-                @endscope
-                @scope('cell_total', $taksit)
-                {{ LiveHelper::price_text($taksit->total) }}
-                @endscope
-                @scope('cell_remaining', $taksit)
-                {{ LiveHelper::price_text($taksit->remaining) }}
-                @endscope
-            </x-table>
-        </x-card>
-    </div>
+    @if ($view)
+        <div>
+            <x-card>
+                <x-table :headers="$headers" :rows="$data" :sort-by="$sortBy" striped with-pagination>
+                    <x-slot:empty>
+                        <x-icon name="o-cube" label="Taksit bulunmuyor."/>
+                    </x-slot:empty>
+                    @scope('cell_sale.unique_id', $taksit)
+                    <p>{{ $taksit->sale->sale_no}} - {{$taksit->sale->unique_id}}</p>
+                    @endscope
+                    @scope('cell_status', $taksit)
+                    <x-badge :value="$taksit->status->label()" class="badge-{{ $taksit->status->color() }}"/>
+                    @endscope
+                    @scope('cell_date', $taksit)
+                    {{  $taksit->date_human }}
+                    @endscope
+                    @scope('cell_total', $taksit)
+                    @price($taksit->total)
+                    @endscope
+                    @scope('cell_remaining', $taksit)
+                    @price($taksit->remaining)
+                    @endscope
+                    @scope('actions', $taksit)
+                    <x-button icon="tabler.settings"
+                              wire:click="showSettings({{ $taksit->id }})"
+                              class="btn-circle btn-sm btn-primary"/>
+                    @endscope
+                </x-table>
+            </x-card>
+        </div>
     @else
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        @if ($taksits->count() == 0)
-        <p class="text-center">Taksit bulunmuyor.</p>
-        @endif
-        @foreach ($taksits as $taksit)
-        <x-card title="{{ $taksit->date_human_created }}" separator class="mb-2">
-            <x-list-item :item="$taksit">
-                <x-slot:value>
-                    Durum
-                </x-slot:value>
-                <x-slot:actions>
-                    <x-badge :value="$taksit->status->label()" class="badge-{{ $taksit->status->color() }}" />
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$taksit">
-                <x-slot:value>
-                    Satış
-                </x-slot:value>
-                <x-slot:actions>
-                    {{ $taksit->sale->unique_id ?? 'YOK' }}
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$taksit">
-                <x-slot:value>
-                    Toplam
-                </x-slot:value>
-                <x-slot:actions>
-                    {{ $taksit->total }}
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$taksit">
-                <x-slot:value>
-                    Kalan
-                </x-slot:value>
-                <x-slot:actions>
-                    {{ $taksit->remaining }}
-                </x-slot:actions>
-            </x-list-item>
-        </x-card>
-        @endforeach
-    </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            @if ($data->count() == 0)
+                <p class="text-center">Taksit bulunmuyor.</p>
+            @endif
+            @foreach ($data as $taksit)
+                <x-card title="{{ $taksit->date_human }}" separator class="mb-2">
+                    <x-slot:menu>
+                        <x-button icon="tabler.settings"
+                                  wire:click="showSettings({{ $taksit->id }})"
+                                  class="btn-circle btn-sm btn-primary"/>
+                    </x-slot:menu>
+                    <x-list-item :item="$taksit">
+                        <x-slot:value>
+                            Durum
+                        </x-slot:value>
+                        <x-slot:actions>
+                            <x-badge :value="$taksit->status->label()" class="badge-{{ $taksit->status->color() }}"/>
+                        </x-slot:actions>
+                    </x-list-item>
+                    <x-list-item :item="$taksit">
+                        <x-slot:value>
+                            Satış
+                        </x-slot:value>
+                        <x-slot:actions>
+                            <p>{{ $taksit->sale->sale_no}} - {{$taksit->sale->unique_id}}</p>
+                        </x-slot:actions>
+                    </x-list-item>
+                    <x-list-item :item="$taksit">
+                        <x-slot:value>
+                            Toplam
+                        </x-slot:value>
+                        <x-slot:actions>
+                            @price($taksit->total)
+                        </x-slot:actions>
+                    </x-list-item>
+                    <x-list-item :item="$taksit">
+                        <x-slot:value>
+                            Kalan
+                        </x-slot:value>
+                        <x-slot:actions>
+                            @price($taksit->remaining)
+                        </x-slot:actions>
+                    </x-list-item>
+                </x-card>
+            @endforeach
+        </div>
     @endif
+    <livewire:components.drawers.drawer_taksit wire:model="editing"/>
 </div>

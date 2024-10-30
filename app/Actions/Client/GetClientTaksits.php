@@ -11,14 +11,14 @@ class GetClientTaksits
 {
     use AsAction;
 
-    public function handle($client, $paginate, $order)
+    public function handle($client, $paginate, $order, $saleID = null)
     {
         try {
 
             $query = ClientTaksit::query()
                 ->where('client_id', $client)
                 ->orderBy(...array_values($order))
-                ->with('sale:id,unique_id');
+                ->with('sale:id,unique_id,sale_no');
 
             return $paginate ? $query->paginate(10) : $query->get();
 
