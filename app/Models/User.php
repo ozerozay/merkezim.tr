@@ -289,6 +289,56 @@ class User extends Authenticatable
         return $this->hasMany(Mahsup::class);
     }
 
+    /**
+     * Get all of the clientTaksitsLocks.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function clientTaksitsLocks()
+    {
+        return $this->hasMany(ClientTaksitsLock::class, 'client_id');
+    }
+
+    /**
+     * Get all of the clientAppointments.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function clientAppointments()
+    {
+        return $this->hasMany(Appointment::class, 'client_id');
+    }
+
+    /**
+     * Get all of the appointmentsForward.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function appointmentsForward()
+    {
+        return $this->hasMany(Appointment::class, 'forward_user_id');
+    }
+
+    /**
+     * Get all of the appointmentStatuses.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function appointmentStatuses()
+    {
+        return $this->hasMany(AppointmentStatuses::class);
+    }
+
+    /**
+     * Get all of the appointmentsFinish.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function appointmentsFinish()
+    {
+        return $this->hasMany(Appointment::class, 'finish_user_id');
+    }
+
     public function search()
     {
     }

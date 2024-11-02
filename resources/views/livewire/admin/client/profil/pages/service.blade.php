@@ -9,7 +9,7 @@ use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
 new class extends Component {
-    use Toast, WithPagination, \App\Traits\WithViewPlaceHolder;
+    use Toast, WithPagination, \App\Traits\WithViewPlaceHolder, \Livewire\WithoutUrlPagination;
 
     public ?int $client;
 

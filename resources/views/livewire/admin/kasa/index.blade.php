@@ -151,17 +151,6 @@ class extends Component {
                         <x-button class="btn-outline" type="submit" label="Gönder"/>
                     </x:slot:actions>
                 </x-form>
-
-            </x-dropdown>
-            <x-dropdown label="Kasa İşlemleri">
-                <x-slot:trigger>
-                    <x-button icon="tabler.settings" class="btn-primary" label="Kasa İşlemleri" responsive/>
-                </x-slot:trigger>
-                <x-menu-item title="Tahsilat"/>
-                <x-menu-item title="Not Al"/>
-                <x-menu-item title="Mahsup"/>
-                <x-menu-item title="Ödeme Yap"/>
-                <x-menu-item title="Ödeme Al"/>
             </x-dropdown>
         </x-slot:actions>
     </x-header>
@@ -195,8 +184,6 @@ class extends Component {
             </div>
             <x-hr/>
             <x-table :headers="$headers" :rows="$sube" :sort-by="$sortBy"
-                     wire:model="expanded"
-                     expandable
                      link="kasa/detail?kasa={id}&start={{ $first_date_string  }}&end={{ $last_date_string  }}"
                      striped>
                 @scope('cell_bakiye', $tra)
@@ -210,11 +197,6 @@ class extends Component {
                 @endscope
                 @scope('cell_odenen', $transaction)
                 {{ LiveHelper::price_text($transaction['odenen']) }}
-                @endscope
-                @scope('expansion', $transaction)
-                <div class="bg-base-200 p-8 font-bold">
-                    Hello,
-                </div>
                 @endscope
             </x-table>
         </x-card>

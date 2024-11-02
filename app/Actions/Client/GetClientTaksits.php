@@ -18,6 +18,7 @@ class GetClientTaksits
             $query = ClientTaksit::query()
                 ->where('client_id', $client)
                 ->orderBy(...array_values($order))
+                ->withCount('clientTaksitsLocks')
                 ->with('sale:id,unique_id,sale_no');
 
             return $paginate ? $query->paginate(10) : $query->get();

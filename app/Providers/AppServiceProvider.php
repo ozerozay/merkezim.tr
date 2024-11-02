@@ -60,6 +60,9 @@ class AppServiceProvider extends ServiceProvider
             'sale_product' => 'App\Models\SaleProduct',
             'sale_product_item' => 'App\Models\SaleProductItem',
             'mahsup' => 'App\Models\Mahsup',
+            'client_taksit_lock' => 'App\Models\ClientTaksitsLock',
+            'appointment' => 'App\Models\Appointment',
+            'appointment_statuses' => 'App\Models\AppointmentStatuses',
         ]);
 
         Blade::directive('price', function ($price) {

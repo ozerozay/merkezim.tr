@@ -23,6 +23,16 @@ class KasaSeeder extends Seeder
                 'branch_id' => 1,
                 'name' => 'İŞ BANKASI',
             ]);
+
+            Kasa::create([
+                'branch_id' => 2,
+                'name' => 'merkezzzz',
+            ]);
+
+            Kasa::create([
+                'branch_id' => 2,
+                'name' => 'POS',
+            ]);
         });
 
     }

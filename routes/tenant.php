@@ -33,24 +33,7 @@ Route::middleware([
 
     Route::get('/spotlight', [Spotlight::class, 'search'])->name('mary.spotlight');
 
-    //Route::get('/login', Login::class)->name('login');
-
-    Route::get('c', function () {
-        $sale = Sale::where('id', 5)->first();
-
-        $sale->status = SaleStatus::success;
-        $sale->save();
-    });
-
-    Route::get('/tt', function () {
-
-        $offer = Offer::where('id', 8)->with('items')->first();
-
-        foreach ($offer->items as $item) {
-            dump($item);
-        }
-
-    });
+    Volt::route('/', 'client.index');
 
     Route::get('/logout', function () {
         Auth::logout();
@@ -61,11 +44,12 @@ Route::middleware([
     });
 
     Route::middleware('auth')->group(function () {
-        Volt::route('/', 'test');
-        Volt::route('/new', 'new')->name('new');
-        Volt::route('/merkez', 'merkezim.merkez')->name('merkezim.merkez');
+        /*
+         Volt::route('/new', 'new')->name('new');
+         Volt::route('/merkez', 'merkezim.merkez')->name('merkezim.merkez');*/
 
         Route::prefix('admin')->group(function () {
+            Volt::route('/', 'test');
 
             Route::prefix('action')->group(function () {
 
@@ -113,6 +97,10 @@ Route::middleware([
                     ->name('admin.actions.client_create_taksit')
                     ->middleware('can:action_client_create_taksit');
 
+                Volt::route('/appointment_create', 'admin.actions.client_create_appointment')
+                    ->name('admin.actions.client_create_appointment')
+                    ->middleware('can:action_client_create_appointment');
+
                 /*Route::prefix('/offer')->group(function () {
 
                     Volt::route('/customer', 'admin.actions.client_offer.customer')
@@ -133,6 +121,10 @@ Route::middleware([
                 Volt::route('/detail', 'admin.kasa.detail')->name('admin.kasa.detail')->middleware('can:page_kasa_detail');
                 Volt::route('/mahsup', 'admin.actions.kasa.mahsup')->name('admin.kasa.mahsup')->middleware('can:kasa_mahsup');
                 Volt::route('/payment', 'admin.actions.kasa.make_payment')->name('admin.kasa.make_payment')->middleware('can:kasa_make_payment');
+            });
+
+            Route::prefix('appointment')->group(function () {
+                Volt::route('/', 'admin.appointment.index')->name('admin.appointment')->middleware('can:page_randevu');
             });
 
             Route::prefix('client')->group(function () {
@@ -170,6 +162,28 @@ Route::middleware([
 
     Route::get('/per', function () {
         dd(Auth::user()->getAllPermissions());
+    });
+
+    //Route::get('/login', Login::class)->name('login');
+
+    Route::get('c', function () {
+        $sale = Sale::all();
+
+        foreach ($sale as $sale) {
+            $sale->status = SaleStatus::success;
+            $sale->save();
+        }
+
+    });
+
+    Route::get('/tt', function () {
+
+        $offer = Offer::where('id', 8)->with('items')->first();
+
+        foreach ($offer->items as $item) {
+            dump($item);
+        }
+
     });
 
 });

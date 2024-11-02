@@ -11,7 +11,7 @@ use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
 new class extends Component {
-    use Toast, WithPagination, WithViewPlaceHolder;
+    use Toast, WithPagination, WithViewPlaceHolder, \Livewire\WithoutUrlPagination;
 
     public ?int $client;
 
@@ -32,6 +32,7 @@ new class extends Component {
             ['key' => 'sale.unique_id', 'label' => 'Satış', 'sortBy' => 'sale_id'],
             ['key' => 'remaining', 'label' => 'Kalan', 'sortBy' => 'remaining'],
             ['key' => 'total', 'label' => 'Toplam', 'sortBy' => 'total'],
+            ['key' => 'client_taksits_locks_count', 'label' => 'Kilit', 'sortable' => false]
         ];
     }
 

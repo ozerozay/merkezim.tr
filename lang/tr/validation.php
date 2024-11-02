@@ -228,6 +228,9 @@ return [
         'amount' => 'Miktar',
         'giris_kasa_id' => 'Giriş kasası',
         'cikis_kasa_id' => 'Çıkış kasası',
+        'date' => 'Tarih',
+        'room' => 'Hizmet odası',
+        'now' => 'şu an',
     ],
 
 ];

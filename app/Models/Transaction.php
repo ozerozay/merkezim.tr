@@ -67,7 +67,14 @@ class Transaction extends Model
     protected function dateHuman(): Attribute
     {
         return Attribute::make(
-            get: fn (?Carbon $value) => $this->created_at->format('d/m/Y')
+            get: fn (?Carbon $value) => Carbon::parse($this->date)->format('d/m/Y')
+        );
+    }
+
+    protected function dateHumanCreated(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?Carbon $value) => $this->created_at->format('d/m/Y  H:i:s')
         );
     }
 }

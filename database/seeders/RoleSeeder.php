@@ -70,6 +70,13 @@ class RoleSeeder extends Seeder
             ]);
 
             Permission::create([
+                'name' => 'action_client_create_appointment',
+                'description' => 'Randevu Oluştur',
+                'route' => 'admin.actions.client_create_appointment',
+                'visible' => true,
+            ]);
+
+            Permission::create([
                 'name' => 'action_client_sale',
                 'description' => 'Satış Oluştur',
                 'route' => 'admin.actions.client_sale_create',
@@ -209,6 +216,13 @@ class RoleSeeder extends Seeder
             ]);
 
             Permission::create([
+                'name' => 'page_randevu',
+                'description' => 'Randevu',
+                'route' => 'admin.appointment',
+                'visible' => true,
+            ]);
+
+            Permission::create([
                 'name' => 'page_kasa_detail',
                 'description' => 'Kasa - Detay',
                 'route' => 'admin.kasa.detail',
@@ -255,6 +269,13 @@ class RoleSeeder extends Seeder
             Permission::create([
                 'name' => 'sale_product_process',
                 'description' => 'Ürün Satış - Düzenleme, Silme, Aktarma',
+                'route' => '',
+                'visible' => false,
+            ]);
+
+            Permission::create([
+                'name' => 'kasa_detail_process',
+                'description' => 'Kasa İşlemi - Düzenleme, Silme, Aktarma',
                 'route' => '',
                 'visible' => false,
             ]);

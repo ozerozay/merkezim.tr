@@ -6,7 +6,7 @@ use Mary\Traits\Toast;
 
 new class extends \Livewire\Volt\Component {
 
-    use Toast, WithPagination, WithViewPlaceHolder;
+    use Toast, WithPagination, WithViewPlaceHolder, \Livewire\WithoutUrlPagination;
 
     public ?int $client;
 

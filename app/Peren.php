@@ -13,19 +13,28 @@ class Peren
 {
     public static string $approve_request_ok = 'Talebiniz alındı, onaylandıktan sonra aktif edilecektir.';
 
-    public static function parseDate($date)
+    public static function parseDate($date): ?string
     {
         return $date != null ? Carbon::parse($date)->format('Y-m-d') : null;
     }
 
-    public static function parseDateField($date)
+    public static function parseDateField($date): ?string
     {
         return $date != null ? Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d') : null;
     }
 
-    public static function dateConfig($min = null, $max = null)
+    public static function dateConfig($min = null, $max = null, $enableTime = false, $mode = null)
     {
-        $config = ['altFormat' => 'd/m/Y', 'locale' => 'tr'];
+        $config = ['altFormat' => 'd/m/Y', 'locale' => 'tr', 'disableMobile' => true];
+
+        if ($enableTime) {
+            $config['enableTime'] = true;
+            $config['altFormat'] = 'd/m/Y H:i';
+        }
+
+        if ($mode) {
+            $config['mode'] = $mode;
+        }
 
         if ($min) {
             $config['minDate'] = $min;

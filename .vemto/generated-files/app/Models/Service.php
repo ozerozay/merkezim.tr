@@ -44,4 +44,9 @@ class Service extends Model
     {
         return $this->hasMany(AdisyonService::class);
     }
+
+    public function clientTaksitsLocks()
+    {
+        return $this->hasMany(ClientTaksitsLock::class);
+    }
 }

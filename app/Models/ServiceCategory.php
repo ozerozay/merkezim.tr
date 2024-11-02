@@ -4,18 +4,18 @@ namespace App\Models;
 
 use App\Traits\BranchActive;
 use App\Traits\StringHelper;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 class ServiceCategory extends Model
 {
-    use BranchActive;
     use HasFactory;
-    use HasJsonRelationships;
     use SoftDeletes;
+    use BranchActive;
+    use HasJsonRelationships;
 
     protected $guarded = ['id'];
 
@@ -32,6 +32,11 @@ class ServiceCategory extends Model
     public function services()
     {
         return $this->hasMany(Service::class, 'category_id');
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
     }
 
     protected static function booted(): void

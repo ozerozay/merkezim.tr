@@ -10,14 +10,19 @@ class GetClientActiveService
 {
     use AsAction;
 
-    public function handle($client, $status)
+    public function handle($client, $status, $category)
     {
         return ClientService::query()
             ->select(['id', 'service_id', 'client_id', 'sale_id', 'status', 'total', 'remaining', 'sale_id'])
             ->where('client_id', $client)
             ->where('status', $status ?? SaleStatus::success)
             ->where('remaining', '>', 0)
-            ->with(['service:id,name', 'sale:id,sale_no'])
+            ->when($category, function ($query) use ($category) {
+                $query->whereHas('service', function ($q) use ($category) {
+                    $q->where('category_id', $category);
+                });
+            })
+            ->with(['service:id,name,duration', 'sale:id,sale_no'])
             ->get();
     }
 }

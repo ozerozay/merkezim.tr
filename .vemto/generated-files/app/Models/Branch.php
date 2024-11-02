@@ -77,6 +77,11 @@ class Branch extends Model
         return $this->hasMany(SaleProduct::class);
     }
 
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
     public function branch_staff_active()
     {
         return $this->query()

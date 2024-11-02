@@ -26,7 +26,7 @@ class CreateManuelTaksitAction
                 ->first();
 
             foreach ($info['taksits'] as $taksit) {
-                CreateTaksitAction::run([
+                $tc = CreateTaksitAction::run([
                     'client_id' => $client->id,
                     'branch_id' => $client->branch_id,
                     'sale_id' => $info['sale_id'],
@@ -35,6 +35,15 @@ class CreateManuelTaksitAction
                     'status' => SaleStatus::success,
                     'date' => Peren::parseDateField($taksit['date']),
                 ]);
+                foreach ($taksit['locked'] as $tl) {
+                    foreach ($tl['service_ids'] as $si) {
+                        $tc->clientTaksitsLocks()->create([
+                            'client_id' => $client->id,
+                            'service_id' => $si,
+                            'quantity' => $tl['quantity'],
+                        ]);
+                    }
+                }
             }
 
             DB::commit();

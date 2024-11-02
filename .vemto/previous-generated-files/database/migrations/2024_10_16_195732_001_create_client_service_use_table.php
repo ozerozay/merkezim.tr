@@ -14,11 +14,21 @@ return new class extends Migration {
     {
         Schema::create('client_service_use', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->unsigned();
-            $table->bigInteger('client_id')->unsigned();
-            $table->bigInteger('client_service_id')->unsigned();
+            $table
+                ->bigInteger('user_id')
+                ->unsigned()
+                ->nullable()
+                ->index();
+            $table
+                ->bigInteger('client_id')
+                ->unsigned()
+                ->index();
+            $table
+                ->bigInteger('client_service_id')
+                ->unsigned()
+                ->index();
             $table->integer('seans');
-            $table->string('message');
+            $table->string('message', 255);
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
             $table->timestamp('deleted_at')->nullable();

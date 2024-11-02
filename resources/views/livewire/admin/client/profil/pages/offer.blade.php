@@ -17,7 +17,7 @@ use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
 new class extends Component {
-    use Toast, WithPagination, WithViewPlaceHolder;
+    use Toast, WithPagination, WithViewPlaceHolder, \Livewire\WithoutUrlPagination;
 
     public ?int $client;
 

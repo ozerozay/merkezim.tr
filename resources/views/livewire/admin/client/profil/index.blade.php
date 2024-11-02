@@ -115,11 +115,8 @@ class extends Component {
                                      link="{{ route('admin.actions.client_create_taksit', ['client' => $user->id]) }}"
                                      title="Taksit Oluştur"/>
                     @endcan
-                    @can('action_client_create_taksit')
-                        <x-menu-item icon="tabler.cash-banknote" title="Kilitli Taksit Oluştur"
-                                     link="{{ route('admin.actions.client_create_taksit', ['client' => $user->id]) }}"/>
-                    @endcan
-                    @can('action_create_coupon')
+
+                    @can('action_client_create_offer')
                         <x-menu-item icon="tabler.confetti"
                                      link="{{ route('admin.actions.client_create_offer', ['client' => $user->id]) }}"
                                      title="Teklif Oluştur"/>

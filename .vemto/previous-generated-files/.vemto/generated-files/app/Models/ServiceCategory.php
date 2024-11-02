@@ -17,7 +17,7 @@ class ServiceCategory extends Model
     use BranchActive;
     use HasJsonRelationships;
 
-    protected $fillable = ['branch_ids', 'name', 'active', 'price', 'earn'];
+    protected $guarded = ['id'];
 
     protected function casts(): array
     {
@@ -34,9 +34,9 @@ class ServiceCategory extends Model
         return $this->hasMany(Service::class, 'category_id');
     }
 
-    public function coupons()
+    public function appointments()
     {
-        return $this->hasMany(Coupon::class);
+        return $this->hasMany(Appointment::class);
     }
 
     protected static function booted(): void
