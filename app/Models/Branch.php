@@ -90,6 +90,20 @@ class Branch extends Model
         return $openingHours->isOpenAt($date);
     }
 
+    public function startTimeByDay($date)
+    {
+        $openingHours = OpeningHours::create($this->opening_hours);
+
+        return $openingHours->currentOpenRange($date)->start() ?? null;
+    }
+
+    public function closeTimeByDay($date)
+    {
+        $openingHours = OpeningHours::create($this->opening_hours);
+
+        return $openingHours->currentOpenRange($date)->end() ?? null;
+    }
+
     public function branch_staff_active()
     {
         return $this->query()

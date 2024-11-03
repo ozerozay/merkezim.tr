@@ -160,6 +160,41 @@ Route::middleware([
         });
     });
 
+    Route::get('/apptest', function () {
+
+        $info = [
+            'branch_id' => 2,
+            'search_date_first' => '2024-11-04',
+            'search_date_last' => '2024-11-04',
+            'category_id' => 1,
+            'duration' => 60,
+            'type' => 'range',
+        ];
+
+        $info_multiple = [
+            'branch_id' => 2,
+            'category_id' => 1,
+            'duration' => 60,
+            'type' => 'multiple',
+            'dates' => [
+                '2024-11-04',
+                '2024-11-03',
+                '2024-11-02',
+            ],
+        ];
+
+        dump(\App\Actions\Appointment\CheckAvailableAppointments::run($info));
+        dump(\App\Actions\Appointment\CheckAvailableAppointments::run($info_multiple));
+
+    });
+
+    Route::get('/ta', function () {
+        $branch = \App\Models\Branch::first();
+        dump($branch->isOpen(\Carbon\Carbon::createFromFormat('Y-m-d', '2024-11-03')->toDateTime()));
+        dump($branch->startTimeByDay(\Carbon\Carbon::createFromFormat('Y-m-d', '2024-11-03')->toDateTime())->start()->format('H:i'));
+        dump($branch->startTimeByDay(\Carbon\Carbon::createFromFormat('Y-m-d', '2024-11-03')->toDateTime())->end()->format('H:i'));
+    });
+
     Route::get('/per', function () {
         dd(Auth::user()->getAllPermissions());
     });

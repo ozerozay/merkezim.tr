@@ -120,20 +120,19 @@ class extends \Livewire\Volt\Component {
         </x-card>
         <x-card title="Tara" separator>
             @if ($service_ids)
-                <x-slot:menu>
-                    <x-button label="En yakın tarihi bul" class="btn-primary btn-sm"/>
-                </x-slot:menu>
                 <div>
                     <div class="flex items-center justify-between w-full">
-                        <x-datepicker label="Tarih Aralığı" wire:model="date_find_range"
-                                      icon="o-calendar" :config="$date_find_config_range"/>
-                        <span>|</span>
-                        <x-datepicker label="Birden Fazla Tarih" wire:model="date_find_multi"
-                                      icon="o-calendar" :config="$date_find_config_multi"/>
-                    </div>
-                    <div class="flex space-x-2 mt-5">
+                        <div>
+                            <x-datepicker label="Tarih Aralığı" wire:model="date_find_range"
+                                          icon="o-calendar" :config="$date_find_config_range"/>
+                            <x-button label="Tara" class="btn-primary btn-block mt-5"/>
+                        </div>
+                        <div>
+                            <x-datepicker label="Birden Fazla Tarih" wire:model="date_find_multi"
+                                          icon="o-calendar" :config="$date_find_config_multi"/>
+                            <x-button label="Tara" class="btn-primary btn-block  mt-5"/>
+                        </div>
 
-                        <x-button label="Tara" class="btn-primary btn-block"/>
                     </div>
 
                 </div>
