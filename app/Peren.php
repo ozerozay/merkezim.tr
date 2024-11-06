@@ -23,6 +23,24 @@ class Peren
         return $date != null ? Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d') : null;
     }
 
+    public static function formatRangeDate($date): array
+    {
+        $first_date = null;
+        $last_date = null;
+        $split_date = preg_split('/\s-\s/', $date);
+        if (count($split_date) > 1) {
+            $first_date = Carbon::createFromFormat('Y-m-d H:i', $split_date[0])->format('Y-m-d');
+            $last_date = Carbon::createFromFormat('Y-m-d H:i', $split_date[1])->format('Y-m-d');
+        } else {
+            $first_date = $last_date = Carbon::createFromFormat('Y-m-d H:i', $split_date[0])->format('Y-m-d');
+        }
+
+        return [
+            'first_date' => $first_date,
+            'last_date' => $last_date,
+        ];
+    }
+
     public static function dateConfig($min = null, $max = null, $enableTime = false, $mode = null)
     {
         $config = ['altFormat' => 'd/m/Y', 'locale' => 'tr', 'disableMobile' => true];

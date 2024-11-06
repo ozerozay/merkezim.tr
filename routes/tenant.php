@@ -164,8 +164,8 @@ Route::middleware([
 
         $info = [
             'branch_id' => 2,
-            'search_date_first' => '2024-11-04',
-            'search_date_last' => '2024-11-04',
+            'search_date_first' => '2024-11-01',
+            'search_date_last' => '2024-11-15',
             'category_id' => 1,
             'duration' => 60,
             'type' => 'range',
@@ -184,7 +184,7 @@ Route::middleware([
         ];
 
         dump(\App\Actions\Appointment\CheckAvailableAppointments::run($info));
-        dump(\App\Actions\Appointment\CheckAvailableAppointments::run($info_multiple));
+        //dump(\App\Actions\Appointment\CheckAvailableAppointments::run($info_multiple));
 
     });
 

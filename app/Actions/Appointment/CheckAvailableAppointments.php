@@ -32,47 +32,56 @@ class CheckAvailableAppointments
                 ->whereRelation('categories', 'id', '=', $info['category_id'])
                 ->get();
 
-            if ($info['type'] == 'range') {
-                $period = CarbonPeriod::create(
+            $forDates = null;
+
+            //dump($info);
+            if ($info['type'] === 'range') {
+                $forDates = CarbonPeriod::create(
                     Carbon::createFromFormat('Y-m-d', $info['search_date_first']),
                     Carbon::createFromFormat('Y-m-d', $info['search_date_last'])
                 );
 
-                foreach ($period as $date) {
-                    $openDates[] = [
-                        'date' => $date,
-                        'open' => $openingHours->isOpenAt($date),
-                        'openTime' => $openingHours->currentOpenRange($date)?->start() ?? null,
-                        'closeTime' => $openingHours->currentOpenRange($date)?->end() ?? null,
-                    ];
-                }
             } else {
-                $dates = collect($info['dates'])->map(function ($d) {
+                $forDates = collect($info['dates'])->map(function ($d) {
                     return Carbon::createFromFormat('Y-m-d', $d);
                 });
-
-                foreach ($dates as $date) {
-                    $openDates[] = [
-                        'date' => $date,
-                        'open' => $openingHours->isOpenAt($date),
-                        'openTime' => $openingHours->currentOpenRange($date)?->start() ?? null,
-                        'closeTime' => $openingHours->currentOpenRange($date)?->end() ?? null,
-                    ];
-                }
             }
+
+            foreach ($forDates as $date) {
+
+                $hoursForDate = $openingHours->forDate($date->toDateTime());
+
+                $openTime = $closeTime = null;
+
+                foreach ($hoursForDate as $hours) {
+                    $openTime = $hours->start()->format();
+                    $closeTime = $hours->end()->format();
+                }
+
+                $openDates[] = [
+                    'date' => $date,
+                    'open' => $openingHours->isOpenOn($date->format('Y-m-d')),
+                    'openTime' => $openTime,
+                    'closeTime' => $closeTime,
+                ];
+            }
+            //dump($openDates);
 
             $openDates = collect($openDates);
 
-            $roomGaps = [];
+            //dump($openDates);
 
+            $roomGaps = [];
+            //dump($info);
             foreach ($openDates->where('open', true)->all() as $openDate) {
+                //dump($openDate);
                 foreach ($service_rooms as $service_room) {
                     $appointments = Appointment::query()
                         ->select(['id', 'status', 'service_category_id', 'service_room_id', 'date', 'date_start', 'date_end'])
                         ->where('service_category_id', $info['category_id'])
                         ->where('service_room_id', $service_room->id)
                         ->whereNotIn('status', [AppointmentStatus::rejected, AppointmentStatus::cancel])
-                        ->where('date', $openDate['date']->format('Y-m-d'))
+                        ->whereDate('date', $openDate['date']->format('Y-m-d'))
                         ->get();
 
                     $dolu = [];
@@ -83,6 +92,8 @@ class CheckAvailableAppointments
                             'bitis' => $appointment->date_end->format('H:i'),
                         ];
                     }
+                    //dump($service_room->id);
+                    //dump($dolu);
 
                     $roomGaps[] = [
                         'id' => $service_room->id,
@@ -90,6 +101,8 @@ class CheckAvailableAppointments
                         'date' => $openDate['date']->format('Y-m-d'),
                         'gaps' => $this->findAppointmentGaps($dolu, Carbon::parse($openDate['openTime']), Carbon::parse($openDate['closeTime']), $info['duration']),
                     ];
+
+                    //dump($roomGaps);
 
                 }
 

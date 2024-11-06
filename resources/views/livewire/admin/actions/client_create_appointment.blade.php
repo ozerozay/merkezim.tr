@@ -37,6 +37,10 @@ class extends \Livewire\Volt\Component {
 
     public string $message = '';
 
+    public array $available_appointments_range = [];
+
+    public ?string $selected_available_appointments_range = null;
+
     public function mount(): void
     {
         $this->date_config = \App\Peren::dateConfig(min: \Carbon\Carbon::now()->format('Y-m-d'), enableTime: true);
@@ -76,7 +80,159 @@ class extends \Livewire\Volt\Component {
         CreateManuelAppointmentAction::run($validator->validated());
 
         $this->success('Randevu oluşturuldu.');
-        $this->reset('client_id', 'category_id', 'service_ids', 'date', 'service_room_id', 'message');
+        $this->reset('client_id', 'category_id', 'service_ids', 'date', 'service_room_id', 'message', 'available_appointments_range', 'selected_available_appointments_range');
+    }
+
+    public function findAvailableAppointmentsMultiple(): void
+    {
+        if (empty($this->service_ids)) {
+            $this->error('Hizmet seçmelisiniz.');
+            return;
+        }
+        $duration = \App\Actions\Client\CalculateClientServicesDuration::run($this->service_ids);
+
+        if ($duration == 0) {
+            $this->error('Süre hesaplanamadı.');
+
+            return;
+        }
+
+        $client = \App\Models\User::query()->where('id', $this->client_id)->first();
+
+        $dates = collect(explode(',', $this->date_find_multi))->map(function ($q) {
+            $q = trim($q);
+            $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $q);
+            return $date->format('Y-m-d');
+        });
+
+        $info_multiple = [
+            'branch_id' => $client->branch_id,
+            'category_id' => $this->category_id,
+            'duration' => $duration,
+            'type' => 'multiple',
+            'dates' => $dates->toArray()
+        ];
+        $available_appointments_range = \App\Actions\Appointment\CheckAvailableAppointments::run($info_multiple);
+
+        $toSelect = [];
+
+        foreach ($available_appointments_range as $key => $dates) {
+            foreach ($dates as $rangeDate) {
+                $title = \Carbon\Carbon::createFromFormat('Y-m-d', $key)->format('d/m/Y') . ' - ' . $rangeDate['name'];
+                foreach ($rangeDate['gaps'] as $gap) {
+                    $toSelect[$title][] = [
+                        'id' => \Carbon\Carbon::createFromFormat('Y-m-d', $key)->format('d/m/Y') . '||' . $rangeDate['name'] . '||' . $gap,
+                        'name' => $gap
+                    ];
+                }
+            }
+
+        }
+        $this->available_appointments_range = $toSelect;
+    }
+
+    public function findAvailableAppointmentsRange(): void
+    {
+        try {
+            if (empty($this->service_ids)) {
+                $this->error('Hizmet seçmelisiniz.');
+                return;
+            }
+            $duration = \App\Actions\Client\CalculateClientServicesDuration::run($this->service_ids);
+
+            if ($duration == 0) {
+                $this->error('Süre hesaplanamadı.');
+
+                return;
+            }
+
+            $client = \App\Models\User::query()->where('id', $this->client_id)->first();
+
+            $format_range = Peren::formatRangeDate($this->date_find_range);
+
+            $info = [
+                'branch_id' => $client->branch_id,
+                'search_date_first' => $format_range['first_date'],
+                'search_date_last' => $format_range['last_date'],
+                'category_id' => $this->category_id,
+                'duration' => $duration,
+                'type' => 'range',
+            ];
+
+            $available_appointments_range = \App\Actions\Appointment\CheckAvailableAppointments::run($info);
+
+            $toSelect = [];
+
+            foreach ($available_appointments_range as $key => $dates) {
+                foreach ($dates as $rangeDate) {
+                    $title = \Carbon\Carbon::createFromFormat('Y-m-d', $key)->format('d/m/Y') . ' - ' . $rangeDate['name'];
+                    foreach ($rangeDate['gaps'] as $gap) {
+                        $toSelect[$title][] = [
+                            'id' => \Carbon\Carbon::createFromFormat('Y-m-d', $key)->format('d/m/Y') . '||' . $rangeDate['name'] . '||' . $gap,
+                            'name' => $gap
+                        ];
+                    }
+                }
+
+            }
+            $this->available_appointments_range = $toSelect;
+        } catch (\Throwable $e) {
+            $this->error('Lütfen daha sonra tekrar deneyin.' . $e->getMessage());
+        }
+    }
+
+    public function createRangeAppointment(): void
+    {
+        try {
+            if (!$this->selected_available_appointments_range) {
+                $this->error('Tarih seçin');
+                return;
+            }
+
+            $value = explode('||', $this->selected_available_appointments_range);
+
+            $client = \App\Models\User::query()->where('id', $this->client_id)->first();
+
+            $service_room_id = \App\Models\ServiceRoom::where('name', $value[1])->where('branch_id', $client->branch_id)->first()->id;
+            $time_split = explode('-', $value[2]);
+            $range_date = \Carbon\Carbon::createFromFormat('d/m/Y H:i', $value[0] . ' ' . $time_split[0])->format('Y-m-d H:i');
+
+            $validator = \Illuminate\Support\Facades\Validator::make(
+                [
+                    'client_id' => $this->client_id,
+                    'category_id' => $this->category_id,
+                    'service_ids' => $this->service_ids,
+                    'date' => $range_date,
+                    'room_id' => $service_room_id,
+                    'message' => $this->message,
+                    'user_id' => auth()->user()->id,
+                ], [
+                    'client_id' => 'required|exists:users,id',
+                    'category_id' => 'required|exists:service_categories,id',
+                    'service_ids' => 'required|array',
+                    'date' => 'required|date|after:now',
+                    'room_id' => 'required|exists:service_rooms,id',
+                    'message' => 'required',
+                    'user_id' => 'required|exists:users,id',
+                ]
+            );
+
+            if ($validator->fails()) {
+                $this->error($validator->messages()->first());
+                return;
+            }
+
+            \App\Actions\User\CheckClientBranchAction::run($this->client_id);
+
+            CreateManuelAppointmentAction::run($validator->validated());
+
+            $this->success('Randevu oluşturuldu.');
+            $this->reset('client_id', 'category_id', 'service_ids', 'date', 'service_room_id', 'message', 'available_appointments_range', 'selected_available_appointments_range');
+            //$this->success($this->selected_available_appointments_range);
+        } catch (\Throwable $e) {
+            $this->error('Lütfen daha sonra tekrar deneyin.' . $e->getMessage());
+        }
+
     }
 };
 
@@ -123,18 +279,27 @@ class extends \Livewire\Volt\Component {
                 <div>
                     <div class="flex items-center justify-between w-full">
                         <div>
-                            <x-datepicker label="Tarih Aralığı" wire:model="date_find_range"
-                                          icon="o-calendar" :config="$date_find_config_range"/>
-                            <x-button label="Tara" class="btn-primary btn-block mt-5"/>
+                            <x-form wire:submit="findAvailableAppointmentsRange">
+                                <x-datepicker label="Tarih Aralığı" wire:model="date_find_range"
+                                              icon="o-calendar" :config="$date_find_config_range"/>
+                                <x-button label="Tara" type="submit" class="btn-primary btn-block mt-5"/>
+                            </x-form>
                         </div>
                         <div>
-                            <x-datepicker label="Birden Fazla Tarih" wire:model="date_find_multi"
-                                          icon="o-calendar" :config="$date_find_config_multi"/>
-                            <x-button label="Tara" class="btn-primary btn-block  mt-5"/>
+                            <x-form wire:submit="findAvailableAppointmentsMultiple">
+                                <x-datepicker label="Birden Fazla Tarih" wire:model="date_find_multi"
+                                              icon="o-calendar" :config="$date_find_config_multi"/>
+                                <x-button label="Tara" type="submit" class="btn-primary btn-block  mt-5"/>
+                            </x-form>
                         </div>
-
                     </div>
-
+                    @if (count($available_appointments_range) > 0)
+                        <x-hr/>
+                        <x-select-group label="Uygun randevu tarihleri" :options="$available_appointments_range"
+                                        wire:model="selected_available_appointments_range"/>
+                        <x-button label="Randevu Oluştur" wire:click="createRangeAppointment"
+                                  class="btn-primary btn-block  mt-5"/>
+                    @endif
                 </div>
             @else
                 <p>Danışan ve kategori seçin.</p>
