@@ -25,9 +25,9 @@ enum AppointmentType: string
     public function color(): string
     {
         return match ($this) {
-            self::appointment => 'text-green-500 bg-green-100',
-            self::close => 'text-gray-500 bg-gray-100',
-            self::reservation => 'text-yellow-500 bg-yellow-100',
+            self::appointment => 'badge-success',
+            self::close => 'badge-neutral',
+            self::reservation => 'badge-purple',
         };
     }
 }

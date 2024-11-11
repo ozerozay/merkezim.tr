@@ -127,6 +127,10 @@ Route::middleware([
                 Volt::route('/', 'admin.appointment.index')->name('admin.appointment')->middleware('can:page_randevu');
             });
 
+            Route::prefix('request')->group(function () {
+                Volt::route('/', 'admin.talep.index')->name('admin.talep')->middleware('can:page_talep');
+            });
+
             Route::prefix('client')->group(function () {
                 Volt::route('/', 'admin.client.index')
                     ->middleware('can:clients')

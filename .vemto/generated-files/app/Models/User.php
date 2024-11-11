@@ -339,6 +339,26 @@ class User extends Authenticatable
         return $this->hasMany(Appointment::class, 'finish_user_id');
     }
 
+    /**
+     * Get all of the allAgenda.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function allAgenda()
+    {
+        return $this->hasMany(Agenda::class);
+    }
+
+    /**
+     * Get all of the clientAgenda.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function clientAgenda()
+    {
+        return $this->hasMany(Agenda::class, 'client_id');
+    }
+
     public function search()
     {
     }

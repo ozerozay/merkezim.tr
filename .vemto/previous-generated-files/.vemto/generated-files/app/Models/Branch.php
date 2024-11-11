@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Support\Facades\Auth;
+use Spatie\OpeningHours\OpeningHours;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -80,6 +81,32 @@ class Branch extends Model
     public function appointments()
     {
         return $this->hasMany(Appointment::class);
+    }
+
+    public function allAgenda()
+    {
+        return $this->hasMany(Agenda::class);
+    }
+
+    public function isOpen($date)
+    {
+        $openingHours = OpeningHours::create($this->opening_hours);
+
+        return $openingHours->isOpenAt($date);
+    }
+
+    public function startTimeByDay($date)
+    {
+        $openingHours = OpeningHours::create($this->opening_hours);
+
+        return $openingHours->currentOpenRange($date)->start() ?? null;
+    }
+
+    public function closeTimeByDay($date)
+    {
+        $openingHours = OpeningHours::create($this->opening_hours);
+
+        return $openingHours->currentOpenRange($date)->end() ?? null;
     }
 
     public function branch_staff_active()

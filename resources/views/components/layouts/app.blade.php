@@ -21,6 +21,7 @@
 <x-nav sticky class="lg:hidden">
     <x-slot:brand>
         <x-app-brand/>
+
     </x-slot:brand>
     <x-slot:actions>
         <label for="main-drawer" class="lg:hidden me-3">
@@ -30,6 +31,7 @@
             <x-badge value="2" class="badge-error absolute -right-2 -top-2"/>
         </x-button>
     </x-slot:actions>
+
 </x-nav>
 
 {{-- MAIN --}}
@@ -37,6 +39,7 @@
     {{-- SIDEBAR --}}
     <x-slot:sidebar drawer="main-drawer" collapse-text="Küçült" collapsible class="bg-base-100 lg:bg-inherit">
         {{-- MENU --}}
+
         <x-menu class="mt-2" activate-by-route>
             {{-- User --}}
             @if($user = auth()->user())
@@ -106,7 +109,9 @@
     {{-- The `$slot` goes here --}}
     <x-slot:content>
         {{ $slot }}
+
     </x-slot:content>
+
 </x-main>
 
 {{-- TOAST area --}}

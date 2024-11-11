@@ -12,15 +12,19 @@ new class extends \Livewire\Volt\Component {
     ];
 
     #[\Livewire\Attributes\Url]
-    public ?string $date;
+    public ?string $date = null;
 
     #[\Livewire\Attributes\Url]
-    public ?int $branch;
+    public ?int $branch = null;
 
     public ?array $statutes = [];
 
     #[\Livewire\Attributes\Url(as: 'status')]
-    public ?string $statutes_url;
+    public ?string $statutes_url = null;
+
+    public ?bool $editing = false;
+
+    public ?int $selectedAppointment = null;
 
     public array $sortBy = [
         ['key' => 'time_asc', 'name' => 'Saat (Artan)', 'column' => 'date_start', 'direction' => 'asc', 'icon' => 'tabler.sort-ascending'],
@@ -32,6 +36,13 @@ new class extends \Livewire\Volt\Component {
 
     #[\Livewire\Attributes\Url(as: 'sort')]
     public ?string $sortKey;
+
+    #[\Livewire\Attributes\On('appointment-show-drawer')]
+    public function showSettings($id): void
+    {
+        $this->dispatch('drawer-appointment-update-id', $id)->to('components.drawers.drawer_appointment');
+        $this->editing = true;
+    }
 
     public function mount(): void
     {
@@ -81,10 +92,40 @@ new class extends \Livewire\Volt\Component {
         }
     }
 
+    public function getAppointments(): \Illuminate\Database\Eloquent\Collection
+    {
+        return \App\Models\Appointment::query()
+            ->where(function ($q) {
+                if ($this->branch) {
+                    $q->where('branch_id', $this->branch);
+                } else {
+                    $q->where('branch_id', auth()->user()->staff_branch()->first()->id);
+                }
+            })
+            ->where(function ($q) {
+                if ($this->date) {
+                    $q->where('date', $this->date);
+                } else {
+                    $q->where('date', date('Y-m-d'));
+                }
+            })
+            ->where(function ($q) {
+                if ($this->statutes_url) {
+                    $q->whereIn('status', explode(',', $this->statutes_url));
+                }
+            })
+            ->with('client:id,name,phone', 'serviceRoom:id,name', 'services.service')
+            ->get()
+            ->groupBy('service_room_id');
+
+    }
+
     public function with(): array
     {
+        //dump($this->getAppointments());
         return [
-            'sortBy' => $this->sortBy
+            'sortBy' => $this->sortBy,
+            'appointments_group' => $this->getAppointments()
         ];
     }
 };
@@ -128,372 +169,51 @@ new class extends \Livewire\Volt\Component {
                     <x-button icon="tabler.sort-descending" class="btn-outline" label="Sırala" responsive/>
                 </x-slot:trigger>
             </x-dropdown>
-            <x-button icon="o-plus" class="btn-primary" label="Randevu Oluştur" responsive/>
+            @can('action_client_create_appointment')
+                <x-button icon="o-plus"
+                          link="{{ route('admin.actions.client_create_appointment') }}"
+                          class="btn-primary"
+                          label="Randevu Oluştur"
+                          responsive/>
+            @endcan
         </x-slot:actions>
     </x-header>
-    <x-card title="EPİLASYON 1" separator>
-        <x-slot:menu>
-            <x-badge class="badge-primary" value="Çalışma Süresi: 9 Saat"/>
-            <x-badge class="badge-primary" value="Çalışma Süresi: 4 Saat"/>
-        </x-slot:menu>
-        <div class="flex w-full h-8 text-white text-center">
-            <!-- 1 saat dolu, 12:00-13:00 -->
-            <div class="bg-blue-500 h-full flex items-center justify-center" style="width: 11.11%;">
-                12:00-13:00
+    @if ($appointments_group->isEmpty())
+        <livewire:components.card.loading.empty/>
+    @endif
+    @foreach($appointments_group as $appointments)
+        <x-card title="{{ $appointments->first()->serviceRoom->name  }}" separator>
+            <x-slot:menu>
+                <x-badge class="badge-primary" value="Çalışma Süresi: 9 Saat"/>
+                <x-badge class="badge-primary" value="Çalışma Süresi: 4 Saat"/>
+            </x-slot:menu>
+            <div class="flex w-full h-8 text-white text-center">
+                <!-- 1 saat dolu, 12:00-13:00 -->
+                <div class="bg-blue-500 h-full flex items-center justify-center" style="width: 11.11%;">
+                    12:00-13:00
+                </div>
+                <!-- 3 saat boş, 13:00-16:00 -->
+                <div class="bg-gray-200 text-gray-800 h-full flex items-center justify-center" style="width: 33.33%;">
+                    13:00-16:00
+                </div>
+                <!-- 2 saat dolu, 16:00-18:00 -->
+                <div class="bg-blue-500 h-full flex items-center justify-center" style="width: 22.22%;">
+                    16:00-18:00
+                </div>
+                <!-- 3 saat boş, 18:00-21:00 -->
+                <div class="bg-gray-200 text-gray-800 h-full flex items-center justify-center" style="width: 33.33%;">
+                    18:00-21:00
+                </div>
             </div>
-            <!-- 3 saat boş, 13:00-16:00 -->
-            <div class="bg-gray-200 text-gray-800 h-full flex items-center justify-center" style="width: 33.33%;">
-                13:00-16:00
-            </div>
-            <!-- 2 saat dolu, 16:00-18:00 -->
-            <div class="bg-blue-500 h-full flex items-center justify-center" style="width: 22.22%;">
-                16:00-18:00
-            </div>
-            <!-- 3 saat boş, 18:00-21:00 -->
-            <div class="bg-gray-200 text-gray-800 h-full flex items-center justify-center" style="width: 33.33%;">
-                18:00-21:00
-            </div>
+        </x-card>
+        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5 mb-5">
+            @foreach($appointments as $appointment)
+                <livewire:components.card.appointment.card_appointment_client
+                    wire:key="{{ $appointment->id }}"
+                    :appointment="$appointment"/>
+            @endforeach
         </div>
-    </x-card>
-    <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5 mb-5">
-        <x-card separator>
-            <x-slot:title>
-                <div class="flex flex-auto items-center">
-                    <x-badge class="badge-primary"/>
-                    <p class="ml-2">CİHAT ÖZER ÖZAY</p>
-                </div>
-            </x-slot:title>
-            <x-slot:menu>
-                <x-button icon="tabler.settings" class="btn-outline btn-sm" responsive/>
-            </x-slot:menu>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    SAAT
-                </x-slot:value>
-                <x-slot:actions>
-                    14:20 - 15:40
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    SÜRE
-                </x-slot:value>
-                <x-slot:actions>
-                    45 DK
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    DURUM
-                </x-slot:value>
-                <x-slot:actions>
-                    <x-badge class="badge-primary" value="BEKLENİYOR"/>
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    GECİKMİŞ ÖDEME
-                </x-slot:value>
-                <x-slot:actions>
-                    @price(1500)
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    TELEFON
-                </x-slot:value>
-                <x-slot:actions>
-                    5056277636
-                </x-slot:actions>
-            </x-list-item>
-            <p class="mt-3">TÜM BACAK(1) - KOLTUK ALTI(2) - KOLTUK ALTI(2) - KOLTUK ALTI(2) - KOLTUK ALTI(2)</p>
-            <p class="mt-3">"RANDEVU NOTU NUTSADFLASK FLASDKF LJASDŞKF ŞLDKN FŞDSAFN LKSDFNLSD"</p>
-        </x-card>
-        <x-card separator>
-            <x-slot:title>
-                <div class="flex flex-auto items-center">
-                    <x-badge class="badge-primary"/>
-                    <p class="ml-2">CİHAT ÖZER ÖZAY</p>
-                </div>
-            </x-slot:title>
-            <x-slot:menu>
-                <x-button icon="tabler.settings" class="btn-outline btn-sm" responsive/>
-            </x-slot:menu>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    SAAT
-                </x-slot:value>
-                <x-slot:actions>
-                    14:20 - 15:40
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    DURUM
-                </x-slot:value>
-                <x-slot:actions>
-                    <x-badge class="badge-primary" value="BEKLENİYOR"/>
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    GECİKMİŞ ÖDEME
-                </x-slot:value>
-                <x-slot:actions>
-                    @price(1500)
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    TELEFON
-                </x-slot:value>
-                <x-slot:actions>
-                    5056277636
-                </x-slot:actions>
-            </x-list-item>
-            <p class="mt-3">TÜM BACAK(1) - KOLTUK ALTI(2) - KOLTUK ALTI(2) - KOLTUK ALTI(2) - KOLTUK ALTI(2)</p>
-        </x-card>
-        <x-card separator>
-            <x-slot:title>
-                <div class="flex flex-auto items-center">
-                    <x-badge class="badge-primary"/>
-                    <p class="ml-2">CİHAT ÖZER ÖZAY</p>
-                </div>
-            </x-slot:title>
-            <x-slot:menu>
-                <x-button icon="tabler.settings" class="btn-outline btn-sm" responsive/>
-            </x-slot:menu>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    SAAT
-                </x-slot:value>
-                <x-slot:actions>
-                    14:20 - 15:40
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    DURUM
-                </x-slot:value>
-                <x-slot:actions>
-                    <x-badge class="badge-primary" value="BEKLENİYOR"/>
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    GECİKMİŞ ÖDEME
-                </x-slot:value>
-                <x-slot:actions>
-                    @price(1500)
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    TELEFON
-                </x-slot:value>
-                <x-slot:actions>
-                    5056277636
-                </x-slot:actions>
-            </x-list-item>
-            <p class="mt-3">TÜM BACAK(1) - KOLTUK ALTI(2) - KOLTUK ALTI(2) - KOLTUK ALTI(2) - KOLTUK ALTI(2)</p>
-        </x-card>
-        <x-card separator>
-            <x-slot:title>
-                <div class="flex flex-auto items-center">
-                    <x-badge class="badge-primary"/>
-                    <p class="ml-2">CİHAT ÖZER ÖZAY</p>
-                </div>
-            </x-slot:title>
-            <x-slot:menu>
-                <x-button icon="tabler.settings" class="btn-outline btn-sm" responsive/>
-            </x-slot:menu>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    SAAT
-                </x-slot:value>
-                <x-slot:actions>
-                    14:20 - 15:40
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    DURUM
-                </x-slot:value>
-                <x-slot:actions>
-                    <x-badge class="badge-primary" value="BEKLENİYOR"/>
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    GECİKMİŞ ÖDEME
-                </x-slot:value>
-                <x-slot:actions>
-                    @price(1500)
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    TELEFON
-                </x-slot:value>
-                <x-slot:actions>
-                    5056277636
-                </x-slot:actions>
-            </x-list-item>
-            <p class="mt-3">TÜM BACAK(1) - KOLTUK ALTI(2) - KOLTUK ALTI(2) - KOLTUK ALTI(2) - KOLTUK ALTI(2)</p>
-        </x-card>
-        <x-card separator>
-            <x-slot:title>
-                <div class="flex flex-auto items-center">
-                    <x-badge class="badge-primary"/>
-                    <p class="ml-2">CİHAT ÖZER ÖZAY</p>
-                </div>
-            </x-slot:title>
-            <x-slot:menu>
-                <x-button icon="tabler.settings" class="btn-outline btn-sm" responsive/>
-            </x-slot:menu>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    SAAT
-                </x-slot:value>
-                <x-slot:actions>
-                    14:20 - 15:40
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    DURUM
-                </x-slot:value>
-                <x-slot:actions>
-                    <x-badge class="badge-primary" value="BEKLENİYOR"/>
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    GECİKMİŞ ÖDEME
-                </x-slot:value>
-                <x-slot:actions>
-                    @price(1500)
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    TELEFON
-                </x-slot:value>
-                <x-slot:actions>
-                    5056277636
-                </x-slot:actions>
-            </x-list-item>
-            <p class="mt-3">TÜM BACAK(1) - KOLTUK ALTI(2) - KOLTUK ALTI(2) - KOLTUK ALTI(2) - KOLTUK ALTI(2)</p>
-        </x-card>
-        <x-card separator>
-            <x-slot:title>
-                <div class="flex flex-auto items-center">
-                    <x-badge class="badge-primary"/>
-                    <p class="ml-2">CİHAT ÖZER ÖZAY</p>
-                </div>
-            </x-slot:title>
-            <x-slot:menu>
-                <x-button icon="tabler.settings" class="btn-outline btn-sm" responsive/>
-            </x-slot:menu>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    SAAT
-                </x-slot:value>
-                <x-slot:actions>
-                    14:20 - 15:40
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    DURUM
-                </x-slot:value>
-                <x-slot:actions>
-                    <x-badge class="badge-primary" value="BEKLENİYOR"/>
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    TELEFON
-                </x-slot:value>
-                <x-slot:actions>
-                    5056277636
-                </x-slot:actions>
-            </x-list-item>
-            TÜM BACAK(1) - KOLTUK ALTI(2) - KOLTUK ALTI(2) - KOLTUK ALTI(2) - KOLTUK ALTI(2)
-        </x-card>
-        <x-card separator>
-            <x-slot:title>
-                <div class="flex flex-auto items-center">
-                    <x-badge class="badge-primary"/>
-                    <p class="ml-2">CİHAT ÖZER ÖZAY</p>
-                </div>
-            </x-slot:title>
-            <x-slot:menu>
-                <x-button icon="tabler.settings" class="btn-outline btn-sm" responsive/>
-            </x-slot:menu>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    SAAT
-                </x-slot:value>
-                <x-slot:actions>
-                    14:20 - 15:40
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    DURUM
-                </x-slot:value>
-                <x-slot:actions>
-                    <x-badge class="badge-primary" value="BEKLENİYOR"/>
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    TELEFON
-                </x-slot:value>
-                <x-slot:actions>
-                    5056277636
-                </x-slot:actions>
-            </x-list-item>
-            TÜM BACAK(1) - KOLTUK ALTI(2) - KOLTUK ALTI(2) - KOLTUK ALTI(2) - KOLTUK ALTI(2)
-        </x-card>
-        <x-card separator>
-            <x-slot:title>
-                <div class="flex flex-auto items-center">
-                    <x-badge class="badge-primary"/>
-                    <p class="ml-2">CİHAT ÖZER ÖZAY</p>
-                </div>
-            </x-slot:title>
-            <x-slot:menu>
-                <x-button icon="tabler.settings" class="btn-outline btn-sm" responsive/>
-            </x-slot:menu>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    SAAT
-                </x-slot:value>
-                <x-slot:actions>
-                    14:20 - 15:40
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    DURUM
-                </x-slot:value>
-                <x-slot:actions>
-                    <x-badge class="badge-primary" value="BEKLENİYOR"/>
-                </x-slot:actions>
-            </x-list-item>
-            <x-list-item :item="$sortBy">
-                <x-slot:value>
-                    TELEFON
-                </x-slot:value>
-                <x-slot:actions>
-                    5056277636
-                </x-slot:actions>
-            </x-list-item>
-            TÜM BACAK(1) - KOLTUK ALTI(2) - KOLTUK ALTI(2) - KOLTUK ALTI(2) - KOLTUK ALTI(2)
-        </x-card>
-    </div>
-    <x-card title="EPİLASYON 2" separator/>
+    @endforeach
+    <livewire:components.drawers.drawer_appointment wire:model="editing"/>
 </div>
 

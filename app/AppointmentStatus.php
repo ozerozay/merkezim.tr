@@ -37,15 +37,15 @@ enum AppointmentStatus: string
     public function color(): string
     {
         return match ($this) {
-            self::waiting => 'text-yellow-500 bg-yellow-100',         // Bekliyor
-            self::awaiting_approve => 'text-blue-500 bg-blue-100',    // Onay Bekliyor
-            self::confirmed => 'text-green-500 bg-green-100',         // Onaylı
-            self::rejected => 'text-red-500 bg-red-100',              // Onaylanmadı
-            self::cancel => 'text-gray-500 bg-gray-100',              // İptal
-            self::merkez => 'text-purple-500 bg-purple-100',          // Merkezde
-            self::late => 'text-orange-500 bg-orange-100',            // Gecikti
-            self::forwarded => 'text-indigo-500 bg-indigo-100',       // Yönlendirildi
-            self::finish => 'text-teal-500 bg-teal-100',              // Bitti
+            self::waiting => 'badge badge-warning text-yellow-500 bg-yellow-100',          // Bekliyor
+            self::awaiting_approve => 'badge badge-info text-blue-500 bg-blue-100',        // Onay Bekliyor
+            self::confirmed => 'badge badge-success text-green-500 bg-green-100',          // Onaylı
+            self::rejected => 'badge badge-error text-red-500 bg-red-100',                 // Onaylanmadı
+            self::cancel => 'badge badge-neutral text-gray-500 bg-gray-100',               // İptal
+            self::merkez => 'badge badge-secondary text-purple-500 bg-purple-100',         // Merkezde
+            self::late => 'badge badge-warning text-orange-500 bg-orange-100',             // Gecikti
+            self::forwarded => 'badge badge-info text-indigo-500 bg-indigo-100',           // Yönlendirildi
+            self::finish => 'badge badge-success text-teal-500 bg-teal-100',               // Bitti
         };
         /*
          * [

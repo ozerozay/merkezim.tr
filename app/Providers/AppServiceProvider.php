@@ -63,6 +63,9 @@ class AppServiceProvider extends ServiceProvider
             'client_taksit_lock' => 'App\Models\ClientTaksitsLock',
             'appointment' => 'App\Models\Appointment',
             'appointment_statuses' => 'App\Models\AppointmentStatuses',
+            'talep_status' => 'App\Models\TalepStatus',
+            'agenda' => 'App\Models\Agenda',
+            'agenda_occurrence' => 'App\Models\AgendaOccurrence',
         ]);
 
         Blade::directive('price', function ($price) {

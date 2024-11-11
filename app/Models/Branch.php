@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Spatie\OpeningHours\OpeningHours;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Branch extends Model
 {
@@ -81,6 +81,11 @@ class Branch extends Model
     public function appointments()
     {
         return $this->hasMany(Appointment::class);
+    }
+
+    public function allAgenda()
+    {
+        return $this->hasMany(Agenda::class);
     }
 
     public function isOpen($date)

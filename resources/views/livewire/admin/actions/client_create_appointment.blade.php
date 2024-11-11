@@ -295,15 +295,19 @@ class extends \Livewire\Volt\Component {
                     </div>
                     @if (count($available_appointments_range) > 0)
                         <x-hr/>
-                        <x-select-group label="Uygun randevu tarihleri" :options="$available_appointments_range"
-                                        wire:model="selected_available_appointments_range"/>
-                        <x-button label="Randevu Oluştur" wire:click="createRangeAppointment"
-                                  class="btn-primary btn-block  mt-5"/>
+                        <x-form>
+                            <x-select-group label="Uygun randevu tarihleri" :options="$available_appointments_range"
+                                            wire:model="selected_available_appointments_range"/>
+                            <x-input wire:model="message" label="Randevu notunuz"/>
+                            <x-button label="Randevu Oluştur" wire:click="createRangeAppointment"
+                                      class="btn-primary btn-block  mt-5"/>
+                        </x-form>
                     @endif
                 </div>
             @else
-                <p>Danışan ve kategori seçin.</p>
+                <p>Danışan, hizmet kategorisi ve hizmet seçin.</p>
             @endif
         </x-card>
     </div>
+    
 </div>
