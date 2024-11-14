@@ -119,6 +119,20 @@ class RoleSeeder extends Seeder
             ]);
 
             Permission::create([
+                'name' => 'action_create_reminder',
+                'description' => 'Hatırlatma Oluştur',
+                'route' => 'admin.actions.create_reminder',
+                'visible' => true,
+            ]);
+
+            Permission::create([
+                'name' => 'action_create_payment_tracking',
+                'description' => 'Ödeme Takip Oluştur',
+                'route' => 'admin.actions.create_payment_tracking',
+                'visible' => true,
+            ]);
+
+            Permission::create([
                 'name' => 'clients',
                 'description' => 'Danışanlar',
                 'route' => 'admin.clients',
@@ -206,12 +220,33 @@ class RoleSeeder extends Seeder
                 'visible' => false,
             ]);
 
+            Permission::create([
+                'name' => 'client_profil_appointment',
+                'description' => 'Danışan Profil - Randevu',
+                'route' => '',
+                'visible' => false,
+            ]);
+
+            Permission::create([
+                'name' => 'client_profil_adisyon',
+                'description' => 'Danışan Profil - Adisyon',
+                'route' => '',
+                'visible' => false,
+            ]);
+
             /* ------------------------------- */
 
             Permission::create([
                 'name' => 'page_kasa',
                 'description' => 'Kasa',
                 'route' => 'admin.kasa',
+                'visible' => true,
+            ]);
+
+            Permission::create([
+                'name' => 'page_agenda',
+                'description' => 'Ajanda',
+                'route' => 'admin.agenda',
                 'visible' => true,
             ]);
 
@@ -276,6 +311,13 @@ class RoleSeeder extends Seeder
             Permission::create([
                 'name' => 'kasa_detail_process',
                 'description' => 'Kasa İşlemi - Düzenleme, Silme, Aktarma',
+                'route' => '',
+                'visible' => false,
+            ]);
+
+            Permission::create([
+                'name' => 'appointment_process',
+                'description' => 'Randevu - Düzenleme',
                 'route' => '',
                 'visible' => false,
             ]);

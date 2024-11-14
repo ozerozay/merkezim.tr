@@ -359,6 +359,46 @@ class User extends Authenticatable
         return $this->hasMany(Agenda::class, 'client_id');
     }
 
+    /**
+     * Get all of the clientTimelines.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function clientTimelines()
+    {
+        return $this->hasMany(ClientTimeline::class);
+    }
+
+    /**
+     * Get all of the clientClientTimelines.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function clientClientTimelines()
+    {
+        return $this->hasMany(ClientTimeline::class, 'client_id');
+    }
+
+    /**
+     * Get all of the taleps.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function taleps()
+    {
+        return $this->hasMany(Talep::class);
+    }
+
+    /**
+     * Get all of the talepProcesses.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function talepProcesses()
+    {
+        return $this->hasMany(TalepProcess::class);
+    }
+
     public function search()
     {
     }

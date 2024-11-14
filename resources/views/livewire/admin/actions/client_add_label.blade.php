@@ -23,15 +23,15 @@ class extends Component {
 
     public $client_model = null;
 
-    public array $client_labels = [];
+    public $client_labels = [];
 
-    public function mount()
+    public function mount(): void
     {
         $this->client_model = GetClientByUniqueID::run(null, $this->client, ['labels']);
 
         if ($this->client_model) {
             $this->client = $this->client_model->id;
-            $this->client_labels = $this->client_model->labels;
+            $this->client_labels = $this->client_model->labels ?? [];
         }
     }
 
@@ -46,7 +46,7 @@ class extends Component {
         }
     }
 
-    public function save()
+    public function save(): void
     {
         $validator = Validator::make([
             'client_id' => $this->client,

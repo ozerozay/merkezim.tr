@@ -172,9 +172,13 @@ class extends Component {
                 @endif
             </x-tab>
         @endcan
-        <x-tab name="randevu" label="Randevu">
-            <div>Randevu</div>
-        </x-tab>
+        @can('client_profil_appointment')
+            <x-tab name="appointment" label="Randevu">
+                @if ($tab == 'appointment')
+                    <livewire:admin.client.profil.pages.appointment :client="$user->id" lazy/>
+                @endif
+            </x-tab>
+        @endcan
         <x-tab name="product" label="Ürün">
             @can('client_profil_product')
                 <x-tab name="product" label="Ürün">
@@ -184,15 +188,17 @@ class extends Component {
                 </x-tab>
             @endcan
         </x-tab>
-        <x-tab name="adisyon" label="Adisyon">
-            @can('client_profil_adisyon')
+        @can('client_profil_adisyon')
+            <x-tab name="adisyon" label="Adisyon">
+
                 <x-tab name="adisyon" label="Adisyon">
                     @if ($tab == 'adisyon')
                         <livewire:admin.client.profil.pages.adisyon :client="$user->id" lazy/>
                     @endif
                 </x-tab>
-            @endcan
-        </x-tab>
+
+            </x-tab>
+        @endcan
         @can('client_profil_offer')
             <x-tab name="offer" label="Teklif">
                 @if ($tab == 'offer')

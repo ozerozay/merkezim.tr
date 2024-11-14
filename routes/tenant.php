@@ -114,6 +114,14 @@ Route::middleware([
                     ->name('admin.actions.adisyon_create')
                     ->middleware('can:action_adisyon_create');
 
+                Volt::route('/reminder', 'admin.actions.create_reminder')
+                    ->name('admin.actions.create_reminder')
+                    ->middleware('can:action_create_reminder');
+
+                Volt::route('/payment_tracking', 'admin.actions.create_payment_tracking')
+                    ->name('admin.actions.create_payment_tracking')
+                    ->middleware('can:action_create_payment_tracking');
+
             });
 
             Route::prefix('kasa')->group(function () {
@@ -125,6 +133,10 @@ Route::middleware([
 
             Route::prefix('appointment')->group(function () {
                 Volt::route('/', 'admin.appointment.index')->name('admin.appointment')->middleware('can:page_randevu');
+            });
+
+            Route::prefix('agenda')->group(function () {
+                Volt::route('/', 'admin.agenda.index')->name('admin.agenda')->middleware('can:page_agenda');
             });
 
             Route::prefix('request')->group(function () {

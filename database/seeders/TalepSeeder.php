@@ -2,17 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\TalepStatus;
+use App\Models\Talep;
 use Illuminate\Database\Seeder;
 
-class TalepStatusSeeder extends Seeder
+class TalepSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        TalepStatus::factory()
+        Talep::factory()
             ->count(5)
             ->create();
     }

@@ -88,6 +88,11 @@ class Branch extends Model
         return $this->hasMany(Agenda::class);
     }
 
+    public function taleps()
+    {
+        return $this->hasMany(Talep::class);
+    }
+
     public function isOpen($date)
     {
         $openingHours = OpeningHours::create($this->opening_hours);

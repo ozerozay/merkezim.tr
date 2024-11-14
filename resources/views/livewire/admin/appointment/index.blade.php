@@ -4,12 +4,7 @@ new class extends \Livewire\Volt\Component {
 
     use \Mary\Traits\Toast;
 
-    public array $date_config = [
-        'altFormat' => 'd/m/Y',
-        'dateFormat' => 'Y-m-d',
-        'locale' => 'tr',
-        'enableTime' => false
-    ];
+    public array $date_config = [];
 
     #[\Livewire\Attributes\Url]
     public ?string $date = null;
@@ -46,6 +41,7 @@ new class extends \Livewire\Volt\Component {
 
     public function mount(): void
     {
+        $this->date_config = \App\Peren::dateConfig();
         $this->date = \Carbon\Carbon::now()->format('Y-m-d');
         try {
             if (isset($this->statutes_url)) {

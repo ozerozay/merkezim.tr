@@ -15,5 +15,6 @@ return [
 
     'previous' => '&laquo; Önceki',
     'next' => 'Sonraki &raquo;',
-
+    'Showing' => 'gösterilen',
+    'results' => 'sonuç',
 ];

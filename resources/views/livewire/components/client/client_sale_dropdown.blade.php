@@ -6,8 +6,7 @@ use Livewire\Attributes\Modelable;
 use Livewire\Attributes\On;
 use Livewire\Volt\Component;
 
-new class extends Component
-{
+new class extends Component {
     #[Modelable]
     public $sale_id;
 
@@ -19,20 +18,19 @@ new class extends Component
 
     public $label = 'Aktif Satışları';
 
-    public function mount()
+    public function mount(): void
     {
         $this->getsales($this->client_id);
     }
 
     #[On('reload-sales')]
-    public function reload_sales($client)
+    public function reload_sales($client): void
     {
         $this->getSales($client);
     }
 
-    public function getSales($client, $status = null)
+    public function getSales($client, $status = null): void
     {
-        $this->sale_id = null;
         $this->sales = GetClientActiveSale::run($client, $status);
     }
 };
@@ -40,14 +38,14 @@ new class extends Component
 ?>
 
 <div>
-<x-choices-offline
-    wire:model="sale_id"
-    :options="$sales"
-    option-sub-label="date"
-    option-label="unique_id"
-    :label="$label"
-    icon="o-magnifying-glass"
-    no-result-text="Aktif satışı bulunmuyor."
-    single
-    searchable />
+    <x-choices-offline
+        wire:model="sale_id"
+        :options="$sales"
+        option-sub-label="date"
+        option-label="unique_id"
+        :label="$label"
+        icon="o-magnifying-glass"
+        no-result-text="Aktif satışı bulunmuyor."
+        single
+        searchable/>
 </div>

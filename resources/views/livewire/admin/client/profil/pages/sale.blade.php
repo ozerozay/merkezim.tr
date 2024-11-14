@@ -18,6 +18,10 @@ new class extends Component {
 
     public bool $editing = false;
 
+    protected $listeners = [
+        'refresh-client-sales' => '$refresh'
+    ];
+
     public function getData()
     {
         return GetClientSales::run($this->client, true, $this->sortBy);
@@ -73,7 +77,7 @@ new class extends Component {
         $this->editing = true;
     }
 
-    public function with()
+    public function with(): array
     {
         return [
             'data' => $this->getData(),
@@ -97,11 +101,12 @@ new class extends Component {
         <div>
             <x-card>
                 <x-table :headers="$headers" :rows="$data" wire:model="expanded" :sort-by="$sortBy" striped
-                         with-pagination expandable>
+                         with-pagination expandable wire:key="{{  rand(1000000000,99999999999) }}">
                     @scope('expansion', $sale, $headersTaksits, $headersServices)
                     <div class="bg-base-200 p-8 font-bold">
 
-                        <x-table :headers="$headersTaksits" :rows="$sale->clientTaksits" striped>
+                        <x-table :headers="$headersTaksits" :rows="$sale->clientTaksits" striped
+                                 wire:key="{{  rand(100000000,999999999) }}">
                             <x-slot:empty>
                                 <x-icon name="o-cube" label="Taksit bulunmuyor."/>
                             </x-slot:empty>
@@ -121,6 +126,7 @@ new class extends Component {
                         <x-hr/>
                         <x-table :headers="$headersServices" :rows="$sale->clientServices"
                                  striped
+                                 wire:key="{{  rand(10000000,99999999) }}"
                         >
                             <x-slot:empty>
                                 <x-icon name="o-cube" label="Hizmet bulunmuyor."/>
@@ -189,7 +195,8 @@ new class extends Component {
             @else
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     @foreach ($data as $sale)
-                        <x-card title="{{ $sale->sale_no }} - {{ $sale->date }}" separator class="mb-2">
+                        <x-card wire:key="{{  rand(10000000,99999999) }}"
+                                title="{{ $sale->sale_no }} - {{ $sale->date }}" separator class="mb-2">
                             @can('sale_process')
                                 <x-slot:menu>
                                     <x-button icon="tabler.settings"

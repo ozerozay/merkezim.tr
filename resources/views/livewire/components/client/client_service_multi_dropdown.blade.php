@@ -14,7 +14,7 @@ new class extends Component {
 
     public Collection $services;
 
-    public ?int $category_id;
+    public $category_id;
 
     public function mount(): void
     {

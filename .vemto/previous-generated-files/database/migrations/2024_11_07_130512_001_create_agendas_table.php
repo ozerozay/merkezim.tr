@@ -14,27 +14,33 @@ return new class extends Migration {
     {
         Schema::create('agendas', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->unsigned();
+            $table
+                ->bigInteger('talep_id')
+                ->unsigned()
+                ->nullable()
+                ->index();
+            $table
+                ->bigInteger('user_id')
+                ->unsigned()
+                ->index();
             $table
                 ->bigInteger('client_id')
                 ->unsigned()
-                ->nullable();
-            $table->string('title');
-            $table->text('description');
+                ->nullable()
+                ->index();
+            $table->string('name', 255);
             $table->text('message');
-            $table->date('start_date');
-            $table->time('start_time')->nullable();
-            $table->time('end_time')->nullable();
+            $table->date('date');
+            $table->date('date');
+            $table->date('date_create');
+            $table->time('time')->nullable();
             $table
-                ->enum('frequency', [
-                    'none',
-                    'daily',
-                    'weekly',
-                    'montly',
-                    'yearly',
-                ])
-                ->default('none');
-            $table->bigInteger('branch_id')->unsigned();
+                ->bigInteger('branch_id')
+                ->unsigned()
+                ->index();
+            $table->string('status', 255)->default('waiting');
+            $table->decimal('price')->nullable();
+            $table->text('status_message')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
             $table->timestamp('deleted_at')->nullable();
@@ -55,6 +61,12 @@ return new class extends Migration {
                 ->foreign('branch_id')
                 ->references('id')
                 ->on('branches')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table
+                ->foreign('talep_id')
+                ->references('id')
+                ->on('taleps')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });

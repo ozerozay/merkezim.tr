@@ -69,6 +69,7 @@ new class extends Component {
 
         $this->isOpen = false;
         $this->reset('message');
+        $this->dispatch('refresh-client-taksits');
         $this->success('Taksit düzenlendi.');
 
     }
@@ -77,8 +78,10 @@ new class extends Component {
     {
         $validator = Validator::make([
             'id' => $this->id,
+            'message' => $this->messageDelete
         ], [
-            'id' => 'required|exists:client_taksits'
+            'id' => 'required|exists:client_taksits',
+            'message' => 'required'
         ]);
         if ($validator->fails()) {
             $this->error($validator->messages()->first());
@@ -90,6 +93,7 @@ new class extends Component {
         $this->isOpen = false;
         $this->reset('messageDelete');
         $this->success('Taksit silindi.');
+        $this->dispatch('refresh-client-taksits');
     }
 
 

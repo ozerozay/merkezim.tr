@@ -2,18 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\TalepStatus;
 use Illuminate\Support\Str;
+use App\Models\TalepProcess;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TalepStatusFactory extends Factory
+class TalepProcessFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = TalepStatus::class;
+    protected $model = TalepProcess::class;
 
     /**
      * Define the model's default state.
@@ -23,10 +23,12 @@ class TalepStatusFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'require_date' => fake()->date(),
-            'require_client' => fake()->word(),
+            'status' => fake()->word(),
+            'message' => fake()->sentence(20),
+            'date' => fake()->date(),
             'deleted_at' => fake()->dateTime(),
+            'talep_id' => \App\Models\Talep::factory(),
+            'user_id' => \App\Models\User::factory(),
         ];
     }
 }

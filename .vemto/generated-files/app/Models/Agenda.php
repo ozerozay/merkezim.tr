@@ -18,9 +18,13 @@ class Agenda extends Model
     protected function casts(): array
     {
         return [
-            'start_date' => 'date:Y-m-d',
-            'start_time' => 'date:H:i:s',
+            'time' => 'date:H:i:s',
             'end_time' => 'date:H:i:s',
+            'type' => 'App\AgendaType',
+            'date' => 'date:Y-m-d',
+            'price' => 'float',
+            'date_create' => 'date:Y-m-d',
+            'status' => 'App\AgendaStatus',
         ];
     }
 
@@ -42,5 +46,10 @@ class Agenda extends Model
     public function branch()
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    public function talep()
+    {
+        return $this->belongsTo(Talep::class);
     }
 }

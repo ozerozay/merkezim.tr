@@ -2,8 +2,11 @@
 
 namespace App\Traits;
 
+use Livewire\Attributes\Url;
+
 trait WithViewPlaceHolder
 {
+    #[Url]
     public bool $view = true;
 
     public array $sortBy = ['column' => 'date', 'direction' => 'asc'];

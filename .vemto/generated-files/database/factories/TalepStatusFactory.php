@@ -24,8 +24,8 @@ class TalepStatusFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'require_date' => fake()->date(),
-            'require_client' => fake()->word(),
+            'require_date' => fake()->boolean(),
+            'require_client' => fake()->boolean(),
             'deleted_at' => fake()->dateTime(),
         ];
     }

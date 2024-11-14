@@ -3,9 +3,9 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\TalepStatus;
+use App\Models\ClientTimeline;
 
-class TalepStatusPolicy
+class ClientTimelinePolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -18,7 +18,7 @@ class TalepStatusPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, TalepStatus $model): bool
+    public function view(User $user, ClientTimeline $model): bool
     {
         return true;
     }
@@ -34,7 +34,7 @@ class TalepStatusPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, TalepStatus $model): bool
+    public function update(User $user, ClientTimeline $model): bool
     {
         return true;
     }
@@ -42,7 +42,7 @@ class TalepStatusPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, TalepStatus $model): bool
+    public function delete(User $user, ClientTimeline $model): bool
     {
         return true;
     }
@@ -50,7 +50,7 @@ class TalepStatusPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, TalepStatus $model): bool
+    public function restore(User $user, ClientTimeline $model): bool
     {
         return true;
     }
@@ -58,7 +58,7 @@ class TalepStatusPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, TalepStatus $model): bool
+    public function forceDelete(User $user, ClientTimeline $model): bool
     {
         return true;
     }

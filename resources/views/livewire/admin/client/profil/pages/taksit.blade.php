@@ -19,6 +19,10 @@ new class extends Component {
 
     public bool $editing = false;
 
+    protected $listeners = [
+        'refresh-client-taksits' => '$refresh'
+    ];
+
     public function getData()
     {
         return GetClientTaksits::run(client: $this->client, paginate: true, order: $this->sortBy);

@@ -6,23 +6,25 @@ use Livewire\Attributes\Modelable;
 use Livewire\Attributes\On;
 use Livewire\Volt\Component;
 
-new class extends Component
-{
+new class extends Component {
+
     #[Modelable]
-    public $label_ids = [];
+    public $client_labels;
 
     public $client_id;
 
     public Collection $labels;
 
-    public function mount()
+    public function mount(): void
     {
+        $this->labels = collect();
         $this->getLabels($this->client_id);
     }
 
     #[On('reload-labels')]
     public function reload_labels($client)
     {
+
         $this->getLabels($client);
     }
 
@@ -35,11 +37,11 @@ new class extends Component
 ?>
 
 <div>
-<x-choices-offline
-    wire:model="label_ids"
-    :options="$labels"
-    option-label="name"
-    label="Etiketler"
-    icon="o-magnifying-glass"
-    searchable />
+    <x-choices-offline
+        wire:model="client_labels"
+        :options="$labels"
+        option-label="name"
+        label="Etiketler"
+        icon="o-magnifying-glass"
+        searchable/>
 </div>

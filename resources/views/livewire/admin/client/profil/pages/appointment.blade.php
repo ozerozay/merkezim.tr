@@ -25,11 +25,11 @@ new class extends \Livewire\Volt\Component {
         return [
             ['key' => 'serviceRoom.name', 'label' => 'Oda', 'sortBy' => 'service_room_id'],
             ['key' => 'serviceCategory.name', 'label' => 'Kategori', 'sortBy' => 'service_category_id'],
-            ['key' => 'services', 'label' => 'Hizmetler', 'sortable' => false],
+            ['key' => 'serviceNames', 'label' => 'Hizmetler', 'sortable' => false],
             ['key' => 'duration', 'label' => 'Süre', 'sortBy' => 'duration'],
-            ['key' => 'date', 'label' => 'Tarih', 'sortBy' => 'date'],
-            ['key' => 'date_start', 'label' => 'Başlangıç', 'sortBy' => 'date_start'],
-            ['key' => 'date_end', 'label' => 'Bitiş', 'sortBy' => 'date_end'],
+            ['key' => 'dateHuman', 'label' => 'Tarih', 'sortBy' => 'date'],
+            ['key' => 'dateHumanStart', 'label' => 'Başlangıç', 'sortBy' => 'date_start'],
+            ['key' => 'dateHumanEnd', 'label' => 'Bitiş', 'sortBy' => 'date_end'],
             ['key' => 'status', 'label' => 'Durum', 'sortBy' => 'status'],
         ];
     }
@@ -41,7 +41,33 @@ new class extends \Livewire\Volt\Component {
             'headers' => $this->headers()
         ];
     }
-
 };
 
 ?>
+<div>
+    @if ($view)
+        <x-card title="">
+            <x-table :headers="$headers" :rows="$appointments" :sort-by="$sortBy" striped
+                     with-pagination>
+                <x-slot:empty>
+                    <x-icon name="o-cube" label="Randevu bulunmuyor."/>
+                </x-slot:empty>
+                @can('appointment_process')
+                    @scope('actions', $appointment)
+                    <x-button icon="tabler.settings"
+                              wire:click="showSettings({{ $appointment->id }})"
+                              class="btn-circle btn-sm btn-primary"/>
+                    @endscope
+                @endcan
+                @scope('cell_status', $appointment)
+                <x-badge :value="$appointment->status->label()" class="badge-{{ $appointment->status->color() }}"/>
+                @endscope
+                @scope('cell_duration', $appointment)
+                {{ $appointment->duration  }} dk
+                @endscope
+            </x-table>
+        </x-card>
+    @else
+    @endif
+</div>
+

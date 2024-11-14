@@ -2,6 +2,7 @@
 
 namespace App\Actions\Taksit;
 
+use App\ClientTimelineType;
 use App\Exceptions\AppException;
 use App\Models\ClientTaksit;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +18,16 @@ class DeleteTaksitAction
         try {
             DB::beginTransaction();
 
-            ClientTaksit::where('id', $info['id'])->delete();
+            $taksit = ClientTaksit::find($info['id']);
+
+            \App\Actions\Client\CreateClientTimelineAction::run([
+                'client_id' => $taksit->client_id,
+                'user_id' => auth()->user()->id,
+                'type' => ClientTimelineType::update_taksit_date,
+                'message' => $taksit->total.' TLlik taksit silindi. '.$info['message'],
+            ]);
+
+            $taksit->delete();
 
             DB::commit();
         } catch (AppException $e) {

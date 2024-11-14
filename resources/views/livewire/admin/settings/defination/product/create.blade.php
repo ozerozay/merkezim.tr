@@ -14,7 +14,7 @@ new class extends Component {
     public String $name;
 
     #[Rule('Required')]
-    public $branch_id;
+    public ?int $branch_id = null;
 
     #[Rule('required')]
     public $price;
@@ -45,19 +45,20 @@ new class extends Component {
 ?>
 
 <div>
-    <x-button :label="$label" wire:click="showForm" icon="o-plus" class="btn-primary {{ $class }}" responsive />
+    <x-button :label="$label" wire:click="showForm" icon="o-plus" class="btn-primary {{ $class }}" responsive/>
     <template x-teleport="body">
         <x-modal wire:model="show" title="Ürün Oluştur">
-            <hr class="mb-5" />
+            <hr class="mb-5"/>
             <x-form wire:submit="save">
-                <x-errors title="Hata!" icon="o-face-frown" />
-                <x-input label="Adı" wire:model="name" />
-                <livewire:components.form.branch_dropdown wire:model="branch_id" />
-                <x-input label="Fiyatı" wire:model="price" suffix="₺" money />
-                <livewire:components.form.number_dropdown wire:model="stok" label="Stok (Adet)" max="400" includeZero="true" />
+                <x-errors title="Hata!" icon="o-face-frown"/>
+                <x-input label="Adı" wire:model="name"/>
+                <livewire:components.form.branch_dropdown wire:model="branch_id"/>
+                <x-input label="Fiyatı" wire:model="price" suffix="₺" money/>
+                <livewire:components.form.number_dropdown wire:model="stok" label="Stok (Adet)" max="400"
+                                                          includeZero="true"/>
                 <x-slot:actions>
-                    <x-button label=" İptal" @click="$wire.show = false" />
-                    <x-button label="Gönder" icon="o-paper-airplane" class="btn-primary" type="submit" />
+                    <x-button label=" İptal" @click="$wire.show = false"/>
+                    <x-button label="Gönder" icon="o-paper-airplane" class="btn-primary" type="submit"/>
                 </x-slot:actions>
             </x-form>
         </x-modal>

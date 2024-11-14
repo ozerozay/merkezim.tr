@@ -6,7 +6,7 @@ use Livewire\Volt\Component;
 
 new class extends Component {
     #[Modelable]
-    public int $branch_id;
+    public ?int $branch_id;
 
     public $branches;
 

@@ -22,6 +22,10 @@ new class extends Component {
         $this->sortBy = ['column' => 'created_at', 'direction' => 'asc'];
     }
 
+    protected $listeners = [
+        'refresh-client-services' => '$refresh'
+    ];
+
     public function getData()
     {
         return GetClientServices::run($this->client, true, $this->sortBy);
