@@ -13,6 +13,7 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('sale', function (Blueprint $table) {
+            $table->id();
             $table
                 ->bigInteger('branch_id')
                 ->unsigned()
@@ -50,10 +51,10 @@ return new class extends Migration {
             $table->text('message')->nullable();
             $table->date('expire_date')->nullable();
             $table->json('coupons')->nullable();
+            $table->boolean('visible')->default(true);
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
             $table->timestamp('deleted_at')->nullable();
-            $table->id();
 
             $table
                 ->foreign('user_id')

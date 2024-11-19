@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
-use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Notifications\Notifiable;
+use App\SaleStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 class User extends Authenticatable
 {
-    use HasRoles;
     use HasFactory;
-    use Notifiable;
     use HasJsonRelationships;
+    use HasRoles;
+    use Notifiable;
 
     /**
      * The attributes that aren't mass assignable.
@@ -399,9 +400,7 @@ class User extends Authenticatable
         return $this->hasMany(TalepProcess::class);
     }
 
-    public function search()
-    {
-    }
+    public function search() {}
 
     public function staff_branch()
     {
@@ -411,5 +410,12 @@ class User extends Authenticatable
     public function client_labels()
     {
         return $this->belongsToJson(Label::class, 'labels');
+    }
+
+    public function totalDebt()
+    {
+        return $this->clientTaksits()
+            ->where('status', SaleStatus::success)
+            ->sum('remaining');
     }
 }

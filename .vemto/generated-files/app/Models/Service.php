@@ -22,6 +22,7 @@ class Service extends Model
             'min_day' => 'integer',
             'active' => 'boolean',
             'price' => 'float',
+            'visible' => 'boolean',
         ];
     }
 

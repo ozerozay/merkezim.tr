@@ -146,6 +146,7 @@ new class extends \Livewire\Volt\Component {
 ?>
 <div>
     <x-drawer wire:model="isOpen" title="Satış" class="w-full lg:w-1/3"
+              wire:key="aopwj462u034nu5305"
               separator with-close-button right>
         @if($isLoading)
             <livewire:components.card.loading.loading/>
@@ -161,8 +162,10 @@ new class extends \Livewire\Volt\Component {
                                           :config="$config_sale_date"/>
                             <x-datepicker label="Son Kullanım Tarihi" wire:model="expire_date" icon="o-calendar"
                                           :config="$config_sale_date"/>
-                            <livewire:components.form.staff_multi_dropdown wire:model="sale_staffs"/>
-                            <livewire:components.form.sale_type_dropdown wire:model="sale_type"/>
+                            <livewire:components.form.staff_multi_dropdown wire:key="drawer-sale-mlti-dropdown"
+                                                                           wire:model="sale_staffs"/>
+                            <livewire:components.form.sale_type_dropdown wire:key="drawer-sale-type-dropdown"
+                                                                         wire:model="sale_type"/>
                             <x-input label="Açıklama" wire:model="messageEdit"/>
                             <x-slot:actions>
                                 <x-button label="Gönder" type="submit" spinner="edit" class="btn-primary"/>

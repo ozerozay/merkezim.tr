@@ -112,6 +112,16 @@ class CreateSaleAction
             }
 
             if (CheckUserInstantApprove::run($info['user_id'])) {
+                $sale->clientServices()->update([
+                    'status' => SaleStatus::success,
+                ]);
+
+                $sale->clientTaksits()->update([
+                    'status' => SaleStatus::success,
+                ]);
+
+                $sale->status = SaleStatus::success;
+                $sale->save();
                 ApproveSaleAction::run($sale->id, $info['user_id']);
             }
 

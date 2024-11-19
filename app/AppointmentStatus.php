@@ -13,6 +13,7 @@ enum AppointmentStatus: string
     case late = 'late';
     case forwarded = 'forwarded';
     case finish = 'finish';
+    case teyitli = 'teyitli';
 
     public static function has(string $value): bool
     {
@@ -30,7 +31,8 @@ enum AppointmentStatus: string
             self::merkez => 'Merkezde',
             self::late => 'Gecikti',
             self::forwarded => 'Yönlendirildi',
-            self::finish => 'Bitti'
+            self::finish => 'Bitti',
+            self::teyitli => 'Teyitli'
         };
     }
 
@@ -46,6 +48,7 @@ enum AppointmentStatus: string
             self::late => 'badge badge-warning text-orange-500 bg-orange-100',             // Gecikti
             self::forwarded => 'badge badge-info text-indigo-500 bg-indigo-100',           // Yönlendirildi
             self::finish => 'badge badge-success text-teal-500 bg-teal-100',               // Bitti
+            self::teyitli => 'badge badge-success text-teal-500 bg-teal-100',               // Bitti
         };
         /*
          * [

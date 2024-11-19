@@ -167,6 +167,27 @@ class RoleSeeder extends Seeder
                 'visible' => true,
             ]);
 
+            Permission::create([
+                'name' => 'action_close_appointment',
+                'description' => 'Randevu Ekranı Kapat',
+                'route' => 'admin.actions.close_appointment',
+                'visible' => true,
+            ]);
+
+            Permission::create([
+                'name' => 'action_create_coupon',
+                'description' => 'Kupon Oluştur',
+                'route' => 'admin.actions.create_coupon',
+                'visible' => true,
+            ]);
+
+            Permission::create([
+                'name' => 'action_client_tahsilat',
+                'description' => 'Tahsilat',
+                'route' => 'admin.actions.client_tahsilat',
+                'visible' => true,
+            ]);
+
             /* ------------------------------- */
 
             Permission::create([
@@ -195,6 +216,13 @@ class RoleSeeder extends Seeder
             Permission::create([
                 'name' => 'client_profil_service',
                 'description' => 'Danışan Profil - Hizmet',
+                'route' => '',
+                'visible' => false,
+            ]);
+
+            Permission::create([
+                'name' => 'client_profil_coupon',
+                'description' => 'Danışan Profil - Kupon',
                 'route' => '',
                 'visible' => false,
             ]);
@@ -318,6 +346,13 @@ class RoleSeeder extends Seeder
             Permission::create([
                 'name' => 'appointment_process',
                 'description' => 'Randevu - Düzenleme',
+                'route' => '',
+                'visible' => false,
+            ]);
+
+            Permission::create([
+                'name' => 'adisyon_process',
+                'description' => 'Adisyon - Silme',
                 'route' => '',
                 'visible' => false,
             ]);

@@ -23,7 +23,7 @@ class DeleteSaleProductAction
             \App\Actions\Client\CreateClientTimelineAction::run([
                 'client_id' => $client_service->client_id,
                 'user_id' => auth()->user()->id,
-                'type' => ClientTimelineType::delete_service,
+                'type' => ClientTimelineType::delete_sale_product,
                 'message' => $info['message'],
             ]);
 

@@ -6,9 +6,20 @@ new class extends \Livewire\Volt\Component {
 
     public ?int $client;
 
-    public ?int $selected;
+    public ?bool $editing = false;
 
-    public bool $editing = false;
+    public ?int $selectedAppointment = null;
+
+    protected $listeners = [
+        'refresh-appointments' => '$refresh'
+    ];
+
+    #[\Livewire\Attributes\On('appointment-show-drawer')]
+    public function showSettings($id): void
+    {
+        $this->dispatch('drawer-appointment-update-id', $id)->to('components.drawers.drawer_appointment');
+        $this->editing = true;
+    }
 
     public function mount(): void
     {
@@ -45,6 +56,11 @@ new class extends \Livewire\Volt\Component {
 
 ?>
 <div>
+    <div class="flex justify-end mb-4 mt-5 gap-2">
+        <p>Sıralama işlemlerini tablo görünümünden yapabilirsiniz.</p>
+        <x-button wire:click="changeView" label="{{ $view == 'table' ? 'LİSTE' : 'TABLO' }}"
+                  icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline"/>
+    </div>
     @if ($view)
         <x-card title="">
             <x-table :headers="$headers" :rows="$appointments" :sort-by="$sortBy" striped
@@ -68,6 +84,14 @@ new class extends \Livewire\Volt\Component {
             </x-table>
         </x-card>
     @else
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            @foreach($appointments as $appointment)
+                <livewire:components.card.appointment.card_appointment_client
+                    wire:key="{{ $appointment->id }}"
+                    :appointment="$appointment"/>
+            @endforeach
+        </div>
     @endif
+    <livewire:components.drawers.drawer_appointment wire:model="editing"/>
 </div>
 

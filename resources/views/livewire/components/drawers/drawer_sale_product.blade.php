@@ -41,7 +41,7 @@ new class extends \Livewire\Volt\Component {
             'id' => $this->id,
             'message' => $this->messageDelete,
         ], [
-            'id' => 'required|exists:client_services',
+            'id' => 'required|exists:sale_product',
             'message' => 'required'
         ]);
         if ($validator->fails()) {
@@ -54,7 +54,7 @@ new class extends \Livewire\Volt\Component {
         $this->isOpen = false;
         $this->reset('messageDelete');
         $this->dispatch('refresh-client-sale-products');
-        $this->dispatch('Ürün satışı silindi.');
+        $this->success('Ürün satışı silindi.');
     }
 
 };

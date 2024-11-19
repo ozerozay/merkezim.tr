@@ -21,6 +21,7 @@ class ClientTaksit extends Model
     {
         return [
             'status' => 'App\SaleStatus',
+            'date' => 'date:Y-m-d',
         ];
     }
 
@@ -47,6 +48,18 @@ class ClientTaksit extends Model
     public function clientTaksitsLocks()
     {
         return $this->hasMany(ClientTaksitsLock::class);
+    }
+
+    public function transactions()
+    {
+        return $this->morphMany(Transaction::class, 'transacable');
+    }
+
+    protected function isLate(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?Carbon $value) => $this->date->lt(Carbon::now())
+        );
     }
 
     protected function dateHumanCreated(): Attribute

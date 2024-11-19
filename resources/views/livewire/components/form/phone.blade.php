@@ -12,5 +12,6 @@ new class extends Component {
 };
 ?>
 <div>
-<x-input label="Telefon Numaranız" wire:model="phone" icon="o-phone" x-mask="9999999999" />
+    <x-input label="Telefon Numaranız" wire:model="phone" icon="o-phone" x-mask="9999999999"
+             placeholder="Başında 0 olmadan girin."/>
 </div>

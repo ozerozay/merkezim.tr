@@ -11,7 +11,7 @@ class GetClientTaksits
 {
     use AsAction;
 
-    public function handle($client, $paginate, $order, $saleID = null)
+    public function handle($client, $paginate, $order, $saleID = null, $status = null, $remaining = null)
     {
         try {
 
@@ -19,6 +19,12 @@ class GetClientTaksits
                 ->where('client_id', $client)
                 ->orderBy(...array_values($order))
                 ->withCount('clientTaksitsLocks')
+                ->when($status, function ($query) use ($status) {
+                    $query->where('status', $status);
+                })
+                ->when($remaining, function ($query) {
+                    $query->where('remaining', '>', 0);
+                })
                 ->with('sale:id,unique_id,sale_no');
 
             return $paginate ? $query->paginate(10) : $query->get();

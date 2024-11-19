@@ -23,18 +23,21 @@ class AgendaFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->sentence(10),
-            'description' => fake()->sentence(15),
+            'name' => fake()->name(),
             'message' => fake()->sentence(20),
             'date' => fake()->date(),
-            'start_time' => fake()->word(),
-            'end_time' => fake()->word(),
-            'frequency' => fake()->word(),
+            'date' => fake()->date(),
+            'date_create' => fake()->date(),
+            'time' => fake()->date(),
+            'status' => fake()->word(),
             'type' => fake()->word(),
+            'price' => fake()->randomFloat(2, 0, 9999),
+            'status_message' => fake()->word(),
             'deleted_at' => fake()->dateTime(),
             'user_id' => \App\Models\User::factory(),
             'client_id' => \App\Models\User::factory(),
             'branch_id' => \App\Models\Branch::factory(),
+            'talep_id' => \App\Models\Talep::factory(),
         ];
     }
 }

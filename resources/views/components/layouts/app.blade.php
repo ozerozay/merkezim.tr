@@ -24,12 +24,14 @@
 
     </x-slot:brand>
     <x-slot:actions>
-        <label for="main-drawer" class="lg:hidden me-3">
-            <x-icon name="o-bars-3" class="cursor-pointer"/>
-        </label>
+        <x-button title="Ara" wire:click="$dispatch('mary-search-open')" icon="o-magnifying-glass"
+                  badge="Ctrl + M"/>
         <x-button icon="o-bell" class="btn-circle relative">
             <x-badge value="2" class="badge-error absolute -right-2 -top-2"/>
         </x-button>
+        <label for="main-drawer" class="lg:hidden me-3">
+            <x-icon name="o-bars-3" class="cursor-pointer"/>
+        </label>
     </x-slot:actions>
 
 </x-nav>
@@ -67,10 +69,12 @@
                 @if (1==2)
                     <x-button label="Hi!" class="btn-outline" data-set-theme="cupcake" data-key="mary-theme"/>
                 @endif
-                <x-menu-item title="Anasayfa" icon="tabler.home" link="/"/>
+                <x-menu-item title="Anasayfa" icon="tabler.home" link="{{ route('admin.index') }}"/>
                 <x-menu-item title="Danışan" icon="tabler.user" link="{{ route('admin.clients') }}"/>
-                <x-menu-item title="Randevu" icon="tabler.calendar-month" link="###"/>
-                <x-menu-item title="Kasa" icon="tabler.moneybag" link="###"/>
+                <x-menu-item title="Randevu" icon="tabler.calendar-month" link="{{ route('admin.appointment') }}"/>
+                <x-menu-item title="Kasa" icon="tabler.moneybag" link="{{ route('admin.kasa') }}"/>
+                <x-menu-item title="Ajanda" icon="tabler.moneybag" link="{{ route('admin.agenda') }}"/>
+                <x-menu-item title="Talep" icon="tabler.moneybag" link="{{ route('admin.talep') }}"/>
                 <x-menu-item title="Satış" icon="tabler.credit-card" link="###"/>
                 <x-menu-item title="Rapor" icon="tabler.graph" link="###"/>
                 <x-menu-sub title="Ayarlar" icon="o-cog-6-tooth">

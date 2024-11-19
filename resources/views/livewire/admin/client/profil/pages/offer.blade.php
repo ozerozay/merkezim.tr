@@ -162,7 +162,7 @@ new class extends Component {
     @else
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             @if ($offers->count() == 0)
-                <p class="text-center">Tekjlif bulunmuyor.</p>
+                <p class="text-center">Teklif bulunmuyor.</p>
             @endif
             @foreach ($offers as $offer)
                 <x-card title="{{ $offer->unique_id }}" separator class="mb-2">

@@ -14,6 +14,10 @@ new class extends \Livewire\Volt\Component {
 
     public bool $editing = false;
 
+    protected $listeners = [
+        'refresh-client-adisyons' => '$refresh'
+    ];
+
     public function getData()
     {
         return \App\Actions\Client\GetClientAdisyons::run(client: $this->client, paginate: true, order: $this->sortBy);

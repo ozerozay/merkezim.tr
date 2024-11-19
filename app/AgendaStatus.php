@@ -25,9 +25,18 @@ enum AgendaStatus: string
     public function color(): string
     {
         return match ($this) {
-            self::waiting => 'badge-warning',
-            self::success => 'badge-success',
-            self::error => 'badge-error',
+            self::waiting => 'warning',
+            self::success => 'success',
+            self::error => 'error',
+        };
+    }
+
+    public function icon(): string
+    {
+        return match ($this) {
+            self::waiting => 'tabler.hourglass-empty',
+            self::success => 'o-check',
+            self::error => 'tabler.x',
         };
     }
 }

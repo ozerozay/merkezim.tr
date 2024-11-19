@@ -131,6 +131,7 @@ new class extends \Livewire\Volt\Component {
             'id' => $this->id,
             'message' => $this->messageStatus,
             'status' => $this->service_status,
+            
         ], [
             'id' => 'required|exists:client_services',
             'message' => 'required',

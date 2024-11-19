@@ -17,6 +17,7 @@ return new class extends Migration {
             $table
                 ->bigInteger('client_id')
                 ->unsigned()
+                ->nullable()
                 ->index();
             $table
                 ->bigInteger('branch_id')

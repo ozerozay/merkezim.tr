@@ -1,6 +1,8 @@
 <?php
 
-new class extends \Livewire\Volt\Component {
+new
+#[\Livewire\Attributes\Title('Randevu')]
+class extends \Livewire\Volt\Component {
 
     use \Mary\Traits\Toast;
 
@@ -12,6 +14,8 @@ new class extends \Livewire\Volt\Component {
     #[\Livewire\Attributes\Url]
     public ?int $branch = null;
 
+    public ?string $branchName = null;
+
     public ?array $statutes = [];
 
     #[\Livewire\Attributes\Url(as: 'status')]
@@ -20,6 +24,10 @@ new class extends \Livewire\Volt\Component {
     public ?bool $editing = false;
 
     public ?int $selectedAppointment = null;
+
+    protected $listeners = [
+        'refresh-appointments' => '$refresh'
+    ];
 
     public array $sortBy = [
         ['key' => 'time_asc', 'name' => 'Saat (Artan)', 'column' => 'date_start', 'direction' => 'asc', 'icon' => 'tabler.sort-ascending'],
@@ -39,10 +47,14 @@ new class extends \Livewire\Volt\Component {
         $this->editing = true;
     }
 
+
     public function mount(): void
     {
-        $this->date_config = \App\Peren::dateConfig();
-        $this->date = \Carbon\Carbon::now()->format('Y-m-d');
+        $this->date_config = \App\Peren::dateConfig(enableTime: false);
+        if (!$this->date) {
+            $this->date = date('Y-m-d');
+        }
+
         try {
             if (isset($this->statutes_url)) {
                 $this->statutes = collect(explode(',', $this->statutes_url))
@@ -56,6 +68,7 @@ new class extends \Livewire\Volt\Component {
 
     public function filterBranch($id): void
     {
+        $this->branchName = \App\Models\Branch::where('id', $id)->pluck('name')?->first() ?? null;
         $this->branch = $id;
     }
 
@@ -90,6 +103,7 @@ new class extends \Livewire\Volt\Component {
 
     public function getAppointments(): \Illuminate\Database\Eloquent\Collection
     {
+        $this->branchName = $this->branchName ?? auth()->user()->staff_branch()->first()->name;
         return \App\Models\Appointment::query()
             ->where(function ($q) {
                 if ($this->branch) {
@@ -136,7 +150,8 @@ new class extends \Livewire\Volt\Component {
                     <x-menu-item @click="$wire.filterBranch({{$branch->id}})" title="{{$branch->name}}"/>
                 @endforeach
                 <x-slot:trigger>
-                    <x-button icon="tabler.building-store" class="btn-outline" label="Şube" responsive/>
+                    <x-button icon="tabler.building-store" class="btn-outline" label="{{ $branchName ?? 'Şube' }}"
+                              responsive/>
                 </x-slot:trigger>
             </x-dropdown>
             <x-dropdown label="Settings" class="btn-outline">
@@ -153,18 +168,20 @@ new class extends \Livewire\Volt\Component {
                     <x-button icon="tabler.filter" class="btn-outline" label="Filtrele" responsive/>
                 </x-slot:trigger>
             </x-dropdown>
-            <x-dropdown label="Şube" icon="tabler.building-store">
-                @foreach($sortBy as $sortItem)
-                    <x-menu-item title="{{ $sortItem['name'] }}"
-                                 wire:click="filterSort('{{ $sortItem['key']  }}')"
-                                 icon="{{ $sortItem['icon']  }}"/>
-                @endforeach
-                <x-menu-separator/>
-                <x-menu-item title="Sıfırla" wire:click="filterSort(false)" icon="tabler.filter-off"/>
-                <x-slot:trigger>
-                    <x-button icon="tabler.sort-descending" class="btn-outline" label="Sırala" responsive/>
-                </x-slot:trigger>
-            </x-dropdown>
+            @if (1==2)
+                <x-dropdown label="Şube" icon="tabler.building-store">
+                    @foreach($sortBy as $sortItem)
+                        <x-menu-item title="{{ $sortItem['name'] }}"
+                                     wire:click="filterSort('{{ $sortItem['key']  }}')"
+                                     icon="{{ $sortItem['icon']  }}"/>
+                    @endforeach
+                    <x-menu-separator/>
+                    <x-menu-item title="Sıfırla" wire:click="filterSort(false)" icon="tabler.filter-off"/>
+                    <x-slot:trigger>
+                        <x-button icon="tabler.sort-descending" class="btn-outline" label="Sırala" responsive/>
+                    </x-slot:trigger>
+                </x-dropdown>
+            @endif
             @can('action_client_create_appointment')
                 <x-button icon="o-plus"
                           link="{{ route('admin.actions.client_create_appointment') }}"
@@ -204,9 +221,15 @@ new class extends \Livewire\Volt\Component {
         </x-card>
         <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5 mb-5">
             @foreach($appointments as $appointment)
-                <livewire:components.card.appointment.card_appointment_client
-                    wire:key="{{ $appointment->id }}"
-                    :appointment="$appointment"/>
+                @if ($appointment->type == \App\AppointmentType::appointment)
+                    <livewire:components.card.appointment.card_appointment_client
+                        wire:key="{{ $appointment->id }}"
+                        :appointment="$appointment"/>
+                @elseif($appointment->type == \App\AppointmentType::close)
+                    <livewire:components.card.appointment.card_appointment_close
+                        wire:key="{{ $appointment->id }}"
+                        :appointment="$appointment"/>
+                @endif
             @endforeach
         </div>
     @endforeach

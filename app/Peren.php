@@ -41,13 +41,17 @@ class Peren
         ];
     }
 
-    public static function dateConfig($min = null, $max = null, $enableTime = false, $mode = null)
+    public static function dateConfig($min = null, $max = null, $enableTime = false, $mode = null, $timeOnly = false)
     {
         $config = ['altFormat' => 'd/m/Y', 'locale' => 'tr', 'disableMobile' => true];
 
         if ($enableTime) {
             $config['enableTime'] = true;
             $config['altFormat'] = 'd/m/Y H:i';
+            if ($timeOnly) {
+                $config['noCalendar'] = true;
+                $config['altFormat'] = 'H:i';
+            }
         }
 
         if ($mode) {

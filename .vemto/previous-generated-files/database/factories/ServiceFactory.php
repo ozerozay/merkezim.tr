@@ -30,6 +30,7 @@ class ServiceFactory extends Factory
             'price' => fake()->randomFloat(2, 0, 9999),
             'min_day' => fake()->randomNumber(0),
             'active' => fake()->boolean(),
+            'visible' => fake()->word(),
             'deleted_at' => fake()->dateTime(),
             'category_id' => \App\Models\ServiceCategory::factory(),
         ];

@@ -33,7 +33,10 @@ Route::middleware([
 
     Route::get('/spotlight', [Spotlight::class, 'search'])->name('mary.spotlight');
 
-    Volt::route('/', 'client.index');
+    Volt::route('/', 'client.index')->name('client.index');
+    Volt::route('/service', 'client.service')->name('client.service');
+    Volt::route('/contact', 'client.contact')->name('client.contact');
+    Volt::route('/location', 'client.location')->name('client.location');
 
     Route::get('/logout', function () {
         Auth::logout();
@@ -41,15 +44,23 @@ Route::middleware([
         request()->session()->regenerateToken();
 
         return redirect('/');
-    });
+    })->name('logout');
 
     Route::middleware('auth')->group(function () {
-        /*
-         Volt::route('/new', 'new')->name('new');
-         Volt::route('/merkez', 'merkezim.merkez')->name('merkezim.merkez');*/
+
+        Volt::route('/seans', 'client.profil.seans')
+            ->name('client.profil.seans');
+        Volt::route('/randevu', 'client.profil.appointment')
+            ->name('client.profil.appointment');
+        Volt::route('/teklif', 'client.profil.offers')
+            ->name('client.profil.offers');
+        Volt::route('/kupon', 'client.profil.coupons')
+            ->name('client.profil.coupons');
+        Volt::route('/taksit', 'client.profil.taksits')
+            ->name('client.profil.taksits');
 
         Route::prefix('admin')->group(function () {
-            Volt::route('/', 'test');
+            Volt::route('/', 'test')->name('admin.index');
 
             Route::prefix('action')->group(function () {
 
@@ -101,6 +112,10 @@ Route::middleware([
                     ->name('admin.actions.client_create_appointment')
                     ->middleware('can:action_client_create_appointment');
 
+                Volt::route('/appointment_close', 'admin.actions.close_appointment')
+                    ->name('admin.actions.close_appointment')
+                    ->middleware('can:action_close_appointment');
+
                 /*Route::prefix('/offer')->group(function () {
 
                     Volt::route('/customer', 'admin.actions.client_offer.customer')
@@ -121,6 +136,10 @@ Route::middleware([
                 Volt::route('/payment_tracking', 'admin.actions.create_payment_tracking')
                     ->name('admin.actions.create_payment_tracking')
                     ->middleware('can:action_create_payment_tracking');
+
+                Volt::route('/tahsilat', 'admin.actions.client_tahsilat')
+                    ->name('admin.actions.tahsilat')
+                    ->middleware('can:action_client_tahsilat');
 
             });
 
@@ -173,7 +192,7 @@ Route::middleware([
                     Volt::route('/{package}/items', 'admin.settings.defination.package.items')->name('admin.settings.defination.package.items');
                 })->middleware('can:defination_package');
             });
-        });
+        })->middleware('role:admin,staff');
     });
 
     Route::get('/apptest', function () {

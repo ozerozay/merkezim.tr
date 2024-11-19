@@ -66,6 +66,8 @@ class AppServiceProvider extends ServiceProvider
             'talep_status' => 'App\Models\TalepStatus',
             'agenda' => 'App\Models\Agenda',
             'agenda_occurrence' => 'App\Models\AgendaOccurrence',
+            'agenda_type' => 'App\AgendaType',
+            'agenda_status' => 'App\AgendaStatus',
             'client_timeline' => 'App\Models\ClientTimeline',
             'talep' => 'App\Models\Talep',
             'talep_process' => 'App\Models\TalepProcess',

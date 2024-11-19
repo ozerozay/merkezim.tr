@@ -17,4 +17,6 @@ enum ClientTimelineType: string
 
     case delete_sale_product = 'delete_sale_product';
 
+    case delete_adisyon = 'delete_adisyon';
+
 }

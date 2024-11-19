@@ -34,6 +34,7 @@ class SaleFactory extends Factory
             'message' => fake()->sentence(20),
             'expire_date' => fake()->date(),
             'coupons' => fake()->word(),
+            'visible' => fake()->word(),
             'deleted_at' => fake()->dateTime(),
             'branch_id' => \App\Models\Branch::factory(),
             'sale_type_id' => \App\Models\SaleType::factory(),

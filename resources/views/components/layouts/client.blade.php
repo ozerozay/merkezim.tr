@@ -20,7 +20,7 @@
 {{-- NAVBAR mobile only --}}
 <x-nav sticky class="lg:hidden">
     <x-slot:brand>
-        MARGE GÜZELLİK
+        <p class="text-2xl font-bold">MARGE GÜZELLİK</p>
     </x-slot:brand>
     <x-slot:actions>
         <label for="main-drawer" class="lg:hidden me-3">
@@ -29,6 +29,7 @@
         <x-button icon="tabler.shopping-bag" class="btn-circle relative">
             <x-badge value="2" class="badge-error absolute -right-2 -top-2"/>
         </x-button>
+
     </x-slot:actions>
 </x-nav>
 
@@ -39,27 +40,69 @@
         {{-- MENU --}}
         <x-menu class="mt-2" activate-by-route>
             {{-- User --}}
-            <div class="flex">
-                <p class="text-2xl font-bold">MARGE GÜZELLİK</p>
-                <x-theme-toggle class="btn btn-circle"/>
+            <div class="flex items-center">
+                <p class="text-2xl font-bold flex-1">MARGE</p>
+                <x-theme-toggle class="btn btn-circle ml-auto"/>
             </div>
+
 
             <x-menu-separator/>
             @if (1==2)
                 <x-button label="Hi!" class="btn-outline" data-set-theme="cupcake" data-key="mary-theme"/>
             @endif
+            @if ($user = auth()->user())
+                <x-list-item :item="$user" no-separator no-hover class="-mx-2 !-my-2 rounded">
+                    <x-slot:value>
+                        {{ auth()->user()->name }}
+                    </x-slot:value>
+                    <x-slot:sub-value>
+                        952-315-346
+                    </x-slot:sub-value>
+                    <x-slot:actions>
+                        <div class="flex space-x-1">
+                            <x-button icon="tabler.logout" class="btn-circle" link="{{ route('logout') }}"/>
+                        </div>
+                    </x-slot:actions>
+                </x-list-item>
+                <x-menu-item title="Seanslarım" icon="tabler.mood-check" link="{{ route('client.profil.seans') }}"/>
+                <x-menu-item title="Randevu" icon="tabler.calendar" link="{{ route('client.profil.appointment') }}"
+                             badge="1" badge-classes="float-right !badge-warning"/>
+                <x-menu-item title="Taksitlerim" icon="tabler.file-invoice" link="{{ route('client.profil.taksits') }}"
+                             badge="1" badge-classes="float-right !badge-error"/>
+                <x-menu-item title="Tekliflerim" icon="tabler.confetti" link="{{ route('client.profil.offers') }}"
+                             badge="1" badge-classes="float-right !badge-success"/>
+                <x-menu-item title="Kuponlarım" icon="tabler.gift-card" link="{{ route('client.profil.coupons') }}"
+                             badge="1" badge-classes="float-right !badge-success"/>
+                <x-menu-item title="Referans" icon="tabler.user-plus" link="{{ route('login') }}"/>
+                <x-menu-item title="Paket" icon="tabler.circle-plus" link="{{ route('login') }}"/>
+                <x-menu-item title="Kullan - Kazan" icon="tabler.heart" link="{{ route('login') }}"/>
+                <x-menu-item title="Faturalarım" icon="tabler.file-invoice" link="{{ route('login') }}"/>
+                <x-menu-item title="Profilim" icon="tabler.user-circle" link="{{ route('login') }}"/>
+                <x-menu-separator/>
 
-            <x-menu-item title="Anasayfa" icon="tabler.home" link="/"/>
-            <x-menu-sub title="Hizmetlerimiz" icon="o-home">
-                <x-menu-item title="LAZER EPİLASYON" icon="o-user"/>
-                <x-menu-item title="CİLT BAKIMI" icon="o-folder"/>
-                <x-menu-item title="BÖLGESEL ZAYIFLAMA" icon="o-folder"/>
+            @else
+                <x-menu-item title="ONLİNE İŞLEM MERKEZİ" icon="tabler.mood-check" link="{{ route('login') }}"/>
+                <x-menu-separator/>
+            @endif
+            <x-menu-item title="Anasayfa" link="/" icon="tabler.home"/>
+            <x-menu-sub title="Hizmetlerimiz" icon="tabler.heart">
+                <x-menu-item title="LAZER EPİLASYON" icon="tabler.arrow-right" link="{{route('client.service')}}"/>
+                <x-menu-item title="CİLT BAKIMI" icon="tabler.arrow-right" link="{{route('client.service')}}"/>
+                <x-menu-item title="BÖLGESEL ZAYIFLAMA" icon="tabler.arrow-right" link="{{route('client.service')}}"/>
             </x-menu-sub>
-            <x-menu-item title="Şubelerimiz" icon="tabler.calendar-month" link="###"/>
-            <x-menu-item title="İletişim" icon="tabler.calendar-month" link="###"/>
+            <x-menu-sub title="Bize Ulaşın" icon="tabler.help" link="{{route('client.contact')}}">
+                <x-menu-item title="İletişim Formu" icon="tabler.help-octagon" link="{{route('client.contact')}}"/>
+                <x-menu-item title="Yol Tarifi" icon="tabler.map-pin" link="{{route('client.location')}}"/>
+            </x-menu-sub>
             <x-menu-separator/>
-            <x-menu-item title="ONLİNE İŞLEM MERKEZİ" icon="tabler.mood-check"/>
-            <x-menu-separator/>
+
+
+            <x-menu-item title="0850 241 1010" icon="tabler.phone" external
+                         link="https://www.instagram.com/margeguzellik"/>
+            <x-menu-item title="Instagram" icon="tabler.brand-instagram" external
+                         link="https://www.instagram.com/margeguzellik"/>
+            <x-menu-item title="Whatsapp" icon="tabler.brand-whatsapp" external
+                         link="https://wa.me/905056277636"/>
         </x-menu>
     </x-slot:sidebar>
 

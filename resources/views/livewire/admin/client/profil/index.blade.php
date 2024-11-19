@@ -28,29 +28,6 @@ class extends Component {
     {
     }
 
-    public ?User $client_note;
-
-    public ?User $client_coupon;
-
-    public function client_note_open()
-    {
-        $this->client_note = $this->user;
-    }
-
-    public function client_coupon_open()
-    {
-        $this->client_coupon = $this->user;
-    }
-
-    #[On('client-note-cancel')]
-    #[On('client-note-saved')]
-    #[On('client-coupon-cancel')]
-    #[On('client-coupon-saved')]
-    public function client_cancel()
-    {
-        $this->client_note = null;
-        $this->client_coupon = null;
-    }
 };
 ?>
 
@@ -206,90 +183,13 @@ class extends Component {
                 @endif
             </x-tab>
         @endcan
-        <x-tab name="tab-kupon" label="Kupon">
-            <div class="mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-
-                <!-- Aktif Kupon -->
-                <div class="card bg-green-100 shadow-xl">
-                    <div class="card-body flex flex-col">
-                        <h2 class="card-title text-green-600">%25 İNDİRİM KUPONU</h2>
-                        <p class="text-green-500">Kupon kodu: <span class="font-mono">SAVE20</span></p>
-                        <p class="text-gray-600">Bitiş: 2024-12-31</p>
-                        <p class="text-sm text-gray-500">John Doe</p>
-                        <div class="card-actions justify-end">
-                            <span class="badge badge-success">Aktif</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Süresi Dolmuş Kupon -->
-                <div class="card bg-red-100 shadow-xl">
-                    <div class="card-body flex flex-col">
-                        <h2 class="card-title text-red-600">10% Off on Clothing</h2>
-                        <p class="text-red-500">Kupon kodu: <span class="font-mono">SAVE10</span></p>
-                        <p class="text-gray-600">Son kullanma tarihi: 2023-08-31</p>
-                        <p class="text-sm text-gray-500">Oluşturan: Jane Smith</p>
-                        <div class="card-actions justify-end">
-                            <span class="badge badge-error">Süresi Doldu</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Kullanılmış Kupon -->
-                <div class="card bg-gray-100 shadow-xl">
-                    <div class="card-body flex flex-col">
-                        <h2 class="card-title text-gray-600">15% Off on Accessories</h2>
-                        <p class="text-gray-500">Kupon kodu: <span class="font-mono">SAVE15</span></p>
-                        <p class="text-gray-600">Son kullanma tarihi: 2024-03-15</p>
-                        <p class="text-sm text-gray-500">Oluşturan: Sarah Lee</p>
-                        <div class="card-actions justify-end">
-                            <span class="badge badge-neutral">Kullanıldı</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card bg-green-100 shadow-xl">
-                    <div class="card-body flex flex-col">
-                        <h2 class="card-title text-green-600">%25 İNDİRİM KUPONU</h2>
-                        <p class="text-green-500">Kupon kodu: <span class="font-mono">SAVE20</span></p>
-                        <p class="text-gray-600">Son kullanma tarihi: 2024-12-31</p>
-                        <p class="text-sm text-gray-500">Oluşturan: John Doe</p>
-                        <div class="card-actions justify-end">
-                            <span class="badge badge-success">Aktif</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Süresi Dolmuş Kupon -->
-                <div class="card bg-red-100 shadow-xl">
-                    <div class="card-body flex flex-col">
-                        <h2 class="card-title text-red-600">10% Off on Clothing</h2>
-                        <p class="text-red-500">Kupon kodu: <span class="font-mono">SAVE10</span></p>
-                        <p class="text-gray-600">Son kullanma tarihi: 2023-08-31</p>
-                        <p class="text-sm text-gray-500">Oluşturan: Jane Smith</p>
-                        <div class="card-actions justify-end">
-                            <span class="badge badge-error">Süresi Doldu</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Kullanılmış Kupon -->
-                <div class="card bg-gray-100 shadow-xl">
-                    <div class="card-body flex flex-col">
-                        <h2 class="card-title text-gray-600">15% Off on Accessories</h2>
-                        <p class="text-gray-500">Kupon kodu: <span class="font-mono">SAVE15</span></p>
-                        <p class="text-gray-600">Son kullanma tarihi: 2024-03-15</p>
-                        <p class="text-sm text-gray-500">Oluşturan: Sarah Lee</p>
-                        <div class="card-actions justify-end">
-                            <span class="badge badge-neutral">Kullanıldı</span>
-                        </div>
-                    </div>
-                </div>
-
-
-            </div>
-
-        </x-tab>
+        @can('client_profil_coupon')
+            <x-tab name="coupon" label="Kupon">
+                @if ($tab == 'coupon')
+                    <livewire:admin.client.profil.pages.coupon :client="$user->id" lazy/>
+                @endif
+            </x-tab>
+        @endcan
         @can('client_profil_note')
             <x-tab name="note" label="Not">
                 @if ($tab == 'note')
@@ -299,9 +199,6 @@ class extends Component {
         @endcan
 
     </x-tabs>
-
-    <livewire:admin.client.actions.add_note wire:model="client_note"/>
-    <livewire:admin.client.actions.add_coupon wire:model="client_coupon"/>
 
 
 </div>

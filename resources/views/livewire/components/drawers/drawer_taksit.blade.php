@@ -96,6 +96,7 @@ new class extends Component {
         $this->dispatch('refresh-client-taksits');
     }
 
+    public $group = 'group1';
 
 };
 

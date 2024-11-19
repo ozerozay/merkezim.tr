@@ -92,7 +92,7 @@ class extends Component
         } else {
             CreateApproveRequestAction::run($validator->validated(), auth()->user()->id, ApproveTypes::create_coupon, $this->message);
 
-            $this->success(Peren::$approve_request_ok);
+            $this->success(\App\Peren::$approve_request_ok);
         }
 
     }

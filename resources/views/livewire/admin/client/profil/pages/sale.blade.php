@@ -91,7 +91,7 @@ new class extends Component {
 
 ?>
 <div>
-    <livewire:components.card.statistic.card_statistic :data="$statistic"/>
+    <livewire:components.card.statistic.card_statistic :data="$statistic" wire:key="{{  rand(100000000,999999999) }}"/>
     <div class="flex justify-end mb-4 mt-5 gap-2">
         <p>Sıralama işlemlerini tablo görünümünden yapabilirsiniz.</p>
         <x-button wire:click="changeView" label="{{ $view == 'table' ? 'LİSTE' : 'TABLO' }}"
@@ -101,12 +101,12 @@ new class extends Component {
         <div>
             <x-card>
                 <x-table :headers="$headers" :rows="$data" wire:model="expanded" :sort-by="$sortBy" striped
-                         with-pagination expandable wire:key="{{  rand(1000000000,99999999999) }}">
+                         with-pagination expandable wire:key="{{ str()->random(50) }}">
                     @scope('expansion', $sale, $headersTaksits, $headersServices)
                     <div class="bg-base-200 p-8 font-bold">
 
                         <x-table :headers="$headersTaksits" :rows="$sale->clientTaksits" striped
-                                 wire:key="{{  rand(100000000,999999999) }}">
+                                 wire:key="table-{{  rand(100000000,999999999) }}">
                             <x-slot:empty>
                                 <x-icon name="o-cube" label="Taksit bulunmuyor."/>
                             </x-slot:empty>
@@ -126,7 +126,7 @@ new class extends Component {
                         <x-hr/>
                         <x-table :headers="$headersServices" :rows="$sale->clientServices"
                                  striped
-                                 wire:key="{{  rand(10000000,99999999) }}"
+                                 wire:key="service-{{  rand(10000000,99999999) }}"
                         >
                             <x-slot:empty>
                                 <x-icon name="o-cube" label="Hizmet bulunmuyor."/>
@@ -186,6 +186,7 @@ new class extends Component {
                     @can('sale_process')
                         @scope('actions', $sale)
                         <x-button icon="tabler.settings"
+                                  wire:key="settings-{{  rand(100000000,999999999) }}"
                                   wire:click="showSettings({{ $sale->id }})"
                                   class="btn-circle btn-sm btn-primary"/>
                         @endscope
@@ -195,7 +196,7 @@ new class extends Component {
             @else
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     @foreach ($data as $sale)
-                        <x-card wire:key="{{  rand(10000000,99999999) }}"
+                        <x-card wire:key="sale-{{  rand(10000000,99999999) }}"
                                 title="{{ $sale->sale_no }} - {{ $sale->date }}" separator class="mb-2">
                             @can('sale_process')
                                 <x-slot:menu>
@@ -205,7 +206,7 @@ new class extends Component {
 
                                 </x-slot:menu>
                             @endcan
-                            <x-list-item :item="$sale">
+                            <x-list-item :item="$sale" wire:key="list1-{{  rand(100000000,999999999) }}">
                                 <x-slot:value>
                                     Durum
                                 </x-slot:value>
@@ -214,7 +215,7 @@ new class extends Component {
                                              class="badge-{{ $sale->status->color() }}"/>
                                 </x-slot:actions>
                             </x-list-item>
-                            <x-list-item :item="$sale">
+                            <x-list-item :item="$sale" wire:key="list1-2{{  rand(100000000,999999999) }}">
                                 <x-slot:value>
                                     Tarih
                                 </x-slot:value>
@@ -222,7 +223,7 @@ new class extends Component {
                                     {{ $sale->date }}
                                 </x-slot:actions>
                             </x-list-item>
-                            <x-list-item :item="$sale">
+                            <x-list-item :item="$sale" wire:key="list1-3{{  rand(100000000,999999999) }}">
                                 <x-slot:value>
                                     Benzersiz
                                 </x-slot:value>
@@ -230,7 +231,7 @@ new class extends Component {
                                     {{$sale->sale_no}} - {{ $sale->unique_id }}
                                 </x-slot:actions>
                             </x-list-item>
-                            <x-list-item :item="$sale">
+                            <x-list-item :item="$sale" wire:key="list1-4{{  rand(100000000,999999999) }}">
                                 <x-slot:value>
                                     Tutar
                                 </x-slot:value>
@@ -238,7 +239,7 @@ new class extends Component {
                                     {{ LiveHelper::price_text($sale->price) }}
                                 </x-slot:actions>
                             </x-list-item>
-                            <x-list-item :item="$sale">
+                            <x-list-item :item="$sale" wire:key="list1-5{{  rand(100000000,999999999) }}">
                                 <x-slot:value>
                                     Gerçek Tutar
                                 </x-slot:value>
@@ -246,7 +247,7 @@ new class extends Component {
                                     {{ LiveHelper::price_text($sale->price_real) }}
                                 </x-slot:actions>
                             </x-list-item>
-                            <x-list-item :item="$sale">
+                            <x-list-item :item="$sale" wire:key="list1-67{{  rand(100000000,999999999) }}">
                                 <x-slot:value>
                                     Peşinat
                                 </x-slot:value>
@@ -254,7 +255,7 @@ new class extends Component {
                                     {{ LiveHelper::price_text($sale->pesinat) }}
                                 </x-slot:actions>
                             </x-list-item>
-                            <x-list-item :item="$sale">
+                            <x-list-item :item="$sale" wire:key="list1-3{{  rand(100000000,999999999) }}">
                                 <x-slot:value>
                                     Toplam
                                 </x-slot:value>
@@ -262,7 +263,7 @@ new class extends Component {
                                     {{ LiveHelper::price_text($sale->total_taksit) }}
                                 </x-slot:actions>
                             </x-list-item>
-                            <x-list-item :item="$sale">
+                            <x-list-item :item="$sale" wire:key="list1-12{{  rand(100000000,999999999) }}">
                                 <x-slot:value>
                                     Gecikmiş
                                 </x-slot:value>
@@ -270,7 +271,7 @@ new class extends Component {
                                     {{ LiveHelper::price_text($sale->late_payment) }}
                                 </x-slot:actions>
                             </x-list-item>
-                            <x-list-item :item="$sale">
+                            <x-list-item :item="$sale" wire:key="list1-444{{  rand(100000000,999999999) }}">
                                 <x-slot:value>
                                     Kalan
                                 </x-slot:value>
@@ -278,7 +279,7 @@ new class extends Component {
                                     {{ LiveHelper::price_text($sale->total_taksit_remaining) }}
                                 </x-slot:actions>
                             </x-list-item>
-                            <x-list-item :item="$sale">
+                            <x-list-item :item="$sale" wire:key="list1-45{{  rand(100000000,999999999) }}">
                                 <x-slot:value>
                                     Toplam Seans
                                 </x-slot:value>
@@ -286,7 +287,7 @@ new class extends Component {
                                     {{ $sale->total_service }}
                                 </x-slot:actions>
                             </x-list-item>
-                            <x-list-item :item="$sale">
+                            <x-list-item :item="$sale" wire:key="list1-68{{  rand(100000000,999999999) }}">
                                 <x-slot:value>
                                     Kalan Seans
                                 </x-slot:value>
@@ -299,6 +300,9 @@ new class extends Component {
                 </div>
             @endif
             @can('sale_process')
-                <livewire:components.drawers.drawer_sale wire:model="editing"/>
+                <livewire:components.drawers.drawer_sale
+                    wire:model="editing"
+                    wire:key="{{ str()->random(17) }}"/>
             @endcan
         </div>
+</div>

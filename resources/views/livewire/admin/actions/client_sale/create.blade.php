@@ -18,8 +18,7 @@ use Mary\Traits\Toast;
 
 new
 #[Title('Satış Oluştur')]
-class extends Component
-{
+class extends Component {
     use Toast;
 
     #[Url(as: 'client')]
@@ -125,6 +124,7 @@ class extends Component
     {
         return $this->selected_cash->sum('price');
     }
+
     /*
 
     #[On('service-added')]
@@ -382,6 +382,12 @@ class extends Component
                 return;
             }
 
+            if ($this->message == null) {
+                $this->error('Açıklama girmelisiniz.');
+
+                return;
+            }
+
             $this->dispatchMaxPriceChanged();
             $this->dispatchMaxPriceChangedTaksit();
 
@@ -438,56 +444,66 @@ class extends Component
         CreateSaleAction::run($validator->validated());
 
         $this->success('Satış oluşturuldu.');
+
+        return redirect()
+            ->route('admin.client.profil.index', ['user' => $validator->validated()['client_id']]);
     }
 };
 ?>
 
 <div>
     @if ($section == 1)
-    <x-card title="Satış Oluştur" separator shadow>
-        <div class="grid lg:grid-cols-2 gap-8">
-            <x-card title="Danışan ve Satış" separator progress-indicator shadow>
-                <x-form>
-                    <livewire:components.form.client_dropdown wire:model.live="client_id" />
-                    <livewire:components.form.sale_type_dropdown wire:model="sale_type_id" />
-                    <x-datepicker label="Satış Tarihi" wire:model="sale_date" icon="o-calendar"
-                        :config="$config_sale_date" />
-                    <livewire:components.form.staff_multi_dropdown wire:model="staff_ids" />
-                    <x-input label="Satış Tutarı (Tutarı değiştirmek istemiyorsanız 0 bırakın.)"
-                        wire:model.live.debounce.500ms="price" suffix="₺" money />
-                    <livewire:components.form.number_dropdown suffix="AY"
-                        label="Paket Kullanım Süresi (Ay) - 0 sınırsız" includeZero="true" wire:model="expire_date" />
-                    <x-input label="Satış notunuz" wire:model="message" />
-                </x-form>
-            </x-card>
-            @if($client_id)
-            <livewire:components.card.service.card_service_select wire:model="selected_services" :client="$client_id" />
-            @endif
-        </div>
-        <x:slot:actions>
-            @if ($this->totalPrice() > 0 || $this->price > 1)
-            <x-button label="Ödeme Bölümüne Geç" icon="o-credit-card" wire:click="change_section" spinner
-                class="btn-primary" />
-            @else
-            <x-button label="Tutar 0'dan büyük olmalı" icon="o-credit-card" disabled spinner class="btn-primary" />
-            @endif
-        </x:slot:actions>
-    </x-card>
+        <x-card title="Satış Oluştur" separator shadow>
+            <div class="grid lg:grid-cols-2 gap-8">
+                <x-card title="Danışan ve Satış" separator progress-indicator shadow>
+                    <x-form>
+                        <livewire:components.form.client_dropdown wire:model.live="client_id"/>
+                        <div class="grid lg:grid-cols-2 gap-8">
+                            <livewire:components.form.sale_type_dropdown wire:model="sale_type_id"/>
+                            <x-datepicker label="Satış Tarihi" wire:model="sale_date" icon="o-calendar"
+                                          :config="$config_sale_date"/>
+                        </div>
+
+                        <livewire:components.form.staff_multi_dropdown wire:model="staff_ids"/>
+                        <x-input label="Satış Tutarı (Tutarı değiştirmek istemiyorsanız 0 bırakın.)"
+                                 wire:model.live.debounce.500ms="price" suffix="₺" money/>
+                        <livewire:components.form.number_dropdown suffix="AY"
+                                                                  label="Paket Kullanım Süresi (Ay) - 0 sınırsız"
+                                                                  includeZero="true" wire:model="expire_date"/>
+                        <x-input label="Satış notunuz" wire:model="message"/>
+                    </x-form>
+                </x-card>
+                @if($client_id)
+                    <livewire:components.card.service.card_service_select wire:model="selected_services"
+                                                                          :client="$client_id"/>
+                @endif
+            </div>
+            <x:slot:actions>
+                @if ($this->totalPrice() > 0 || $this->price > 1)
+                    <x-button label="Ödeme Bölümüne Geç" icon="o-credit-card" wire:click="change_section" spinner
+                              class="btn-primary"/>
+                @else
+                    <x-button label="Hizmet ekleyin" icon="o-credit-card" disabled spinner
+                              class="btn-primary"/>
+                @endif
+            </x:slot:actions>
+        </x-card>
     @else
-    <x-card title="Satış" separator shadow>
-        <div class="grid lg:grid-cols-2 gap-8">
-            <livewire:components.card.cash.card_cash_select wire:model="selected_cash" :client="$client_id"
-                :maxPrice="$this->totalPrice()" />
-            <livewire:components.card.sale_taksit.card_sale_taksit_select wire:model="selected_taksits"
-                :maxPrice="$this->totalPrice() - $this->totalCashPrice()" />
-        </div>
-        <x:slot:actions>
-            <x-button icon="o-arrow-uturn-left" spinner label="Geri Dön" wire:click="backService"
-                class="btn-ghost text-warning btn-sm"
-                wire:confirm="Ödeme yapılandırması iptal edilecektir, geri dönmek istiyor musunuz ?" />
-            <x-button icon="o-check" spinner label="Satışı Tamamla" class="btn-primary btn-sm" wire:click="save_sale" />
-        </x:slot:actions>
-    </x-card>
+        <x-card title="Satış" separator shadow>
+            <div class="grid lg:grid-cols-2 gap-8">
+                <livewire:components.card.cash.card_cash_select wire:model="selected_cash" :client="$client_id"
+                                                                :maxPrice="$this->totalPrice()"/>
+                <livewire:components.card.sale_taksit.card_sale_taksit_select wire:model="selected_taksits"
+                                                                              :maxPrice="$this->totalPrice() - $this->totalCashPrice()"/>
+            </div>
+            <x:slot:actions>
+                <x-button icon="o-arrow-uturn-left" spinner label="Geri Dön" wire:click="backService"
+                          class="btn-ghost text-warning btn-sm"
+                          wire:confirm="Ödeme yapılandırması iptal edilecektir, geri dönmek istiyor musunuz ?"/>
+                <x-button icon="o-check" spinner label="Satışı Tamamla" class="btn-primary btn-sm"
+                          wire:click="save_sale"/>
+            </x:slot:actions>
+        </x-card>
     @endif
 
 </div>

@@ -15,6 +15,7 @@
         "livewire/livewire": "^3.5",
         "livewire/volt": "^1.6",
         "lorisleiva/laravel-actions": "^2.8",
+        "openai-php/laravel": "^0.10.2",
         "robsontenorio/mary": "^1.35",
         "ryangjchandler/blade-tabler-icons": "^2.3",
         "spatie/laravel-permission": "^6.9",
@@ -33,7 +34,6 @@
         "nunomaduro/collision": "^8.0",
         "pestphp/pest": "^2.35",
         "pestphp/pest-plugin-laravel": "^2.4",
-        "wire-elements/wire-spy": "^0.0.9",
         "wulfheart/laravel-actions-ide-helper": "^0.8.0"
     },
     "autoload": {
