@@ -18,7 +18,7 @@ class extends \Livewire\Volt\Component {
                 ['role' => 'user', 'content' => 'Hello!'],
             ],
         ]);
-
+        //zouwa9afk6a9s5wy9085
         dump($result->choices[0]->message->content); // Hello! How can I assist you today?
     }
 };

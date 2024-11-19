@@ -20,3 +20,7 @@ yarn-error.log
 /.vscode
 
 .vemto_settings
+
+**/caddy
+frankenphp
+frankenphp-worker.php
