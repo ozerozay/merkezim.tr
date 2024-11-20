@@ -144,6 +144,7 @@ class extends \Livewire\Volt\Component {
 <div>
     <x-header title="{{ \Carbon\Carbon::parse($this->date)->format('d/m/Y')  }}" separator progress-indicator>
         <x-slot:actions>
+            <button wire:click="$dispatch('openModal', { component: 'test-modal' })">Edit User</button>
             <x-datepicker wire:model.live="date" :config="$date_config" icon="o-calendar"/>
             <x-dropdown label="Şube" icon="tabler.building-store">
                 @foreach(auth()->user()->staff_branch as $branch)

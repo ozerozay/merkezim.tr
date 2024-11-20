@@ -16,5 +16,5 @@ return [
     'failed' => 'Bu bilgilerle eşleşen bir kayıt bulunamadı.',
     'password' => 'Girilen parola yanlış.',
     'throttle' => 'Çok fazla giriş denemesi. :seconds saniye sonra tekrar deneyin.',
-
+    'spotlight.placeholder' => 'Nasıl yardımcı olabilirim ?',
 ];

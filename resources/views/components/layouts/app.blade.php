@@ -9,10 +9,12 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script type="text/javascript"
             src="https://cdn.jsdelivr.net/gh/robsontenorio/mary@0.44.2/libs/currency/currency.js"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/tr.js"></script>
+
 </head>
 
 <body class="min-h-screen font-sans antialiased bg-base-200/50 dark:bg-base-200">
@@ -64,6 +66,9 @@
                 <x-menu-separator/>
                 <x-menu-item title="Ara" @click.stop="$dispatch('mary-search-open')" icon="o-magnifying-glass"
                              badge="Ctrl + M"/>
+                <x-menu-item title="Ara" @click="$dispatch('toggle-spotlight')" icon="o-magnifying-glass"
+                             badge="Ctrl + M"/>
+
 
                 <x-menu-separator/>
                 @if (1==2)
@@ -124,6 +129,8 @@
 <x-spotlight search-text="Danışan, işlem, satış arayın" no-results-text="Bulunamadı."
              shortcut="ctrl.m" autocomplete="on"/>
 @endpersist()
+@livewire('spotlight-pro')
+
 
 </body>
 <script type="text/javascript">
@@ -244,7 +251,7 @@
     if (typeof exports != "undefined") {
         module.exports = {themeChange: themeChange}
     } else {
-        themeChange()
+        // themeChange()
     }</script>
 
 <style type="text/css">

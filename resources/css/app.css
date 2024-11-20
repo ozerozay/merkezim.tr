@@ -1,6 +1,9 @@
+@import "../../vendor/wire-elements/pro/resources/css/tailwind/spotlight-component.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 /* Table pagination: active page highlight */
 .mary-table-pagination span[aria-current="page"] > span {
@@ -15,5 +18,11 @@
 /* Table pagination: for dark mode */
 .mary-table-pagination button {
     @apply bg-base-100
+}
+
+
+.wep-modal-content,
+.wep-slide-over-container-inner-wrap {
+    @apply motion-reduce:transition-none;
 }
 

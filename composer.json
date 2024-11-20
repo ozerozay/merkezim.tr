@@ -22,7 +22,8 @@
         "spatie/laravel-permission": "^6.9",
         "spatie/opening-hours": "^4.0",
         "stancl/tenancy": "^3.8",
-        "staudenmeir/eloquent-json-relations": "^1.13"
+        "staudenmeir/eloquent-json-relations": "^1.13",
+        "wire-elements/pro": "^4.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.13",
@@ -82,6 +83,12 @@
             "php-http/discovery": true
         }
     },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://wire-elements-pro.composer.sh"
+        }
+    ],
     "minimum-stability": "stable",
     "prefer-stable": true
 }
