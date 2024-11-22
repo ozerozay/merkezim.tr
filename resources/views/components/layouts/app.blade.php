@@ -68,7 +68,7 @@
                              badge="Ctrl + M"/>
                 <x-menu-item title="Ara" @click="$dispatch('toggle-spotlight')" icon="o-magnifying-glass"
                              badge="Ctrl + M"/>
-                
+
 
                 <x-menu-separator/>
                 @if (1==2)
@@ -124,13 +124,14 @@
 </x-main>
 
 {{-- TOAST area --}}
+
+@livewire('slide-over-pro')
+@livewire('spotlight-pro')
 @persist('toast-spotlight')
 <x-toast/>
 <x-spotlight search-text="Danışan, işlem, satış arayın" no-results-text="Bulunamadı."
              shortcut="ctrl.m" autocomplete="on"/>
 @endpersist()
-@livewire('spotlight-pro')
-@livewire('slide-over-pro')
 
 
 </body>
