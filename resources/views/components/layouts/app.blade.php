@@ -125,7 +125,6 @@
 
 {{-- TOAST area --}}
 
-@livewire('slide-over-pro')
 @livewire('spotlight-pro')
 @persist('toast-spotlight')
 <x-toast/>

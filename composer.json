@@ -23,7 +23,7 @@
         "spatie/opening-hours": "^4.0",
         "stancl/tenancy": "^3.8",
         "staudenmeir/eloquent-json-relations": "^1.13",
-        "wire-elements/pro": "^4.0"
+        "wire-elements/pro": "^4.0.13"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.13",
