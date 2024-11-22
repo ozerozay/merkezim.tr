@@ -17,7 +17,7 @@
     @apply bg-inherit
 }
 
-/* Table pagination: for dark mode */
+/* Table pagination: for dark modes */
 .mary-table-pagination button {
     @apply bg-base-100
 }
