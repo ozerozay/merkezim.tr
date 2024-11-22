@@ -31,7 +31,7 @@ Route::middleware([
 
     Volt::route('/login', 'login')->name('login');
 
-    Route::get('/spotlight', [Spotlight::class, 'search'])->name('mary.spotlight');
+    Route::get('/spotlight2', [Spotlight::class, 'search'])->name('mary.spotlight');
 
     Volt::route('/', 'client.index')->name('client.index');
     Volt::route('/service', 'client.service')->name('client.service');
