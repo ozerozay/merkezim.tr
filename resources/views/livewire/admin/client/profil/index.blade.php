@@ -40,7 +40,7 @@ class extends Component {
             {{ $user->phone ?? '' }} - {{ $user->client_branch->name ?? '' }}
         </x-slot:subtitle>
         <x-slot:middle class="!justify-end">
-
+            <x-button wire:click="$dispatch('spotlight.toggle')">Toggle</x-button>
         </x-slot:middle>
         <x-slot:actions>
             <x-dropdown label="İŞLEMLER" responsive icon="o-cog-6-tooth" class="btn-primary" right>

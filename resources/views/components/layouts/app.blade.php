@@ -68,7 +68,7 @@
                              badge="Ctrl + M"/>
                 <x-menu-item title="Ara" @click="$dispatch('toggle-spotlight')" icon="o-magnifying-glass"
                              badge="Ctrl + M"/>
-
+                
 
                 <x-menu-separator/>
                 @if (1==2)
