@@ -130,6 +130,7 @@
              shortcut="ctrl.m" autocomplete="on"/>
 @endpersist()
 @livewire('spotlight-pro')
+@livewire('slide-over-pro')
 
 
 </body>

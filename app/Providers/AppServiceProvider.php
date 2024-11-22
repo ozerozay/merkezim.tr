@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
+use App\Livewire\Actions\Note\GetClientNotesAction;
 use App\Models\Note;
 use App\Models\User;
-use App\Policies\NotePolicy;
 use Gate;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
@@ -41,6 +41,11 @@ class AppServiceProvider extends ServiceProvider
     {
         Spotlight::registerGroup('pages', 'Sayfalar');
         Spotlight::registerGroup('clients', 'Danışanlar');
+        Spotlight::registerGroup('client_notes', 'Notlar');
+        Spotlight::registerGroup('note', 'Notlar');
+
+        /* Client Actions */
+        Spotlight::registerGroup('client_actions', 'İşlemler');
     }
 
     private function registerSpotlightModes(): void
@@ -68,9 +73,13 @@ class AppServiceProvider extends ServiceProvider
     {
         Spotlight::registerTokens(
             SpotlightScopeToken::make('client', function (SpotlightScopeToken $token, User $client): void {
-                //$client->refresh();
+                $client->refresh();
                 $token->setParameters(['id' => $client->id]);
                 $token->setText($client->name.' - '.$client->client_branch->name);
+            }),
+            SpotlightScopeToken::make('note', function (SpotlightScopeToken $token, Note $note) {
+                $token->setParameters(['id' => $note->id]);
+                $token->setText('Notlar');
             }),
         );
     }
@@ -116,15 +125,47 @@ class AppServiceProvider extends ServiceProvider
             SpotlightQuery::forToken('client', function ($query, SpotlightScopeToken $clientToken) {
                 $pages = collect([
                     SpotlightResult::make()
-                        ->setTitle('Falan filan yap')
+                        ->setTitle('Notlar')
+                        ->setGroup('note')
+                        //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
+                        ->setTokens(['client' => User::first(), 'note' => new Note])
+                        ->setIcon('check'),
+                    SpotlightResult::make()
+                        ->setTitle('Satış Oluştur')
                         ->setGroup('pages')
-                        ->setIcon('arrow-path-rounded-square'),
+                        ->setIcon('plus'),
+                    SpotlightResult::make()
+                        ->setTitle('Adisyon Oluştur')
+                        ->setGroup('pages')
+                        ->setIcon('plus'),
+                    SpotlightResult::make()
+                        ->setTitle('Not Al')
+                        ->setGroup('client_actions')
+                        ->setIcon('plus-circle')
+                        ->setAction('dispatch_event',
+                            ['name' => 'slide-over.open',
+                                'data' => ['component' => 'note.add-note',
+                                    'arguments' => ['user' => $clientToken->getParameter('id')]],
+                            ]),
                 ])->when(! blank($query), function ($collection) use ($query) {
                     return $collection->where(fn (SpotlightResult $result
                     ) => str($result->title())->lower()->contains(str($query)->lower()));
                 });
 
                 return collect()->merge($pages);
+            }),
+            SpotlightQuery::forToken('note', function ($query, SpotlightScopeToken $noteToken) {
+                $notes = Note::query()
+                    ->get()
+                    ->map(function (Note $note) {
+                        return SpotlightResult::make()
+                            ->setTitle($note->message)
+                            ->setGroup('client_notes')
+                            ->setAction('get_client_notes_action', ['client' => $note->client_id])
+                            ->setIcon('check');
+                    });
+
+                return collect()->merge($notes);
             }),
             SpotlightQuery::forMode('help', function ($query) {
                 return collect([
@@ -170,6 +211,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+        //Spotlight::registerAction('show_notes', GetClientNotesAction::class);
+        Spotlight::registerAction('get_client_notes_action', GetClientNotesAction::class);
 
         Gate::policy(Note::class, NotePolicy::class);
 

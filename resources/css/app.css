@@ -1,4 +1,6 @@
-@import "../../vendor/wire-elements/pro/resources/css/tailwind/spotlight-component.css";
+@import "custom_spotlight.css";
+@import "custom_overlay.css";
+
 
 @tailwind base;
 @tailwind components;
