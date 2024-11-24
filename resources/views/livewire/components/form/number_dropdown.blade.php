@@ -16,7 +16,7 @@ new class extends Component {
     public bool $includeZero = false;
 
     public int $max = 100;
-    
+
     public $suffix;
 
     public function mount()
@@ -34,5 +34,8 @@ new class extends Component {
 };
 ?>
 <div>
-<x-select :label="$label" icon="tabler.circle-number-0" :options="$numbers" wire:model="number" />
+    <x-select
+        wire:key="number-{{ Str::random(10) }}"
+        :label="$label"
+        icon="tabler.circle-number-0" :options="$numbers" wire:model="number"/>
 </div>

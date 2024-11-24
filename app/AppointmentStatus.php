@@ -20,6 +20,27 @@ enum AppointmentStatus: string
         return collect(self::cases())->contains(fn ($case) => $case->value === $value);
     }
 
+    public static function active(): \Illuminate\Support\Collection
+    {
+        return collect([
+            self::waiting,
+            self::awaiting_approve,
+            self::confirmed,
+            self::merkez,
+            self::forwarded,
+            self::teyitli,
+            self::late,
+        ]);
+    }
+
+    public static function deactive(): \Illuminate\Support\Collection
+    {
+        return collect([
+            self::rejected,
+            self::cancel,
+        ]);
+    }
+
     public function label(): string
     {
         return match ($this) {

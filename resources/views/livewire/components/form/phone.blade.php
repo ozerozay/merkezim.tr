@@ -11,7 +11,6 @@ new class extends Component {
     public $phone;
 };
 ?>
-<div>
-    <x-input label="Telefon Numaranız" wire:model="phone" icon="o-phone" x-mask="9999999999"
-             placeholder="Başında 0 olmadan girin."/>
-</div>
+<x-input wire:key="phone-{{ Str::random(10) }}" label="Telefon Numaranız" wire:model="phone" icon="o-phone"
+         x-mask="9999999999"
+         placeholder="Başında 0 olmadan girin."/>

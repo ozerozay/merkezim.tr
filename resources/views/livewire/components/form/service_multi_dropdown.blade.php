@@ -5,8 +5,7 @@ use Illuminate\Support\Collection;
 use Livewire\Attributes\Modelable;
 use Livewire\Volt\Component;
 
-new class extends Component
-{
+new class extends Component {
     #[Modelable]
     public $service_ids;
 
@@ -25,7 +24,7 @@ new class extends Component
             ->whereIn('gender', [$gender, 0])
             ->where('active', true)
             ->orderBy('category_id', 'asc')
-            ->whereHas('category.branches', function($q) use($branch) {
+            ->whereHas('category.branches', function ($q) use ($branch) {
                 $q->whereIn('id', [$branch]);
             })
             ->with('category:id,name')
@@ -35,11 +34,12 @@ new class extends Component
 
 ?>
 <div>
-<x-choices-offline
-    wire:model="service_ids"
-    :options="$services"
-    option-sub-label="category.name"
-    label="Hizmetler"
-    icon="o-magnifying-glass"
-    searchable />
+    <x-choices-offline
+        wire:key="client-service-multi-{{ Str::random(10) }}"
+        wire:model="service_ids"
+        :options="$services"
+        option-sub-label="category.name"
+        label="Hizmetler"
+        icon="o-magnifying-glass"
+        searchable/>
 </div>

@@ -4,7 +4,9 @@ namespace App\Actions\User;
 
 use App\Exceptions\AppException;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Mary\Exceptions\ToastException;
 
 class CheckClientBranchAction
 {
@@ -30,8 +32,11 @@ class CheckClientBranchAction
             })->exists()) {
                 throw new AppException('Bu danışan için yetkiniz bulunmuyor.');
             }
+        } catch (AppException $e) {
+            throw ToastException::error($e);
         } catch (\Throwable $e) {
-            return throw new AppException('Bu danışan için yetkiniz bulunmuyor.'.$e->getMessage());
+            DB::rollBack();
+            throw ToastException::error('İşlem tamamlanamadı.');
         }
     }
 }

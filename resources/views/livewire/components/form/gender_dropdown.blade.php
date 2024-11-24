@@ -3,8 +3,7 @@
 use Livewire\Attributes\Modelable;
 use Livewire\Volt\Component;
 
-new class extends Component
-{
+new class extends Component {
     #[Modelable]
     public $gender;
 
@@ -39,6 +38,9 @@ new class extends Component
     }
 };
 ?>
-<div>
-<x-select label="Cinsiyet" icon="o-user" :options="$genders" wire:model="gender" />
-</div>
+<x-select
+    wire:key="gender-{{ Str::random(10) }}"
+    label="Cinsiyet"
+    icon="o-user"
+    :options="$genders"
+    wire:model="gender"/>

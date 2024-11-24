@@ -6,4 +6,5 @@ return [
     App\Providers\TenancyServiceProvider::class,
     WireElements\Pro\Components\Spotlight\SpotlightServiceProvider::class,
     WireElements\Pro\Components\SlideOver\SlideOverServiceProvider::class,
+    WireElements\Pro\Components\Modal\ModalServiceProvider::class,
 ];

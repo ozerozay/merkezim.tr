@@ -2,12 +2,17 @@
 
 namespace App;
 
+use App\Actions\Spotlight\Actions\User\CheckBranchPermission;
+use App\Actions\Spotlight\Actions\User\CheckUserInstantApprove;
+use App\Actions\Spotlight\Actions\User\CheckUserPermission;
+use App\Actions\Spotlight\Actions\User\RequestApproveAction;
 use App\Models\Coupon;
 use App\Models\Offer;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Mary\Exceptions\ToastException;
 
 class Peren
 {
@@ -41,7 +46,7 @@ class Peren
         ];
     }
 
-    public static function dateConfig($min = null, $max = null, $enableTime = false, $mode = null, $timeOnly = false)
+    public static function dateConfig($min = null, $max = null, $enableTime = false, $mode = null, $timeOnly = false): array
     {
         $config = ['altFormat' => 'd/m/Y', 'locale' => 'tr', 'disableMobile' => true];
 
@@ -113,5 +118,41 @@ class Peren
     public static function whereLike($collection, $key, $term): Collection
     {
         return $collection->filter(fn ($item) => Str::contains(Str::upper($item[$key]), Str::upper($term)));
+    }
+
+    /**
+     * @throws ToastException
+     */
+    public static function runDatabaseTransaction(callable $callback): void
+    {
+        try {
+            \DB::beginTransaction();
+            $callback();
+            \DB::commit();
+        } catch (\Throwable $e) {
+            \DB::rollBack();
+            throw ToastException::error('İşlem tamamlanamadı.');
+        }
+    }
+
+    public static function runDatabaseTransactionApprove($info, callable $callback): void
+    {
+        try {
+            \DB::beginTransaction();
+
+            CheckUserPermission::run($info['permission']);
+            CheckBranchPermission::run($info['client_id']);
+
+            if (CheckUserInstantApprove::run($info['user_id'], $info['permission'])) {
+                $callback();
+            } else {
+                RequestApproveAction::run($info, $info['user_id'], $info['permission'], $info['message'] ?? '');
+            }
+
+            \DB::commit();
+        } catch (\Throwable $e) {
+            \DB::rollBack();
+            throw ToastException::error('İşlem tamamlanamadı.'.$e->getMessage());
+        }
     }
 }

@@ -80,6 +80,11 @@ class Appointment extends Model
         );
     }
 
+    public function service_names(Appointment $appointment)
+    {
+        return $appointment->services->map(fn ($service) => $service->service->name.'(1)')->implode(', ');
+    }
+
     protected function dateHuman(): Attribute
     {
         return Attribute::make(

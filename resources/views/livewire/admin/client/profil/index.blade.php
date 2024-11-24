@@ -51,7 +51,8 @@ class extends Component {
                 @endcan
                 @can('action_client_add_note')
                     <x-menu-item icon="tabler.notes" title="Not Al"
-                                 link="{{ route('admin.actions.client_note_add', ['client' => $user->id]) }}"/>
+                                 wire:click="$dispatch('slide-over.open', {component: 'actions.add-note', arguments: {'client': 1}})"
+                    />
                 @endcan
                 <x-menu-item icon="tabler.building-warehouse" title="Şube Değiştir"
                              link="{{ route('admin.actions.client_note_add', ['client' => $user->id]) }}"/>

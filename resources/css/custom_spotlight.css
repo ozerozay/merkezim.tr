@@ -9,6 +9,7 @@
 
 .wep-spotlight-inner-container {
     @apply mx-auto max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-4xl bg-white rounded shadow overflow-hidden divide-y divide-gray-100 antialiased;
+    @apply bg-base-100 dark:bg-base-100;
     z-index: 999;
 }
 
@@ -32,10 +33,12 @@
 
 .wep-spotlight-input-container {
     @apply relative flex items-center space-x-0.5;
+    @apply bg-base-100 dark:bg-base-100;
 }
 
 .wep-spotlight-input-icon {
     @apply ml-4 flex items-center w-6;
+
 }
 
 .wep-spotlight-input-loading-icon {
@@ -47,11 +50,12 @@
 }
 
 .wep-spotlight-token-container {
-    @apply flex space-x-1 text-sm text-gray-800;
+    @apply flex space-x-1 text-sm;
 }
 
 .wep-spotlight-input {
-    @apply rounded pl-1 py-3 text-gray-800 text-sm border-0 block w-full focus:outline-none focus:ring-0 !important;
+    @apply rounded pl-1 py-3 text-sm border-0 block w-full focus:outline-none focus:ring-0 !important;
+    @apply bg-base-100 dark:bg-base-100;
 }
 
 .wep-spotlight-input-inner-container {
@@ -99,10 +103,12 @@
 
 .wep-spotlight-footer {
     @apply flex flex-wrap items-center justify-between bg-gray-50 py-2.5 px-4 text-xs text-gray-700;
+    @apply bg-base-100 dark:bg-base-100;
 }
 
 .wep-spotlight-footer-tip {
     @apply flex items-center;
+    @apply text-gray-900 dark:text-gray-50;
 }
 
 .wep-spotlight-footer-tip-label {
@@ -110,11 +116,13 @@
 }
 
 .wep-spotlight-footer-tip kbd {
-    @apply mx-1 flex h-5 w-5 items-center justify-center rounded border bg-white sm:mx-2 border-gray-400 text-gray-400;
+    @apply mx-1 flex h-5 w-5 items-center justify-center rounded border bg-white sm:mx-2 border-gray-400;
+
 }
 
 .wep-spotlight-footer-helper {
     @apply flex items-center;
+    @apply text-gray-900 dark:text-gray-50;
 }
 
 .wep-spotlight-footer-helper {
@@ -139,6 +147,7 @@
 
 .wep-spotlight-group-title {
     @apply text-xs font-semibold text-gray-900 px-2 pb-2;
+    @apply text-gray-900 dark:text-gray-50;
 }
 
 .wep-spotlight-item {
@@ -162,7 +171,8 @@
 }
 
 .wep-spotlight-item-title {
-    @apply text-gray-800 truncate whitespace-nowrap;
+    @apply truncate whitespace-nowrap;
+    @apply text-gray-900 dark:text-gray-50;
 }
 
 .wep-spotlight-item.wep-spotlight-item-active .wep-spotlight-item-title {
@@ -196,11 +206,13 @@
 }
 
 .wep-spotlight-no-results-icon {
-    @apply mx-auto h-6 w-6 text-gray-400;
+    @apply mx-auto h-6 w-6;
+    @apply text-gray-900 dark:text-gray-50;
 }
 
 .wep-spotlight-no-results-heading {
-    @apply mt-4 font-semibold text-gray-900;
+    @apply mt-4 font-semibold;
+    @apply text-gray-900 dark:text-gray-50;
 }
 
 .wep-spotlight-no-results-message {

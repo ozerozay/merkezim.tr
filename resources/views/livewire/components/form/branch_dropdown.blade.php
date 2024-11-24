@@ -20,8 +20,16 @@ new class extends Component {
     }
 };
 ?>
-<div>
+<div wire:key="branchdiv-{{ Str::random(10) }}">
     @if ($this->branches->count() > 1)
-        <x-choices-offline label="Şube" single wire:model="branch_id" :options="$branches"/>
+        <x-choices-offline
+            wire:key="branch-{{ Str::random(10) }}"
+            label="Şube"
+            single
+            wire:model="branch_id"
+            :options="$branches"/>
     @endif
 </div>
+
+
+

@@ -6,8 +6,7 @@ use Illuminate\Support\Collection;
 use Livewire\Attributes\Modelable;
 use Livewire\Volt\Component;
 
-new class extends Component
-{
+new class extends Component {
     #[Modelable]
     public $client_id;
 
@@ -29,9 +28,9 @@ new class extends Component
         $this->users = User::query()
             ->select(['id', 'name', 'branch_id', 'phone', 'unique_id'])
             ->where(function ($subQuery) use ($value) {
-                $subQuery->where('name', 'like', '%'.StringHelper::strUpper($value).'%')
-                    ->orWhere('unique_id', 'like', '%'.$value.'%')
-                    ->orWhere('phone', 'like', '%'.$value.'%');
+                $subQuery->where('name', 'like', '%' . StringHelper::strUpper($value) . '%')
+                    ->orWhere('unique_id', 'like', '%' . $value . '%')
+                    ->orWhere('phone', 'like', '%' . $value . '%');
             })
             ->whereIn('branch_id', auth()->user()->staff_branches)
             ->take(5)
@@ -42,14 +41,12 @@ new class extends Component
     }
 };
 ?>
-<div>
 <x-choices
+    wire:key="cdd-{{Str::random(20)}}"
     wire:model="client_id"
     :options="$users"
     option-sub-label="client_branch.name"
     :label="$label"
     icon="o-magnifying-glass"
-    @change-selection="$dispatch('{{ $dis }}', {client: $event.detail.value})"
     single
-    searchable />
-</div>
+    searchable/>

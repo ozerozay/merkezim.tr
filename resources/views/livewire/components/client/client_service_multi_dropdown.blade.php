@@ -26,28 +26,28 @@ new class extends Component {
     #[On('reload-services')]
     public function reload_services($client, $service_ids = [], $yok = null): void
     {
+        $this->service_ids = [];
         $this->getServices($client, $status = null, $this->category_id, $service_ids, $yok);
 
     }
 
     public function getServices($client, $status = null, $category_id = null, $selected = null, $yok = null): void
     {
-        //$this->service_ids = $selected;
-        //dump($this->service_ids);
-        $this->services = GetClientActiveService::run($client, $status, $category_id, $yok);
+        $services = GetClientActiveService::run($client, $status, $category_id, $yok);
+        $this->services = $services->isEmpty() ? collect([]) : $services;
     }
 };
 
 ?>
-<div>
+<div wire:key="client-mlf-{{ Str::random(10) }}">
     <x-choices-offline
         wire:model="service_ids"
         :options="$services"
+        wire:key="client-asd2-{{ Str::random(10) }}"
         option-label="service.name"
         :label="$label"
         icon="o-magnifying-glass"
         no-result-text="Aktif hizmeti bulunmuyor."
-        class="z-[999]"
         searchable>
         @scope('item', $service)
         <x-list-item :item="$service" sub-value="service.name">

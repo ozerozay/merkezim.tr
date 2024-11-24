@@ -412,6 +412,11 @@ class User extends Authenticatable
         return $this->belongsToJson(Label::class, 'labels');
     }
 
+    public function staffInstantApproves()
+    {
+        return $this->belongsToJson(Permission::class, 'instant_approves');
+    }
+
     public function totalDebt()
     {
         return $this->clientTaksits()

@@ -8,7 +8,7 @@ use Livewire\Volt\Component;
 
 new class extends Component {
     #[Modelable]
-    public $sale_id;
+    public $sale_id = 0;
 
     public $client_id;
 
@@ -31,14 +31,15 @@ new class extends Component {
 
     public function getSales($client, $status = null): void
     {
-        $this->sales = GetClientActiveSale::run($client, $status);
+        $sales = GetClientActiveSale::run($client, $status);
+        $this->sales = $sales->isEmpty() ? collect([]) : $sales;
     }
 };
 
 ?>
-
-<div>
+<div wire:key="csdd-{{Str::random(20)}}">
     <x-choices-offline
+        wire:key="csd-{{Str::random(20)}}"
         wire:model="sale_id"
         :options="$sales"
         option-sub-label="date"
@@ -48,4 +49,7 @@ new class extends Component {
         no-result-text="Aktif satışı bulunmuyor."
         single
         searchable/>
+
 </div>
+
+
