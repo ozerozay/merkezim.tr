@@ -14,7 +14,7 @@
             @else
                 <x-slot:actions>
                     <div class="flex justify-between items-center w-full">
-                        <x-button type="button" class="btn-error" wire:click="$dispatch('slide-over.close')"
+                        <x-button type="button" class="btn-error" wire:click="$dispatch('modal.close')"
                                   icon="tabler.x">
                             Kapat
                         </x-button>

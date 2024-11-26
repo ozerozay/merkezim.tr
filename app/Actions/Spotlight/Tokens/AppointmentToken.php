@@ -10,7 +10,7 @@ class AppointmentToken
 {
     use AsAction;
 
-    public function handle()
+    public function handle(): SpotlightScopeToken
     {
         return SpotlightScopeToken::make('appointment', function (SpotlightScopeToken $token, Appointment $appointment) {
             $appointment->refresh();

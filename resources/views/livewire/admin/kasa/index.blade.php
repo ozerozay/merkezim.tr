@@ -154,6 +154,74 @@ class extends Component {
             </x-dropdown>
         </x-slot:actions>
     </x-header>
+    <div class="card w-full bg-base-100 shadow-xl border border-gray-200">
+        <div class="card-body">
+          <!-- Başlık ve Genel Bilgiler -->
+          <h2 class="card-title text-primary font-semibold">Satış No: 12345</h2>
+          <p class="text-sm text-gray-500">Satış Tarihi: 26 Kasım 2024</p>
+
+          <!-- Genel Satış Bilgileri -->
+          <div class="mt-4 grid grid-cols-2 gap-4">
+            <div>
+              <p><span class="font-medium text-gray-600">ID:</span> 98765</p>
+              <p><span class="font-medium text-gray-600">Durum:</span> <span class="badge badge-success">Aktif</span></p>
+              <p><span class="font-medium text-gray-600">Tutar:</span> ₺10,000</p>
+              <p><span class="font-medium text-gray-600">Gerçek Tutar:</span> ₺9,500</p>
+            </div>
+            <div>
+              <p><span class="font-medium text-gray-600">Peşinat:</span> ₺2,000</p>
+              <p><span class="font-medium text-gray-600">Gecikmiş Ödeme:</span> ₺500</p>
+              <p><span class="font-medium text-gray-600">Kalan Taksit:</span> 8</p>
+              <p><span class="font-medium text-gray-600">Toplam Taksit:</span> 10</p>
+            </div>
+          </div>
+
+          <!-- Seans Bilgileri -->
+          <div class="mt-4 grid grid-cols-2 gap-4">
+            <div>
+              <p><span class="font-medium text-gray-600">Kalan Seans:</span> 6</p>
+            </div>
+            <div>
+              <p><span class="font-medium text-gray-600">Toplam Seans:</span> 12</p>
+            </div>
+          </div>
+
+          <!-- Aşağıdaki Bağlı Hizmetler -->
+          <div class="divider"></div>
+          <h3 class="text-lg font-semibold">Bağlı Hizmetler</h3>
+          <div class="mt-4 space-y-4">
+            <!-- Hizmet Kartı -->
+            <div class="bg-gray-50 p-4 rounded-lg border">
+              <div class="flex justify-between items-center">
+                <p><span class="font-medium">Hizmet Adı:</span> Pilates Dersi</p>
+                <p><span class="font-medium">Durum:</span> <span class="badge badge-warning">Tamamlanmadı</span></p>
+              </div>
+              <div class="grid grid-cols-2 mt-2">
+                <p><span class="font-medium">Tarih:</span> 20 Kasım 2024</p>
+                <p><span class="font-medium">Toplam Seans:</span> 12</p>
+                <p><span class="font-medium">Kalan Seans:</span> 6</p>
+              </div>
+            </div>
+            <!-- Taksit Bilgileri -->
+            <div class="mt-2">
+              <h4 class="font-medium text-gray-700">Taksit Bilgileri</h4>
+              <div class="grid grid-cols-3 gap-4 text-sm mt-2">
+                <div class="bg-gray-50 p-2 rounded border">
+                  <p><span class="font-medium">Tarih:</span> 25 Kasım 2024</p>
+                  <p><span class="font-medium">Kalan Tutar:</span> ₺1,000</p>
+                  <p><span class="font-medium">Toplam Tutar:</span> ₺10,000</p>
+                </div>
+                <div class="bg-gray-50 p-2 rounded border">
+                  <p><span class="font-medium">Tarih:</span> 26 Aralık 2024</p>
+                  <p><span class="font-medium">Kalan Tutar:</span> ₺900</p>
+                  <p><span class="font-medium">Toplam Tutar:</span> ₺10,000</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     @php
         $collected_transaction = collect($transactions)->flatten(1);
     @endphp

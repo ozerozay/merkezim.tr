@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\Coupon;
 use App\Models\Kasa;
 use App\Models\Package;
 use App\Models\Product;
@@ -21,9 +22,17 @@ trait ServicePackageProductHandler
 
     public bool $checkPaymentTotalPrice = true;
 
+    public $couponPrice = 0;
+
     public ?Collection $selected_services;
 
     public ?Collection $selected_payments;
+
+    #[On('price-changed')]
+    public function priceChanged($price): void
+    {
+        $this->price = $price;
+    }
 
     #[On('modal-payment-added')]
     public function addPayment($payment): void
@@ -54,6 +63,8 @@ trait ServicePackageProductHandler
             'price' => $payment['price'],
             'date' => $payment['date'],
         ]);
+
+        $this->dispatchSelectedPayments();
     }
 
     #[On('modal-service-added')]
@@ -73,6 +84,8 @@ trait ServicePackageProductHandler
                 'price' => $s->price * $service['quantity'],
             ]);
         }
+
+        $this->dispatchSelectedServices();
     }
 
     #[On('modal-product-added')]
@@ -92,6 +105,8 @@ trait ServicePackageProductHandler
                 'price' => $p->price * $product['quantity'],
             ]);
         }
+
+        $this->dispatchSelectedServices();
     }
 
     #[On('modal-package-added')]
@@ -112,6 +127,30 @@ trait ServicePackageProductHandler
                 'price' => $package->price * $info['quantity'],
             ]);
         }
+
+        $this->dispatchSelectedServices();
+    }
+
+    public function addCoupon($info): void
+    {
+        $coupon = Coupon::where('id', $info['coupon_id'])->first();
+
+        if ($coupon) {
+            $lastId = $this->selected_services->last() != null ? $this->selected_services->last()['id'] + 1 : 1;
+
+            $this->selected_services->push([
+                'id' => $lastId,
+                'coupon_id' => $coupon->id,
+                'type' => 'coupon',
+                'gift' => false,
+                'name' => $coupon->code,
+                'quantity' => 1,
+                'discount_type' => $coupon->discount_type,
+                'price' => $coupon->discount_amount,
+            ]);
+        }
+
+        $this->dispatchSelectedServices();
     }
 
     public function deleteItem($id, $type): void
@@ -119,6 +158,8 @@ trait ServicePackageProductHandler
         $this->selected_services = $this->selected_services->reject(function ($item) use ($id, $type) {
             return $item['id'] == $id && $item['type'] == $type;
         });
+
+        $this->dispatchSelectedServices();
     }
 
     public function deletePayment($id): void
@@ -126,10 +167,22 @@ trait ServicePackageProductHandler
         $this->selected_payments = $this->selected_payments->reject(function ($item) use ($id) {
             return $item['id'] == $id;
         });
+
+        $this->dispatchSelectedPayments();
+    }
+
+    public function dispatchSelectedPayments(): void
+    {
+        $this->dispatch('selectedPaymentsChanged', $this->selected_payments);
+    }
+
+    public function dispatchSelectedServices(): void
+    {
+        $this->dispatch('selectedServicesChanged', $this->selected_services);
     }
 
     #[Computed]
-    public function totalPrice()
+    public function totalPrice(): mixed
     {
         if ($this->price > 0) {
             return $this->price;
@@ -139,19 +192,19 @@ trait ServicePackageProductHandler
     }
 
     #[Computed]
-    public function totalPayment()
+    public function totalPayment(): mixed
     {
         return $this->selected_payments->sum('price');
     }
 
     #[Computed]
-    public function remainingPayment()
+    public function remainingPayment(): float|int
     {
         return $this->totalPrice() - $this->totalPayment();
     }
 
     #[Computed]
-    public function totalGift()
+    public function totalGift(): mixed
     {
         return $this->selected_services->where('gift', true)->sum('price');
     }

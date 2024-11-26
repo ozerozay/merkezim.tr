@@ -4,6 +4,7 @@ namespace App\Actions\Spotlight\Queries;
 
 use App\Actions\Spotlight\SpotlightCheckPermission;
 use App\Enum\PermissionType;
+use App\Models\Kasa;
 use App\Models\User;
 use Lorisleiva\Actions\Concerns\AsAction;
 use WireElements\Pro\Components\Spotlight\SpotlightQuery;
@@ -22,9 +23,15 @@ class DefaultQuery
                     ->setGroup('pages')
                     ->setAction('jump_to', ['path' => route('admin.index')])
                     ->setIcon('home'),
-            ])->when(! blank($query), function ($collection) use ($query) {
-                return $collection->where(fn (SpotlightResult $result) => str($result->title())->lower()->contains(str($query)->lower()));
-            });
+            ]);
+
+            if (SpotlightCheckPermission::run(PermissionType::page_kasa)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('Kasa')
+                    ->setGroup('pages')
+                    ->setTokens(['kasa' => new Kasa])
+                    ->setIcon('banknotes'), );
+            }
 
             $users = User::query()
                 ->where('name', 'like', "%{$query}%")
@@ -49,6 +56,10 @@ class DefaultQuery
                             'data' => ['component' => 'actions.create-client'],
                         ]));
             }
+
+            $pages = $pages->when(! blank($query), function ($collection) use ($query) {
+                return $collection->where(fn (SpotlightResult $result) => str($result->title())->lower()->contains(str($query)->lower()));
+            });
 
             return collect()->merge($pages)->merge($users);
         });

@@ -1,4 +1,4 @@
-<div>
+<div class="overflow-x-hidden">
     <x-card title="{{ $title ?? 'Başlık' }}" subtitle="{{ $subtitle ?? '' }}" separator progress-indicator>
         <x-form wire:submit="save">
             {{ $slot }}

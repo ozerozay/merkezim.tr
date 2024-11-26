@@ -19,12 +19,12 @@ class AppointmentQuery
     public function handle(): SpotlightQuery
     {
         return SpotlightQuery::forToken('appointment', function (SpotlightScopeToken $clientToken, SpotlightScopeToken $appointmentToken, $query) {
-            $appointments = Appointment::query()
+            $appointments_list = Appointment::query()
                 ->select('id', 'client_id', 'status', 'service_ids', 'date')
                 ->where('client_id', $clientToken->getParameter('id'))
                 ->with('services.service:id,name')
                 ->get();
-            $appointments_group = $appointments->groupBy('status');
+            $appointments_group = $appointments_list->groupBy('status');
             $results = collect();
 
             foreach ($appointments_group as $status => $appointments) {
