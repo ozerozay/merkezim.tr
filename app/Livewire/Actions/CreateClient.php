@@ -75,7 +75,7 @@ class CreateClient extends SlideOver
             'user_id' => 'required',
             'permission' => 'required',
             'send_sms' => 'required',
-            'can_login' => 'required'
+            'can_login' => 'required',
         ]);
 
         if ($validator->fails()) {
