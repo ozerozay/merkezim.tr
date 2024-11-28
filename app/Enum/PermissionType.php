@@ -27,4 +27,12 @@ enum PermissionType: string
     case client_profil_appointment = 'client_profil_appointment';
 
     case page_kasa = 'page_kasa';
+    case page_agenda = 'page_agenda';
+    case page_talep = 'page_talep';
+    case page_reports = 'page_reports';
+    case page_statistics = 'page_statistics';
+    case page_randevu = 'page_randevu';
+
+    case admin_settings = 'admin_settings';
+    case admin_definations = 'admin_definations';
 }

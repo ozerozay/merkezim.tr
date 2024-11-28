@@ -25,13 +25,62 @@ class DefaultQuery
                     ->setIcon('home'),
             ]);
 
+            if (SpotlightCheckPermission::run(PermissionType::page_randevu)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('Randevu')
+                    ->setSubtitle('Randevularınızı görüntüleyin, yeni randevu oluşturun.')
+                    ->setGroup('pages')
+                    ->setTokens(['kasa' => new Kasa])
+                    ->setIcon('calendar-days'), );
+            }
+
             if (SpotlightCheckPermission::run(PermissionType::page_kasa)) {
                 $pages->push(SpotlightResult::make()
                     ->setTitle('Kasa')
+                    ->setSubtitle('Gelir-gider işlemleri')
                     ->setGroup('pages')
                     ->setTokens(['kasa' => new Kasa])
                     ->setIcon('banknotes'), );
             }
+
+            if (SpotlightCheckPermission::run(PermissionType::page_agenda)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('Ajanda')
+                    ->setSubtitle('')
+                    ->setGroup('pages')
+                    ->setTokens(['kasa' => new Kasa])
+                    ->setIcon('calendar'), );
+            }
+
+            if (SpotlightCheckPermission::run(PermissionType::page_talep)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('Talep')
+                    ->setGroup('pages')
+                    ->setTokens(['kasa' => new Kasa])
+                    ->setIcon('hand-thumb-up'), );
+            }
+
+            if (SpotlightCheckPermission::run(PermissionType::page_reports)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('Raporlar')
+                    ->setGroup('pages')
+                    ->setTokens(['kasa' => new Kasa])
+                    ->setIcon('chart-bar'), );
+            }
+
+            if (SpotlightCheckPermission::run(PermissionType::page_statistics)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('İstatistikler')
+                    ->setGroup('pages')
+                    ->setTokens(['kasa' => new Kasa])
+                    ->setIcon('chart-pie'), );
+            }
+
+            $pages->push(SpotlightResult::make()
+                ->setTitle('Çıkış')
+                ->setGroup('profile')
+                ->setTokens(['kasa' => new Kasa])
+                ->setIcon('lock-open'), );
 
             $users = User::query()
                 ->where('name', 'like', "%{$query}%")
@@ -55,6 +104,14 @@ class DefaultQuery
                         ['name' => 'slide-over.open',
                             'data' => ['component' => 'actions.create-client'],
                         ]));
+            }
+
+            if (SpotlightCheckPermission::run(PermissionType::admin_settings)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('Ayarlar')
+                    ->setGroup('settings')
+                    ->setTokens(['settings' => new User])
+                    ->setIcon('cog-6-tooth'));
             }
 
             $pages = $pages->when(! blank($query), function ($collection) use ($query) {

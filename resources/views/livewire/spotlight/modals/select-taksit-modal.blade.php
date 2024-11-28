@@ -8,7 +8,7 @@
         <x-input label="Taksit Tutarı (Tek Taksit İçin)" wire:model="price" suffix="₺" money/>
         <livewire:components.form.number_dropdown
             wire:key="ddfguhdfg-{{ Str::random(10) }}"
-            label="İlk Taksit Tarihi" wire:model="amount"/>
+            label="Taksit Sayısı" wire:model="amount"/>
     </x-slot:body>
     <x-slot:actions>
         <x-button label="Ekle" type="submit" spinner="save" icon="o-paper-airplane"

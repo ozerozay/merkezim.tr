@@ -37,6 +37,11 @@ class Adisyon extends Model
         return $this->belongsTo(User::class, 'client_id');
     }
 
+    public function coupon()
+    {
+        return $this->belongsTo(Coupon::class, 'coupon_id');
+    }
+
     public function branch()
     {
         return $this->belongsTo(Branch::class);
@@ -45,6 +50,16 @@ class Adisyon extends Model
     public function adisyonServices()
     {
         return $this->hasMany(AdisyonService::class);
+    }
+
+    public function adisyonProducts()
+    {
+        return $this->hasMany(AdisyonProduct::class);
+    }
+
+    public function adisyonPackages()
+    {
+        return $this->hasMany(AdisyonPackage::class);
     }
 
     public function transactions()

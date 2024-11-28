@@ -47,7 +47,7 @@ class CreateClientService extends SlideOver
             'gift' => $this->gift,
             'message' => $this->message,
             'user_id' => auth()->user()->id,
-            'permission' => PermissionType::action_client_create_service,
+            'permission' => PermissionType::action_client_create_service->name,
         ], [
             'client_id' => 'required|exists:users,id',
             'branch_id' => 'required|exists:branches,id',

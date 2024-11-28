@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Actions;
 
+use App\Actions\Spotlight\Actions\Client\CreateAdisyonAction;
+use App\Enum\PermissionType;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
@@ -27,6 +29,8 @@ class CreateAdisyon extends SlideOver
     public ?Collection $selected_payments;
 
     public $coupon;
+
+    public $couponPrice = 0;
 
     public function mount(User $client): void
     {
@@ -57,9 +61,102 @@ class CreateAdisyon extends SlideOver
     }
 
     #[On('selected-coupon-changed')]
-    public function selectedCouponChanged($coupon): void
+    public function selectedCouponChanged($coupon, $couponPrice): void
     {
         $this->coupon = $coupon;
+        $this->couponPrice = $couponPrice;
+    }
+
+    #[\Livewire\Attributes\Computed]
+    public function totalPrice(): mixed
+    {
+        if ($this->price > 0) {
+            return $this->price - $this->couponPrice;
+        }
+
+        $totalPrice = $this->selected_services->where('gift', false)->sum('price') - $this->couponPrice;
+
+        return $totalPrice < 0 ? 0 : $totalPrice;
+    }
+
+    #[\Livewire\Attributes\Computed]
+    public function totalPriceTotal(): mixed
+    {
+        if ($this->price > 0) {
+            return $this->price;
+        }
+
+        return $this->selected_services->where('gift', false)->sum('price');
+    }
+
+    #[\Livewire\Attributes\Computed]
+    public function totalPayment(): mixed
+    {
+        return $this->selected_payments->sum('price');
+    }
+
+    #[\Livewire\Attributes\Computed]
+    public function remainingPayment(): float|int
+    {
+        return $this->totalPrice() - $this->totalPayment();
+    }
+
+    #[\Livewire\Attributes\Computed]
+    public function totalGift(): mixed
+    {
+        return $this->selected_services->where('gift', true)->sum('price');
+    }
+
+    public function save(): void
+    {
+        if ($this->selected_services->count() == 0) {
+            $this->error('Hizmet veya ürün seçmelisiniz.');
+
+            return;
+        }
+
+        if ($this->remainingPayment() > 0) {
+            $this->error('Tüm tutarı yapılandırmanız gerekiyor.'.$this->remainingPayment().'₺');
+
+            return;
+        }
+
+        $validator = \Validator::make([
+            'client_id' => $this->client->id,
+            'date' => $this->date,
+            'message' => $this->message,
+            'price' => $this->totalPriceTotal(),
+            'staff_ids' => $this->staff_ids,
+            'services' => $this->selected_services->toArray(),
+            'payments' => $this->selected_payments->toArray(),
+            'user_id' => auth()->user()->id,
+            'coupon_id' => $this->coupon?->id ?? null,
+            'permission' => PermissionType::action_adisyon_create->name,
+            'coupon_price' => $this->couponPrice,
+        ], [
+            'client_id' => 'required|exists:users,id',
+            'date' => 'required',
+            'message' => 'required',
+            'price' => 'required|decimal:0,2',
+            'staff_ids' => 'nullable|array',
+            'services' => 'required|array',
+            'payments' => 'required|array',
+            'user_id' => 'required|exists:users,id',
+            'coupon_id' => 'nullable|exists:coupons,id',
+            'permission' => 'required',
+            'coupon_price' => 'nullable',
+        ]);
+
+        if ($validator->fails()) {
+            $this->error($validator->messages()->first());
+
+            return;
+        }
+
+        CreateAdisyonAction::run($validator->validated());
+
+        $this->close();
+        $this->success(title: 'Adisyon oluşturuldu.');
     }
 
     public function render()

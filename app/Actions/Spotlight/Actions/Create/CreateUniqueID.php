@@ -3,6 +3,7 @@
 namespace App\Actions\Spotlight\Actions\Create;
 
 use App\Exceptions\AppException;
+use App\Models\Adisyon;
 use App\Models\Offer;
 use App\Models\User;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -28,6 +29,12 @@ class CreateUniqueID
             do {
                 $code = random_int(100000000, 999999999);
             } while (Offer::select('unique_id')->where('unique_id', '=', $code)->exists());
+
+            return $code;
+        } elseif ($type == 'adisyon') {
+            do {
+                $code = random_int(100000000, 999999999);
+            } while (Adisyon::select('unique_id')->where('unique_id', '=', $code)->exists());
 
             return $code;
         } else {

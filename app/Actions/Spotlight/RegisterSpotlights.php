@@ -11,6 +11,7 @@ use App\Actions\Spotlight\Queries\KasaQuery;
 use App\Actions\Spotlight\Queries\NoteQuery;
 use App\Actions\Spotlight\Queries\OfferQuery;
 use App\Actions\Spotlight\Queries\SaleQuery;
+use App\Actions\Spotlight\Queries\SettingsQuery;
 use App\Actions\Spotlight\Queries\TaksitQuery;
 use App\Actions\Spotlight\Tokens\AppointmentToken;
 use App\Actions\Spotlight\Tokens\ClientServiceToken;
@@ -20,7 +21,9 @@ use App\Actions\Spotlight\Tokens\KasaToken;
 use App\Actions\Spotlight\Tokens\NoteToken;
 use App\Actions\Spotlight\Tokens\OfferToken;
 use App\Actions\Spotlight\Tokens\SaleToken;
+use App\Actions\Spotlight\Tokens\Settings\SettingsToken;
 use App\Actions\Spotlight\Tokens\TaksitToken;
+use App\Enum\PermissionType;
 use App\Models\Note;
 use App\SaleStatus;
 use Illuminate\Http\Request;
@@ -85,6 +88,12 @@ class RegisterSpotlights
 
         /* Client Service İşlemleri */
 
+        /* Ayarlar */
+        Spotlight::registerGroup('settings', 'Ayarlar');
+        Spotlight::registerGroup('definations', 'Tanımlamalar');
+
+        Spotlight::registerGroup('profile', 'Profil');
+
     }
 
     private function registerSpotlightModes(): void
@@ -110,7 +119,8 @@ class RegisterSpotlights
 
     private function registerSpotlightTokens(): void
     {
-        Spotlight::registerTokens(
+
+        $tokens = [
             ClientToken::run(),
             NoteToken::run(),
             AppointmentToken::run(),
@@ -120,7 +130,13 @@ class RegisterSpotlights
             TaksitToken::run(),
             OfferToken::run(),
             KasaToken::run(),
-        );
+        ];
+
+        if (SpotlightCheckPermission::run(PermissionType::admin_settings)) {
+            $tokens[] = SettingsToken::run();
+        }
+
+        Spotlight::registerTokens(...$tokens);
     }
 
     private function registerSpotlightScopes(): void
@@ -145,6 +161,7 @@ class RegisterSpotlights
             OfferQuery::run(),
             NoteQuery::run(),
             KasaQuery::run(),
+            SettingsQuery::run(),
             /*SpotlightQuery::forToken('note', function ($query, SpotlightScopeToken $noteToken) {
                 $notes = Note::query()
                     ->get()

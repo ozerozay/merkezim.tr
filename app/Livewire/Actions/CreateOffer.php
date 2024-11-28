@@ -39,7 +39,7 @@ class CreateOffer extends SlideOver
             'month' => $this->month,
             'services' => $this->selected_services->toArray(),
             'user_id' => auth()->user()->id,
-            'permission' => PermissionType::action_client_create_offer,
+            'permission' => PermissionType::action_client_create_offer->name,
         ], [
             'client_id' => 'required|exists:users,id',
             'price' => 'required|decimal:0,2|min:1',

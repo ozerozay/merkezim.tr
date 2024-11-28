@@ -76,7 +76,7 @@ new class extends Component {
                         <x-icon name="o-cube" label="Taksit bulunmuyor."/>
                     </x-slot:empty>
                     @scope('cell_sale.unique_id', $taksit)
-                    <p>{{ $taksit->sale->sale_no}} - {{$taksit->sale->unique_id}}</p>
+                    <p>{{ $taksit->sale->sale_no ?? ''}} - {{$taksit->sale->unique_id ?? ''}}</p>
                     @endscope
                     @scope('cell_status', $taksit)
                     <x-badge :value="$taksit->status->label()" class="badge-{{ $taksit->status->color() }}"/>

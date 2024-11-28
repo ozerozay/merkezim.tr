@@ -50,7 +50,7 @@ class CreateAppointmentManuel extends SlideOver
                 'room_id' => $this->room_id,
                 'message' => $this->message,
                 'user_id' => auth()->user()->id,
-                'permission' => PermissionType::action_client_create_appointment,
+                'permission' => PermissionType::action_client_create_appointment->name,
             ], [
                 'client_id' => 'required|exists:users,id',
                 'category_id' => 'required|exists:service_categories,id',

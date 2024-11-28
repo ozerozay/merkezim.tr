@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Actions;
 
+use App\Actions\Spotlight\Actions\Client\CreateCouponAction;
 use App\Actions\Spotlight\Actions\Create\CreateCouponCode;
 use App\Enum\PermissionType;
 use App\Models\User;
@@ -53,7 +54,7 @@ class CreateCoupon extends SlideOver
             'end_date' => $this->end_date,
             'min_order' => $this->min_order,
             'user_id' => auth()->user()->id,
-            'permission' => PermissionType::action_create_coupon,
+            'permission' => PermissionType::action_create_coupon->name,
         ], [
             'client_id' => 'required|exists:users,id',
             'code' => 'required|unique:coupons,code|max:20',
@@ -71,6 +72,11 @@ class CreateCoupon extends SlideOver
 
             return;
         }
+
+        CreateCouponAction::run($validator->validated());
+
+        $this->success('Kupon oluşturuldu.');
+        $this->close();
     }
 
     public function render()

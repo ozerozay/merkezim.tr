@@ -147,7 +147,7 @@ new class extends Livewire\Volt\Component
 
         $this->couponPrice = $coupon->discount_type ? (($this->totalPrice() * $coupon->discount_amount) / 100) : $coupon->discount_amount;
 
-        $this->dispatch('selected-coupon-changed', $coupon);
+        $this->dispatch('selected-coupon-changed', $coupon, $this->couponPrice);
     }
 
     public function deleteItem($id, $type): void
@@ -173,7 +173,7 @@ new class extends Livewire\Volt\Component
     {
         $this->coupon = null;
         $this->couponPrice = null;
-        $this->dispatch('selected-coupon-changed', null);
+        $this->dispatch('selected-coupon-changed', null, 0);
     }
 
     public function dispatchSelectedPayments($selected_payments): void
@@ -193,7 +193,9 @@ new class extends Livewire\Volt\Component
             return $this->price - $this->couponPrice;
         }
 
-        return $this->selected_services->where('gift', false)->sum('price') - $this->couponPrice;
+        $totalPrice = $this->selected_services->where('gift', false)->sum('price') - $this->couponPrice;
+
+        return $totalPrice < 0 ? 0 : $totalPrice;
     }
 
     #[Livewire\Attributes\Computed]

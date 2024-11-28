@@ -22,7 +22,9 @@
         :selected_services="$selected_services"
         :selected_payments="$selected_payments"
         :price="$price"
-        :actives="['payment', 'coupon', 'service', 'package', 'product']" wire:key="$client->id" />
+        :couponPrice="$couponPrice"
+        :actives="['payment', 'coupon', 'service', 'package', 'product']"
+         wire:key="$client->id" />
 
     </x-slide-over>
 </div>

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Actions;
 
+use App\Actions\Spotlight\Actions\Client\CreateTaksitAction;
 use App\Enum\PermissionType;
 use App\Models\Service;
 use App\Models\User;
@@ -36,7 +37,7 @@ class CreateTaksit extends SlideOver
             $lastId = $this->selected_taksits->last() != null ? $this->selected_taksits->last()['id'] + 1 : 1;
             $this->selected_taksits->push([
                 'id' => $lastId,
-                'date' => Carbon::parse($info['first_date'])->addMonth($i)->format('d/m/Y'),
+                'date' => Carbon::parse($info['first_date'])->addMonths($i)->format('d/m/Y'),
                 'price' => $info['price'],
                 'locked' => [],
             ]);
@@ -89,7 +90,7 @@ class CreateTaksit extends SlideOver
             'taksits' => $this->selected_taksits->toArray(),
             'message' => $this->message,
             'user_id' => auth()->user()->id,
-            'permission' => PermissionType::action_client_create_taksit,
+            'permission' => PermissionType::action_client_create_taksit->name,
         ], [
             'client_id' => 'required|exists:users,id',
             'sale_id' => 'nullable|exists:sale,id',
@@ -104,6 +105,10 @@ class CreateTaksit extends SlideOver
 
             return;
         }
+
+        CreateTaksitAction::run($validator->validated());
+        $this->success('Taksit oluşturuldu.');
+        $this->close();
     }
 
     public function render()

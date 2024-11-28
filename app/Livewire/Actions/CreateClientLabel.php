@@ -33,7 +33,7 @@ class CreateClientLabel extends SlideOver
         $validator = \Validator::make([
             'client_id' => $this->client->id,
             'labels' => $this->client_labels,
-            'permission' => PermissionType::action_client_add_label,
+            'permission' => PermissionType::action_client_add_label->name,
             'user_id' => auth()->user()->id,
         ], [
             'client_id' => 'required|exists:users,id',

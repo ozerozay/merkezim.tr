@@ -53,7 +53,7 @@ class CreateClient extends SlideOver
             'adres' => $this->adres,
             'email' => $this->email,
             'user_id' => auth()->user()->id,
-            'permission' => PermissionType::action_client_create,
+            'permission' => PermissionType::action_client_create->name,
         ], [
             'name' => 'required',
             'branch_id' => 'required|exists:branches,id',

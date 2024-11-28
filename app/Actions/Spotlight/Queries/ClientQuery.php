@@ -154,7 +154,7 @@ class ClientQuery
             }
             if (SpotlightCheckPermission::run(PermissionType::action_create_coupon)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Kupon Oluştur - Save')
+                    ->setTitle('Kupon Oluştur')
                     ->setGroup('client_actions_new')
                     ->setIcon('receipt-percent')
                     ->setAction('dispatch_event',
@@ -166,7 +166,7 @@ class ClientQuery
             }
             if (SpotlightCheckPermission::run(PermissionType::action_client_create_taksit)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Taksit Oluştur - Save')
+                    ->setTitle('Taksit Oluştur')
                     ->setGroup('client_actions_new')
                     ->setIcon('plus-circle')
                     ->setAction('dispatch_event',

@@ -357,6 +357,27 @@ class RoleSeeder extends Seeder
                 'visible' => false,
             ]);
 
+            Permission::create([
+                'name' => 'admin_definations',
+                'description' => 'Tanımlamalar',
+                'route' => '',
+                'visible' => false,
+            ]);
+
+            Permission::create([
+                'name' => 'page_reports',
+                'description' => 'Raporlar',
+                'route' => '',
+                'visible' => false,
+            ]);
+
+            Permission::create([
+                'name' => 'page_statistics',
+                'description' => 'İstatistikler',
+                'route' => '',
+                'visible' => false,
+            ]);
+
             $adminRole->syncPermissions(Permission::all());
         });
 

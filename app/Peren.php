@@ -139,7 +139,6 @@ class Peren
     {
         try {
             \DB::beginTransaction();
-
             CheckUserPermission::run($info['permission']);
             CheckBranchPermission::run($info['client_id']);
 

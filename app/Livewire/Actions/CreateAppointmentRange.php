@@ -122,7 +122,7 @@ class CreateAppointmentRange extends SlideOver
                     'room_id' => $service_room_id,
                     'message' => $this->message,
                     'user_id' => auth()->user()->id,
-                    'permission' => PermissionType::action_client_create_appointment,
+                    'permission' => PermissionType::action_client_create_appointment->name,
                 ], [
                     'client_id' => 'required|exists:users,id',
                     'category_id' => 'required|exists:service_categories,id',
@@ -145,7 +145,7 @@ class CreateAppointmentRange extends SlideOver
 
             $this->success('Randevu oluşturuldu.');
             $this->close();
-        }catch (\Throwable $e){
+        } catch (\Throwable $e) {
             $this->error('Lütfen, tekrar deneyin.');
         }
 
