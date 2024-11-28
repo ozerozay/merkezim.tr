@@ -28,7 +28,7 @@ return new class extends Migration
             $table->date('birth_date')->nullable();
             $table->string('adres', 255)->nullable();
             $table->tinyInteger('il')->nullable();
-            $table->tinyInteger('ilce')->nullable();
+            $table->smallInteger('ilce')->nullable();
             $table
                 ->string('email', 255)
                 ->nullable()

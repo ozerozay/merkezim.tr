@@ -23,7 +23,7 @@ class CreateClient extends SlideOver
 
     public $birth_date;
 
-    public $il;
+    public $il = 40;
 
     public $ilce;
 
@@ -37,9 +37,22 @@ class CreateClient extends SlideOver
 
     public $can_login = true;
 
+    public $ils = [];
+
+    public $ilces = [];
+
     public function mount(): void
     {
         $this->branch_id = auth()->user()->staff_branch()->first()?->id ?? null;
+        $this->ils = \App\Models\Il::orderBy('il_adi', 'asc')->get();
+        $this->ilces = \App\Models\Ilce::where('il_id', $this->il)->get();
+        $this->ilce = $this->ilces->first()?->id ?? null;
+    }
+
+    public function updatedIl($value)
+    {
+        $this->ilces = \App\Models\Ilce::where('il_id', $value)->get();
+        $this->ilce = $this->ilces->first()?->id ?? null;
     }
 
     public function save(): void

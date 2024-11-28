@@ -73,6 +73,8 @@ class AppServiceProvider extends ServiceProvider
             'client_timeline' => 'App\Models\ClientTimeline',
             'talep' => 'App\Models\Talep',
             'talep_process' => 'App\Models\TalepProcess',
+            'il' => 'App\Models\Il',
+            'ilce' => 'App\Models\Ilce',
         ]);
 
         Blade::directive('price', function ($price) {
