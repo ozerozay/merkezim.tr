@@ -33,6 +33,10 @@ class CreateClient extends SlideOver
 
     public $email;
 
+    public $send_sms = true;
+
+    public $can_login = true;
+
     public function mount(): void
     {
         $this->branch_id = auth()->user()->staff_branch()->first()?->id ?? null;
@@ -53,6 +57,8 @@ class CreateClient extends SlideOver
             'adres' => $this->adres,
             'email' => $this->email,
             'user_id' => auth()->user()->id,
+            'can_login' => $this->can_login,
+            'send_sms' => $this->send_sms,
             'permission' => PermissionType::action_client_create->name,
         ], [
             'name' => 'required',
@@ -68,6 +74,8 @@ class CreateClient extends SlideOver
             'email' => 'nullable|email',
             'user_id' => 'required',
             'permission' => 'required',
+            'send_sms' => 'required',
+            'can_login' => 'required'
         ]);
 
         if ($validator->fails()) {

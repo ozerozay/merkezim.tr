@@ -5,6 +5,8 @@ namespace App\Actions\Spotlight\Actions\Create;
 use App\Exceptions\AppException;
 use App\Models\Adisyon;
 use App\Models\Offer;
+use App\Models\Sale;
+use App\Models\SaleProduct;
 use App\Models\User;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Random\RandomException;
@@ -35,6 +37,18 @@ class CreateUniqueID
             do {
                 $code = random_int(100000000, 999999999);
             } while (Adisyon::select('unique_id')->where('unique_id', '=', $code)->exists());
+
+            return $code;
+        } elseif ($type == 'sale_product') {
+            do {
+                $code = random_int(100000000, 999999999);
+            } while (SaleProduct::select('unique_id')->where('unique_id', '=', $code)->exists());
+
+            return $code;
+        } elseif ($type == 'sale') {
+            do {
+                $code = random_int(100000000, 999999999);
+            } while (Sale::select('unique_id')->where('unique_id', '=', $code)->exists());
 
             return $code;
         } else {

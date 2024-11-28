@@ -78,6 +78,18 @@ class ClientQuery
                     ->setTokens(['client' => User::find($clientToken->getParameter('id')), 'note' => new Note])
                     ->setIcon('arrow-right'));
             }
+            if (SpotlightCheckPermission::run(PermissionType::action_client_sale)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('Satış Yap')
+                    ->setGroup('client_actions_new')
+                    ->setIcon('plus-circle')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'actions.create-sale',
+                                'arguments' => [
+                                    'client' => $clientToken->getParameter('id')]],
+                        ]));
+            }
             if (SpotlightCheckPermission::run(PermissionType::action_client_add_note)) {
                 $pages->push(SpotlightResult::make()
                     ->setTitle('Not Al')
@@ -142,7 +154,7 @@ class ClientQuery
             }
             if (SpotlightCheckPermission::run(PermissionType::action_adisyon_create)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Adisyon Oluştur - Save')
+                    ->setTitle('Adisyon Oluştur')
                     ->setGroup('client_actions_new')
                     ->setIcon('plus-circle')
                     ->setAction('dispatch_event',
@@ -178,7 +190,7 @@ class ClientQuery
             }
             if (SpotlightCheckPermission::run(PermissionType::action_client_product_sale)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Ürün Sat - Save')
+                    ->setTitle('Ürün Sat')
                     ->setGroup('client_actions_new')
                     ->setIcon('plus-circle')
                     ->setAction('dispatch_event',

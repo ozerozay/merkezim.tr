@@ -1,10 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -32,6 +33,11 @@ return new class extends Migration {
                 ->nullable()
                 ->index();
             $table
+                ->bigInteger('coupon_id')
+                ->unsigned()
+                ->nullable()
+                ->index();
+            $table
                 ->bigInteger('sale_type_id')
                 ->unsigned()
                 ->index();
@@ -50,7 +56,6 @@ return new class extends Migration {
             $table->integer('sale_no');
             $table->text('message')->nullable();
             $table->date('expire_date')->nullable();
-            $table->json('coupons')->nullable();
             $table->boolean('visible')->default(true);
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
@@ -72,6 +77,12 @@ return new class extends Migration {
                 ->foreign('branch_id')
                 ->references('id')
                 ->on('branches')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table
+                ->foreign('coupon_id')
+                ->references('id')
+                ->on('coupons')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table

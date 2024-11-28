@@ -2,8 +2,7 @@
 
 use App\Models\User;
 
-new class extends Livewire\Volt\Component
-{
+new class extends Livewire\Volt\Component {
     use Mary\Traits\Toast;
 
     public $price = 0.0;
@@ -51,7 +50,7 @@ new class extends Livewire\Volt\Component
 
             if ($payment['price'] > $remaining) {
                 $payment['price'] = $remaining;
-                $this->warning('Tutar '.$payment['price'].' olarak güncellendi.');
+                $this->warning('Tutar ' . $payment['price'] . ' olarak güncellendi.');
             }
         }
 
@@ -145,7 +144,7 @@ new class extends Livewire\Volt\Component
         //dump($coupon);
         $this->coupon = $coupon;
 
-        $this->couponPrice = $coupon->discount_type ? (($this->totalPrice() * $coupon->discount_amount) / 100) : $coupon->discount_amount;
+        $this->couponPrice = $coupon->discount_type ? ($this->totalPrice() * $coupon->discount_amount) / 100 : $coupon->discount_amount;
 
         $this->dispatch('selected-coupon-changed', $coupon, $this->couponPrice);
     }
@@ -228,126 +227,134 @@ new class extends Livewire\Volt\Component
 };
 ?>
 <div>
- <x-dropdown label="Ekle" class="btn-outline w-full" no-x-anchor top>
-            @if (in_array('service', $actives))
-            <x-menu-item icon="o-plus-circle" title="Hizmet" wire:click="$dispatch('modal.open', {component: 'modals.select-service-modal', arguments: {'client': {{ $client->id }}}})" />
-            @endif
-            @if (in_array('package', $actives))
-            <x-menu-item icon="o-plus-circle" title="Paket" wire:click="$dispatch('modal.open', {component: 'modals.select-package-modal', arguments: {'client': {{ $client->id }}}})" />
-            @endif
+    <x-dropdown label="Ekle" class="btn-outline btn-full" no-x-anchor top>
+        <x-slot:trigger>
+            <x-button icon="o-plus" label="Ekle" class="btn-outline btn-wide" />
+        </x-slot:trigger>
+        @if (in_array('service', $actives))
+            <x-menu-item icon="o-plus-circle" title="Hizmet"
+                wire:click="$dispatch('modal.open', {component: 'modals.select-service-modal', arguments: {'client': {{ $client->id }}}})" />
+        @endif
+        @if (in_array('package', $actives))
+            <x-menu-item icon="o-plus-circle" title="Paket"
+                wire:click="$dispatch('modal.open', {component: 'modals.select-package-modal', arguments: {'client': {{ $client->id }}}})" />
+        @endif
 
-            @if (in_array('product', $actives))
+        @if (in_array('product', $actives))
             <x-menu-separator />
-            <x-menu-item icon="o-plus-circle" title="Ürün" wire:click="$dispatch('modal.open', {component: 'modals.select-product-modal', arguments: {'client': {{ $client->id }}}})" />
-            @endif
+            <x-menu-item icon="o-plus-circle" title="Ürün"
+                wire:click="$dispatch('modal.open', {component: 'modals.select-product-modal', arguments: {'client': {{ $client->id }}}})" />
+        @endif
 
-            <x-menu-separator />
-            @if ($this->totalPrice() > 0)
+        <x-menu-separator />
+        @if ($this->totalPrice() > 0)
             @if (in_array('coupon', $actives))
-            @if (!$coupon)
-            <x-menu-item icon="o-plus-circle" title="Kupon" wire:click="$dispatch('modal.open', {component: 'modals.select-coupon-modal', arguments: {'client': {{ $client->id }}}})" />
-            @endif
+                @if (!$coupon)
+                    <x-menu-item icon="o-plus-circle" title="Kupon"
+                        wire:click="$dispatch('modal.open', {component: 'modals.select-coupon-modal', arguments: {'client': {{ $client->id }}}})" />
+                @endif
             @endif
             @if (in_array('payment', $actives))
-            <x-menu-item icon="o-plus-circle" title="Peşinat" wire:click="$dispatch('modal.open', {component: 'modals.select-payment-modal', arguments: {'client': {{ $client->id }}}})" />
+                <x-menu-item icon="o-plus-circle" title="Peşinat"
+                    wire:click="$dispatch('modal.open', {component: 'modals.select-payment-modal', arguments: {'client': {{ $client->id }}}})" />
             @endif
-            @else
+        @else
             <x-menu-item icon="o-plus-circle" title="Peşinat ve Kupon eklemek için hizmet ekleyin." />
+        @endif
+
+    </x-dropdown>
+    @foreach ($selected_services as $service)
+        <x-list-item :item="$service" no-separator no-hover>
+            @if ($service['gift'])
+                <x-slot:avatar>
+                    <x-badge value="H" class="badge-primary" />
+                </x-slot:avatar>
             @endif
-
-        </x-dropdown>
-        @foreach ($selected_services as $service)
-            <x-list-item :item="$service" no-separator no-hover>
-                @if ($service['gift'])
-                    <x-slot:avatar>
-                        <x-badge value="H" class="badge-primary"/>
-                    </x-slot:avatar>
-                @endif
-                <x-slot:value>
-                    {{ $service['name'] }}
-                </x-slot:value>
-                <x-slot:sub-value>
-                    {{ $service['quantity'] }} seans - @price($service['price'])
-                </x-slot:sub-value>
-                <x-slot:actions>
-                    <x-button icon="o-trash" class="text-red-500" wire:confirm="Emin misiniz ?"
-                              wire:click="deleteItem({{ $service['id'] }}, '{{ $service['type'] }}')" spinner/>
-                </x-slot:actions>
-            </x-list-item>
-        @endforeach
-        <x-hr />
-        @foreach ($selected_payments as $payment)
-            <x-list-item :item="$payment" no-separator no-hover>
-                <x-slot:value>
-                    {{ $payment['kasa_name'] }}
-                </x-slot:value>
-                <x-slot:sub-value>
-                    @price($payment['price'])
-                </x-slot:sub-value>
-                <x-slot:actions>
-                    <x-button icon="o-trash" class="text-red-500" wire:confirm="Emin misiniz ?"
-                              wire:click="deletePayment({{ $payment['id'] }})" spinner/>
-                </x-slot:actions>
-            </x-list-item>
-        @endforeach
-        <x-hr />
-        @if ($coupon)
+            <x-slot:value>
+                {{ $service['name'] }}
+            </x-slot:value>
+            <x-slot:sub-value>
+                {{ $service['quantity'] }} seans - @price($service['price'])
+            </x-slot:sub-value>
+            <x-slot:actions>
+                <x-button icon="o-trash" class="text-red-500" wire:confirm="Emin misiniz ?"
+                    wire:click="deleteItem({{ $service['id'] }}, '{{ $service['type'] }}')" spinner />
+            </x-slot:actions>
+        </x-list-item>
+    @endforeach
+    <x-hr />
+    @foreach ($selected_payments as $payment)
+        <x-list-item :item="$payment" no-separator no-hover>
+            <x-slot:value>
+                {{ $payment['kasa_name'] }}
+            </x-slot:value>
+            <x-slot:sub-value>
+                @price($payment['price'])
+            </x-slot:sub-value>
+            <x-slot:actions>
+                <x-button icon="o-trash" class="text-red-500" wire:confirm="Emin misiniz ?"
+                    wire:click="deletePayment({{ $payment['id'] }})" spinner />
+            </x-slot:actions>
+        </x-list-item>
+    @endforeach
+    <x-hr />
+    @if ($coupon)
         <x-list-item :item="$coupon" no-separator no-hover>
+            <x-slot:value>
+                {{ $coupon->code }}
+            </x-slot:value>
+            <x-slot:sub-value>
+                @price($couponPrice)
+            </x-slot:sub-value>
+            <x-slot:actions>
+                <x-button icon="o-trash" class="text-red-500" wire:confirm="Emin misiniz ?" wire:click="deleteCoupon"
+                    spinner />
+            </x-slot:actions>
+        </x-list-item>
+    @endif
+    @if ($selected_services->isNotEmpty())
+        <x-button class="btn-sm w-full">
+            Hediye:
+            <x-badge class="badge-neutral">
                 <x-slot:value>
-                    {{ $coupon->code }}
+                    @price($this->totalGift())
                 </x-slot:value>
-                <x-slot:sub-value>
-                    @price($couponPrice)
-                </x-slot:sub-value>
-                <x-slot:actions>
-                    <x-button icon="o-trash" class="text-red-500" wire:confirm="Emin misiniz ?"
-                              wire:click="deleteCoupon" spinner/>
-                </x-slot:actions>
-            </x-list-item>
+            </x-badge>
+        </x-button>
+        <x-button class="btn-sm w-full">
+            Ara Toplam:
+            <x-badge class="badge-neutral">
+                <x-slot:value>
+                    @price($this->totalPrice())
+                </x-slot:value>
+            </x-badge>
+        </x-button>
+        @if ($coupon)
+            <x-button class="btn-sm w-full">
+                Kupon İndirimi:
+                <x-badge class="badge-neutral">
+                    <x-slot:value>
+                        @price($couponPrice)
+                    </x-slot:value>
+                </x-badge>
+            </x-button>
         @endif
-        @if($selected_services->isNotEmpty())
-                <x-button class="btn-sm w-full">
-                    Hediye:
-                    <x-badge class="badge-neutral">
-                        <x-slot:value>
-                            @price($this->totalGift())
-                        </x-slot:value>
-                    </x-badge>
-                </x-button>
-                <x-button class="btn-sm w-full">
-                    Ara Toplam:
-                    <x-badge class="badge-neutral">
-                        <x-slot:value>
-                            @price($this->totalPrice())
-                        </x-slot:value>
-                    </x-badge>
-                </x-button>
-                @if ($coupon)
-                <x-button class="btn-sm w-full">
-                    Kupon İndirimi:
-                    <x-badge class="badge-neutral">
-                        <x-slot:value>
-                            @price($couponPrice)
-                        </x-slot:value>
-                    </x-badge>
-                </x-button>
-                @endif
-                <x-button class="btn-sm w-full">
-                    Kalan:
-                    <x-badge class="badge-neutral">
-                        <x-slot:value>
-                            @price($this->remainingPayment())
-                        </x-slot:value>
-                    </x-badge>
-                </x-button>
-                <x-button class="btn-sm w-full">
-                    Toplam:
-                    <x-badge class="badge-neutral">
-                        <x-slot:value>
-                            @price($this->totalPriceTotal())
-                        </x-slot:value>
-                    </x-badge>
-                </x-button>
+        <x-button class="btn-sm w-full">
+            Kalan:
+            <x-badge class="badge-neutral">
+                <x-slot:value>
+                    @price($this->remainingPayment())
+                </x-slot:value>
+            </x-badge>
+        </x-button>
+        <x-button class="btn-sm w-full">
+            Toplam:
+            <x-badge class="badge-neutral">
+                <x-slot:value>
+                    @price($this->totalPriceTotal())
+                </x-slot:value>
+            </x-badge>
+        </x-button>
 
-        @endif
-        </div>
+    @endif
+</div>

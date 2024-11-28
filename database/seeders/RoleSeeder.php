@@ -378,6 +378,13 @@ class RoleSeeder extends Seeder
                 'visible' => false,
             ]);
 
+            Permission::create([
+                'name' => 'page_approve',
+                'description' => 'Onay',
+                'route' => '',
+                'visible' => false,
+            ]);
+
             $adminRole->syncPermissions(Permission::all());
         });
 

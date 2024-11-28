@@ -34,6 +34,15 @@ class DefaultQuery
                     ->setIcon('calendar-days'), );
             }
 
+            if (SpotlightCheckPermission::run(PermissionType::page_approve)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('Onay - 4 İşlem')
+                    ->setSubtitle('Onay bekleyen işlemleri görüntüleyin.')
+                    ->setGroup('pages')
+                    ->setTokens(['kasa' => new Kasa])
+                    ->setIcon('check-circle'), );
+            }
+
             if (SpotlightCheckPermission::run(PermissionType::page_kasa)) {
                 $pages->push(SpotlightResult::make()
                     ->setTitle('Kasa')

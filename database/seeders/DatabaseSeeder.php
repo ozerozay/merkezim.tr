@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             ServiceSeeder::class,
             KasaSeeder::class,
             PackageSeeder::class,
+            IlSeed::class,
         ]);
     }
 }

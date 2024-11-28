@@ -3,19 +3,17 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use App\Observers\SaleObserver;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 class Sale extends Model
 {
     use HasFactory;
-    use SoftDeletes;
     use HasJsonRelationships;
+    use SoftDeletes;
 
     protected $table = 'sale';
 
@@ -28,7 +26,6 @@ class Sale extends Model
         return [
             'staffs' => 'json',
             'status' => 'App\SaleStatus',
-            'coupons' => 'json',
             'visible' => 'boolean',
         ];
     }
@@ -78,15 +75,15 @@ class Sale extends Model
         return $this->belongsToJson(Branch::class, 'staffs');
     }
 
-    public function coupons()
+    public function coupon()
     {
-        return $this->belongsToJson(Coupon::class, 'coupons');
+        return $this->belongsTo(Coupon::class, 'coupon_id');
     }
 
     protected function dateHumanCreated(): Attribute
     {
         return Attribute::make(
-            get: fn(?Carbon $value) => $this->created_at->format('d/m/Y')
+            get: fn (?Carbon $value) => $this->created_at->format('d/m/Y')
         );
     }
 }

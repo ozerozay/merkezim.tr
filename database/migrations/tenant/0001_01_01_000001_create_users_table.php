@@ -37,6 +37,8 @@ return new class extends Migration
             $table->string('password', 255)->nullable();
             $table->boolean('gender')->nullable();
             $table->boolean('active')->default(true);
+            $table->boolean('send_sms')->default(true);
+            $table->boolean('can_login')->default(true);
             $table->boolean('first_login');
             $table->string('remember_token', 100)->nullable();
             $table->json('labels')->nullable();
