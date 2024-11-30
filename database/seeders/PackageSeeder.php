@@ -15,7 +15,7 @@ class PackageSeeder extends Seeder
     {
         Tenant::first()->run(function () {
             Package::create([
-                'branch_ids' => [1, 2],
+                'branch_id' => 1,
                 'name' => 'EPİLASYON TÜM VÜCUT',
                 'price' => 1000,
                 'buy_time' => 0,

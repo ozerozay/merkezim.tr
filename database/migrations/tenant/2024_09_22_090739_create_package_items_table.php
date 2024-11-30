@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('package_id')->constrained('packages')->index('package_package_id_index');
             $table->foreignId('service_id')->constrained('services')->index('package_service_id_index');
             $table->integer('quantity');
+            $table->boolean('gift')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

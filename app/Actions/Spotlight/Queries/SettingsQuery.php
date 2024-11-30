@@ -59,7 +59,19 @@ class SettingsQuery
                 $results->push(SpotlightResult::make()
                     ->setTitle('Paketler')
                     ->setGroup('definations')
-                    ->setIcon('pencil'));
+                    ->setIcon('pencil')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'settings.defination.package.package-defination'],
+                        ]));
+                $results->push(SpotlightResult::make()
+                    ->setTitle('Danışan Etiketleri')
+                    ->setGroup('definations')
+                    ->setIcon('pencil')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'settings.defination.label.label-defination'],
+                        ]));
                 $results->push(SpotlightResult::make()
                     ->setTitle('Ürünler')
                     ->setGroup('definations')
@@ -71,7 +83,11 @@ class SettingsQuery
                 $results->push(SpotlightResult::make()
                     ->setTitle('Personel')
                     ->setGroup('definations')
-                    ->setIcon('pencil'));
+                    ->setIcon('pencil')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'settings.defination.staff.staff-defination'],
+                        ]));
                 $results->push(SpotlightResult::make()
                     ->setTitle('Satış Tipi')
                     ->setGroup('definations')

@@ -419,6 +419,13 @@ class User extends Authenticatable
         return $this->belongsToJson(Permission::class, 'instant_approves');
     }
 
+    public function branch_names()
+    {
+        return $this->staff_branch()
+            ->pluck('name')
+            ->implode(', ');
+    }
+
     public function totalDebt()
     {
         return $this->clientTaksits()

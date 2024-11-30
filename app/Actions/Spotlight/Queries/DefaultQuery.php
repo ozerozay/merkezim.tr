@@ -139,6 +139,15 @@ class DefaultQuery
                     ->setIcon('finger-print'));
             }
 
+            $pages->push(SpotlightResult::make()
+                ->setTitle('Renk Modunu Değiştir')
+                ->setGroup('actions')
+                ->setIcon('plus-circle')
+                ->setAction('dispatch_event',
+                    ['name' => 'mary-toggle-theme',
+                        'data' => ['component' => 'actions.create-client'],
+                    ]));
+
             $pages = $pages->when(! blank($query), function ($collection) use ($query) {
                 return $collection->where(fn (SpotlightResult $result) => str($result->title())->lower()->contains(str($query)->lower()));
             });

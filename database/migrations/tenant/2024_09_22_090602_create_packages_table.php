@@ -13,13 +13,15 @@ return new class extends Migration
     {
         Schema::create('packages', function (Blueprint $table) {
             $table->id();
-            $table->json('branch_ids');
+            $table
+                ->bigInteger('branch_id')
+                ->unsigned()
+                ->index();
             $table->tinyInteger('gender')->default(0);
             $table->string('name');
             $table->double('price');
             $table->boolean('active')->default(true);
             $table->tinyInteger('buy_time');
-            $table->rawIndex('(cast(`branch_ids` as unsigned array))', 'package_branch_id_index');
             $table->softDeletes();
             $table->timestamps();
         });

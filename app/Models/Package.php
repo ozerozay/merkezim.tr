@@ -41,8 +41,8 @@ class Package extends Model
         return $this->hasMany(ClientService::class);
     }
 
-    public function branches()
+    public function branch()
     {
-        return $this->belongsToJson(Branch::class, 'branch_ids');
+        return $this->belongsTo(Branch::class, 'branch_id');
     }
 }

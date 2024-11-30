@@ -1,27 +1,25 @@
 <?php
 
-namespace App\Livewire\Settings\Defination\Kasa;
+namespace App\Livewire\Settings\Defination\Label;
 
-use App\Models\Kasa;
+use App\Models\Label;
 use Illuminate\Validation\Rule;
 use WireElements\Pro\Components\SlideOver\SlideOver;
 
-class KasaEdit extends SlideOver
+class LabelEdit extends SlideOver
 {
     use \App\Traits\StrHelper, \Mary\Traits\Toast;
 
-    public int|Kasa $kasa;
+    public int|Label $label;
 
     public ?string $name = null;
 
     public ?bool $active = null;
 
-    public $branch_id;
-
-    public function mount(Kasa $kasa)
+    public function mount(Label $label)
     {
-        $this->kasa = $kasa;
-        $this->fill($kasa);
+        $this->label = $label;
+        $this->fill($label);
     }
 
     public static function behavior(): array
@@ -40,7 +38,7 @@ class KasaEdit extends SlideOver
             'name' => $this->strUpper($this->name),
             'active' => $this->active,
         ], [
-            'name' => ['required', Rule::unique('kasas', 'name')->where('branch_id', $this->branch_id)->ignore($this->kasa->id)],
+            'name' => ['required', Rule::unique('labels', 'name')->ignore($this->label->id)],
             'active' => ['required', 'boolean'],
         ]);
 
@@ -50,14 +48,15 @@ class KasaEdit extends SlideOver
             return;
         }
 
-        $this->kasa->update($validator->validated());
+        $this->label->update($validator->validated());
 
-        $this->success('Kasa düzenlendi.');
-        $this->close(andDispatch: ['defination-kasa-update']);
+        $this->success('Etiket düzenlendi.');
+        $this->close(andDispatch: ['defination-label-update']);
+
     }
 
     public function render()
     {
-        return view('livewire.spotlight.settings.defination.kasa.kasa-edit');
+        return view('livewire.spotlight.settings.defination.label.label-edit');
     }
 }

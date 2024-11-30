@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
     {
 
         //Spotlight::registerAction('show_notes', GetClientNotesAction::class);
-        Spotlight::registerAction('get_client_notes_action', GetClientNotesAction::class);
+        //Spotlight::registerAction('get_client_notes_action', GetClientNotesAction::class);
 
         Relation::enforceMorphMap([
             'service' => 'App\Models\Service',
@@ -75,6 +75,7 @@ class AppServiceProvider extends ServiceProvider
             'talep_process' => 'App\Models\TalepProcess',
             'il' => 'App\Models\Il',
             'ilce' => 'App\Models\Ilce',
+            'role' => 'Spatie\Permission\Models\Role',
         ]);
 
         Blade::directive('price', function ($price) {

@@ -14,9 +14,7 @@ class GetPackages
         return Package::query()
             ->where('active', true)
             ->when($branch_ids, function ($q) use ($branch_ids) {
-                $q->whereHas('branches', function ($q) use ($branch_ids) {
-                    $q->whereIn('id', $branch_ids);
-                });
+                $q->whereIn('branch_id', $branch_ids);
             })
             ->when($search, function ($q) use ($search) {
                 $q->where('name', 'like', '%'.$search.'%');
