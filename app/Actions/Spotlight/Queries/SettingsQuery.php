@@ -21,25 +21,41 @@ class SettingsQuery
 
             if (SpotlightCheckPermission::run(PermissionType::admin_definations)) {
                 $results->push(SpotlightResult::make()
-                    ->setTitle('Şubeler')
+                    ->setTitle('Şube')
                     ->setGroup('definations')
                     ->setIcon('building-storefront'));
                 $results->push(SpotlightResult::make()
-                    ->setTitle('Kasalar')
+                    ->setTitle('Kasa')
                     ->setGroup('definations')
-                    ->setIcon('pencil'));
+                    ->setIcon('pencil')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'settings.defination.kasa.kasa-defination'],
+                        ]));
                 $results->push(SpotlightResult::make()
                     ->setTitle('Hizmet Kategorileri')
                     ->setGroup('definations')
-                    ->setIcon('pencil'));
+                    ->setIcon('pencil')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'settings.defination.category.category-defination'],
+                        ]));
                 $results->push(SpotlightResult::make()
                     ->setTitle('Hizmet Odaları')
                     ->setGroup('definations')
-                    ->setIcon('pencil'));
+                    ->setIcon('pencil')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'settings.defination.room.room-defination'],
+                        ]));
                 $results->push(SpotlightResult::make()
                     ->setTitle('Hizmetler')
                     ->setGroup('definations')
-                    ->setIcon('pencil'));
+                    ->setIcon('pencil')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'settings.defination.service.service-defination'],
+                        ]));
                 $results->push(SpotlightResult::make()
                     ->setTitle('Paketler')
                     ->setGroup('definations')
@@ -47,7 +63,31 @@ class SettingsQuery
                 $results->push(SpotlightResult::make()
                     ->setTitle('Ürünler')
                     ->setGroup('definations')
+                    ->setIcon('pencil')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'settings.defination.product.product-defination'],
+                        ]));
+                $results->push(SpotlightResult::make()
+                    ->setTitle('Personel')
+                    ->setGroup('definations')
                     ->setIcon('pencil'));
+                $results->push(SpotlightResult::make()
+                    ->setTitle('Satış Tipi')
+                    ->setGroup('definations')
+                    ->setIcon('pencil')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'settings.defination.sale-type.sale-type-defination'],
+                        ]));
+                $results->push(SpotlightResult::make()
+                    ->setTitle('Masraf')
+                    ->setGroup('definations')
+                    ->setIcon('pencil')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'settings.defination.masraf.masraf-defination'],
+                        ]));
             }
 
             $results = $results->when(! blank($query), function ($collection) use ($query) {

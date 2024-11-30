@@ -385,6 +385,27 @@ class RoleSeeder extends Seeder
                 'visible' => false,
             ]);
 
+            Permission::create([
+                'name' => 'admin_settings',
+                'description' => 'Ayarlar',
+                'route' => '',
+                'visible' => false,
+            ]);
+
+            Permission::create([
+                'name' => 'website_settings',
+                'description' => 'Site Ayarlar',
+                'route' => '',
+                'visible' => false,
+            ]);
+
+            Permission::create([
+                'name' => 'page_finger',
+                'description' => 'Parmak İzi',
+                'route' => '',
+                'visible' => false,
+            ]);
+
             $adminRole->syncPermissions(Permission::all());
         });
 

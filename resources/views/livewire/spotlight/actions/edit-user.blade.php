@@ -1,7 +1,5 @@
 <div>
-    <x-slide-over title="Danışan Oluştur">
-        <livewire:components.form.branch_dropdown wire:key="branch-dropdown-{{ Str::random(10) }}"
-            wire:model="branch_id" />
+    <x-slide-over title="Bilgilerini Düzenle" subtitle="{{ $client->name ?? '' }}">
         <x-input label="Adı" wire:model="name" />
         <div class="grid grid-cols-2 gap-1">
             <livewire:components.form.phone wire:key="phone-field-{{ Str::random(10) }}" wire:model="phone" />
@@ -22,5 +20,6 @@
         <x-input label="E-posta" wire:model="email" />
         <x-checkbox wire:model="send_sms" class="self-start" label="Danışana SMS gönderimi yapılsın." />
         <x-checkbox wire:model="can_login" class="self-start" label=" Online işlem merkezine giriş yapabilsin." />
+
     </x-slide-over>
 </div>

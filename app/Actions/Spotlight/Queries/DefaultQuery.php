@@ -118,9 +118,25 @@ class DefaultQuery
             if (SpotlightCheckPermission::run(PermissionType::admin_settings)) {
                 $pages->push(SpotlightResult::make()
                     ->setTitle('Ayarlar')
-                    ->setGroup('settings')
+                    ->setGroup('pages')
                     ->setTokens(['settings' => new User])
                     ->setIcon('cog-6-tooth'));
+            }
+
+            if (SpotlightCheckPermission::run(PermissionType::website_settings)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('Site Ayarları')
+                    ->setGroup('pages')
+                    //->setTokens(['settings' => new User])
+                    ->setIcon('cog-6-tooth'));
+            }
+
+            if (SpotlightCheckPermission::run(PermissionType::page_finger)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('Parmak İzi')
+                    ->setGroup('pages')
+                    //->setTokens(['settings' => new User])
+                    ->setIcon('finger-print'));
             }
 
             $pages = $pages->when(! blank($query), function ($collection) use ($query) {

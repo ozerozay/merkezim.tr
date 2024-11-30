@@ -47,6 +47,8 @@ class User extends Authenticatable
             'staff_branches' => 'json',
             'labels' => 'json',
             'instant_approve' => 'boolean',
+            'can_login' => 'boolean',
+            'send_sms' => 'boolean',
         ];
     }
 

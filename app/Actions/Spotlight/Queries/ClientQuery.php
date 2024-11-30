@@ -24,6 +24,7 @@ class ClientQuery
     {
         return SpotlightQuery::forToken('client', function ($query, SpotlightScopeToken $clientToken) {
             $pages = collect();
+
             if (SpotlightCheckPermission::run(PermissionType::client_profil_sale)) {
                 $pages->push(SpotlightResult::make()
                     ->setTitle('Satış')
@@ -77,6 +78,30 @@ class ClientQuery
                     //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
                     ->setTokens(['client' => User::find($clientToken->getParameter('id')), 'note' => new Note])
                     ->setIcon('arrow-right'));
+            }
+            if (SpotlightCheckPermission::run(PermissionType::action_edit_user)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('Bilgilerini Düzenle')
+                    ->setGroup('client_actions_new')
+                    ->setIcon('pencil')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'actions.edit-user',
+                                'arguments' => [
+                                    'client' => $clientToken->getParameter('id')]],
+                        ]));
+            }
+            if (SpotlightCheckPermission::run(PermissionType::action_client_tahsilat)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('Tahsilat')
+                    ->setGroup('client_actions_new')
+                    ->setIcon('plus-circle')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'actions.create-tahsilat',
+                                'arguments' => [
+                                    'client' => $clientToken->getParameter('id')]],
+                        ]));
             }
             if (SpotlightCheckPermission::run(PermissionType::action_client_sale)) {
                 $pages->push(SpotlightResult::make()

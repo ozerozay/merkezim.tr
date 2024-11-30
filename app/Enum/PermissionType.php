@@ -18,6 +18,7 @@ enum PermissionType: string
     case action_client_create_taksit = 'action_client_create_taksit';
     case action_client_product_sale = 'action_client_product_sale';
     case action_client_sale = 'action_client_sale';
+    case action_edit_user = 'action_edit_user';
 
     case client_profil_note = 'client_profil_note';
     case client_profil_offer = 'client_profil_offer';
@@ -34,10 +35,14 @@ enum PermissionType: string
     case page_statistics = 'page_statistics';
     case page_randevu = 'page_randevu';
     case page_approve = 'page_approve';
+    case page_finger = 'page_finger';
 
     case admin_settings = 'admin_settings';
     case admin_definations = 'admin_definations';
 
     case kasa_mahsup = 'kasa_mahsup';
     case kasa_make_payment = 'kasa_make_payment';
+    case action_client_tahsilat = 'action_client_tahsilat';
+
+    case website_settings = 'website_settings';
 }
