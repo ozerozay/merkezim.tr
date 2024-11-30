@@ -2,7 +2,7 @@
 
 namespace App\Actions\Spotlight\Queries;
 
-use App\Actions\SPotlight\Actions\Kasa\GetKasaTransactions;
+use App\Actions\Spotlight\Actions\Kasa\GetKasaTransactions;
 use App\Actions\Spotlight\SpotlightCheckPermission;
 use App\Enum\PermissionType;
 use Lorisleiva\Actions\Concerns\AsAction;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\SPotlight\Actions\Kasa;
+namespace App\Actions\Spotlight\Actions\Kasa;
 
 use App\Models\Kasa;
 use Carbon\Carbon;
