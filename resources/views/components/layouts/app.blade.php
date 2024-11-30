@@ -20,21 +20,17 @@
 <body class="min-h-screen font-sans antialiased bg-base-200/50 dark:bg-base-200">
 
     {{-- NAVBAR mobile only --}}
-    <x-nav sticky class="lg:hidden">
+    <x-nav sticky>
         <x-slot:brand>
             <x-app-brand />
 
         </x-slot:brand>
         <x-slot:actions>
-
-            <x-button title="Ara" wire:click="$dispatch('mary-search-open')" icon="o-magnifying-glass"
-                badge="Ctrl + M" />
             <x-button icon="o-bell" class="btn-circle relative">
                 <x-badge value="2" class="badge-error absolute -right-2 -top-2" />
             </x-button>
-            <label for="main-drawer" class="lg:hidden me-3">
-                <x-icon name="o-bars-3" class="cursor-pointer" />
-            </label>
+
+
         </x-slot:actions>
 
     </x-nav>
@@ -42,88 +38,93 @@
     {{-- MAIN --}}
     <x-main>
         {{-- SIDEBAR --}}
-        <x-slot:sidebar drawer="main-drawer" collapse-text="Küçült" collapsible class="bg-base-100 lg:bg-inherit">
-            {{-- MENU --}}
+        @if (1 == 2)
+            <x-slot:sidebar drawer="main-drawer" collapse-text="Küçült" collapsible
+                class="bg-base-100 lg:bg-inherit">
+                {{-- MENU --}}
 
-            <x-menu class="mt-2" activate-by-route>
-                {{-- User --}}
-                @if ($user = auth()->user())
-                    <x-list-item :item="$user" no-separator no-hover class="-mx-2 !-my-2 rounded">
-                        <x-slot:value>
-                            {{ auth()->user()->name }}
-                        </x-slot:value>
-                        <x-slot:sub-value>
-                            MARGE GÜZELLİK
-                        </x-slot:sub-value>
-                        <x-slot:actions>
-                            <div class="flex space-x-1">
-                                <x-button icon="o-bell" class="btn-circle relative">
-                                    <x-badge value="2" class="badge-error absolute -right-2 -top-2" />
-                                </x-button>
-                                <x-theme-toggle class="btn btn-circle" />
-                            </div>
-                        </x-slot:actions>
-                    </x-list-item>
-                    <x-menu-separator />
-                    <x-menu-item title="Ara" @click.stop="$dispatch('mary-search-open')" icon="o-magnifying-glass"
-                        badge="Ctrl + M" />
-                    <x-menu-item title="Ara" @click="$dispatch('toggle-spotlight')" icon="o-magnifying-glass"
-                        badge="Ctrl + M" />
-                    <x-menu-item title="Ara" @click="$dispatch('spotlight.toggle')" icon="o-magnifying-glass"
-                        badge="Ctrl + M" />
-                    <x-button icon="tabler.wand" wire:click="$dispatch('spotlight.toggle')"
-                        class="btn-primary btn-circle btn-lg" />
+                <x-menu class="mt-2" activate-by-route>
+                    {{-- User --}}
+                    @if ($user = auth()->user())
+                        <x-list-item :item="$user" no-separator no-hover class="-mx-2 !-my-2 rounded">
+                            <x-slot:value>
+                                {{ auth()->user()->name }}
+                            </x-slot:value>
+                            <x-slot:sub-value>
+                                MARGE GÜZELLİK
+                            </x-slot:sub-value>
+                            <x-slot:actions>
+                                <div class="flex space-x-1">
+                                    <x-button icon="o-bell" class="btn-circle relative">
+                                        <x-badge value="2" class="badge-error absolute -right-2 -top-2" />
+                                    </x-button>
+                                    <x-theme-toggle class="btn btn-circle" />
+                                </div>
+                            </x-slot:actions>
+                        </x-list-item>
+                        <x-menu-separator />
+                        <x-menu-item title="Ara" @click.stop="$dispatch('mary-search-open')"
+                            icon="o-magnifying-glass" badge="Ctrl + M" />
+                        <x-menu-item title="Ara" @click="$dispatch('toggle-spotlight')" icon="o-magnifying-glass"
+                            badge="Ctrl + M" />
+                        <x-menu-item title="Ara" @click="$dispatch('spotlight.toggle')" icon="o-magnifying-glass"
+                            badge="Ctrl + M" />
+                        <x-button icon="tabler.wand" wire:click="$dispatch('spotlight.toggle')"
+                            class="btn-primary btn-circle btn-lg" />
 
-                    <x-menu-separator />
-                    @if (1 == 2)
-                        <x-button label="Hi!" class="btn-outline" data-set-theme="cupcake" data-key="mary-theme" />
-                    @endif
-                    <x-menu-item title="Anasayfa" icon="tabler.home" link="{{ route('admin.index') }}" />
-                    <x-menu-item title="Danışan" icon="tabler.user" link="{{ route('admin.clients') }}" />
-                    <x-menu-item title="Randevu" icon="tabler.calendar-month" link="{{ route('admin.appointment') }}" />
-                    <x-menu-item title="Kasa" icon="tabler.moneybag" link="{{ route('admin.kasa') }}" />
-                    <x-menu-item title="Ajanda" icon="tabler.moneybag" link="{{ route('admin.agenda') }}" />
-                    <x-menu-item title="Talep" icon="tabler.moneybag" link="{{ route('admin.talep') }}" />
-                    <x-menu-item title="Satış" icon="tabler.credit-card" link="###" />
-                    <x-menu-item title="Rapor" icon="tabler.graph" link="###" />
-                    <x-menu-sub title="Ayarlar" icon="o-cog-6-tooth">
+                        <x-menu-separator />
+                        @if (1 == 2)
+                            <x-button label="Hi!" class="btn-outline" data-set-theme="cupcake"
+                                data-key="mary-theme" />
+                        @endif
+                        <x-menu-item title="Anasayfa" icon="tabler.home" link="{{ route('admin.index') }}" />
+                        <x-menu-item title="Danışan" icon="tabler.user" link="{{ route('admin.clients') }}" />
+                        <x-menu-item title="Randevu" icon="tabler.calendar-month"
+                            link="{{ route('admin.appointment') }}" />
+                        <x-menu-item title="Kasa" icon="tabler.moneybag" link="{{ route('admin.kasa') }}" />
+                        <x-menu-item title="Ajanda" icon="tabler.moneybag" link="{{ route('admin.agenda') }}" />
+                        <x-menu-item title="Talep" icon="tabler.moneybag" link="{{ route('admin.talep') }}" />
+                        <x-menu-item title="Satış" icon="tabler.credit-card" link="###" />
+                        <x-menu-item title="Rapor" icon="tabler.graph" link="###" />
+                        <x-menu-sub title="Ayarlar" icon="o-cog-6-tooth">
 
-                        <x-menu-sub title="Tanımlamalar" icon="o-pencil">
+                            <x-menu-sub title="Tanımlamalar" icon="o-pencil">
 
-                            <x-menu-item title="Şube" icon="o-arrow-right"
-                                link="{{ route('admin.settings.defination.branch') }}" />
+                                <x-menu-item title="Şube" icon="o-arrow-right"
+                                    link="{{ route('admin.settings.defination.branch') }}" />
 
-                            <x-menu-item title="Kategori" icon="o-arrow-right"
-                                link="{{ route('admin.settings.defination.category') }}" />
+                                <x-menu-item title="Kategori" icon="o-arrow-right"
+                                    link="{{ route('admin.settings.defination.category') }}" />
 
-                            <x-menu-item title="Oda" icon="o-arrow-right"
-                                link="{{ route('admin.settings.defination.room') }}" />
+                                <x-menu-item title="Oda" icon="o-arrow-right"
+                                    link="{{ route('admin.settings.defination.room') }}" />
 
-                            <x-menu-item title="Kasa" icon="o-arrow-right"
-                                link="{{ route('admin.settings.defination.kasa') }}" />
+                                <x-menu-item title="Kasa" icon="o-arrow-right"
+                                    link="{{ route('admin.settings.defination.kasa') }}" />
 
-                            <x-menu-item title="Hizmet" icon="o-arrow-right"
-                                link="{{ route('admin.settings.defination.service') }}" />
+                                <x-menu-item title="Hizmet" icon="o-arrow-right"
+                                    link="{{ route('admin.settings.defination.service') }}" />
 
-                            <x-menu-item title="Paket" icon="o-arrow-right"
-                                link="{{ route('admin.settings.defination.package') }}" />
+                                <x-menu-item title="Paket" icon="o-arrow-right"
+                                    link="{{ route('admin.settings.defination.package') }}" />
 
-                            <x-menu-item title="Ürün" icon="o-arrow-right"
-                                link="{{ route('admin.settings.defination.product') }}" />
+                                <x-menu-item title="Ürün" icon="o-arrow-right"
+                                    link="{{ route('admin.settings.defination.product') }}" />
 
-                            <x-menu-item title="Personel" icon="o-arrow-right" link="###" />
+                                <x-menu-item title="Personel" icon="o-arrow-right" link="###" />
+                            </x-menu-sub>
                         </x-menu-sub>
-                    </x-menu-sub>
-                    <x-menu-item title="Çıkış" icon="tabler.logout" no-wire-navigate link="/logout" />
-                @endif
-            </x-menu>
-        </x-slot:sidebar>
+                        <x-menu-item title="Çıkış" icon="tabler.logout" no-wire-navigate link="/logout" />
+                    @endif
+                </x-menu>
+            </x-slot:sidebar>
+        @endif
 
         {{-- The `$slot` goes here --}}
         <x-slot:content>
 
             {{ $slot }}
-
+            <x-theme-toggle class="btn btn-circle hidden" />
 
         </x-slot:content>
 
@@ -132,20 +133,15 @@
 
     {{-- TOAST area --}}
 
-
+    @persist('toast-spotlight')
     @livewire('modal-pro')
     @livewire('slide-over-pro')
     @livewire('spotlight-pro')
-    @persist('toast-spotlight')
+    @livewire('spotlight.components.spotlight_button', [], key(123))
     <x-toast />
-    <x-spotlight search-text="Danışan, işlem, satış arayın" no-results-text="Bulunamadı." shortcut="ctrl.m"
-        autocomplete="on" />
     @endpersist()
 
-    <div class="fixed bottom-4 right-4">
-        <x-button icon="tabler.wand" wire:click="$dispatch('spotlight.toggle')"
-            class="btn-primary btn-circle btn-lg" />
-    </div>
+
 </body>
 <script type="text/javascript">
     function themeToggle() {
@@ -299,5 +295,6 @@
         @apply !static
     }
 </style>
+
 
 </html>
