@@ -20,32 +20,40 @@ class KasaQuery
         return SpotlightQuery::forToken('kasa', function (SpotlightScopeToken $kasaToken, $query) {
             $results = collect();
 
-            if (SpotlightCheckPermission::run(PermissionType::client_profil_sale)) {
+            if (SpotlightCheckPermission::run(PermissionType::kasa_make_payment)) {
                 $results->push(SpotlightResult::make()
                     ->setTitle('Ödeme Yap')
                     ->setGroup('actions')
                     ->setSubtitle('Danışan, müşteri veya masraf gruplarına ödeme yapın.')
-                    //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
-                    //->setTokens(['client' => User::find($clientToken->getParameter('id')), 'sale' => new Sale])
-                    ->setIcon('arrow-right'));
+                    ->setIcon('arrow-right')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'actions.kasa.create-payment'],
+                        ]));
+            }
+            if (SpotlightCheckPermission::run(PermissionType::kasa_make_payment)) {
                 $results->push(SpotlightResult::make()
                     ->setTitle('Ödeme Al')
                     ->setGroup('actions')
                     ->setSubtitle('Tahsilat için danışanın menüsüne girin.')
-                //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
-                //->setTokens(['client' => User::find($clientToken->getParameter('id')), 'sale' => new Sale])
-                    ->setIcon('arrow-right'));
+                    ->setIcon('arrow-right')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'actions.kasa.create-paid'],
+                        ]));
             }
 
-            if (SpotlightCheckPermission::run(PermissionType::client_profil_sale)) {
+            if (SpotlightCheckPermission::run(PermissionType::kasa_mahsup)) {
                 $results->push(SpotlightResult::make()
                     ->setTitle('Mahsup')
                     ->setGroup('actions')
                     ->setSubtitle('İşlemler')
                     ->setSubtitle('Kasalar arası para transferi')
-                    //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
-                    //->setTokens(['client' => User::find($clientToken->getParameter('id')), 'sale' => new Sale])
-                    ->setIcon('arrow-right'));
+                    ->setIcon('arrow-right')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'actions.kasa.create-mahsup'],
+                        ]));
             }
 
             foreach (auth()->user()->staff_branch as $branch) {
@@ -67,7 +75,10 @@ class KasaQuery
                     ->setSubtitle('Devir: '.$transaction['devir'].' | Tahsilat: '.$transaction['tahsilat'].' | Ödenen: '.$transaction['odenen'].' | Bakiye: '.$transaction['bakiye'])
                     ->setGroup($transaction['branch_name'])
                     ->setIcon('check-circle')
-                );
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'actions.kasa.kasa-processes', 'arguments' => ['kasa' => $transaction['id']]],
+                        ]));
             }
 
             return $results;

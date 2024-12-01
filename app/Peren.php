@@ -140,7 +140,7 @@ class Peren
         try {
             \DB::beginTransaction();
             CheckUserPermission::run($info['permission']);
-            CheckBranchPermission::run($info['client_id']);
+            CheckBranchPermission::run($info['client_id'] ?? null);
 
             if (CheckUserInstantApprove::run($info['user_id'], $info['permission'])) {
                 $callback();
