@@ -24,6 +24,14 @@ class SaleQuery
             $saleGroup = $saleList->groupBy('status');
             $results = collect();
 
+            $results->push(SpotlightResult::make()
+                ->setTitle('Tümünü görüntüle')
+                ->setGroup('actions')
+                ->setIcon('check-circle')
+                ->setAction('jump_to',
+                    ['path' => route('admin.client.profil.index', ['user' => $clientToken->getParameter('id'), 'tab' => 'sale']),
+                    ]));
+
             foreach ($saleGroup as $status => $sales) {
                 foreach ($sales as $sale) {
                     $results->push(SpotlightResult::make()

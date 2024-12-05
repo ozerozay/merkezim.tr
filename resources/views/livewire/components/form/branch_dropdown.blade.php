@@ -4,7 +4,8 @@ use App\Models\Branch;
 use Livewire\Attributes\Modelable;
 use Livewire\Volt\Component;
 
-new class extends Component {
+new class extends Component
+{
     #[Modelable]
     public ?int $branch_id;
 
@@ -21,7 +22,7 @@ new class extends Component {
 };
 ?>
 <div wire:key="branchdiv-{{ Str::random(10) }}">
-    @if ($this->branches->count() > 1)
+    @if ($branches->count() > 1)
         <x-choices-offline
             wire:key="branch-{{ Str::random(10) }}"
             label="Şube"

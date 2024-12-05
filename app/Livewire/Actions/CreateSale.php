@@ -105,10 +105,12 @@ class CreateSale extends SlideOver
 
     public function create(): void
     {
-        if ($this->remainingPayment() > 0) {
-            $this->error('Tüm tutarı yapılandırmanız gerekiyor.');
+        if ($this->selected_taksits->isEmpty()) {
+            if ($this->remainingPayment() > 0) {
+                $this->error('Tüm tutarı yapılandırmanız gerekiyor.');
 
-            return;
+                return;
+            }
         }
 
         $validator = \Validator::make([
@@ -125,7 +127,7 @@ class CreateSale extends SlideOver
             'user_id' => auth()->user()->id,
             'expire_date' => $this->expire_date,
             'coupon_id' => $this->coupon?->id ?? null,
-            'permission' => PermissionType::action_client_sale,
+            'permission' => PermissionType::action_client_sale->name,
         ], [
             'client_id' => 'required|exists:users,id',
             'sale_type_id' => 'required|exists:sale_types,id',

@@ -4,9 +4,9 @@ use App\Traits\WithViewPlaceHolder;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
-new class extends \Livewire\Volt\Component {
-
-    use Toast, WithPagination, WithViewPlaceHolder, \Livewire\WithoutUrlPagination;
+new class extends \Livewire\Volt\Component
+{
+    use \Livewire\WithoutUrlPagination, Toast, WithPagination, WithViewPlaceHolder;
 
     public ?int $client;
 
@@ -15,7 +15,7 @@ new class extends \Livewire\Volt\Component {
     public bool $editing = false;
 
     protected $listeners = [
-        'refresh-client-sales' => '$refresh'
+        'refresh-client-sales' => '$refresh',
     ];
 
     public function getData()
@@ -133,7 +133,7 @@ new class extends \Livewire\Volt\Component {
             @endforeach
         </div>
     @endif
-    @can('sale_product_process')
+    @can('sale_product_processs')
         <livewire:components.drawers.drawer_sale_product wire:model="editing"/>
     @endcan
 </div>

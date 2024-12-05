@@ -19,7 +19,9 @@ enum PermissionType: string
     case action_client_product_sale = 'action_client_product_sale';
     case action_client_sale = 'action_client_sale';
     case action_edit_user = 'action_edit_user';
+    case action_send_sms = 'action_send_sms';
 
+    case client_profil = 'client_profil';
     case client_profil_note = 'client_profil_note';
     case client_profil_offer = 'client_profil_offer';
     case client_profil_service = 'client_profil_service';
@@ -27,6 +29,8 @@ enum PermissionType: string
     case client_profil_sale = 'client_profil_sale';
     case client_profil_product = 'client_profil_product';
     case client_profil_appointment = 'client_profil_appointment';
+    case client_profil_adisyon = 'client_profil_adisyon';
+    case client_profil_coupon = 'client_profil_coupon';
 
     case page_kasa = 'page_kasa';
     case page_agenda = 'page_agenda';
@@ -45,4 +49,6 @@ enum PermissionType: string
     case action_client_tahsilat = 'action_client_tahsilat';
 
     case website_settings = 'website_settings';
+
+    case note_process = 'note_process';
 }

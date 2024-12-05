@@ -4,9 +4,9 @@ use App\Traits\WithViewPlaceHolder;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
-new class extends \Livewire\Volt\Component {
-
-    use Toast, WithPagination, WithViewPlaceHolder, \Livewire\WithoutUrlPagination;
+new class extends \Livewire\Volt\Component
+{
+    use \Livewire\WithoutUrlPagination, Toast, WithPagination, WithViewPlaceHolder;
 
     public ?int $client;
 
@@ -15,7 +15,7 @@ new class extends \Livewire\Volt\Component {
     public bool $editing = false;
 
     protected $listeners = [
-        'refresh-client-adisyons' => '$refresh'
+        'refresh-client-adisyons' => '$refresh',
     ];
 
     public function getData()
@@ -133,7 +133,7 @@ new class extends \Livewire\Volt\Component {
             @endforeach
         </div>
     @endif
-    @can('adisyon_process')
+    @can('adisyon_procedss')
         <livewire:components.drawers.drawer_adisyon wire:model="editing"/>
     @endcan
 </div>

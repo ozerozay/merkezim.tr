@@ -37,7 +37,7 @@
                         wire:key="datew-field-{{ Str::random(10) }}" />
                     <livewire:components.form.number_dropdown wire:key="nnxsdf-{{ Str::random() }}"
                         label="Taksit Sayısı" wire:model="taksitSayisi" />
-                    <x-button label="Taksit Oluştur" wire:click="taksitlendir" class="btn-wide btn-outline" />
+                    <x-button label="Taksit Oluştur" wire:click="taksitlendir" class="btn-outline mt-2 w-full block" />
                 @else
                     @foreach ($selected_taksits as $taksit)
                         <x-list-item :item="$taksit" no-separator no-hover>
@@ -69,8 +69,11 @@
         @if ($step < 4)
             <x-slot:actions>
                 <div class="flex w-full mt-5">
-                    <div class="w-1/4"> <x-button wire:click="back" icon="o-arrow-uturn-left" label="Geri"
-                            class="btn-outline" /></div>
+                    @if ($step > 1)
+                        <div class="w-1/4">
+                            <x-button wire:click="back" icon="o-arrow-uturn-left" label="Geri" class="btn-outline" />
+                        </div>
+                    @endif
                     <div class="w-3/4"> <x-button wire:click="next" icon="o-arrow-uturn-right" :label="$nextLabel"
                             class="w-full btn-outline" /></div>
                 </div>

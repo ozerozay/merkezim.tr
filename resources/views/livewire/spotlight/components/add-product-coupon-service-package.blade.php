@@ -227,7 +227,7 @@ new class extends Livewire\Volt\Component {
 };
 ?>
 <div>
-    <x-dropdown label="Ekle" class="btn-outline btn-full" no-x-anchor top>
+    <x-dropdown label="Ekle" class="btn-outline btn-full" no-x-anchor bottom>
         <x-slot:trigger>
             <x-button icon="o-plus" label="Ekle" class="btn-outline btn-wide" />
         </x-slot:trigger>

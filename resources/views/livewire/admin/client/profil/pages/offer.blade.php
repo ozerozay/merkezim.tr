@@ -7,17 +7,16 @@ use App\Actions\User\CheckUserInstantApprove;
 use App\Actions\User\CreateApproveRequestAction;
 use App\ApproveTypes;
 use App\Models\Offer;
-use App\OfferStatus;
 use App\Peren;
-use App\Traits\LiveHelper;
 use App\Traits\WithViewPlaceHolder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Volt\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
-new class extends Component {
-    use Toast, WithPagination, WithViewPlaceHolder, \Livewire\WithoutUrlPagination;
+new class extends Component
+{
+    use \Livewire\WithoutUrlPagination, Toast, WithPagination, WithViewPlaceHolder;
 
     public ?int $client;
 
@@ -137,7 +136,7 @@ new class extends Component {
                         <x-icon name="o-cube" label="Teklif bulunmuyor."/>
                     </x-slot:empty>
                     @scope('cell_price', $offer)
-                    {{ LiveHelper::price_text($offer->price) }}
+                    @price($offer->price)
                     @endscope
                     @can('offer_process')
                         @scope('actions', $offer)
@@ -171,7 +170,7 @@ new class extends Component {
                             Fiyat
                         </x-slot:value>
                         <x-slot:actions>
-                            {{ LiveHelper::price_text($offer->price) }}
+                            @price($offer->price)
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$offer">
@@ -239,7 +238,7 @@ new class extends Component {
         </div>
         <x-pagination :rows="$offers"/>
     @endif
-    @can('offer_process')
+    @can('offer_procesxs')
         <livewire:components.drawers.drawer_offer wire:model="editing"/>
     @endcan
 

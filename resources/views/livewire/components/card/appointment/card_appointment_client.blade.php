@@ -2,8 +2,8 @@
 
 use App\Models\Appointment;
 
-new class extends \Livewire\Volt\Component {
-
+new class extends \Livewire\Volt\Component
+{
     public ?Appointment $appointment;
 
     public function showDrawer($id): void
@@ -22,7 +22,7 @@ new class extends \Livewire\Volt\Component {
             </div>
         </x-slot:title>
         <x-slot:menu>
-            <x-button icon="tabler.settings" wire:click="showDrawer({{ $appointment->id }})"
+            <x-button icon="tabler.settings" wire:click="$dispatch('slide-over.open', {component: 'modals.appointment.appointment-modal', arguments: {'appointment': {{ $appointment->id }}}})"
                       class="btn-outline btn-sm"
                       responsive/>
         </x-slot:menu>

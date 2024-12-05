@@ -18,7 +18,7 @@ class Package extends Model
     protected function casts(): array
     {
         return [
-            'branch_ids' => 'json',
+            //'branch_ids' => 'json',
             'gender' => 'integer',
             'active' => 'boolean',
             'buy_time' => 'integer',

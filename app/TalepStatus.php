@@ -43,7 +43,7 @@ enum TalepStatus: string
     public function color(): string
     {
         return match ($this) {
-            self::bekleniyor => 'info',
+            self::bekleniyor => 'warning',
             self::cevapsiz => 'error',
             self::kendisi => 'secondary',
             self::mesgul => 'warning',

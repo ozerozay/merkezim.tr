@@ -20,7 +20,7 @@
 {{-- NAVBAR mobile only --}}
 <x-nav sticky class="lg:hidden">
     <x-slot:brand>
-        <p class="text-2xl font-bold">MARGE GÜZELLİK</p>
+        <p class="text-2xl font-bold">{{ \App\Actions\Spotlight\Actions\Settings\GetSettingsAction::run(\App\Enum\SettingsType::site_name->name) }}</p>
     </x-slot:brand>
     <x-slot:actions>
         <label for="main-drawer" class="lg:hidden me-3">
@@ -41,7 +41,7 @@
         <x-menu class="mt-2" activate-by-route>
             {{-- User --}}
             <div class="flex items-center">
-                <p class="text-2xl font-bold flex-1">MARGE</p>
+                <p class="text-2xl font-bold flex-1">{{ \App\Actions\Spotlight\Actions\Settings\GetSettingsAction::run(\App\Enum\SettingsType::site_name->name) }}</p>
                 <x-theme-toggle class="btn btn-circle ml-auto"/>
             </div>
 
@@ -56,7 +56,7 @@
                         {{ auth()->user()->name }}
                     </x-slot:value>
                     <x-slot:sub-value>
-                        952-315-346
+                        {{ auth()->user()->unique_id }}
                     </x-slot:sub-value>
                     <x-slot:actions>
                         <div class="flex space-x-1">
@@ -64,19 +64,37 @@
                         </div>
                     </x-slot:actions>
                 </x-list-item>
+                @if ((bool) \App\Actions\Spotlight\Actions\Settings\GetSettingsAction::run(\App\Enum\SettingsType::client_page_seans->name))
                 <x-menu-item title="Seanslarım" icon="tabler.mood-check" link="{{ route('client.profil.seans') }}"/>
+                @endif
+                @if ((bool) \App\Actions\Spotlight\Actions\Settings\GetSettingsAction::run(\App\Enum\SettingsType::client_page_appointment->name))
                 <x-menu-item title="Randevu" icon="tabler.calendar" link="{{ route('client.profil.appointment') }}"
                              badge="1" badge-classes="float-right !badge-warning"/>
+                             @endif
+                @if ((bool) \App\Actions\Spotlight\Actions\Settings\GetSettingsAction::run(\App\Enum\SettingsType::client_page_taksit->name))
                 <x-menu-item title="Taksitlerim" icon="tabler.file-invoice" link="{{ route('client.profil.taksits') }}"
                              badge="1" badge-classes="float-right !badge-error"/>
+                @endif
+                @if ((bool) \App\Actions\Spotlight\Actions\Settings\GetSettingsAction::run(\App\Enum\SettingsType::client_page_offer->name))
                 <x-menu-item title="Tekliflerim" icon="tabler.confetti" link="{{ route('client.profil.offers') }}"
                              badge="1" badge-classes="float-right !badge-success"/>
+                @endif
+                @if ((bool) \App\Actions\Spotlight\Actions\Settings\GetSettingsAction::run(\App\Enum\SettingsType::client_page_coupon->name))
                 <x-menu-item title="Kuponlarım" icon="tabler.gift-card" link="{{ route('client.profil.coupons') }}"
                              badge="1" badge-classes="float-right !badge-success"/>
+                @endif
+                @if ((bool) \App\Actions\Spotlight\Actions\Settings\GetSettingsAction::run(\App\Enum\SettingsType::client_page_referans->name))
                 <x-menu-item title="Referans" icon="tabler.user-plus" link="{{ route('login') }}"/>
+                @endif
+                @if ((bool) \App\Actions\Spotlight\Actions\Settings\GetSettingsAction::run(\App\Enum\SettingsType::client_page_package->name))
                 <x-menu-item title="Paket" icon="tabler.circle-plus" link="{{ route('login') }}"/>
+                @endif
+                @if ((bool) \App\Actions\Spotlight\Actions\Settings\GetSettingsAction::run(\App\Enum\SettingsType::client_page_earn->name))
                 <x-menu-item title="Kullan - Kazan" icon="tabler.heart" link="{{ route('login') }}"/>
+                @endif
+                @if ((bool) \App\Actions\Spotlight\Actions\Settings\GetSettingsAction::run(\App\Enum\SettingsType::client_page_fatura->name))
                 <x-menu-item title="Faturalarım" icon="tabler.file-invoice" link="{{ route('login') }}"/>
+                @endif
                 <x-menu-item title="Profilim" icon="tabler.user-circle" link="{{ route('login') }}"/>
                 <x-menu-separator/>
 

@@ -24,6 +24,14 @@ class OfferQuery
             $offerGroup = $offerList->groupBy('status');
             $results = collect();
 
+            $results->push(SpotlightResult::make()
+                ->setTitle('Tümünü görüntüle')
+                ->setGroup('actions')
+                ->setIcon('check-circle')
+                ->setAction('jump_to',
+                    ['path' => route('admin.client.profil.index', ['user' => $clientToken->getParameter('id'), 'tab' => 'offer']),
+                    ]));
+
             foreach ($offerGroup as $status => $offers) {
                 foreach ($offers as $offer) {
                     $results->push(SpotlightResult::make()

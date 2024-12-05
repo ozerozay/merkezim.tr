@@ -26,6 +26,14 @@ class TaksitQuery
             $taksitGroup = $taksitList->groupBy('status');
             $results = collect();
 
+            $results->push(SpotlightResult::make()
+                ->setTitle('Tümünü görüntüle')
+                ->setGroup('actions')
+                ->setIcon('check-circle')
+                ->setAction('jump_to',
+                    ['path' => route('admin.client.profil.index', ['user' => $clientToken->getParameter('id'), 'tab' => 'taksit']),
+                    ]));
+
             foreach ($taksitGroup as $status => $taksits) {
                 foreach ($taksits as $taksit) {
                     $results->push(SpotlightResult::make()

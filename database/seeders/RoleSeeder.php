@@ -42,6 +42,20 @@ class RoleSeeder extends Seeder
             $user->assignRole('admin');
 
             Permission::create([
+                'name' => 'action_edit_user',
+                'description' => 'Danışan - Bilgilerini Güncelle',
+                'route' => 'admin.actions.client_note_add',
+                'visible' => true,
+            ]);
+
+            Permission::create([
+                'name' => 'action_send_sms',
+                'description' => 'SMS Gönder',
+                'route' => 'admin.actions.client_note_add',
+                'visible' => true,
+            ]);
+
+            Permission::create([
                 'name' => 'action_client_add_note',
                 'description' => 'Danışan - Not Al',
                 'route' => 'admin.actions.client_note_add',
@@ -295,8 +309,8 @@ class RoleSeeder extends Seeder
             /* ------------------------------- */
 
             Permission::create([
-                'name' => 'note_delete',
-                'description' => 'Not Silebilme',
+                'name' => 'note_process',
+                'description' => 'Not İşlemleri',
                 'route' => '',
                 'visible' => false,
             ]);
@@ -380,6 +394,13 @@ class RoleSeeder extends Seeder
 
             Permission::create([
                 'name' => 'page_approve',
+                'description' => 'Onay',
+                'route' => '',
+                'visible' => false,
+            ]);
+
+            Permission::create([
+                'name' => 'page_talep',
                 'description' => 'Onay',
                 'route' => '',
                 'visible' => false,

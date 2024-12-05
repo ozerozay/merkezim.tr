@@ -24,6 +24,14 @@ class ClientServiceQuery
             $clientServiceGroup = $clientServicesList->groupBy('status');
             $results = collect();
 
+            $results->push(SpotlightResult::make()
+                ->setTitle('Tümünü görüntüle')
+                ->setGroup('actions')
+                ->setIcon('check-circle')
+                ->setAction('jump_to',
+                    ['path' => route('admin.client.profil.index', ['user' => $clientToken->getParameter('id'), 'tab' => 'service']),
+                    ]));
+
             foreach ($clientServiceGroup as $status => $clientServices) {
                 foreach ($clientServices as $service) {
                     $results->push(SpotlightResult::make()

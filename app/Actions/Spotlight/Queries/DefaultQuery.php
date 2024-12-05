@@ -4,7 +4,9 @@ namespace App\Actions\Spotlight\Queries;
 
 use App\Actions\Spotlight\SpotlightCheckPermission;
 use App\Enum\PermissionType;
+use App\Models\Appointment;
 use App\Models\Kasa;
+use App\Models\Talep;
 use App\Models\User;
 use Lorisleiva\Actions\Concerns\AsAction;
 use WireElements\Pro\Components\Spotlight\SpotlightQuery;
@@ -26,12 +28,14 @@ class DefaultQuery
             ]);
 
             if (SpotlightCheckPermission::run(PermissionType::page_randevu)) {
-                $pages->push(SpotlightResult::make()
-                    ->setTitle('Randevu')
-                    ->setSubtitle('Randevularınızı görüntüleyin, yeni randevu oluşturun.')
-                    ->setGroup('pages')
-                    ->setTokens(['kasa' => new Kasa])
-                    ->setIcon('calendar-days'), );
+                if (count(auth()->user()->staff_branches) > 1) {
+                    $pages->push(SpotlightResult::make()
+                        ->setTitle('Randevu')
+                        ->setSubtitle('Randevularınızı görüntüleyin, yeni randevu oluşturun.')
+                        ->setGroup('pages')
+                        ->setTokens(['page_appointment' => new Appointment])
+                        ->setIcon('calendar-days'), );
+                }
             }
 
             if (SpotlightCheckPermission::run(PermissionType::page_approve)) {
@@ -65,7 +69,7 @@ class DefaultQuery
                 $pages->push(SpotlightResult::make()
                     ->setTitle('Talep')
                     ->setGroup('pages')
-                    ->setTokens(['kasa' => new Kasa])
+                    ->setTokens(['page_talep' => new Talep])
                     ->setIcon('hand-thumb-up'), );
             }
 
@@ -88,7 +92,7 @@ class DefaultQuery
             $pages->push(SpotlightResult::make()
                 ->setTitle('Çıkış')
                 ->setGroup('profile')
-                ->setTokens(['kasa' => new Kasa])
+                ->setAction('jump_to', ['path' => route('logout')])
                 ->setIcon('lock-open'), );
 
             $users = User::query()
@@ -100,7 +104,7 @@ class DefaultQuery
                         ->setTitle($user->name.' - '.$user->client_branch->name)
                         ->setGroup('clients')
                         ->setImage(asset('kahri.png'))
-                        ->setAction('jump_to', ['path' => route('admin.client.profil.index', $user->id)])
+                        //->setAction('jump_to', ['path' => route('admin.client.profil.index', $user->id)])
                         ->setTokens(['client' => $user])
                         ->setIcon('check');
                 });

@@ -22,7 +22,7 @@ class GetPackages
             ->when($gender, function ($q) use ($gender) {
                 $q->whereIn('gender', [$gender, 0]);
             })
-            ->with('branches')
+            ->with('branch:id,name')
             ->orderBy('name')
             ->get();
     }

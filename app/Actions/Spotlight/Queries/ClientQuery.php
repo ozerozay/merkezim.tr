@@ -4,12 +4,15 @@ namespace App\Actions\Spotlight\Queries;
 
 use App\Actions\Spotlight\SpotlightCheckPermission;
 use App\Enum\PermissionType;
+use App\Models\Adisyon;
 use App\Models\Appointment;
 use App\Models\ClientService;
 use App\Models\ClientTaksit;
+use App\Models\Coupon;
 use App\Models\Note;
 use App\Models\Offer;
 use App\Models\Sale;
+use App\Models\SaleProduct;
 use App\Models\User;
 use Lorisleiva\Actions\Concerns\AsAction;
 use WireElements\Pro\Components\Spotlight\SpotlightQuery;
@@ -25,6 +28,14 @@ class ClientQuery
         return SpotlightQuery::forToken('client', function ($query, SpotlightScopeToken $clientToken) {
             $pages = collect();
 
+            if (SpotlightCheckPermission::run(PermissionType::client_profil)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('Anasayfa')
+                    ->setGroup('client_actions_pages')
+                    ->setSubtitle('Danışanın anasayfasını görüntüle')
+                    ->setAction('jump_to', ['path' => route('admin.client.profil.index', ['user' => $clientToken->getParameter('id')])])
+                    ->setIcon('arrow-right'));
+            }
             if (SpotlightCheckPermission::run(PermissionType::client_profil_sale)) {
                 $pages->push(SpotlightResult::make()
                     ->setTitle('Satış')
@@ -59,6 +70,33 @@ class ClientQuery
                     ->setSubtitle('Taksitleri görüntüle')
                     //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
                     ->setTokens(['client' => User::find($clientToken->getParameter('id')), 'taksit' => new ClientTaksit])
+                    ->setIcon('arrow-right'));
+            }
+            if (SpotlightCheckPermission::run(PermissionType::client_profil_product)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('Ürün Satışları')
+                    ->setGroup('client_actions_pages')
+                    ->setSubtitle('Ürün satışlarını görüntüle')
+                    //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
+                    ->setTokens(['client' => User::find($clientToken->getParameter('id')), 'product' => new SaleProduct])
+                    ->setIcon('arrow-right'));
+            }
+            if (SpotlightCheckPermission::run(PermissionType::client_profil_coupon)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('Kupon')
+                    ->setGroup('client_actions_pages')
+                    ->setSubtitle('İndirim kuponlarını görüntüle')
+                    //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
+                    ->setTokens(['client' => User::find($clientToken->getParameter('id')), 'coupon' => new Coupon])
+                    ->setIcon('arrow-right'));
+            }
+            if (SpotlightCheckPermission::run(PermissionType::client_profil_adisyon)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('Adisyon')
+                    ->setGroup('client_actions_pages')
+                    ->setSubtitle('Adisyonları görüntüle')
+                    //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
+                    ->setTokens(['client' => User::find($clientToken->getParameter('id')), 'adisyon' => new Adisyon])
                     ->setIcon('arrow-right'));
             }
             if (SpotlightCheckPermission::run(PermissionType::client_profil_offer)) {
@@ -221,6 +259,19 @@ class ClientQuery
                     ->setAction('dispatch_event',
                         ['name' => 'slide-over.open',
                             'data' => ['component' => 'actions.create-client-product-sale',
+                                'arguments' => [
+                                    'client' => $clientToken->getParameter('id')]],
+                        ]));
+            }
+
+            if (SpotlightCheckPermission::run(PermissionType::action_send_sms)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('SMS Gönder')
+                    ->setGroup('client_actions_new')
+                    ->setIcon('plus-circle')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'actions.create-send-sms',
                                 'arguments' => [
                                     'client' => $clientToken->getParameter('id')]],
                         ]));

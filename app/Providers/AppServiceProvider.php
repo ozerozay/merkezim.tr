@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Actions\Spotlight\Actions\Settings\GetSettingsAction;
 use App\Actions\Spotlight\RegisterSpotlights;
 use App\Livewire\Actions\Note\GetClientNotesAction;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -28,6 +29,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
 
+        \Gate::define('viewPulse', function (?\App\Models\User $user) {
+            return true;
+        });
+
+        \Laravel\Pulse\Facades\Pulse::user(fn ($user) => [
+            'name' => '$user->name',
+            'extra' => '$user->email',
+            'avatar' => '$user->avatar_url',
+        ]);
         //Spotlight::registerAction('show_notes', GetClientNotesAction::class);
         //Spotlight::registerAction('get_client_notes_action', GetClientNotesAction::class);
 
@@ -76,10 +86,26 @@ class AppServiceProvider extends ServiceProvider
             'il' => 'App\Models\Il',
             'ilce' => 'App\Models\Ilce',
             'role' => 'Spatie\Permission\Models\Role',
+            'sms_template' => 'App\Models\SMSTemplate',
         ]);
 
         Blade::directive('price', function ($price) {
             return "<?php echo \Illuminate\Support\Number::currency((float) $price, in: 'TRY', locale: 'tr'); ?>";
+        });
+
+        Blade::directive('ayar', function ($expression) {
+            dump($expression);
+
+            $setting_name = str_replace('"', '', trim($expression));
+
+            $get_setting = (bool) GetSettingsAction::run(eval(" return $setting_name;"), auth()->user()->branch_id);
+
+            return "<?php if ($get_setting): ?>";
+        });
+
+        Blade::directive('endayar', function () {
+            // Bitiş için @endif döndür
+            return '<?php endif; ?>';
         });
     }
 }

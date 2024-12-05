@@ -432,4 +432,12 @@ class User extends Authenticatable
             ->where('status', SaleStatus::success)
             ->sum('remaining');
     }
+
+    public function totalLateDebt()
+    {
+        return $this->clientTaksits()
+            ->whereDate('date', '<=', date('Y-m-d'))
+            ->where('status', SaleStatus::success)
+            ->sum('remaining');
+    }
 }

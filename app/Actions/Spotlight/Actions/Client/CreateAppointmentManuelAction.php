@@ -71,7 +71,7 @@ class CreateAppointmentManuelAction
                 'duration' => $total_duration,
                 'date_start' => $start_date->format('Y-m-d H:i:s'),
                 'date_end' => $end_date->format('Y-m-d H:i:s'),
-                'status' => CheckUserInstantApprove::run($info['user_id']) ? AppointmentStatus::waiting : AppointmentStatus::awaiting_approve,
+                'status' => CheckUserInstantApprove::run($info['user_id'], $info['permission']) ? AppointmentStatus::waiting : AppointmentStatus::awaiting_approve,
                 'type' => AppointmentType::appointment,
                 'message' => $info['message'],
             ]);
@@ -95,7 +95,6 @@ class CreateAppointmentManuelAction
                         $service->save();
                     } else {
                         throw new AppException('Seçilen hizmette yeterli seansı bulunmuyor.'.$service->service()->name);
-                        break;
                     }
                 }
             } else {

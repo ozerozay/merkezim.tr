@@ -2,24 +2,36 @@
 
 namespace App\Actions\Spotlight;
 
+use App\Actions\Spotlight\Queries\AdisyonQuery;
 use App\Actions\Spotlight\Queries\AppointmentQuery;
 use App\Actions\Spotlight\Queries\ClientQuery;
 use App\Actions\Spotlight\Queries\ClientServiceQuery;
+use App\Actions\Spotlight\Queries\CouponQuery;
 use App\Actions\Spotlight\Queries\CreateAppointmentQuery;
 use App\Actions\Spotlight\Queries\DefaultQuery;
 use App\Actions\Spotlight\Queries\KasaQuery;
 use App\Actions\Spotlight\Queries\NoteQuery;
 use App\Actions\Spotlight\Queries\OfferQuery;
+use App\Actions\Spotlight\Queries\Pages\AppointmentPageBranchQuery;
+use App\Actions\Spotlight\Queries\Pages\AppointmentPageQuery;
+use App\Actions\Spotlight\Queries\Pages\TalepPageQuery;
+use App\Actions\Spotlight\Queries\ProductSaleQuery;
 use App\Actions\Spotlight\Queries\SaleQuery;
 use App\Actions\Spotlight\Queries\SettingsQuery;
 use App\Actions\Spotlight\Queries\TaksitQuery;
+use App\Actions\Spotlight\Tokens\AdisyonToken;
 use App\Actions\Spotlight\Tokens\AppointmentToken;
 use App\Actions\Spotlight\Tokens\ClientServiceToken;
 use App\Actions\Spotlight\Tokens\ClientToken;
+use App\Actions\Spotlight\Tokens\CouponToken;
 use App\Actions\Spotlight\Tokens\CreateAppointmentToken;
 use App\Actions\Spotlight\Tokens\KasaToken;
 use App\Actions\Spotlight\Tokens\NoteToken;
 use App\Actions\Spotlight\Tokens\OfferToken;
+use App\Actions\Spotlight\Tokens\Pages\AppointmentPageBranchToken;
+use App\Actions\Spotlight\Tokens\Pages\AppointmentPageToken;
+use App\Actions\Spotlight\Tokens\Pages\TalepPageToken;
+use App\Actions\Spotlight\Tokens\ProductSaleToken;
 use App\Actions\Spotlight\Tokens\SaleToken;
 use App\Actions\Spotlight\Tokens\Settings\SettingsToken;
 use App\Actions\Spotlight\Tokens\TaksitToken;
@@ -58,6 +70,8 @@ class RegisterSpotlights
         Spotlight::registerGroup('client_notes', 'Notlar');
         Spotlight::registerGroup('note', 'Notlar');
 
+        Spotlight::registerGroup('branches', 'Şubeler');
+
         /* İşlemler */
         Spotlight::registerGroup('actions', 'İşlemler');
 
@@ -70,6 +84,7 @@ class RegisterSpotlights
         Spotlight::registerGroup('client_actions_contact', 'Oluştur');
 
         /* Randevu İşlemleri */
+
         Spotlight::registerGroup('appointment_actions', 'İşlemler');
         Spotlight::registerGroup('appointments_active', 'Aktif');
         Spotlight::registerGroup('appointments_finish', 'Bitti');
@@ -130,6 +145,12 @@ class RegisterSpotlights
             TaksitToken::run(),
             OfferToken::run(),
             KasaToken::run(),
+            AppointmentPageToken::run(),
+            AppointmentPageBranchToken::run(),
+            TalepPageToken::run(),
+            ProductSaleToken::run(),
+            AdisyonToken::run(),
+            CouponToken::run(),
         ];
 
         if (SpotlightCheckPermission::run(PermissionType::admin_settings)) {
@@ -162,6 +183,12 @@ class RegisterSpotlights
             NoteQuery::run(),
             KasaQuery::run(),
             SettingsQuery::run(),
+            AppointmentPageQuery::run(),
+            AppointmentPageBranchQuery::run(),
+            TalepPageQuery::run(),
+            ProductSaleQuery::run(),
+            AdisyonQuery::run(),
+            CouponQuery::run(),
             /*SpotlightQuery::forToken('note', function ($query, SpotlightScopeToken $noteToken) {
                 $notes = Note::query()
                     ->get()

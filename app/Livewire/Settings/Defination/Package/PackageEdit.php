@@ -22,6 +22,8 @@ class PackageEdit extends SlideOver
 
     public $buy_time = 0;
 
+    public $active;
+
     public function mount(Package $package)
     {
         $this->package = $package->load('items.service:id,name');

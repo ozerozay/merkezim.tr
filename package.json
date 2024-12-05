@@ -18,6 +18,8 @@
         "vite-plugin-minify": "^2.0.0"
     },
     "dependencies": {
-        "@alpinejs/focus": "^3.14.3"
+        "@alpinejs/focus": "^3.14.3",
+        "prettier": "^3.4.1",
+        "prettier-plugin-blade": "^2"
     }
 }

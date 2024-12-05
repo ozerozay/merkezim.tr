@@ -22,7 +22,6 @@ class CreateSaleAction
     public function handle($info)
     {
         Peren::runDatabaseTransactionApprove($info, function () use ($info) {
-
             $client = User::select('id', 'name', 'branch_id')->where('id', $info['client_id'])->first();
 
             $sale = Sale::create([
@@ -67,7 +66,7 @@ class CreateSaleAction
                     throw_if(! $package, new AppException('Paket bulunamadı.'));
 
                     foreach ($package->items as $item) {
-                        CreateServiceAction::run([
+                        ClientService::create([
                             'branch_id' => $client->branch_id,
                             'client_id' => $client->id,
                             'package_id' => $package->id,

@@ -1,8 +1,8 @@
 <?php
 
-new class extends \Livewire\Volt\Component {
-
-    use \Mary\Traits\Toast, \Livewire\WithPagination, \App\Traits\WithViewPlaceHolder, \Livewire\WithoutUrlPagination;
+new class extends \Livewire\Volt\Component
+{
+    use \App\Traits\WithViewPlaceHolder, \Livewire\WithoutUrlPagination, \Livewire\WithPagination, \Mary\Traits\Toast;
 
     public ?int $client;
 
@@ -32,19 +32,15 @@ new class extends \Livewire\Volt\Component {
         ];
     }
 
-    public function showSettings($id): void
-    {
-
-    }
+    public function showSettings($id): void {}
 
     public function with(): array
     {
         return [
             'coupons' => $this->getData(),
-            'headers' => $this->headers()
+            'headers' => $this->headers(),
         ];
     }
-
 };
 
 ?>
@@ -127,7 +123,7 @@ new class extends \Livewire\Volt\Component {
         </div>
         <x-pagination :rows="$coupons"/>
     @endif
-    @can('coupon_process')
+    @can('coupon_procescs')
         <livewire:components.drawers.drawer_offer wire:model="editing"/>
     @endcan
 </div>

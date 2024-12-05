@@ -4,13 +4,14 @@ namespace App\Actions\Talep;
 
 use App\Exceptions\AppException;
 use App\Models\Talep;
+use App\Traits\StrHelper;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Mary\Exceptions\ToastException;
 
 class EditTalepAction
 {
-    use AsAction;
+    use AsAction, StrHelper;
 
     public function handle($info): void
     {
@@ -20,7 +21,7 @@ class EditTalepAction
             $talep = Talep::where('id', $info['id'])->first();
 
             $talep->update([
-                'name' => $info['name'],
+                'name' => $this->strUpper($info['name']),
                 'phone' => $info['phone'],
                 'message' => $info['message'],
                 'type' => $info['type'],

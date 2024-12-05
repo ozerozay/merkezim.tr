@@ -104,6 +104,14 @@ class SettingsQuery
                         ['name' => 'slide-over.open',
                             'data' => ['component' => 'settings.defination.masraf.masraf-defination'],
                         ]));
+                $results->push(SpotlightResult::make()
+                    ->setTitle('SMS Şablonu')
+                    ->setGroup('definations')
+                    ->setIcon('pencil')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'settings.defination.s-m-s-template.s-m-s-template-defination'],
+                        ]));
             }
 
             $results = $results->when(! blank($query), function ($collection) use ($query) {

@@ -1,17 +1,14 @@
 <?php
 
 use App\Actions\Client\GetClientTaksits;
-use App\Models\ClientTaksit;
-use App\TaksitStatus;
-use App\Traits\LiveHelper;
 use App\Traits\WithViewPlaceHolder;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Volt\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
-new class extends Component {
-    use Toast, WithPagination, WithViewPlaceHolder, \Livewire\WithoutUrlPagination;
+new class extends Component
+{
+    use \Livewire\WithoutUrlPagination, Toast, WithPagination, WithViewPlaceHolder;
 
     public ?int $client;
 
@@ -20,7 +17,7 @@ new class extends Component {
     public bool $editing = false;
 
     protected $listeners = [
-        'refresh-client-taksits' => '$refresh'
+        'refresh-client-taksits' => '$refresh',
     ];
 
     public function getData()
@@ -36,7 +33,7 @@ new class extends Component {
             ['key' => 'sale.unique_id', 'label' => 'Satış', 'sortBy' => 'sale_id'],
             ['key' => 'remaining', 'label' => 'Kalan', 'sortBy' => 'remaining'],
             ['key' => 'total', 'label' => 'Toplam', 'sortBy' => 'total'],
-            ['key' => 'client_taksits_locks_count', 'label' => 'Kilit', 'sortable' => false]
+            ['key' => 'client_taksits_locks_count', 'label' => 'Kilit', 'sortable' => false],
         ];
     }
 
@@ -45,7 +42,6 @@ new class extends Component {
         $this->dispatch('drawer-taksit-update-id', $id)->to('components.drawers.drawer_taksit');
         $this->editing = true;
     }
-
 
     public function with(): array
     {
@@ -151,7 +147,7 @@ new class extends Component {
         </div>
         <x-pagination :rows="$data"/>
     @endif
-    @can('taksit_process')
+    @can('taksit_processs')
         <livewire:components.drawers.drawer_taksit wire:model="editing"/>
     @endcan
 </div>

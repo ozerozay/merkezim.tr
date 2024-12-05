@@ -1,16 +1,13 @@
 <?php
 
 use App\Actions\Client\GetClientSales;
-use App\Models\Sale;
-use App\SaleStatus;
-use App\Traits\LiveHelper;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Volt\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
-new class extends Component {
-    use Toast, WithPagination, \App\Traits\WithViewPlaceHolder, \Livewire\WithoutUrlPagination;
+new class extends Component
+{
+    use \App\Traits\WithViewPlaceHolder, \Livewire\WithoutUrlPagination, Toast, WithPagination;
 
     public ?int $client;
 
@@ -19,7 +16,7 @@ new class extends Component {
     public bool $editing = false;
 
     protected $listeners = [
-        'refresh-client-sales' => '$refresh'
+        'refresh-client-sales' => '$refresh',
     ];
 
     public function getData()
@@ -84,14 +81,14 @@ new class extends Component {
             'headers' => $this->headers(),
             'headersTaksits' => $this->headersTaksits(),
             'headersServices' => $this->headersServices(),
-            'statistic' => []
+            'statistic' => [],
         ];
     }
 };
 
 ?>
 <div>
-    <livewire:components.card.statistic.card_statistic :data="$statistic" wire:key="{{  rand(100000000,999999999) }}"/>
+    <livewire:components.card.statistic.card_statistic :data="$statistic" wire:key="xx{{  rand(100000000,999999999) }}"/>
     <div class="flex justify-end mb-4 mt-5 gap-2">
         <p>Sıralama işlemlerini tablo görünümünden yapabilirsiniz.</p>
         <x-button wire:click="changeView" label="{{ $view == 'table' ? 'LİSTE' : 'TABLO' }}"
@@ -117,10 +114,10 @@ new class extends Component {
                             <x-badge :value="$taksit->status->label()" class="badge-{{ $taksit->status->color() }}"/>
                             @endscope
                             @scope('cell_total', $taksit)
-                            {{ LiveHelper::price_text($taksit->total) }}
+                            @price($taksit->total)
                             @endscope
                             @scope('cell_remaining', $taksit)
-                            {{ LiveHelper::price_text($taksit->remaining) }}
+                            @price($taksit->remaining)
                             @endscope
                         </x-table>
                         <x-hr/>
@@ -163,22 +160,22 @@ new class extends Component {
                     {{ $taksit->sale_no }} - {{ $taksit->unique_id  }}
                     @endscope
                     @scope('cell_price', $taksit)
-                    {{ LiveHelper::price_text($taksit->price) }}
+                    @price($taksit->price)
                     @endscope
                     @scope('cell_pesinat', $taksit)
-                    {{ LiveHelper::price_text($taksit->pesinat) }}
+                    @price($taksit->pesinat)
                     @endscope
                     @scope('cell_total_late_payment', $taksit)
-                    {{ LiveHelper::price_text($taksit->total_late_payment) }}
+                    @price($taksit->total_late_payment)
                     @endscope
                     @scope('cell_price_real', $taksit)
-                    {{ LiveHelper::price_text($taksit->price_real) }}
+                    @price($taksit->price_real)
                     @endscope
                     @scope('cell_total_taksit_remaining', $taksit)
-                    {{ LiveHelper::price_text($taksit->total_taksit_remaining) }}
+                    @price($taksit->total_taksit_remaining)
                     @endscope
                     @scope('cell_total_taksit', $taksit)
-                    {{ LiveHelper::price_text($taksit->total_taksit) }}
+                    @price($taksit->total_taksit)
                     @endscope
                     <x-slot:empty>
                         <x-icon name="o-cube" label="Satış bulunmuyor."/>
@@ -236,7 +233,7 @@ new class extends Component {
                                     Tutar
                                 </x-slot:value>
                                 <x-slot:actions>
-                                    {{ LiveHelper::price_text($sale->price) }}
+                                    @price($sale->price)
                                 </x-slot:actions>
                             </x-list-item>
                             <x-list-item :item="$sale" wire:key="list1-5{{  rand(100000000,999999999) }}">
@@ -244,7 +241,7 @@ new class extends Component {
                                     Gerçek Tutar
                                 </x-slot:value>
                                 <x-slot:actions>
-                                    {{ LiveHelper::price_text($sale->price_real) }}
+                                @price($sale->price_real)
                                 </x-slot:actions>
                             </x-list-item>
                             <x-list-item :item="$sale" wire:key="list1-67{{  rand(100000000,999999999) }}">
@@ -252,7 +249,7 @@ new class extends Component {
                                     Peşinat
                                 </x-slot:value>
                                 <x-slot:actions>
-                                    {{ LiveHelper::price_text($sale->pesinat) }}
+                                @price($sale->pesinat)
                                 </x-slot:actions>
                             </x-list-item>
                             <x-list-item :item="$sale" wire:key="list1-3{{  rand(100000000,999999999) }}">
@@ -260,7 +257,7 @@ new class extends Component {
                                     Toplam
                                 </x-slot:value>
                                 <x-slot:actions>
-                                    {{ LiveHelper::price_text($sale->total_taksit) }}
+                                @price($sale->total_taksit)
                                 </x-slot:actions>
                             </x-list-item>
                             <x-list-item :item="$sale" wire:key="list1-12{{  rand(100000000,999999999) }}">
@@ -268,7 +265,7 @@ new class extends Component {
                                     Gecikmiş
                                 </x-slot:value>
                                 <x-slot:actions>
-                                    {{ LiveHelper::price_text($sale->late_payment) }}
+                                @price($sale->late_payment)
                                 </x-slot:actions>
                             </x-list-item>
                             <x-list-item :item="$sale" wire:key="list1-444{{  rand(100000000,999999999) }}">
@@ -276,7 +273,7 @@ new class extends Component {
                                     Kalan
                                 </x-slot:value>
                                 <x-slot:actions>
-                                    {{ LiveHelper::price_text($sale->total_taksit_remaining) }}
+                                @price($sale->total_taksit_remaining)
                                 </x-slot:actions>
                             </x-list-item>
                             <x-list-item :item="$sale" wire:key="list1-45{{  rand(100000000,999999999) }}">
@@ -299,7 +296,7 @@ new class extends Component {
                     @endforeach
                 </div>
             @endif
-            @can('sale_process')
+            @can('sale_processd')
                 <livewire:components.drawers.drawer_sale
                     wire:model="editing"
                     wire:key="{{ str()->random(17) }}"/>

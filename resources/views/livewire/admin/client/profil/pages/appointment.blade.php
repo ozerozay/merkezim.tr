@@ -1,8 +1,8 @@
 <?php
 
-new class extends \Livewire\Volt\Component {
-
-    use \Mary\Traits\Toast, \Livewire\WithPagination, \App\Traits\WithViewPlaceHolder, \Livewire\WithoutUrlPagination;
+new class extends \Livewire\Volt\Component
+{
+    use \App\Traits\WithViewPlaceHolder, \Livewire\WithoutUrlPagination, \Livewire\WithPagination, \Mary\Traits\Toast;
 
     public ?int $client;
 
@@ -11,7 +11,7 @@ new class extends \Livewire\Volt\Component {
     public ?int $selectedAppointment = null;
 
     protected $listeners = [
-        'refresh-appointments' => '$refresh'
+        'refresh-appointments' => '$refresh',
     ];
 
     #[\Livewire\Attributes\On('appointment-show-drawer')]
@@ -49,7 +49,7 @@ new class extends \Livewire\Volt\Component {
     {
         return [
             'appointments' => $this->getData(),
-            'headers' => $this->headers()
+            'headers' => $this->headers(),
         ];
     }
 };
@@ -71,7 +71,7 @@ new class extends \Livewire\Volt\Component {
                 @can('appointment_process')
                     @scope('actions', $appointment)
                     <x-button icon="tabler.settings"
-                              wire:click="showSettings({{ $appointment->id }})"
+                             wire:click="$dispatch('slide-over.open', {component: 'modals.appointment.appointment-modal', arguments: {'appointment': {{ $appointment->id }}}})"
                               class="btn-circle btn-sm btn-primary"/>
                     @endscope
                 @endcan
@@ -87,11 +87,10 @@ new class extends \Livewire\Volt\Component {
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             @foreach($appointments as $appointment)
                 <livewire:components.card.appointment.card_appointment_client
-                    wire:key="{{ $appointment->id }}"
+                    wire:key="asd{{ $appointment->id }}"
                     :appointment="$appointment"/>
             @endforeach
         </div>
     @endif
-    <livewire:components.drawers.drawer_appointment wire:model="editing"/>
 </div>
 

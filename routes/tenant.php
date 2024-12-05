@@ -2,8 +2,12 @@
 
 declare(strict_types=1);
 
+use App\Enum\SettingsType;
+use App\Livewire\Web\Profil\SeansPage;
+use App\Models\Branch;
 use App\Models\Offer;
 use App\Models\Sale;
+use App\Models\Settings;
 use App\SaleStatus;
 use App\Support\Spotlight;
 use Illuminate\Support\Facades\Route;
@@ -48,8 +52,7 @@ Route::middleware([
 
     Route::middleware('auth')->group(function () {
 
-        Volt::route('/seans', 'client.profil.seans')
-            ->name('client.profil.seans');
+        Route::get('/seans', SeansPage::class)->name('client.profil.seans');
         Volt::route('/randevu', 'client.profil.appointment')
             ->name('client.profil.appointment');
         Volt::route('/teklif', 'client.profil.offers')
@@ -195,6 +198,8 @@ Route::middleware([
         })->middleware('role:admin,staff');
     });
 
+    Route::get('/cache', function () {});
+
     Route::get('/apptest', function () {
 
         $info = [
@@ -221,6 +226,58 @@ Route::middleware([
         dump(\App\Actions\Appointment\CheckAvailableAppointments::run($info));
         //dump(\App\Actions\Appointment\CheckAvailableAppointments::run($info_multiple));
 
+    });
+
+    Route::get('/set', function () {
+        \App\Models\Settings::create([
+            'data' => [
+                'store_name' => 'MARGE GÜZELLİK',
+            ],
+        ]);
+    });
+
+    Route::get('/setb', function () {
+        foreach (\App\Tenant::all() as $tenant) {
+            $tenant->run(function () {
+                Settings::create([
+                    'data' => [
+                        SettingsType::site_name->name => 'MARGE GÜZELLİK',
+                    ],
+                ]);
+
+                foreach (Branch::all() as $branch) {
+                    Settings::create([
+                        'branch_id' => $branch->id,
+                        'data' => [
+                            SettingsType::client_page_seans->name => true,
+                            SettingsType::client_page_seans_show_zero->name => true,
+                            SettingsType::client_page_seans_show_category->name => true,
+                            SettingsType::client_page_seans_add_seans->name => true,
+                            SettingsType::client_page_appointment->name => true,
+                            SettingsType::client_page_taksit->name => true,
+                            SettingsType::client_page_offer->name => true,
+                            SettingsType::client_page_coupon->name => true,
+                            SettingsType::client_page_referans->name => true,
+                            SettingsType::client_page_package->name => true,
+                            SettingsType::client_page_earn->name => true,
+                            SettingsType::client_page_fatura->name => true,
+                            SettingsType::client_page_support->name => true,
+                        ],
+                    ]);
+                }
+            });
+        }
+    });
+
+    Route::get('/ss', function () {});
+
+    Route::get('/tan', function () {
+        dump(tenant());
+        /*$tenant = App\Tenant::where('id', 'marge')->first();
+
+        $tenant->sms_title = 'MARGE';
+        $tenant->sms_count = 100;
+        $tenant->save();*/
     });
 
     Route::get('/ta', function () {

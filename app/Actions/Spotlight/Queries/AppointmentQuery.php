@@ -27,6 +27,13 @@ class AppointmentQuery
             $appointments_group = $appointments_list->groupBy('status');
             $results = collect();
 
+            $results->push(SpotlightResult::make()
+                ->setTitle('Tümünü görüntüle')
+                ->setGroup('actions')
+                ->setIcon('check-circle')
+                ->setAction('jump_to',
+                    ['path' => route('admin.client.profil.index', ['user' => $clientToken->getParameter('id'), 'tab' => 'appointment']),
+                    ]));
             foreach ($appointments_group as $status => $appointments) {
                 foreach ($appointments as $appointment) {
                     if (AppointmentStatus::active()->contains($appointment->status)) {
@@ -34,19 +41,35 @@ class AppointmentQuery
                             ->setTitle($appointment->status->label().' - '.$appointment->dateHuman.' - '.$appointment->serviceNames)
                             ->setGroup('appointments_active')
                             //->setAction('get_client_notes_action', ['client' => $note->client_id])
-                            ->setIcon('check-circle'));
+                            ->setIcon('check-circle')
+                            ->setAction('dispatch_event',
+                                ['name' => 'slide-over.open',
+                                    'data' => ['component' => 'modals.appointment.appointment-modal',
+                                        'arguments' => [
+                                            'appointment' => $appointment->id]],
+                                ]));
                     } elseif (AppointmentStatus::deactive()->contains($appointment->status)) {
                         $results->push(SpotlightResult::make()
                             ->setTitle($appointment->status->label().' - '.$appointment->dateHuman.' - '.$appointment->serviceNames)
                             ->setGroup('appointments_cancel')
                             //->setAction('get_client_notes_action', ['client' => $note->client_id])
-                            ->setIcon('x-circle'));
+                            ->setIcon('x-circle')->setAction('dispatch_event',
+                                ['name' => 'slide-over.open',
+                                    'data' => ['component' => 'modals.appointment.appointment-modal',
+                                        'arguments' => [
+                                            'appointment' => $appointment->id]],
+                                ]));
                     } else {
                         $results->push(SpotlightResult::make()
                             ->setTitle($appointment->status->label().' - '.$appointment->dateHuman.' - '.$appointment->serviceNames)
                             ->setGroup('appointments_finish')
                             //->setAction('get_client_notes_action', ['client' => $note->client_id])
-                            ->setIcon('face-smile'));
+                            ->setIcon('face-smile')->setAction('dispatch_event',
+                                ['name' => 'slide-over.open',
+                                    'data' => ['component' => 'modals.appointment.appointment-modal',
+                                        'arguments' => [
+                                            'appointment' => $appointment->id]],
+                                ]));
                     }
                 }
             }
