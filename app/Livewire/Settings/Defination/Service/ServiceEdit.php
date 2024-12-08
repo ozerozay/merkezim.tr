@@ -54,7 +54,7 @@ class ServiceEdit extends SlideOver
             'price' => $this->price,
             'seans' => $this->seans,
             'min_day' => $this->min_day,
-            'visible' => $this->visible,
+            'is_visible' => $this->visible,
             'active' => $this->active,
         ], [
             'name' => ['required', Rule::unique('services', 'name')->where('category_id', $this->service->category_id)->ignore($this->service->id)],
@@ -63,7 +63,7 @@ class ServiceEdit extends SlideOver
             'seans' => 'required',
             'price' => ['required', new PriceValidation],
             'min_day' => 'required',
-            'visible' => 'required',
+            'is_visible' => 'required',
             'active' => 'required',
         ]);
 

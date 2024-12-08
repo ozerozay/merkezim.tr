@@ -26,9 +26,15 @@ class SeansPage extends Component
 
     public function mount()
     {
-        $this->show_zero = $this->getBool(SettingsType::client_page_seans_show_zero->name);
-        $this->show_category = $this->getBool(SettingsType::client_page_seans_show_category->name);
-        $this->add_seans = $this->getBool(SettingsType::client_page_seans_add_seans->name);
+        try {
+            $this->getSettings();
+
+            $this->show_zero = $this->getBool(SettingsType::client_page_seans_show_zero->name);
+            $this->show_category = $this->getBool(SettingsType::client_page_seans_show_category->name);
+            $this->add_seans = $this->getBool(SettingsType::client_page_seans_add_seans->name);
+        } catch (\Throwable $e) {
+            $this->error('Lütfen tekrar deneyin.');
+        }
     }
 
     public function render()

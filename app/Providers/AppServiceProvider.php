@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Actions\Spotlight\Actions\Settings\GetAllSettingsAction;
 use App\Actions\Spotlight\Actions\Settings\GetSettingsAction;
 use App\Actions\Spotlight\RegisterSpotlights;
 use App\Livewire\Actions\Note\GetClientNotesAction;
@@ -28,6 +29,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        app()->singleton('settings', function () {
+            return GetAllSettingsAction::run();
+        });
 
         \Gate::define('viewPulse', function (?\App\Models\User $user) {
             return true;

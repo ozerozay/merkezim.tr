@@ -11,7 +11,7 @@ class Settings extends Model
     protected function casts(): array
     {
         return [
-            'data' => 'json',
+            'data' => 'array',
         ];
     }
 }

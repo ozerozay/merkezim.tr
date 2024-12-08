@@ -59,6 +59,11 @@ class Offer extends Model
         );
     }
 
+    public function remainingDay()
+    {
+        return $this->expire_date == null ? 'SÜRESİZ' : ceil(Carbon::now()->diffInDays($this->expire_date));
+    }
+
     protected function dateHumanExpire(): Attribute
     {
         return Attribute::make(

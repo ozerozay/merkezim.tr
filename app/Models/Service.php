@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Service extends Model
 {
@@ -22,7 +22,7 @@ class Service extends Model
             'min_day' => 'integer',
             'active' => 'boolean',
             'price' => 'float',
-            'visible' => 'boolean',
+            'is_visible' => 'boolean',
         ];
     }
 

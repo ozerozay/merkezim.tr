@@ -2,10 +2,30 @@
 
 namespace App\Traits;
 
+use App\Actions\Spotlight\Actions\Settings\GetAllSettingsAction;
+use Illuminate\Support\Collection;
+
 trait WebSettingsHandler
 {
-    public function getBool($enum)
+    public ?Collection $settings;
+
+    public function getSettings(): void
     {
-        return (bool) \App\Actions\Spotlight\Actions\Settings\GetSettingsAction::run($enum);
+        $this->settings = GetAllSettingsAction::run();
+    }
+
+    public function getBool($enum): bool
+    {
+        return (bool) $this->settings->get($enum) ?? false;
+    }
+
+    public function getCollection($name): Collection
+    {
+        return collect($this->settings->get($name) ?? []);
+    }
+
+    public function placeholder()
+    {
+        return view('livewire.components.card.loading.loading');
     }
 }

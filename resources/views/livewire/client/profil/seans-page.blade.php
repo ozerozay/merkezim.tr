@@ -1,17 +1,16 @@
 <div>
-    <x-header title="Seanslarım" separator progress-indicator>
+    <x-header title="{{ __('client.menu_seans') }}" separator progress-indicator>
         <x-slot:actions>
             @if ($add_seans)
                 <x-button class="btn-primary btn-sm" icon="o-plus">
-                    Seans Yükle
+                    {{ __('client.page_seans_add_seans') }}
                 </x-button>
             @endif
         </x-slot:actions>
     </x-header>
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         @foreach ($data as $service)
-            <x-card title="{{ $service->service->name }}" separator
-                class="mb-2 card w-full bg-base-100 cursor-pointer border">
+            <x-card title="{{ $service->service->name }}" separator class="mb-2 card w-full bg-base-100 cursor-pointer">
                 <x-slot:menu>
                     <x-button icon="o-plus" class="btn-circle btn-outline btn-sm" />
                 </x-slot:menu>

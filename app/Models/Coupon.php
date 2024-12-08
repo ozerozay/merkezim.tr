@@ -27,4 +27,9 @@ class Coupon extends Model
     {
         return $this->hasMany(Adisyon::class, 'coupon_id');
     }
+
+    public function remainingDay()
+    {
+        return $this->end_date == null ? 'SÜRESİZ' : ceil(\Carbon\Carbon::now()->diffInDays($this->end_date));
+    }
 }

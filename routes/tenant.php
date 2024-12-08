@@ -2,8 +2,15 @@
 
 declare(strict_types=1);
 
+use App\AppointmentStatus;
 use App\Enum\SettingsType;
+use App\Livewire\Web\Profil\AppointmentPage;
+use App\Livewire\Web\Profil\CouponPage;
+use App\Livewire\Web\Profil\InvitePage;
+use App\Livewire\Web\Profil\OfferPage;
 use App\Livewire\Web\Profil\SeansPage;
+use App\Livewire\Web\Profil\TaksitPage;
+use App\Livewire\Web\Shop\PackagePage;
 use App\Models\Branch;
 use App\Models\Offer;
 use App\Models\Sale;
@@ -35,13 +42,6 @@ Route::middleware([
 
     Volt::route('/login', 'login')->name('login');
 
-    //Route::get('/spotlight2', [Spotlight::class, 'search'])->name('mary.spotlight');
-
-    Volt::route('/', 'client.index')->name('client.index');
-    Volt::route('/service', 'client.service')->name('client.service');
-    Volt::route('/contact', 'client.contact')->name('client.contact');
-    Volt::route('/location', 'client.location')->name('client.location');
-
     Route::get('/logout', function () {
         Auth::logout();
         request()->session()->invalidate();
@@ -50,17 +50,23 @@ Route::middleware([
         return redirect('/');
     })->name('logout');
 
+    //Route::get('/spotlight2', [Spotlight::class, 'search'])->name('mary.spotlight');
+
+    Volt::route('/', 'client.index')->name('client.index');
+    Volt::route('/service', 'client.service')->name('client.service');
+    Volt::route('/contact', 'client.contact')->name('client.contact');
+    Volt::route('/location', 'client.location')->name('client.location');
+
+    Route::get('/shop/packages', PackagePage::class)->name('client.shop.packages');
+
     Route::middleware('auth')->group(function () {
 
         Route::get('/seans', SeansPage::class)->name('client.profil.seans');
-        Volt::route('/randevu', 'client.profil.appointment')
-            ->name('client.profil.appointment');
-        Volt::route('/teklif', 'client.profil.offers')
-            ->name('client.profil.offers');
-        Volt::route('/kupon', 'client.profil.coupons')
-            ->name('client.profil.coupons');
-        Volt::route('/taksit', 'client.profil.taksits')
-            ->name('client.profil.taksits');
+        Route::get('/randevu', AppointmentPage::class)->name('client.profil.appointment');
+        Route::get('/taksit', TaksitPage::class)->name('client.profil.taksit');
+        Route::get('/teklif', OfferPage::class)->name('client.profil.offer');
+        Route::get('/kupon', CouponPage::class)->name('client.profil.coupon');
+        Route::get('/davet', InvitePage::class)->name('client.profil.invite');
 
         Route::prefix('admin')->group(function () {
             Volt::route('/', 'test')->name('admin.index');
@@ -229,7 +235,7 @@ Route::middleware([
     });
 
     Route::get('/set', function () {
-        \App\Models\Settings::create([
+        Settings::create([
             'data' => [
                 'store_name' => 'MARGE GÜZELLİK',
             ],
@@ -242,6 +248,8 @@ Route::middleware([
                 Settings::create([
                     'data' => [
                         SettingsType::site_name->name => 'MARGE GÜZELLİK',
+                        SettingsType::shop_active->name => true,
+
                     ],
                 ]);
 
@@ -253,9 +261,20 @@ Route::middleware([
                             SettingsType::client_page_seans_show_zero->name => true,
                             SettingsType::client_page_seans_show_category->name => true,
                             SettingsType::client_page_seans_add_seans->name => true,
+
                             SettingsType::client_page_appointment->name => true,
+                            SettingsType::client_page_appointment_show_services->name => true,
+                            SettingsType::client_page_appointment_create->name => ['manuel', 'range', 'multi'],
+                            SettingsType::client_page_appointment_show->name => AppointmentStatus::cases(),
+
                             SettingsType::client_page_taksit->name => true,
+                            SettingsType::client_page_taksit_pay->name => true,
+                            SettingsType::client_page_taksit_show_locked->name => true,
+                            SettingsType::client_page_taksit_show_zero->name => true,
+
                             SettingsType::client_page_offer->name => true,
+                            SettingsType::client_page_offer_request->name => true,
+
                             SettingsType::client_page_coupon->name => true,
                             SettingsType::client_page_referans->name => true,
                             SettingsType::client_page_package->name => true,
@@ -283,8 +302,8 @@ Route::middleware([
     Route::get('/ta', function () {
         $branch = \App\Models\Branch::first();
         dump($branch->isOpen(\Carbon\Carbon::createFromFormat('Y-m-d', '2024-11-03')->toDateTime()));
-        dump($branch->startTimeByDay(\Carbon\Carbon::createFromFormat('Y-m-d', '2024-11-03')->toDateTime())->start()->format('H:i'));
-        dump($branch->startTimeByDay(\Carbon\Carbon::createFromFormat('Y-m-d', '2024-11-03')->toDateTime())->end()->format('H:i'));
+        //dump($branch->startTimeByDay(\Carbon\Carbon::createFromFormat('Y-m-d', '2024-11-03')->toDateTime())->start()->format('H:i'));
+        //dump($branch->startTimeByDay(\Carbon\Carbon::createFromFormat('Y-m-d', '2024-11-03')->toDateTime())->end()->format('H:i'));
     });
 
     Route::get('/per', function () {

@@ -14,6 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         //$middleware->append(\Abordage\LaravelHtmlMin\Middleware\HtmlMinify::class);
+
+        $middleware->web(append: [
+            \App\Http\Middleware\LanguageMiddleWare::class,
+            \App\Http\Middleware\ReferansMiddleWare::class,
+        ]);
+
         $middleware->alias([
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,

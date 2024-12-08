@@ -4,6 +4,7 @@ namespace App\Actions\Spotlight\Queries;
 
 use App\Actions\Spotlight\SpotlightCheckPermission;
 use App\Enum\PermissionType;
+use App\Enum\SettingsType;
 use App\Models\Appointment;
 use App\Models\Kasa;
 use App\Models\Talep;
@@ -127,20 +128,29 @@ class DefaultQuery
                     ->setIcon('cog-6-tooth'));
             }
 
-            if (SpotlightCheckPermission::run(PermissionType::website_settings)) {
-                $pages->push(SpotlightResult::make()
-                    ->setTitle('Site Ayarları')
-                    ->setGroup('pages')
-                    //->setTokens(['settings' => new User])
-                    ->setIcon('cog-6-tooth'));
-            }
-
             if (SpotlightCheckPermission::run(PermissionType::page_finger)) {
                 $pages->push(SpotlightResult::make()
                     ->setTitle('Parmak İzi')
                     ->setGroup('pages')
                     //->setTokens(['settings' => new User])
                     ->setIcon('finger-print'));
+            }
+
+            $general_settings = \App\Actions\Spotlight\Actions\Settings\GetGeneralSettings::run();
+            //dump($general_settings);
+            if ($general_settings->get(SettingsType::website_active->name)) {
+                if (SpotlightCheckPermission::run(PermissionType::website_settings)) {
+                    $pages->push(SpotlightResult::make()
+                        ->setTitle('Site Ayarları')
+                        ->setGroup('site_settings')
+                        ->setTokens(['websitesettings' => new User])
+                        ->setIcon('cog-6-tooth'));
+                    $pages->push(SpotlightResult::make()
+                        ->setTitle('Online Mağaza Ayarları')
+                        ->setGroup('site_settings')
+                        ->setTokens(['websiteshopsettings' => new User])
+                        ->setIcon('cog-6-tooth'));
+                }
             }
 
             $pages->push(SpotlightResult::make()

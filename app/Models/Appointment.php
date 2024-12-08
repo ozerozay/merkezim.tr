@@ -73,6 +73,11 @@ class Appointment extends Model
         return $this->belongsToJson(ClientService::class, 'service_ids');
     }
 
+    public function finish_services()
+    {
+        return $this->belongsToJson(ClientService::class, 'finish_service_ids');
+    }
+
     protected function serviceNames(): Attribute
     {
         return Attribute::make(
@@ -83,6 +88,28 @@ class Appointment extends Model
     public function service_names(Appointment $appointment)
     {
         return $appointment->services->map(fn ($service) => $service->service->name.'(1)')->implode(', ');
+    }
+
+    public function service_names_public(Appointment $appointment)
+    {
+        return $appointment->services->map(function ($service) {
+            if ($service->service->is_visible && $service->service->active) {
+                return $service->service->name;
+            }
+
+            return null;
+        })->implode(', ');
+    }
+
+    public function finish_service_names_public(Appointment $appointment)
+    {
+        return $appointment->finish_services->map(function ($service) {
+            if ($service->service->is_visible && $service->service->active) {
+                return $service->service->name;
+            }
+
+            return null;
+        })->implode(', ');
     }
 
     protected function dateHuman(): Attribute

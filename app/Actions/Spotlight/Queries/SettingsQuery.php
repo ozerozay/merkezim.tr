@@ -13,7 +13,7 @@ class SettingsQuery
 {
     use AsAction;
 
-    public function handle()
+    public function handle(): SpotlightQuery
     {
         return SpotlightQuery::forToken('settings', function (SpotlightScopeToken $settingsToken, $query) {
 

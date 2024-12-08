@@ -48,7 +48,7 @@ class ServiceCreate extends SlideOver
             'price' => $this->price,
             'seans' => $this->seans,
             'min_day' => $this->min_day,
-            'visible' => $this->visible,
+            'is_visible' => $this->visible,
         ], [
             'category_id' => 'required|exists:service_categories,id',
             'name' => ['required', Rule::unique('services', 'name')->where('category_id', $this->category_id)],
@@ -57,7 +57,7 @@ class ServiceCreate extends SlideOver
             'seans' => 'required',
             'price' => ['required', new PriceValidation],
             'min_day' => 'required',
-            'visible' => 'required',
+            'is_visible' => 'required',
         ]);
 
         if ($validator->fails()) {

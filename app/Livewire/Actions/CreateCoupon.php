@@ -61,7 +61,7 @@ class CreateCoupon extends SlideOver
             'discount_type' => 'required|boolean',
             'count' => 'required|integer',
             'discount_amount' => 'required|min:1',
-            'end_date' => 'nullable|before:today',
+            'end_date' => 'nullable|after:today',
             'min_order' => 'nullable|min:1',
             'user_id' => 'required|exists:users,id',
             'permission' => 'required',

@@ -15,7 +15,7 @@ class GetClientCoupons
             ->where('client_id', $client)
             ->where('count', '>', 0)
             ->where(function ($q) {
-                $q->whereNull('end_date')->orWhere('end_date', '<', now());
+                $q->whereNull('end_date')->orWhere('end_date', '>', now());
             })
             ->when($minOrder > 0, function ($q) use ($minOrder) {
                 $q->where('min_order', '>=', $minOrder);

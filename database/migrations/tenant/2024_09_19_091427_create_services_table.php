@@ -24,7 +24,7 @@ return new class extends Migration
             $table->decimal('price');
             $table->integer('min_day')->default(0);
             $table->boolean('active')->default(true);
-            $table->boolean('visible')->default(true);
+            $table->boolean('is_visible')->default(true);
             $table->timestamp('deleted_at')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();

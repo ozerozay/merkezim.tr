@@ -19,6 +19,8 @@ use App\Actions\Spotlight\Queries\ProductSaleQuery;
 use App\Actions\Spotlight\Queries\SaleQuery;
 use App\Actions\Spotlight\Queries\SettingsQuery;
 use App\Actions\Spotlight\Queries\TaksitQuery;
+use App\Actions\Spotlight\Queries\Website\WebsiteSettingsQuery;
+use App\Actions\Spotlight\Queries\Website\WebsiteShopSettingsQuery;
 use App\Actions\Spotlight\Tokens\AdisyonToken;
 use App\Actions\Spotlight\Tokens\AppointmentToken;
 use App\Actions\Spotlight\Tokens\ClientServiceToken;
@@ -35,6 +37,8 @@ use App\Actions\Spotlight\Tokens\ProductSaleToken;
 use App\Actions\Spotlight\Tokens\SaleToken;
 use App\Actions\Spotlight\Tokens\Settings\SettingsToken;
 use App\Actions\Spotlight\Tokens\TaksitToken;
+use App\Actions\Spotlight\Tokens\Website\WebsiteSettingsToken;
+use App\Actions\Spotlight\Tokens\Website\WebsiteShopSettingsToken;
 use App\Enum\PermissionType;
 use App\Models\Note;
 use App\SaleStatus;
@@ -109,6 +113,8 @@ class RegisterSpotlights
 
         Spotlight::registerGroup('profile', 'Profil');
 
+        Spotlight::registerGroup('site_settings', 'Site Ayarları');
+
     }
 
     private function registerSpotlightModes(): void
@@ -151,6 +157,8 @@ class RegisterSpotlights
             ProductSaleToken::run(),
             AdisyonToken::run(),
             CouponToken::run(),
+            WebsiteSettingsToken::run(),
+            WebsiteShopSettingsToken::run(),
         ];
 
         if (SpotlightCheckPermission::run(PermissionType::admin_settings)) {
@@ -189,6 +197,8 @@ class RegisterSpotlights
             ProductSaleQuery::run(),
             AdisyonQuery::run(),
             CouponQuery::run(),
+            WebsiteSettingsQuery::run(),
+            WebsiteShopSettingsQuery::run(),
             /*SpotlightQuery::forToken('note', function ($query, SpotlightScopeToken $noteToken) {
                 $notes = Note::query()
                     ->get()
