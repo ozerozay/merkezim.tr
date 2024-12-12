@@ -26,9 +26,7 @@
 
         </x-slot:brand>
         <x-slot:actions>
-            <x-button icon="o-bell" class="btn-circle relative">
-                <x-badge value="2" class="badge-error absolute -right-2 -top-2" />
-            </x-button>
+            <livewire:spotlight.components.notification_button wire:key="asdngccc" />
 
 
         </x-slot:actions>

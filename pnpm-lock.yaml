@@ -28,7 +28,7 @@ importers:
         specifier: ^4.12.10
         version: 4.12.14(postcss@8.4.49)
       laravel-echo:
-        specifier: ^1.16.1
+        specifier: ^1.17.1
         version: 1.17.1
       laravel-vite-plugin:
         specifier: ^1.0
@@ -37,7 +37,7 @@ importers:
         specifier: ^8.4.45
         version: 8.4.49
       pusher-js:
-        specifier: ^8.4.0-rc2
+        specifier: 8.4.0-rc2
         version: 8.4.0-rc2
       tailwindcss:
         specifier: ^3.4.10

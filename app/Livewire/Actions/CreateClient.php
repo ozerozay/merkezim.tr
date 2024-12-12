@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Actions;
 
-use App\Actions\Client\CreateClientAction;
 use App\Enum\PermissionType;
 use Mary\Traits\Toast;
 use WireElements\Pro\Components\SlideOver\SlideOver;
@@ -97,7 +96,7 @@ class CreateClient extends SlideOver
             return;
         }
 
-        CreateClientAction::run($validator->validated());
+        \App\Actions\Spotlight\Actions\Create\CreateClientAction::run($validator->validated());
 
         $this->success('Danışan oluşturuldu.');
         $this->close();

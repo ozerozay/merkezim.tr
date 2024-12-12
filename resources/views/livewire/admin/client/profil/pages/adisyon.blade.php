@@ -4,8 +4,7 @@ use App\Traits\WithViewPlaceHolder;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
-new class extends \Livewire\Volt\Component
-{
+new class extends \Livewire\Volt\Component {
     use \Livewire\WithoutUrlPagination, Toast, WithPagination, WithViewPlaceHolder;
 
     public ?int $client;
@@ -25,13 +24,7 @@ new class extends \Livewire\Volt\Component
 
     public function headers(): array
     {
-        return [
-            ['key' => 'date', 'label' => 'Tarih', 'sortBy' => 'date'],
-            ['key' => 'unique_id', 'label' => 'Satış', 'sortBy' => 'sale_id'],
-            ['key' => 'adisyon_services_count', 'label' => 'Hizmet', 'sortable' => false],
-            ['key' => 'price', 'label' => 'Tutar', 'sortBy' => 'price'],
-            ['key' => 'message', 'label' => 'Açıklama', 'sortBy' => 'message'],
-        ];
+        return [['key' => 'date', 'label' => 'Tarih', 'sortBy' => 'date'], ['key' => 'unique_id', 'label' => 'Satış', 'sortBy' => 'sale_id'], ['key' => 'adisyon_services_count', 'label' => 'Hizmet', 'sortable' => false], ['key' => 'price', 'label' => 'Tutar', 'sortBy' => 'price'], ['key' => 'message', 'label' => 'Açıklama', 'sortBy' => 'message']];
     }
 
     public function showSettings($id): void
@@ -45,38 +38,34 @@ new class extends \Livewire\Volt\Component
         return [
             'data' => $this->getData(),
             'headers' => $this->headers(),
-            'statistic' => [
-                ['name' => 'Toplam', 'value' => 0, 'number' => true],
-                ['name' => 'Kalan', 'value' => 0, 'number' => true],
-                ['name' => 'Gecikmiş', 'value' => 0, 'number' => true, 'red' => true],
-            ],
+            'statistic' => [['name' => 'Toplam', 'value' => 0, 'number' => true], ['name' => 'Kalan', 'value' => 0, 'number' => true], ['name' => 'Gecikmiş', 'value' => 0, 'number' => true, 'red' => true]],
         ];
     }
 };
 
 ?>
 <div>
-    <livewire:components.card.statistic.card_statistic :data="$statistic"/>
+    <livewire:components.card.statistic.card_statistic :data="$statistic" />
     <div class="flex justify-end mb-4 mt-5 gap-2">
         <p>Sıralama işlemlerini tablo görünümünden yapabilirsiniz.</p>
         <x-button wire:click="changeView" label="{{ $view == 'table' ? 'LİSTE' : 'TABLO' }}"
-                  icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline"/>
+            icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline" />
     </div>
     @if ($view)
         <div>
             <x-card>
                 <x-table :headers="$headers" :rows="$data" :sort-by="$sortBy" striped with-pagination>
                     <x-slot:empty>
-                        <x-icon name="o-cube" label="Adisyon bulunmuyor."/>
+                        <x-icon name="o-cube" label="Adisyon bulunmuyor." />
                     </x-slot:empty>
                     @scope('cell_date', $taksit)
-                    {{  $taksit->date_human }}
+                        {{ $taksit->date_human }}
                     @endscope
                     @can('adisyon_process')
                         @scope('actions', $taksit)
-                        <x-button icon="tabler.settings"
-                                  wire:click="showSettings({{ $taksit->id }})"
-                                  class="btn-circle btn-sm btn-primary"/>
+                            <x-button icon="tabler.settings"
+                                wire:click="$dispatch('slide-over.open', {component: 'modals.client.adisyon-modal', arguments : {'adisyon' : {{ $taksit->id }}}})"
+                                class="btn-circle btn-sm btn-primary" />
                         @endscope
                     @endcan
                 </x-table>
@@ -92,8 +81,8 @@ new class extends \Livewire\Volt\Component
                     @can('adisyon_process')
                         <x-slot:menu>
                             <x-button icon="tabler.settings"
-                                      wire:click="showSettings({{ $taksit->id }})"
-                                      class="btn-circle btn-sm btn-primary"/>
+                                wire:click="$dispatch('slide-over.open', {component: 'modals.client.adisyon-modal', arguments : {'adisyon' : {{ $taksit->id }}}})"
+                                class="btn-circle btn-sm btn-primary" />
                         </x-slot:menu>
                     @endcan
 
@@ -102,7 +91,7 @@ new class extends \Livewire\Volt\Component
                             Satış
                         </x-slot:value>
                         <x-slot:actions>
-                            <p>{{ $taksit->unique_id}}</p>
+                            <p>{{ $taksit->unique_id }}</p>
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$taksit">
@@ -110,7 +99,7 @@ new class extends \Livewire\Volt\Component
                             Hizmet Sayısı
                         </x-slot:value>
                         <x-slot:actions>
-                            {{$taksit->adisyon_services_count}}
+                            {{ $taksit->adisyon_services_count }}
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$taksit">
@@ -126,7 +115,7 @@ new class extends \Livewire\Volt\Component
                             Açıklama
                         </x-slot:value>
                         <x-slot:actions>
-                            {{$taksit->message}}
+                            {{ $taksit->message }}
                         </x-slot:actions>
                     </x-list-item>
                 </x-card>
@@ -134,6 +123,6 @@ new class extends \Livewire\Volt\Component
         </div>
     @endif
     @can('adisyon_procedss')
-        <livewire:components.drawers.drawer_adisyon wire:model="editing"/>
+        <livewire:components.drawers.drawer_adisyon wire:model="editing" />
     @endcan
 </div>

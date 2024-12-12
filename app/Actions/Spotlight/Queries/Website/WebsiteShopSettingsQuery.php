@@ -20,12 +20,19 @@ class WebsiteShopSettingsQuery
             $results->push(SpotlightResult::make()
                 ->setTitle('Satışta Olan Paketler')
                 ->setGroup('definations')
-                ->setIcon('hand-thumb-up'));
+                ->setIcon('hand-thumb-up')
+                ->setAction('dispatch_event',
+                    ['name' => 'slide-over.open',
+                        'data' => ['component' => 'settings.shop.shop-package-settings'],
+                    ]));
 
             $results->push(SpotlightResult::make()
                 ->setTitle('Satışta Olan Hizmetler')
                 ->setGroup('definations')
-                ->setIcon('hand-thumb-up'));
+                ->setIcon('hand-thumb-up')->setAction('dispatch_event',
+                    ['name' => 'slide-over.open',
+                        'data' => ['component' => 'settings.shop.shop-service'],
+                    ]));
 
             $results = $results->sortBy(function (SpotlightResult $result, int $key) {
                 return $result->title();

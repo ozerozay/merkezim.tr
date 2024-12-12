@@ -1,7 +1,6 @@
 <?php
 
-new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Volt\Component
-{
+new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Volt\Component {
     use \Mary\Traits\Toast;
 
     public array $date_config = [];
@@ -42,7 +41,7 @@ new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Vol
     public function mount(): void
     {
         $this->date_config = \App\Peren::dateConfig(enableTime: false);
-        if (! $this->date) {
+        if (!$this->date) {
             $this->date = date('Y-m-d');
         }
 
@@ -66,7 +65,7 @@ new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Vol
 
     public function filterSort($key): void
     {
-        if (! $key) {
+        if (!$key) {
             $this->sortKey = null;
 
             return;
@@ -77,7 +76,7 @@ new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Vol
     public function filterStatus(): void
     {
         try {
-            if (! in_array(true, $this->statutes, true)) {
+            if (!in_array(true, $this->statutes, true)) {
                 $this->statutes_url = null;
 
                 return;
@@ -101,14 +100,14 @@ new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Vol
             ->when($this->branch, function ($q) {
                 $q->where('branch_id', $this->branch);
             })
-            ->when(! $this->branch, function ($q) {
+            ->when(!$this->branch, function ($q) {
                 $q->where('branch_id', auth()->user()->staff_branch()->first()->id);
             })
             ->with('appointments', function ($q) {
                 $q->when($this->date, function ($qd) {
                     $qd->where('date', $this->date);
                 })
-                    ->when(! $this->date, function ($dtd) {
+                    ->when(!$this->date, function ($dtd) {
                         $dtd->where('date', date('Y-m-d'));
                     })
                     ->when($this->statutes_url, function ($qs) {
@@ -159,8 +158,8 @@ new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Vol
 
 ?>
 <div>
-    <x-header title="{{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}" subtitle="{{ $branchName ?? '' }}"
-        separator progress-indicator>
+    <x-header title="{{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}" subtitle="{{ $branchName ?? '' }}" separator
+        progress-indicator>
         <x-slot:actions>
             <x-datepicker wire:model.live="date" :config="$date_config" icon="o-calendar" />
             <x-dropdown label="Şube" icon="tabler.building-store">
@@ -207,50 +206,7 @@ new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Vol
             @endif
         </x-slot:actions>
     </x-header>
-    @if (1 == 2)
-        @if ($appointments_group->isEmpty())
-            <livewire:components.card.loading.empty />
-        @endif
-        @foreach ($appointments_group as $appointments)
-            <x-card title="{{ $appointments->first()->serviceRoom->name }}" separator>
-                <x-slot:menu>
-                    <x-badge class="badge-primary" value="Çalışma Süresi: 9 Saat" />
-                    <x-badge class="badge-primary" value="Çalışma Süresi: 4 Saat" />
-                </x-slot:menu>
-                <div class="flex w-full h-8 text-white text-center">
-                    <!-- 1 saat dolu, 12:00-13:00 -->
-                    <div class="bg-blue-500 h-full flex items-center justify-center" style="width: 11.11%;">
-                        12:00-13:00
-                    </div>
-                    <!-- 3 saat boş, 13:00-16:00 -->
-                    <div class="bg-gray-200 text-gray-800 h-full flex items-center justify-center"
-                        style="width: 33.33%;">
-                        13:00-16:00
-                    </div>
-                    <!-- 2 saat dolu, 16:00-18:00 -->
-                    <div class="bg-blue-500 h-full flex items-center justify-center" style="width: 22.22%;">
-                        16:00-18:00
-                    </div>
-                    <!-- 3 saat boş, 18:00-21:00 -->
-                    <div class="bg-gray-200 text-gray-800 h-full flex items-center justify-center"
-                        style="width: 33.33%;">
-                        18:00-21:00
-                    </div>
-                </div>
-            </x-card>
-            <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5 mb-5">
-                @foreach ($appointments as $appointment)
-                    @if ($appointment->type == \App\AppointmentType::appointment)
-                        <livewire:components.card.appointment.card_appointment_client wire:key="{{ $appointment->id }}"
-                            :appointment="$appointment" />
-                    @elseif($appointment->type == \App\AppointmentType::close)
-                        <livewire:components.card.appointment.card_appointment_close wire:key="{{ $appointment->id }}"
-                            :appointment="$appointment" />
-                    @endif
-                @endforeach
-            </div>
-        @endforeach
-    @endif
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         @foreach ($appointments_group as $room)
             <x-card separator title="{{ $room->name }}">

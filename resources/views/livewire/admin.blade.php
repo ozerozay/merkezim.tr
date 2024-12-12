@@ -21,28 +21,21 @@ new class extends Component {
     @endphp
     <x-header title="18 EKİM 2024" separator progress-indicator>
         <x-slot:actions>
-            <x-button icon="o-calendar" class="btn-outline" label="Tarih Seç" responsive/>
-            <x-button icon="tabler.building-store" class="btn-outline" label="Şube Seç" responsive/>
-            <x-button icon="tabler.filter" class="btn-outline" label="Filtrele" responsive/>
-            <x-button icon="tabler.sort-descending" class="btn-outline" label="Sırala" responsive/>
-            <x-button icon="o-plus" class="btn-primary" label="Randevu Oluştur" responsive/>
+            <x-button icon="o-calendar" class="btn-outline" label="Tarih Seç" responsive />
+            <x-button icon="tabler.building-store" class="btn-outline" label="Şube Seç" responsive />
+            <x-button icon="tabler.filter" class="btn-outline" label="Filtrele" responsive />
+            <x-button icon="tabler.sort-descending" class="btn-outline" label="Sırala" responsive />
+            <x-button icon="o-plus" class="btn-primary" label="Randevu Oluştur" responsive />
 
         </x-slot:actions>
     </x-header>
-    <x-drawer
-        wire:model="showDrawer3"
-        title="Hello"
-        subtitle="Livewire"
-        separator
-        with-close-button
-        close-on-escape
-        class="w-11/12 lg:w-1/3"
-    >
+    <x-drawer wire:model="showDrawer3" title="Hello" subtitle="Livewire" separator with-close-button close-on-escape
+        class="w-11/12 lg:w-1/3">
         <div>Hey!</div>
 
         <x-slot:actions>
-            <x-button label="Cancel" @click="$wire.showDrawer3 = false"/>
-            <x-button label="Confirm" class="btn-primary" icon="o-check"/>
+            <x-button label="Cancel" @click="$wire.showDrawer3 = false" />
+            <x-button label="Confirm" class="btn-primary" icon="o-check" />
         </x-slot:actions>
     </x-drawer>
     <div class="container mx-auto">
@@ -59,10 +52,10 @@ new class extends Component {
                     <x-list-item :item="$user1" no-separator class="cursor-pointer" no-hover wire:click='ssss()'>
 
                         <x-slot:avatar>
-                            <x-badge value="12:00" class="text-teal-500 bg-teal-100"/>
-                            <br/>
-                            <x-badge value="12:45" class="text-teal-500 bg-teal-100"/>
-                            <br/>
+                            <x-badge value="12:00" class="text-teal-500 bg-teal-100" />
+                            <br />
+                            <x-badge value="12:45" class="text-teal-500 bg-teal-100" />
+                            <br />
                         </x-slot:avatar>
                         <x-slot:value>
                             CİHAT ÖZER ÖZAY
@@ -74,10 +67,10 @@ new class extends Component {
                     </x-list-item>
                     <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
                         <x-slot:avatar>
-                            <x-badge value="12:00" class="text-purple-500 bg-purple-100"/>
-                            <br/>
-                            <x-badge value="12:45" class="text-purple-500 bg-purple-100"/>
-                            <br/>
+                            <x-badge value="12:00" class="text-purple-500 bg-purple-100" />
+                            <br />
+                            <x-badge value="12:45" class="text-purple-500 bg-purple-100" />
+                            <br />
                         </x-slot:avatar>
                         <x-slot:value>
                             CİHAT ÖZER ÖZAY
@@ -86,15 +79,16 @@ new class extends Component {
                             (45dk) Hizmet Randevusu
                         </x-slot:sub-value>
                         <x-slot:actions>
-                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner/>
+                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)"
+                                spinner />
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
                         <x-slot:avatar>
-                            <x-badge value="12:00" class="text-orange-500 bg-orange-100"/>
-                            <br/>
-                            <x-badge value="TAMAMLANDI" class="badge badge-success text-white bg-teal-600"/>
-                            <br/>
+                            <x-badge value="12:00" class="text-orange-500 bg-orange-100" />
+                            <br />
+                            <x-badge value="TAMAMLANDI" class="badge badge-success text-white bg-teal-600" />
+                            <br />
                         </x-slot:avatar>
                         <x-slot:value>
                             CİHAT ÖZER ÖZAY
@@ -103,16 +97,16 @@ new class extends Component {
                             (45dk) Hizmet Randevusu
                         </x-slot:sub-value>
                         <x-slot:actions>
-                            <x-badge value="Gecikti" class="badge-warning"/>
-                            <br/>
+                            <x-badge value="Gecikti" class="badge-warning" />
+                            <br />
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
                         <x-slot:avatar>
-                            <x-badge value="12:00" class="badge-primary"/>
-                            <br/>
-                            <x-badge value="12:45" class="badge-primary"/>
-                            <br/>
+                            <x-badge value="12:00" class="badge-primary" />
+                            <br />
+                            <x-badge value="12:45" class="badge-primary" />
+                            <br />
                         </x-slot:avatar>
                         <x-slot:value>
                             CİHAT ÖZER ÖZAY
@@ -121,16 +115,17 @@ new class extends Component {
                             (45dk) Hizmet Randevusu
                         </x-slot:sub-value>
                         <x-slot:actions>
-                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner/>
+                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)"
+                                spinner />
                         </x-slot:actions>
                     </x-list-item>
-                    <x-hr/>
+                    <x-hr />
                     <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
                         <x-slot:avatar>
-                            <x-badge value="12:00" class="badge-primary"/>
-                            <br/>
-                            <x-badge value="12:45" class="badge-primary"/>
-                            <br/>
+                            <x-badge value="12:00" class="badge-primary" />
+                            <br />
+                            <x-badge value="12:45" class="badge-primary" />
+                            <br />
                         </x-slot:avatar>
                         <x-slot:value>
                             CİHAT ÖZER ÖZAY
@@ -139,7 +134,8 @@ new class extends Component {
                             (45dk) Hizmet Randevusu
                         </x-slot:sub-value>
                         <x-slot:actions>
-                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner/>
+                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)"
+                                spinner />
                         </x-slot:actions>
                     </x-list-item>
                 </x-card>
@@ -150,10 +146,10 @@ new class extends Component {
                     <x-list-item :item="$user1" no-separator class="cursor-pointer" no-hover wire:click='ssss()'>
 
                         <x-slot:avatar>
-                            <x-badge value="12:00" class="badge-primary"/>
-                            <br/>
-                            <x-badge value="12:45" class="badge-primary"/>
-                            <br/>
+                            <x-badge value="12:00" class="badge-primary" />
+                            <br />
+                            <x-badge value="12:45" class="badge-primary" />
+                            <br />
                         </x-slot:avatar>
                         <x-slot:value>
                             CİHAT ÖZER ÖZAY
@@ -165,10 +161,10 @@ new class extends Component {
                     </x-list-item>
                     <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
                         <x-slot:avatar>
-                            <x-badge value="12:00" class="badge-primary"/>
-                            <br/>
-                            <x-badge value="12:45" class="badge-primary"/>
-                            <br/>
+                            <x-badge value="12:00" class="badge-primary" />
+                            <br />
+                            <x-badge value="12:45" class="badge-primary" />
+                            <br />
                         </x-slot:avatar>
                         <x-slot:value>
                             CİHAT ÖZER ÖZAY
@@ -177,15 +173,16 @@ new class extends Component {
                             (45dk) Hizmet Randevusu
                         </x-slot:sub-value>
                         <x-slot:actions>
-                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner/>
+                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)"
+                                spinner />
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
                         <x-slot:avatar>
-                            <x-badge value="12:00" class="badge-warning"/>
-                            <br/>
-                            <x-badge value="12:45" class="badge-warning"/>
-                            <br/>
+                            <x-badge value="12:00" class="badge-warning" />
+                            <br />
+                            <x-badge value="12:45" class="badge-warning" />
+                            <br />
                         </x-slot:avatar>
                         <x-slot:value>
                             CİHAT ÖZER ÖZAY
@@ -194,16 +191,16 @@ new class extends Component {
                             (45dk) Hizmet Randevusu
                         </x-slot:sub-value>
                         <x-slot:actions>
-                            <x-badge value="Gecikti" class="badge-warning"/>
-                            <br/>
+                            <x-badge value="Gecikti" class="badge-warning" />
+                            <br />
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
                         <x-slot:avatar>
-                            <x-badge value="12:00" class="badge-primary"/>
-                            <br/>
-                            <x-badge value="12:45" class="badge-primary"/>
-                            <br/>
+                            <x-badge value="12:00" class="badge-primary" />
+                            <br />
+                            <x-badge value="12:45" class="badge-primary" />
+                            <br />
                         </x-slot:avatar>
                         <x-slot:value>
                             CİHAT ÖZER ÖZAY
@@ -212,16 +209,17 @@ new class extends Component {
                             (45dk) Hizmet Randevusu
                         </x-slot:sub-value>
                         <x-slot:actions>
-                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner/>
+                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)"
+                                spinner />
                         </x-slot:actions>
                     </x-list-item>
-                    <x-hr/>
+                    <x-hr />
                     <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
                         <x-slot:avatar>
-                            <x-badge value="12:00" class="badge-primary"/>
-                            <br/>
-                            <x-badge value="12:45" class="badge-primary"/>
-                            <br/>
+                            <x-badge value="12:00" class="badge-primary" />
+                            <br />
+                            <x-badge value="12:45" class="badge-primary" />
+                            <br />
                         </x-slot:avatar>
                         <x-slot:value>
                             CİHAT ÖZER ÖZAY
@@ -230,7 +228,8 @@ new class extends Component {
                             (45dk) Hizmet Randevusu
                         </x-slot:sub-value>
                         <x-slot:actions>
-                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner/>
+                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)"
+                                spinner />
                         </x-slot:actions>
                     </x-list-item>
                 </x-card>
@@ -241,10 +240,10 @@ new class extends Component {
                     <x-list-item :item="$user1" no-separator class="cursor-pointer" no-hover wire:click='ssss()'>
 
                         <x-slot:avatar>
-                            <x-badge value="12:00" class="badge-primary"/>
-                            <br/>
-                            <x-badge value="12:45" class="badge-primary"/>
-                            <br/>
+                            <x-badge value="12:00" class="badge-primary" />
+                            <br />
+                            <x-badge value="12:45" class="badge-primary" />
+                            <br />
                         </x-slot:avatar>
                         <x-slot:value>
                             CİHAT ÖZER ÖZAY
@@ -256,10 +255,10 @@ new class extends Component {
                     </x-list-item>
                     <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
                         <x-slot:avatar>
-                            <x-badge value="12:00" class="badge-primary"/>
-                            <br/>
-                            <x-badge value="12:45" class="badge-primary"/>
-                            <br/>
+                            <x-badge value="12:00" class="badge-primary" />
+                            <br />
+                            <x-badge value="12:45" class="badge-primary" />
+                            <br />
                         </x-slot:avatar>
                         <x-slot:value>
                             CİHAT ÖZER ÖZAY
@@ -268,15 +267,16 @@ new class extends Component {
                             (45dk) Hizmet Randevusu
                         </x-slot:sub-value>
                         <x-slot:actions>
-                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner/>
+                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)"
+                                spinner />
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
                         <x-slot:avatar>
-                            <x-badge value="12:00" class="badge-warning"/>
-                            <br/>
-                            <x-badge value="12:45" class="badge-warning"/>
-                            <br/>
+                            <x-badge value="12:00" class="badge-warning" />
+                            <br />
+                            <x-badge value="12:45" class="badge-warning" />
+                            <br />
                         </x-slot:avatar>
                         <x-slot:value>
                             CİHAT ÖZER ÖZAY
@@ -285,16 +285,16 @@ new class extends Component {
                             (45dk) Hizmet Randevusu
                         </x-slot:sub-value>
                         <x-slot:actions>
-                            <x-badge value="Gecikti" class="badge-warning"/>
-                            <br/>
+                            <x-badge value="Gecikti" class="badge-warning" />
+                            <br />
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
                         <x-slot:avatar>
-                            <x-badge value="12:00" class="badge-primary"/>
-                            <br/>
-                            <x-badge value="12:45" class="badge-primary"/>
-                            <br/>
+                            <x-badge value="12:00" class="badge-primary" />
+                            <br />
+                            <x-badge value="12:45" class="badge-primary" />
+                            <br />
                         </x-slot:avatar>
                         <x-slot:value>
                             CİHAT ÖZER ÖZAY
@@ -303,16 +303,17 @@ new class extends Component {
                             (45dk) Hizmet Randevusu
                         </x-slot:sub-value>
                         <x-slot:actions>
-                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner/>
+                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)"
+                                spinner />
                         </x-slot:actions>
                     </x-list-item>
-                    <x-hr/>
+                    <x-hr />
                     <x-list-item :item="$user1" no-separator no-hover wire:click="delete(1)">
                         <x-slot:avatar>
-                            <x-badge value="12:00" class="badge-primary"/>
-                            <br/>
-                            <x-badge value="12:45" class="badge-primary"/>
-                            <br/>
+                            <x-badge value="12:00" class="badge-primary" />
+                            <br />
+                            <x-badge value="12:45" class="badge-primary" />
+                            <br />
                         </x-slot:avatar>
                         <x-slot:value>
                             CİHAT ÖZER ÖZAY
@@ -321,7 +322,8 @@ new class extends Component {
                             (45dk) Hizmet Randevusu
                         </x-slot:sub-value>
                         <x-slot:actions>
-                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)" spinner/>
+                            <x-button icon="o-information-circle" class="text-blue-500" wire:click="delete(1)"
+                                spinner />
                         </x-slot:actions>
                     </x-list-item>
                 </x-card>

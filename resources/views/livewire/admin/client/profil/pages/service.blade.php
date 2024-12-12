@@ -5,8 +5,7 @@ use Livewire\Volt\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
-new class extends Component
-{
+new class extends Component {
     use \App\Traits\WithViewPlaceHolder, \Livewire\WithoutUrlPagination, Toast, WithPagination;
 
     public ?int $client;
@@ -60,7 +59,7 @@ new class extends Component
     @if ($view)
         <div>
             <x-card>
-                <x-table  :headers="$headers" :rows="$data" wire:model="expanded" :sort-by="$sortBy" striped
+                <x-table :headers="$headers" :rows="$data" wire:model="expanded" :sort-by="$sortBy" striped
                     with-pagination expandable>
                     <x-slot:empty>
                         <x-icon name="o-cube" label="Hizmet bulunmuyor." />
@@ -112,7 +111,8 @@ new class extends Component
                     @endscope
                     @can('service_process')
                         @scope('actions', $service)
-                            <x-button icon="tabler.settings" wire:click="showSettings({{ $service->id }})"
+                            <x-button icon="tabler.settings"
+                                wire:click="$dispatch('slide-over.open', {component: 'modals.client.service-modal', arguments : {'service' : {{ $service->id }}}})"
                                 class="btn-circle btn-sm btn-primary" />
                         @endscope
                     @endcan
@@ -216,14 +216,12 @@ new class extends Component
                         @endforeach
                     </div>
                     <x:slot:menu>
-                        <x-button icon="tabler.settings" wire:click="showSettings({{ $service->id }})"
+                        <x-button icon="tabler.settings"
+                            wire:click="$dispatch('slide-over.open', {component: 'modals.client.service-modal', arguments : {'service' : {{ $service->id }}}})"
                             class="btn-circle btn-sm btn-primary" />
                     </x:slot:menu>
                 </x-card>
             @endforeach
         </div>
     @endif
-    @can('service_processs')
-        <livewire:components.drawers.drawer_service wire:model="editing" />
-    @endcan
 </div>

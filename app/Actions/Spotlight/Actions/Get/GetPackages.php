@@ -9,7 +9,7 @@ class GetPackages
 {
     use AsAction;
 
-    public function handle($branch_ids, $gender, $search = null)
+    public function handle($branch_ids, $gender, $search = null, $withoutShop = null)
     {
         return Package::query()
             ->where('active', true)
@@ -21,6 +21,9 @@ class GetPackages
             })
             ->when($gender, function ($q) use ($gender) {
                 $q->whereIn('gender', [$gender, 0]);
+            })
+            ->when($withoutShop, function ($q) {
+                $q->whereDoesntHave('shopPackage');
             })
             ->with('branch:id,name')
             ->orderBy('name')

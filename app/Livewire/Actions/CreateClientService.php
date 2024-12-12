@@ -39,7 +39,7 @@ class CreateClientService extends SlideOver
     {
         $validator = \Validator::make([
             'client_id' => $this->client->id,
-            'branch_id' => $this->client_model->branch_id,
+            'branch_id' => $this->client->branch_id,
             'service_ids' => $this->service_ids,
             'sale_id' => $this->sale_id,
             'total' => $this->seans,

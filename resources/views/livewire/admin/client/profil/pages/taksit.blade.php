@@ -6,8 +6,7 @@ use Livewire\Volt\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
-new class extends Component
-{
+new class extends Component {
     use \Livewire\WithoutUrlPagination, Toast, WithPagination, WithViewPlaceHolder;
 
     public ?int $client;
@@ -27,14 +26,7 @@ new class extends Component
 
     public function headers(): array
     {
-        return [
-            ['key' => 'date', 'label' => 'Tarih', 'sortBy' => 'date'],
-            ['key' => 'status', 'label' => 'Durum', 'sortBy' => 'status'],
-            ['key' => 'sale.unique_id', 'label' => 'Satış', 'sortBy' => 'sale_id'],
-            ['key' => 'remaining', 'label' => 'Kalan', 'sortBy' => 'remaining'],
-            ['key' => 'total', 'label' => 'Toplam', 'sortBy' => 'total'],
-            ['key' => 'client_taksits_locks_count', 'label' => 'Kilit', 'sortable' => false],
-        ];
+        return [['key' => 'date', 'label' => 'Tarih', 'sortBy' => 'date'], ['key' => 'status', 'label' => 'Durum', 'sortBy' => 'status'], ['key' => 'sale.unique_id', 'label' => 'Satış', 'sortBy' => 'sale_id'], ['key' => 'remaining', 'label' => 'Kalan', 'sortBy' => 'remaining'], ['key' => 'total', 'label' => 'Toplam', 'sortBy' => 'total'], ['key' => 'client_taksits_locks_count', 'label' => 'Kilit', 'sortable' => false]];
     }
 
     public function showSettings($id): void
@@ -48,49 +40,45 @@ new class extends Component
         return [
             'data' => $this->getData(),
             'headers' => $this->headers(),
-            'statistic' => [
-                ['name' => 'Toplam', 'value' => 0, 'number' => true],
-                ['name' => 'Kalan', 'value' => 0, 'number' => true],
-                ['name' => 'Gecikmiş', 'value' => 0, 'number' => true, 'red' => true],
-            ],
+            'statistic' => [['name' => 'Toplam', 'value' => 0, 'number' => true], ['name' => 'Kalan', 'value' => 0, 'number' => true], ['name' => 'Gecikmiş', 'value' => 0, 'number' => true, 'red' => true]],
         ];
     }
 };
 ?>
 <div>
-    <livewire:components.card.statistic.card_statistic :data="$statistic"/>
+    <livewire:components.card.statistic.card_statistic :data="$statistic" />
     <div class="flex justify-end mb-4 mt-5 gap-2">
         <p>Sıralama işlemlerini tablo görünümünden yapabilirsiniz.</p>
         <x-button wire:click="changeView" label="{{ $view == 'table' ? 'LİSTE' : 'TABLO' }}"
-                  icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline"/>
+            icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline" />
     </div>
     @if ($view)
         <div>
             <x-card>
                 <x-table :headers="$headers" :rows="$data" :sort-by="$sortBy" striped with-pagination>
                     <x-slot:empty>
-                        <x-icon name="o-cube" label="Taksit bulunmuyor."/>
+                        <x-icon name="o-cube" label="Taksit bulunmuyor." />
                     </x-slot:empty>
                     @scope('cell_sale.unique_id', $taksit)
-                    <p>{{ $taksit->sale->sale_no ?? ''}} - {{$taksit->sale->unique_id ?? ''}}</p>
+                        <p>{{ $taksit->sale->sale_no ?? '' }} - {{ $taksit->sale->unique_id ?? '' }}</p>
                     @endscope
                     @scope('cell_status', $taksit)
-                    <x-badge :value="$taksit->status->label()" class="badge-{{ $taksit->status->color() }}"/>
+                        <x-badge :value="$taksit->status->label()" class="badge-{{ $taksit->status->color() }}" />
                     @endscope
                     @scope('cell_date', $taksit)
-                    {{  $taksit->date_human }}
+                        {{ $taksit->date_human }}
                     @endscope
                     @scope('cell_total', $taksit)
-                    @price($taksit->total)
+                        @price($taksit->total)
                     @endscope
                     @scope('cell_remaining', $taksit)
-                    @price($taksit->remaining)
+                        @price($taksit->remaining)
                     @endscope
                     @can('taksit_process')
                         @scope('actions', $taksit)
-                        <x-button icon="tabler.settings"
-                                  wire:click="showSettings({{ $taksit->id }})"
-                                  class="btn-circle btn-sm btn-primary"/>
+                            <x-button icon="tabler.settings"
+                                wire:click="$dispatch('slide-over.open', {component: 'modals.client.taksit-modal', arguments : {'taksit' : {{ $taksit->id }}}})"
+                                class="btn-circle btn-sm btn-primary" />
                         @endscope
                     @endcan
                 </x-table>
@@ -106,8 +94,8 @@ new class extends Component
                     @can('taksit_process')
                         <x-slot:menu>
                             <x-button icon="tabler.settings"
-                                      wire:click="showSettings({{ $taksit->id }})"
-                                      class="btn-circle btn-sm btn-primary"/>
+                                wire:click="$dispatch('slide-over.open', {component: 'modals.client.taksit-modal', arguments : {'taksit' : {{ $taksit->id }}}})"
+                                class="btn-circle btn-sm btn-primary" />
                         </x-slot:menu>
                     @endcan
                     <x-list-item :item="$taksit">
@@ -115,7 +103,7 @@ new class extends Component
                             Durum
                         </x-slot:value>
                         <x-slot:actions>
-                            <x-badge :value="$taksit->status->label()" class="badge-{{ $taksit->status->color() }}"/>
+                            <x-badge :value="$taksit->status->label()" class="badge-{{ $taksit->status->color() }}" />
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$taksit">
@@ -123,7 +111,7 @@ new class extends Component
                             Satış
                         </x-slot:value>
                         <x-slot:actions>
-                            <p>{{ $taksit->sale->sale_no}} - {{$taksit->sale->unique_id}}</p>
+                            <p>{{ $taksit->sale->sale_no }} - {{ $taksit->sale->unique_id }}</p>
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$taksit">
@@ -145,9 +133,6 @@ new class extends Component
                 </x-card>
             @endforeach
         </div>
-        <x-pagination :rows="$data"/>
+        <x-pagination :rows="$data" />
     @endif
-    @can('taksit_processs')
-        <livewire:components.drawers.drawer_taksit wire:model="editing"/>
-    @endcan
 </div>

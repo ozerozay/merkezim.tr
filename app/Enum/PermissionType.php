@@ -51,4 +51,66 @@ enum PermissionType: string
     case website_settings = 'website_settings';
 
     case note_process = 'note_process';
+    case coupon_process = 'coupon_process';
+    case offer_process = 'offer_process';
+    case service_process = 'service_process';
+    case taksit_process = 'taksit_process';
+    case sale_process = 'sale_process';
+    case sale_product_process = 'sale_product_process';
+    case kasa_detail_process = 'kasa_detail_process';
+    case appointment_process = 'appointment_process';
+    case adisyon_process = 'adisyon_process';
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::change_sale_price => 'Satış fiyatını değiştirme yetkisi',
+
+            self::action_client_create => 'Yeni müşteri oluşturma yetkisi',
+            self::action_client_add_note => 'Müşteri notu ekleme yetkisi',
+            self::action_client_add_label => 'Müşteri etiketi ekleme yetkisi',
+            self::action_client_create_service => 'Müşteri hizmeti oluşturma yetkisi',
+            self::action_client_use_service => 'Müşteri hizmetini kullanma yetkisi',
+            self::action_client_create_offer => 'Teklif oluşturma yetkisi',
+            self::action_client_create_appointment => 'Randevu oluşturma yetkisi',
+            self::action_adisyon_create => 'Adisyon oluşturma yetkisi',
+            self::action_create_coupon => 'Kupon oluşturma yetkisi',
+            self::action_client_create_taksit => 'Taksit oluşturma yetkisi',
+            self::action_client_product_sale => 'Ürün satışı yetkisi',
+            self::action_client_sale => 'Satış işlemi yetkisi',
+            self::action_edit_user => 'Kullanıcı düzenleme yetkisi',
+            self::action_send_sms => 'SMS gönderme yetkisi',
+
+            self::client_profil => 'Müşteri profil görüntüleme yetkisi',
+            self::client_profil_note => 'Müşteri profil notları görüntüleme yetkisi',
+            self::client_profil_offer => 'Müşteri tekliflerini görüntüleme yetkisi',
+            self::client_profil_service => 'Müşteri hizmetlerini görüntüleme yetkisi',
+            self::client_profil_taksit => 'Müşteri taksitlerini görüntüleme yetkisi',
+            self::client_profil_sale => 'Müşteri satışlarını görüntüleme yetkisi',
+            self::client_profil_product => 'Müşteri ürünlerini görüntüleme yetkisi',
+            self::client_profil_appointment => 'Müşteri randevularını görüntüleme yetkisi',
+            self::client_profil_adisyon => 'Müşteri adisyonlarını görüntüleme yetkisi',
+            self::client_profil_coupon => 'Müşteri kuponlarını görüntüleme yetkisi',
+
+            self::page_kasa => 'Kasa sayfasına erişim yetkisi',
+            self::page_agenda => 'Ajanda sayfasına erişim yetkisi',
+            self::page_talep => 'Talep sayfasına erişim yetkisi',
+            self::page_reports => 'Raporlar sayfasına erişim yetkisi',
+            self::page_statistics => 'İstatistikler sayfasına erişim yetkisi',
+            self::page_randevu => 'Randevu sayfasına erişim yetkisi',
+            self::page_approve => 'Onay sayfasına erişim yetkisi',
+            self::page_finger => 'Parmak izi sayfasına erişim yetkisi',
+
+            self::admin_settings => 'Yönetim ayarları yetkisi',
+            self::admin_definations => 'Yönetim tanımları yetkisi',
+
+            self::kasa_mahsup => 'Kasa mahsup işlemleri yetkisi',
+            self::kasa_make_payment => 'Ödeme işlemi yapma yetkisi',
+            self::action_client_tahsilat => 'Tahsilat işlemleri yetkisi',
+
+            self::website_settings => 'Web sitesi ayarları yetkisi',
+
+            self::note_process => 'Not işlemleri yetkisi',
+        };
+    }
 }

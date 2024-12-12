@@ -4,11 +4,13 @@ namespace App\Traits;
 
 use App\Actions\Spotlight\Actions\Settings\GetAllSettingsAction;
 use Illuminate\Support\Collection;
+use Livewire\Attributes\Computed;
 
 trait WebSettingsHandler
 {
     public ?Collection $settings;
 
+    #[Computed(persist: true, cache: true)]
     public function getSettings(): void
     {
         $this->settings = GetAllSettingsAction::run();

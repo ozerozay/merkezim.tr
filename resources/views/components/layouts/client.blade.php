@@ -130,7 +130,7 @@
                         link="{{ route('logout') }}" />
                     <x-menu-separator />
                 @else
-                    <x-menu-item title="ONLİNE İŞLEM MERKEZİ" icon="tabler.mood-check" link="{{ route('login') }}" />
+                    <livewire:spotlight.components.login_button wire:key="lg-xks-{{ Str::random(10) }}" />
                     <x-menu-separator />
                 @endif
                 <x-menu-item title="Anasayfa" link="/" icon="tabler.home" />
@@ -163,21 +163,67 @@
         <x-slot:content>
             {{ $slot }}
         </x-slot:content>
+
     </x-main>
-    @if ($shop_active && !request()->is('shop/*'))
-        @livewire('spotlight.components.cart_button', [], key(1323))
-    @endif
+    <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2" wire:key="cart-buttson-{{ Str::random(10) }}">
+        @if ($shop_active)
+            @if (request()->is('shop/*'))
+                <livewire:web.shop.cart-button-page wire:key="djsaxeccr-{{ Str::random(10) }}" />
+            @else
+                <livewire:spotlight.components.shop_button wire:key="djsafweccr" />
+            @endif
+        @endif
+    </div>
     {{-- TOAST area --}}
     @persist('toast-spotlight')
+    @livewire('slide-over-pro')
 
     <x-toast />
     @endpersist()
+
+
 
 </body>
 <script type="text/javascript">
     /*document.addEventListener("contextmenu", function(e) {
         e.preventDefault();
     }, false);*/
+</script>
+<script type="text/javascript">
+    function otpSend(num) {
+        const milliseconds = num * 1000 //60 seconds
+        const currentDate = Date.now() + milliseconds
+        var countDownTime = new Date(currentDate).getTime()
+        let interval;
+        return {
+            countDown: milliseconds,
+            countDownTimer: new Date(currentDate).getTime(),
+            intervalID: null,
+            init() {
+                if (!this.intervalID) {
+                    this.intervalID = setInterval(() => {
+                        this.countDown = this.countDownTimer - new Date().getTime();
+                    }, 1000);
+                }
+            },
+            getTime() {
+                if (this.countDown < 0) {
+                    this.clearTimer()
+                }
+                return this.countDown;
+            },
+            formatTime(num) {
+                var date = new Date(num);
+                return new Date(this.countDown).toLocaleTimeString(navigator.language, {
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+            },
+            clearTimer() {
+                clearInterval(this.intervalID);
+            }
+        }
+    }
 </script>
 
 <style type="text/css">

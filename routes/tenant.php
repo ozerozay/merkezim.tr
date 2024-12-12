@@ -69,7 +69,7 @@ Route::middleware([
         Route::get('/davet', InvitePage::class)->name('client.profil.invite');
 
         Route::prefix('admin')->group(function () {
-            Volt::route('/', 'test')->name('admin.index');
+            Volt::route('/', 'admin-page')->name('admin.index');
 
             Route::prefix('action')->group(function () {
 
@@ -281,6 +281,9 @@ Route::middleware([
                             SettingsType::client_page_earn->name => true,
                             SettingsType::client_page_fatura->name => true,
                             SettingsType::client_page_support->name => true,
+
+                            SettingsType::client_page_shop_include_kdv->name => true,
+
                         ],
                     ]);
                 }

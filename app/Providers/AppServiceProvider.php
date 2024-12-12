@@ -29,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
         app()->singleton('settings', function () {
             return GetAllSettingsAction::run();
         });
@@ -91,6 +92,8 @@ class AppServiceProvider extends ServiceProvider
             'ilce' => 'App\Models\Ilce',
             'role' => 'Spatie\Permission\Models\Role',
             'sms_template' => 'App\Models\SMSTemplate',
+            'cart_item' => 'App\Models\CartItem',
+            'cart' => 'App\Models\Cart',
         ]);
 
         Blade::directive('price', function ($price) {

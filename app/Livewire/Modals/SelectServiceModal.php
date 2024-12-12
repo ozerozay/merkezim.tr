@@ -31,7 +31,7 @@ class SelectServiceModal extends Modal
     public function search(string $value = ''): void
     {
         $selectedOption = Service::whereIn('id', $this->service_ids)->get();
-        $this->service_collection = GetServices::run([$this->client->branch_id], $this->client->gender, $value)->merge($selectedOption);
+        $this->service_collection = GetServices::run([$this->client->branch_id], $this->client->gender, $value, false)->merge($selectedOption);
     }
 
     public function save(): void

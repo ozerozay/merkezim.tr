@@ -14,8 +14,7 @@ use Livewire\Volt\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
-new class extends Component
-{
+new class extends Component {
     use \Livewire\WithoutUrlPagination, Toast, WithPagination, WithViewPlaceHolder;
 
     public ?int $client;
@@ -36,16 +35,7 @@ new class extends Component
 
     public function headers()
     {
-        return [
-            ['key' => 'unique_id', 'label' => 'ID', 'sortBy' => 'unique_id'],
-            ['key' => 'price', 'label' => 'Fiyat', 'sortBy' => 'price'],
-            ['key' => 'status', 'label' => 'Durum', 'sortBy' => 'status'],
-            ['key' => 'items_count', 'label' => 'Hizmet', 'sortable' => false],
-            ['key' => 'date_human_created', 'label' => 'Oluşturulma', 'sortBy' => 'created_at'],
-            ['key' => 'date_human_expire', 'label' => 'Bitiş', 'sortBy' => 'expire_date'],
-            ['key' => 'user.name', 'label' => 'Personel', 'sortable' => false],
-            ['key' => 'message', 'label' => 'Açıklama', 'sortBy' => 'message'],
-        ];
+        return [['key' => 'unique_id', 'label' => 'ID', 'sortBy' => 'unique_id'], ['key' => 'price', 'label' => 'Fiyat', 'sortBy' => 'price'], ['key' => 'status', 'label' => 'Durum', 'sortBy' => 'status'], ['key' => 'items_count', 'label' => 'Hizmet', 'sortable' => false], ['key' => 'date_human_created', 'label' => 'Oluşturulma', 'sortBy' => 'created_at'], ['key' => 'date_human_expire', 'label' => 'Bitiş', 'sortBy' => 'expire_date'], ['key' => 'user.name', 'label' => 'Personel', 'sortable' => false], ['key' => 'message', 'label' => 'Açıklama', 'sortBy' => 'message']];
     }
 
     public function getOffers(): LengthAwarePaginator
@@ -64,11 +54,7 @@ new class extends Component
         return [
             'offers' => $this->getData(),
             'headers' => $this->headers(),
-            'statistic' => [
-                ['name' => 'Toplam', 'value' => 0, 'number' => true],
-                ['name' => 'Kalan', 'value' => 0, 'number' => true],
-                ['name' => 'Gecikmiş', 'value' => 0, 'number' => true, 'red' => true],
-            ],
+            'statistic' => [['name' => 'Toplam', 'value' => 0, 'number' => true], ['name' => 'Kalan', 'value' => 0, 'number' => true], ['name' => 'Gecikmiş', 'value' => 0, 'number' => true, 'red' => true]],
         ];
     }
     /*
@@ -120,40 +106,39 @@ new class extends Component
 
 ?>
 <div>
-    <livewire:components.card.statistic.card_statistic :data="$statistic"/>
+    <livewire:components.card.statistic.card_statistic :data="$statistic" />
     <div class="flex justify-end mb-4 mt-5 gap-2">
         <p>Sıralama işlemlerini tablo görünümünden yapabilirsiniz.</p>
         <x-button wire:click="changeView" label="{{ $view == 'table' ? 'LİSTE' : 'TABLO' }}"
-                  icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline"/>
+            icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline" />
     </div>
     @if ($view)
         <div>
             <x-card title="">
                 <x-table :headers="$headers" :rows="$offers" wire:model="expanded" :sort-by="$sortBy" striped
-                         with-pagination
-                         expandable>
+                    with-pagination expandable>
                     <x-slot:empty>
-                        <x-icon name="o-cube" label="Teklif bulunmuyor."/>
+                        <x-icon name="o-cube" label="Teklif bulunmuyor." />
                     </x-slot:empty>
                     @scope('cell_price', $offer)
-                    @price($offer->price)
+                        @price($offer->price)
                     @endscope
                     @can('offer_process')
                         @scope('actions', $offer)
-                        <x-button icon="tabler.settings"
-                                  wire:click="showSettings({{ $offer->id }})"
-                                  class="btn-circle btn-sm btn-primary"/>
+                            <x-button icon="tabler.settings"
+                                wire:click="$dispatch('slide-over.open', {component: 'modals.client.offer-modal', arguments : {'offer' : {{ $offer->id }}}})"
+                                class="btn-circle btn-sm btn-primary" />
                         @endscope
                     @endcan
                     @scope('expansion', $offer)
-                    <div class="bg-base-200 p-8 font-bold">
-                        @foreach ($offer->items as $item)
-                            {{ $item->itemable->name }}({{ $item->quantity }}) -
-                        @endforeach
-                    </div>
+                        <div class="bg-base-200 p-8 font-bold">
+                            @foreach ($offer->items as $item)
+                                {{ $item->itemable->name }}({{ $item->quantity }}) -
+                            @endforeach
+                        </div>
                     @endscope
                     @scope('cell_status', $offer)
-                    <x-badge :value="$offer->status->label()" class="badge-{{ $offer->status->color() }}"/>
+                        <x-badge :value="$offer->status->label()" class="badge-{{ $offer->status->color() }}" />
                     @endscope
                 </x-table>
             </x-card>
@@ -186,7 +171,7 @@ new class extends Component
                             Durum
                         </x-slot:value>
                         <x-slot:actions>
-                            <x-badge :value="$offer->status->label()" class="badge-{{ $offer->status->color() }}"/>
+                            <x-badge :value="$offer->status->label()" class="badge-{{ $offer->status->color() }}" />
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$offer">
@@ -229,17 +214,13 @@ new class extends Component
                     @can('offer_process')
                         <x-slot:menu>
                             <x-button icon="tabler.settings"
-                                      wire:click="showSettings({{ $offer->id }})"
-                                      class="btn-circle btn-sm btn-primary"/>
+                                wire:click="$dispatch('slide-over.open', {component: 'modals.client.offer-modal', arguments : {'offer' : {{ $offer->id }}}})"
+                                class="btn-circle btn-sm btn-primary" />
                         </x-slot:menu>
                     @endcan
                 </x-card>
             @endforeach
         </div>
-        <x-pagination :rows="$offers"/>
+        <x-pagination :rows="$offers" />
     @endif
-    @can('offer_procesxs')
-        <livewire:components.drawers.drawer_offer wire:model="editing"/>
-    @endcan
-
 </div>

@@ -9,7 +9,7 @@ class GetServices
 {
     use AsAction;
 
-    public function handle($branch_ids, $gender, $search = null)
+    public function handle($branch_ids, $gender, $search, $withoutShop = false)
     {
         return Service::query()
             ->where('active', true)
@@ -26,6 +26,9 @@ class GetServices
             })
             ->whereHas('category', function ($q) {
                 $q->where('active', true);
+            })
+            ->when($withoutShop, function ($q) {
+                $q->whereDoesntHave('shopService');
             })
             ->with('category.branches')
             ->orderBy('name')

@@ -22,9 +22,9 @@ class CheckUserInstantApprove
                 return false;
             }
 
-            if ($user->hasRole('admin')) {
+            /*if ($user->hasRole('admin')) {
                 return true;
-            }
+            }*/
 
             if ($user->instant_approve) {
                 return true;

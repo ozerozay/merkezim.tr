@@ -32,4 +32,6 @@ enum SettingsType: string
     case client_page_earn = 'client_page_earn';
     case client_page_fatura = 'client_page_fatura';
     case client_page_support = 'client_page_support';
+
+    case client_page_shop_include_kdv = 'client_page_shop_include_kdv';
 }

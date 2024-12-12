@@ -13,7 +13,7 @@
         "laravel/framework": "^11.9",
         "laravel/octane": "^2.5",
         "laravel/pulse": "^1.2",
-        "laravel/reverb": "^1.0",
+        "laravel/reverb": "^1.4",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
         "livewire/volt": "^1.6",

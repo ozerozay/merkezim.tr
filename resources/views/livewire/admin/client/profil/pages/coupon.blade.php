@@ -1,7 +1,6 @@
 <?php
 
-new class extends \Livewire\Volt\Component
-{
+new class extends \Livewire\Volt\Component {
     use \App\Traits\WithViewPlaceHolder, \Livewire\WithoutUrlPagination, \Livewire\WithPagination, \Mary\Traits\Toast;
 
     public ?int $client;
@@ -22,17 +21,12 @@ new class extends \Livewire\Volt\Component
 
     public function headers(): array
     {
-        return [
-            ['key' => 'code', 'label' => 'Kod', 'sortBy' => 'code'],
-            ['key' => 'discount_type', 'label' => 'Tip', 'sortBy' => 'discount_type'],
-            ['key' => 'count', 'label' => 'Adet', 'sortBy' => 'count'],
-            ['key' => 'discount_amount', 'label' => 'İndirim', 'sortBy' => 'discount_amount'],
-            ['key' => 'end_date', 'label' => 'Bitiş Tarihi', 'sortable' => false],
-            ['key' => 'user.name', 'label' => 'Oluşturan', 'sortBy' => 'user_id'],
-        ];
+        return [['key' => 'code', 'label' => 'Kod', 'sortBy' => 'code'], ['key' => 'discount_type', 'label' => 'Tip', 'sortBy' => 'discount_type'], ['key' => 'count', 'label' => 'Adet', 'sortBy' => 'count'], ['key' => 'discount_amount', 'label' => 'İndirim', 'sortBy' => 'discount_amount'], ['key' => 'end_date', 'label' => 'Bitiş Tarihi', 'sortable' => false], ['key' => 'user.name', 'label' => 'Oluşturan', 'sortBy' => 'user_id']];
     }
 
-    public function showSettings($id): void {}
+    public function showSettings($id): void
+    {
+    }
 
     public function with(): array
     {
@@ -48,24 +42,23 @@ new class extends \Livewire\Volt\Component
     <div class="flex justify-end mb-4 mt-5 gap-2">
         <p>Sıralama işlemlerini tablo görünümünden yapabilirsiniz.</p>
         <x-button wire:click="changeView" label="{{ $view == 'table' ? 'LİSTE' : 'TABLO' }}"
-                  icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline"/>
+            icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline" />
     </div>
     @if ($view)
         <div>
             <x-card title="">
-                <x-table :headers="$headers" :rows="$coupons" :sort-by="$sortBy" striped
-                         with-pagination>
+                <x-table :headers="$headers" :rows="$coupons" :sort-by="$sortBy" striped with-pagination>
                     <x-slot:empty>
-                        <x-icon name="o-cube" label="Kupon bulunmuyor."/>
+                        <x-icon name="o-cube" label="Kupon bulunmuyor." />
                     </x-slot:empty>
                     @scope('cell_discount_type', $coupon)
-                    {{ $coupon->discount_type ? 'YÜZDE' : 'TL'  }}
+                        {{ $coupon->discount_type ? 'YÜZDE' : 'TL' }}
                     @endscope
                     @can('coupon_process')
                         @scope('actions', $offer)
-                        <x-button icon="tabler.settings"
-                                  wire:click="showSettings({{ $offer->id }})"
-                                  class="btn-circle btn-sm btn-primary"/>
+                            <x-button icon="tabler.settings"
+                                wire:click="$dispatch('slide-over.open', {component: 'modals.client.coupon-modal', arguments : {'coupon' : {{ $offer->id }}}})"
+                                class="btn-circle btn-sm btn-primary" />
                         @endscope
                     @endcan
                 </x-table>
@@ -83,7 +76,7 @@ new class extends \Livewire\Volt\Component
                             Kupon Tipi
                         </x-slot:value>
                         <x-slot:actions>
-                            {{ $offer->discount_type ? 'YÜZDE' : 'TL'  }}
+                            {{ $offer->discount_type ? 'YÜZDE' : 'TL' }}
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$offer">
@@ -91,7 +84,7 @@ new class extends \Livewire\Volt\Component
                             İndirim
                         </x-slot:value>
                         <x-slot:actions>
-                            {{ $offer->discount_amount  }}
+                            {{ $offer->discount_amount }}
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$offer">
@@ -99,7 +92,7 @@ new class extends \Livewire\Volt\Component
                             Adet
                         </x-slot:value>
                         <x-slot:actions>
-                            {{ $offer->count  }}
+                            {{ $offer->count }}
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$offer">
@@ -107,24 +100,23 @@ new class extends \Livewire\Volt\Component
                             Oluşturan
                         </x-slot:value>
                         <x-slot:actions>
-                            {{ $offer->user->name ?? 'SİSTEM'}}
+                            {{ $offer->user->name ?? 'SİSTEM' }}
                         </x-slot:actions>
                     </x-list-item>
 
                     @can('coupon_process')
                         <x-slot:menu>
                             <x-button icon="tabler.settings"
-                                      wire:click="showSettings({{ $offer->id }})"
-                                      class="btn-circle btn-sm btn-primary"/>
+                                wire:click="$dispatch('slide-over.open', {component: 'modals.client.coupon-modal', arguments : {'coupon' : {{ $offer->id }}}})"
+                                class="btn-circle btn-sm btn-primary" />
                         </x-slot:menu>
                     @endcan
                 </x-card>
             @endforeach
         </div>
-        <x-pagination :rows="$coupons"/>
+        <x-pagination :rows="$coupons" />
     @endif
     @can('coupon_procescs')
-        <livewire:components.drawers.drawer_offer wire:model="editing"/>
+        <livewire:components.drawers.drawer_offer wire:model="editing" />
     @endcan
 </div>
-

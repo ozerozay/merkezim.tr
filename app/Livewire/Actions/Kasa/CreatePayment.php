@@ -38,7 +38,7 @@ class CreatePayment extends SlideOver
             'kasa_id' => $this->kasa_id,
             'message' => $this->message,
             'masraf_id' => $this->masraf_id,
-            'price' => $this->price,
+            'price' => $this->price * -1,
             'type' => 'masraf',
             'user_id' => auth()->user()->id,
             'permission' => PermissionType::kasa_make_payment,

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\SaleStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -15,6 +16,7 @@ class User extends Authenticatable
     use HasJsonRelationships;
     use HasRoles;
     use Notifiable;
+    use SoftDeletes;
 
     /**
      * The attributes that aren't mass assignable.

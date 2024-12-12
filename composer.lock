@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "87444bcf94935b30e8e46e981d8aa761",
+    "content-hash": "5e3952363300c09f234641cd21152869",
     "packages": [
         {
             "name": "abordage/html-min",
@@ -2424,13 +2424,13 @@
             "type": "library",
             "extra": {
                 "laravel": {
+                    "aliases": {
+                        "Output": "Laravel\\Reverb\\Output"
+                    },
                     "providers": [
                         "Laravel\\Reverb\\ApplicationManagerServiceProvider",
                         "Laravel\\Reverb\\ReverbServiceProvider"
-                    ],
-                    "aliases": {
-                        "Output": "Laravel\\Reverb\\Output"
-                    }
+                    ]
                 }
             },
             "autoload": {

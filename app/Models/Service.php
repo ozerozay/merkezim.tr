@@ -50,4 +50,9 @@ class Service extends Model
     {
         return $this->hasMany(ClientTaksitsLock::class);
     }
+
+    public function shopService()
+    {
+        return $this->hasOne(ShopService::class, 'service_id');
+    }
 }
