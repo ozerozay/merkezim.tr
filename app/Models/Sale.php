@@ -27,6 +27,8 @@ class Sale extends Model
             'staffs' => 'json',
             'status' => 'App\SaleStatus',
             'visible' => 'boolean',
+            'date' => 'date:Y-m-d',
+            'expire_date' => 'date:Y-m-d',
         ];
     }
 
@@ -73,6 +75,13 @@ class Sale extends Model
     public function staffs()
     {
         return $this->belongsToJson(Branch::class, 'staffs');
+    }
+
+    public function staff_names()
+    {
+        return $this->staffs()
+            ->pluck('name')
+            ->implode(', ');
     }
 
     public function coupon()

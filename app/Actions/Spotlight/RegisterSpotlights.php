@@ -16,8 +16,10 @@ use App\Actions\Spotlight\Queries\Pages\AppointmentPageBranchQuery;
 use App\Actions\Spotlight\Queries\Pages\AppointmentPageQuery;
 use App\Actions\Spotlight\Queries\Pages\TalepPageQuery;
 use App\Actions\Spotlight\Queries\ProductSaleQuery;
+use App\Actions\Spotlight\Queries\ReportQuery;
 use App\Actions\Spotlight\Queries\SaleQuery;
 use App\Actions\Spotlight\Queries\SettingsQuery;
+use App\Actions\Spotlight\Queries\StatisticQuery;
 use App\Actions\Spotlight\Queries\TaksitQuery;
 use App\Actions\Spotlight\Queries\Website\WebsiteSettingsQuery;
 use App\Actions\Spotlight\Queries\Website\WebsiteShopSettingsQuery;
@@ -34,8 +36,10 @@ use App\Actions\Spotlight\Tokens\Pages\AppointmentPageBranchToken;
 use App\Actions\Spotlight\Tokens\Pages\AppointmentPageToken;
 use App\Actions\Spotlight\Tokens\Pages\TalepPageToken;
 use App\Actions\Spotlight\Tokens\ProductSaleToken;
+use App\Actions\Spotlight\Tokens\ReportToken;
 use App\Actions\Spotlight\Tokens\SaleToken;
 use App\Actions\Spotlight\Tokens\Settings\SettingsToken;
+use App\Actions\Spotlight\Tokens\StatisticToken;
 use App\Actions\Spotlight\Tokens\TaksitToken;
 use App\Actions\Spotlight\Tokens\Website\WebsiteSettingsToken;
 use App\Actions\Spotlight\Tokens\Website\WebsiteShopSettingsToken;
@@ -104,6 +108,10 @@ class RegisterSpotlights
 
         /* Randevu Oluştur */
         Spotlight::registerGroup('appointment_create', 'Kategori');
+        Spotlight::registerGroup('reports', 'Raporlar');
+        Spotlight::registerGroup('reports_custom', 'Favoriler');
+
+        Spotlight::registerGroup('statistics', 'İstatistikler');
 
         /* Client Service İşlemleri */
 
@@ -159,6 +167,8 @@ class RegisterSpotlights
             CouponToken::run(),
             WebsiteSettingsToken::run(),
             WebsiteShopSettingsToken::run(),
+            ReportToken::run(),
+            StatisticToken::run(),
         ];
 
         if (SpotlightCheckPermission::run(PermissionType::admin_settings)) {
@@ -199,6 +209,8 @@ class RegisterSpotlights
             CouponQuery::run(),
             WebsiteSettingsQuery::run(),
             WebsiteShopSettingsQuery::run(),
+            ReportQuery::run(),
+            StatisticQuery::run(),
             /*SpotlightQuery::forToken('note', function ($query, SpotlightScopeToken $noteToken) {
                 $notes = Note::query()
                     ->get()

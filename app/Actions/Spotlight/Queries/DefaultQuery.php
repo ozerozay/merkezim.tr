@@ -65,7 +65,7 @@ class DefaultQuery
                     ->setTitle('Ajanda')
                     ->setSubtitle('')
                     ->setGroup('pages')
-                    ->setTokens(['kasa' => new Kasa])
+                    ->setAction('jump_to', ['path' => route('admin.agenda')])
                     ->setIcon('calendar'), );
             }
 
@@ -81,7 +81,7 @@ class DefaultQuery
                 $pages->push(SpotlightResult::make()
                     ->setTitle('Raporlar')
                     ->setGroup('pages')
-                    ->setTokens(['kasa' => new Kasa])
+                    ->setTokens(['reports' => new User])
                     ->setIcon('chart-bar'), );
             }
 
@@ -89,9 +89,17 @@ class DefaultQuery
                 $pages->push(SpotlightResult::make()
                     ->setTitle('İstatistikler')
                     ->setGroup('pages')
+                    ->setTokens(['statistics' => new User])
+                    ->setIcon('chart-bar'), );
+            }
+
+            /*if (SpotlightCheckPermission::run(PermissionType::page_statistics)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('İstatistikler')
+                    ->setGroup('pages')
                     ->setTokens(['kasa' => new Kasa])
                     ->setIcon('chart-pie'), );
-            }
+            }*/
 
             $pages->push(SpotlightResult::make()
                 ->setTitle('Çıkış')
@@ -123,13 +131,13 @@ class DefaultQuery
                         ]));
             }
 
-            if (SpotlightCheckPermission::run(PermissionType::page_finger)) {
+            /*if (SpotlightCheckPermission::run(PermissionType::page_finger)) {
                 $pages->push(SpotlightResult::make()
                     ->setTitle('Parmak İzi')
                     ->setGroup('pages')
                     //->setTokens(['settings' => new User])
                     ->setIcon('finger-print'));
-            }
+            }*/
 
             $general_settings = \App\Actions\Spotlight\Actions\Settings\GetGeneralSettings::run();
 

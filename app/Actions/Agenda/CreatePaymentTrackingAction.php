@@ -21,39 +21,43 @@ class CreatePaymentTrackingAction
 
             $agenda = Agenda::create($info);
 
-            dump($info);
-            if ($info['frequency'] == 'tek') {
-                AgendaOccurrence::create([
-                    'agenda_id' => $agenda->id,
-                    'occurrence_date' => $info['date'],
-                ]);
-            } elseif ($info['frequency'] == 'gun') {
-                $startDate = Carbon::createFromFormat('Y-m-d', $info['date']);
-                for ($i = 0; $i < $info['installment']; $i++) {
+            switch ($info['frequency']) {
+                case 'tek':
                     AgendaOccurrence::create([
                         'agenda_id' => $agenda->id,
-                        'occurrence_date' => $startDate->toDateString(),
+                        'occurrence_date' => $info['date'],
                     ]);
-                    $startDate->addDay();
-                }
-            } elseif ($info['frequency'] == 'hafta') {
-                $startDate = Carbon::createFromFormat('Y-m-d', $info['date']);
-                for ($i = 0; $i < $info['installment']; $i++) {
-                    AgendaOccurrence::create([
-                        'agenda_id' => $agenda->id,
-                        'occurrence_date' => $startDate->toDateString(),
-                    ]);
-                    $startDate->addDays(7);
-                }
-            } elseif ($info['frequency'] == 'ay') {
-                $startDate = Carbon::createFromFormat('Y-m-d', $info['date']);
-                for ($i = 0; $i < $info['installment']; $i++) {
-                    AgendaOccurrence::create([
-                        'agenda_id' => $agenda->id,
-                        'occurrence_date' => $startDate->toDateString(),
-                    ]);
-                    $startDate->addMonth();
-                }
+                    break;
+                case 'gun':
+                    $startDate = Carbon::createFromFormat('Y-m-d', $info['date']);
+                    for ($i = 0; $i < $info['installment']; $i++) {
+                        AgendaOccurrence::create([
+                            'agenda_id' => $agenda->id,
+                            'occurrence_date' => $startDate->toDateString(),
+                        ]);
+                        $startDate->addDay();
+                    }
+                    break;
+                case 'hafta':
+                    $startDate = Carbon::createFromFormat('Y-m-d', $info['date']);
+                    for ($i = 0; $i < $info['installment']; $i++) {
+                        AgendaOccurrence::create([
+                            'agenda_id' => $agenda->id,
+                            'occurrence_date' => $startDate->toDateString(),
+                        ]);
+                        $startDate->addDays(7);
+                    }
+                    break;
+                case 'ay':
+                    $startDate = Carbon::createFromFormat('Y-m-d', $info['date']);
+                    for ($i = 0; $i < $info['installment']; $i++) {
+                        AgendaOccurrence::create([
+                            'agenda_id' => $agenda->id,
+                            'occurrence_date' => $startDate->toDateString(),
+                        ]);
+                        $startDate->addMonth();
+                    }
+                    break;
             }
 
             DB::commit();

@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 use App\AppointmentStatus;
 use App\Enum\SettingsType;
+use App\Jobs\SendReportPdfJob;
+use App\Livewire\Reports\ClientReport;
+use App\Livewire\Reports\SaleReport;
+use App\Livewire\Reports\ServiceReport;
+use App\Livewire\Statistics\ClientStatistic;
 use App\Livewire\Web\Profil\AppointmentPage;
 use App\Livewire\Web\Profil\CouponPage;
 use App\Livewire\Web\Profil\InvitePage;
@@ -11,6 +16,7 @@ use App\Livewire\Web\Profil\OfferPage;
 use App\Livewire\Web\Profil\SeansPage;
 use App\Livewire\Web\Profil\TaksitPage;
 use App\Livewire\Web\Shop\PackagePage;
+use App\Livewire\WizardPage;
 use App\Models\Branch;
 use App\Models\Offer;
 use App\Models\Sale;
@@ -73,90 +79,90 @@ Route::middleware([
 
             Route::prefix('action')->group(function () {
 
-                Volt::route('/note', 'admin.actions.client_note_add')
-                    ->name('admin.actions.client_note_add')
-                    ->middleware('can:action_client_add_note');
+                /* Volt::route('/note', 'admin.actions.client_note_add')
+                     ->name('admin.actions.client_note_add')
+                     ->middleware('can:action_client_add_note');
 
-                Volt::route('/create_service', 'admin.actions.client_create_service')
-                    ->name('admin.actions.client_create_service')
-                    ->middleware('can:action_client_create_service');
+                 Volt::route('/create_service', 'admin.actions.client_create_service')
+                     ->name('admin.actions.client_create_service')
+                     ->middleware('can:action_client_create_service');
 
-                Volt::route('/transfer_service', 'admin.actions.client_transfer_service')
-                    ->name('admin.actions.client_transfer_service')
-                    ->middleware('can:action_client_transfer_service');
+                 Volt::route('/transfer_service', 'admin.actions.client_transfer_service')
+                     ->name('admin.actions.client_transfer_service')
+                     ->middleware('can:action_client_transfer_service');
 
-                Volt::route('/add_label', 'admin.actions.client_add_label')
-                    ->name('admin.actions.client_add_label')
-                    ->middleware('can:action_client_add_label');
+                 Volt::route('/add_label', 'admin.actions.client_add_label')
+                     ->name('admin.actions.client_add_label')
+                     ->middleware('can:action_client_add_label');
 
-                Volt::route('/use_service', 'admin.actions.client_use_service')
-                    ->name('admin.actions.client_use_service')
-                    ->middleware('can:action_client_use_service');
+                 Volt::route('/use_service', 'admin.actions.client_use_service')
+                     ->name('admin.actions.client_use_service')
+                     ->middleware('can:action_client_use_service');
 
-                Volt::route('/client_create', 'admin.actions.client_create')
-                    ->name('admin.actions.client_create')
-                    ->middleware('can:action_client_create');
+                 Volt::route('/client_create', 'admin.actions.client_create')
+                     ->name('admin.actions.client_create')
+                     ->middleware('can:action_client_create');
 
-                Volt::route('/product_sale', 'admin.actions.client_product_sale')
-                    ->name('admin.actions.client_product_sale')
-                    ->middleware('can:action_client_product_sale');
+                 Volt::route('/product_sale', 'admin.actions.client_product_sale')
+                     ->name('admin.actions.client_product_sale')
+                     ->middleware('can:action_client_product_sale');
 
-                Volt::route('/sale_create', 'admin.actions.client_sale.create')
-                    ->name('admin.actions.client_sale_create')
-                    ->middleware('can:action_client_sale');
+                 Volt::route('/sale_create', 'admin.actions.client_sale.create')
+                     ->name('admin.actions.client_sale_create')
+                     ->middleware('can:action_client_sale');
 
-                Volt::route('/coupon_create', 'admin.actions.create_coupon')
-                    ->name('admin.actions.create_coupon')
-                    ->middleware('can:action_create_coupon');
+                 Volt::route('/coupon_create', 'admin.actions.create_coupon')
+                     ->name('admin.actions.create_coupon')
+                     ->middleware('can:action_create_coupon');
 
-                Volt::route('/offer_create', 'admin.actions.client_create_offer')
-                    ->name('admin.actions.client_create_offer')
-                    ->middleware('can:action_client_create_offer');
+                 Volt::route('/offer_create', 'admin.actions.client_create_offer')
+                     ->name('admin.actions.client_create_offer')
+                     ->middleware('can:action_client_create_offer');
 
-                Volt::route('/taksit_create', 'admin.actions.client_create_taksit')
-                    ->name('admin.actions.client_create_taksit')
-                    ->middleware('can:action_client_create_taksit');
+                 Volt::route('/taksit_create', 'admin.actions.client_create_taksit')
+                     ->name('admin.actions.client_create_taksit')
+                     ->middleware('can:action_client_create_taksit');
 
-                Volt::route('/appointment_create', 'admin.actions.client_create_appointment')
-                    ->name('admin.actions.client_create_appointment')
-                    ->middleware('can:action_client_create_appointment');
+                 Volt::route('/appointment_create', 'admin.actions.client_create_appointment')
+                     ->name('admin.actions.client_create_appointment')
+                     ->middleware('can:action_client_create_appointment');
 
-                Volt::route('/appointment_close', 'admin.actions.close_appointment')
-                    ->name('admin.actions.close_appointment')
-                    ->middleware('can:action_close_appointment');
+                 Volt::route('/appointment_close', 'admin.actions.close_appointment')
+                     ->name('admin.actions.close_appointment')
+                     ->middleware('can:action_close_appointment');
 
-                /*Route::prefix('/offer')->group(function () {
+            Route::prefix('/offer')->group(function () {
 
-                    Volt::route('/customer', 'admin.actions.client_offer.customer')
-                        ->name('admin.actions.client_offer_customer');
-                    Volt::route('/create', 'admin.actions.client_offer.create')
-                        ->name('admin.actions.client_offer_create');
+                     Volt::route('/customer', 'admin.actions.client_offer.customer')
+                         ->name('admin.actions.client_offer_customer');
+                     Volt::route('/create', 'admin.actions.client_offer.create')
+                         ->name('admin.actions.client_offer_create');
 
-                })->middleware('can:action_client_offer');*/
+                 })->middleware('can:action_client_offer');*/
 
-                Volt::route('/adisyon', 'admin.actions.adisyon.index')
-                    ->name('admin.actions.adisyon_create')
-                    ->middleware('can:action_adisyon_create');
+                /* Volt::route('/adisyon', 'admin.actions.adisyon.index')
+                     ->name('admin.actions.adisyon_create')
+                     ->middleware('can:action_adisyon_create');
 
-                Volt::route('/reminder', 'admin.actions.create_reminder')
-                    ->name('admin.actions.create_reminder')
-                    ->middleware('can:action_create_reminder');
+                 Volt::route('/reminder', 'admin.actions.create_reminder')
+                     ->name('admin.actions.create_reminder')
+                     ->middleware('can:action_create_reminder');
 
-                Volt::route('/payment_tracking', 'admin.actions.create_payment_tracking')
-                    ->name('admin.actions.create_payment_tracking')
-                    ->middleware('can:action_create_payment_tracking');
+                 Volt::route('/payment_tracking', 'admin.actions.create_payment_tracking')
+                     ->name('admin.actions.create_payment_tracking')
+                     ->middleware('can:action_create_payment_tracking');
 
-                Volt::route('/tahsilat', 'admin.actions.client_tahsilat')
-                    ->name('admin.actions.tahsilat')
-                    ->middleware('can:action_client_tahsilat');
+                 Volt::route('/tahsilat', 'admin.actions.client_tahsilat')
+                     ->name('admin.actions.tahsilat')
+                     ->middleware('can:action_client_tahsilat');*/
 
             });
 
             Route::prefix('kasa')->group(function () {
                 Volt::route('/', 'admin.kasa.index')->name('admin.kasa')->middleware('can:page_kasa');
-                Volt::route('/detail', 'admin.kasa.detail')->name('admin.kasa.detail')->middleware('can:page_kasa_detail');
-                Volt::route('/mahsup', 'admin.actions.kasa.mahsup')->name('admin.kasa.mahsup')->middleware('can:kasa_mahsup');
-                Volt::route('/payment', 'admin.actions.kasa.make_payment')->name('admin.kasa.make_payment')->middleware('can:kasa_make_payment');
+                //Volt::route('/detail', 'admin.kasa.detail')->name('admin.kasa.detail')->middleware('can:page_kasa_detail');
+                //Volt::route('/mahsup', 'admin.actions.kasa.mahsup')->name('admin.kasa.mahsup')->middleware('can:kasa_mahsup');
+                //Volt::route('/payment', 'admin.actions.kasa.make_payment')->name('admin.kasa.make_payment')->middleware('can:kasa_make_payment');
             });
 
             Route::prefix('appointment')->group(function () {
@@ -179,12 +185,24 @@ Route::middleware([
                 Volt::route('/{user}/home', 'admin.client.profil.anasayfa')->name('admin.client.profil.anasayfa')->middleware('can:client_profil');
             });
 
+            Route::prefix('reports')->group(function () {
+                Route::get('/client', ClientReport::class)->name('admin.reports.client');
+                Route::get('/sale', SaleReport::class)->name('admin.reports.sale');
+                Route::get('/service', ServiceReport::class)->name('admin.reports.service');
+            });
+
+            Route::prefix('statistics')->group(function () {
+                Route::get('/client', ClientStatistic::class)->name('admin.statistics.client');
+            });
+
+            Route::get('/wizard', WizardPage::class)->name('admin.wizard');
+
             /*Route::prefix('client')->group(function () {
                 Volt::route('/', 'admin.client.index')->name('admin.client.index');
                 Volt::route('/{user?}', 'admin.client.profil.index')->name('admin.client.profil.index');
             });*/
 
-            Route::prefix('sale')->group(function () {
+            /*Route::prefix('sale')->group(function () {
                 Volt::route('/create/{client?}', 'admin.sale.create')->name('admin.sale.create');
             });
 
@@ -200,8 +218,13 @@ Route::middleware([
                     Volt::route('/', 'admin.settings.defination.package.index')->name('admin.settings.defination.package');
                     Volt::route('/{package}/items', 'admin.settings.defination.package.items')->name('admin.settings.defination.package.items');
                 })->middleware('can:defination_package');
-            });
+            });*/
         })->middleware('role:admin,staff');
+    });
+
+    Route::get('/job', function () {
+        SendReportPdfJob::dispatch()->delay(now()->addMinutes(5));
+
     });
 
     Route::get('/cache', function () {});

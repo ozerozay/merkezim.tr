@@ -74,6 +74,11 @@ class User extends Authenticatable
         return $this->hasMany(Offer::class);
     }
 
+    public function clientOffers()
+    {
+        return $this->hasMany(Offer::class, 'client_id');
+    }
+
     /**
      * Get all of the sales.
      *
@@ -394,6 +399,11 @@ class User extends Authenticatable
         return $this->hasMany(Talep::class);
     }
 
+    public function clientReferans()
+    {
+        return $this->hasMany(User::class, 'referans_id');
+    }
+
     /**
      * Get all of the talepProcesses.
      *
@@ -419,6 +429,13 @@ class User extends Authenticatable
     public function staffInstantApproves()
     {
         return $this->belongsToJson(Permission::class, 'instant_approves');
+    }
+
+    public function label_names()
+    {
+        return $this->client_labels()
+            ->pluck('name')
+            ->implode(', ');
     }
 
     public function branch_names()

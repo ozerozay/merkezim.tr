@@ -33,6 +33,18 @@ enum AppointmentStatus: string
         ]);
     }
 
+    public static function activeNoLate(): \Illuminate\Support\Collection
+    {
+        return collect([
+            self::waiting,
+            self::awaiting_approve,
+            self::confirmed,
+            self::merkez,
+            self::forwarded,
+            self::teyitli,
+        ]);
+    }
+
     public static function deactive(): \Illuminate\Support\Collection
     {
         return collect([

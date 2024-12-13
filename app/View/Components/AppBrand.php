@@ -26,7 +26,7 @@ class AppBrand extends Component
                     <!-- Hidden when collapsed -->
                     <div {{ $attributes->class(["hidden-when-collapsed"]) }}>
                         <div class="flex items-center gap-2">
-                            <span class="font-bold text-3xl me-3 bg-gradient-to-r from-purple-500 to-purple-400 bg-clip-text text-transparent ">
+                            <span class="font-bold text-3xl me-3 ">
                                 Merkezim
                             </span>
                         </div>
