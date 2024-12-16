@@ -10,13 +10,16 @@ class EditClientAction
 {
     use AsAction ,StrHelper;
 
-    public function handle($info)
+    public function handle($info, $approve = false)
     {
-        Peren::runDatabaseTransactionApprove($info, function () use ($info) {
+        return Peren::runDatabaseTransactionApprove($info, function () use ($info) {
             $info['name'] = $this->strUpper($info['name']);
 
             $client = \App\Models\User::find($info['client_id']);
             $client->update($info);
-        });
+            \DB::commit();
+
+            return [$client->id];
+        }, $approve);
     }
 }

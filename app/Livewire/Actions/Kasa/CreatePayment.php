@@ -42,6 +42,7 @@ class CreatePayment extends SlideOver
             'type' => 'masraf',
             'user_id' => auth()->user()->id,
             'permission' => PermissionType::kasa_make_payment,
+            'paid' => false,
         ], [
             'date' => 'required',
             'kasa_id' => 'required|exists:kasas,id',
@@ -51,6 +52,7 @@ class CreatePayment extends SlideOver
             'type' => 'required',
             'user_id' => 'required',
             'permission' => 'required',
+            'paid' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -77,6 +79,7 @@ class CreatePayment extends SlideOver
             'type' => 'staff',
             'user_id' => auth()->user()->id,
             'permission' => PermissionType::kasa_make_payment,
+            'paid' => false,
         ], [
             'date' => 'required',
             'kasa_id' => 'required|exists:kasas,id',
@@ -87,6 +90,7 @@ class CreatePayment extends SlideOver
             'type' => 'required',
             'user_id' => 'required',
             'permission' => 'required',
+            'paid' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -113,6 +117,7 @@ class CreatePayment extends SlideOver
             'type' => 'client',
             'user_id' => auth()->user()->id,
             'permission' => PermissionType::kasa_make_payment,
+            'paid' => false,
         ], [
             'date' => 'required',
             'kasa_id' => 'required|exists:kasas,id',
@@ -123,6 +128,7 @@ class CreatePayment extends SlideOver
             'type' => 'required',
             'user_id' => 'required',
             'permission' => 'required',
+            'paid' => 'required',
         ]);
 
         if ($validator->fails()) {

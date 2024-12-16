@@ -18,9 +18,9 @@ class CreateSaleProductAction
 {
     use AsAction;
 
-    public function handle($info): void
+    public function handle($info, $approve = false)
     {
-        Peren::runDatabaseTransactionApprove($info, function () use ($info) {
+        return Peren::runDatabaseTransactionApprove($info, function () use ($info) {
             $client = User::query()
                 ->select(['id', 'name', 'branch_id'])
                 ->where('id', $info['client_id'])
@@ -71,6 +71,10 @@ class CreateSaleProductAction
                     'type' => TransactionType::product_pesinat,
                 ]);
             }
-        });
+
+            \DB::commit();
+
+            return [$sale_product->id];
+        }, $approve);
     }
 }

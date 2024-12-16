@@ -85,6 +85,13 @@ class Appointment extends Model
         );
     }
 
+    protected function finishServiceNames(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->finish_services->map(fn ($service) => $service->service->name.'(1)')->implode(', ')
+        );
+    }
+
     public function service_names(Appointment $appointment)
     {
         return $appointment->services->map(fn ($service) => $service->service->name.'(1)')->implode(', ');

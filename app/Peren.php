@@ -28,6 +28,11 @@ class Peren
         return $date != null ? Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d') : null;
     }
 
+    public static function parseDateAndFormat($date): ?string
+    {
+        return $date != null ? Carbon::createFromFormat('Y-m-d', $date)->format('d/m/Y') : null;
+    }
+
     public static function formatRangeDate($date): array
     {
         $first_date = null;
@@ -135,15 +140,15 @@ class Peren
         }
     }
 
-    public static function runDatabaseTransactionApprove($info, callable $callback): void
+    public static function runDatabaseTransactionApprove($info, callable $callback, $approve = false)
     {
         try {
             \DB::beginTransaction();
             CheckUserPermission::run($info['permission']);
             CheckBranchPermission::run($info['client_id'] ?? null);
 
-            if (CheckUserInstantApprove::run($info['user_id'], $info['permission'])) {
-                $callback();
+            if ($approve || CheckUserInstantApprove::run($info['user_id'], $info['permission'])) {
+                return $callback();
             } else {
                 RequestApproveAction::run($info, $info['user_id'], $info['permission'], $info['message'] ?? '');
             }
@@ -153,5 +158,10 @@ class Peren
             \DB::rollBack();
             throw ToastException::error('İşlem tamamlanamadı.'.$e->getMessage());
         }
+    }
+
+    public static function pluckNames($data)
+    {
+        return $data->map(fn ($d) => $d->name)->implode(', ');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Reports;
 
-use App\Actions\Spotlight\Actions\Report\GetSaleReportAction;
+use App\Actions\Spotlight\Actions\Report\GetServiceReportAction;
 use App\Enum\ReportType;
 use App\Traits\ReportHandler;
 use Livewire\Attributes\Computed;
@@ -15,6 +15,8 @@ class ServiceReport extends Component
     public ?ReportType $reportType = ReportType::report_service;
 
     public ?string $reportName = 'service-report';
+
+    public array $sortBy = ['column' => 'created_at', 'direction' => 'desc'];
 
     public function getHeaders(): array
     {
@@ -33,6 +35,6 @@ class ServiceReport extends Component
     #[Computed()]
     public function getReport()
     {
-        return GetSaleReportAction::run($this->filters, $this->sortBy);
+        return GetServiceReportAction::run($this->filters, $this->sortBy);
     }
 }

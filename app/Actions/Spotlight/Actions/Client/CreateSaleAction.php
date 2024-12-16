@@ -19,9 +19,9 @@ class CreateSaleAction
 {
     use AsAction;
 
-    public function handle($info)
+    public function handle($info, $approve = false)
     {
-        Peren::runDatabaseTransactionApprove($info, function () use ($info) {
+        return Peren::runDatabaseTransactionApprove($info, function () use ($info) {
             $client = User::select('id', 'name', 'branch_id')->where('id', $info['client_id'])->first();
 
             $sale = Sale::create([
@@ -105,6 +105,10 @@ class CreateSaleAction
                     'type' => TransactionType::pesinat,
                 ]);
             }
-        });
+
+            \DB::commit();
+
+            return [$sale->id];
+        }, $approve);
     }
 }

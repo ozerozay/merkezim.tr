@@ -17,7 +17,9 @@ class Approve extends Model
     {
         return [
             'data' => 'json',
+            'approved_id' => 'array',
             'type' => \App\Enum\PermissionType::class,
+            'created_at' => 'date:Y-m-d H:i:s',
         ];
     }
 

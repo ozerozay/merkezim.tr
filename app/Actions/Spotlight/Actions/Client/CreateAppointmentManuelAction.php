@@ -23,9 +23,9 @@ class CreateAppointmentManuelAction
     /**
      * @throws ToastException
      */
-    public function handle($info): void
+    public function handle($info, $approve = false)
     {
-        Peren::runDatabaseTransactionApprove($info, function () use ($info) {
+        return Peren::runDatabaseTransactionApprove($info, function () use ($info, $approve) {
             $info['date'] = Carbon::parse($info['date']);
 
             $client = User::query()
@@ -71,7 +71,7 @@ class CreateAppointmentManuelAction
                 'duration' => $total_duration,
                 'date_start' => $start_date->format('Y-m-d H:i:s'),
                 'date_end' => $end_date->format('Y-m-d H:i:s'),
-                'status' => CheckUserInstantApprove::run($info['user_id'], $info['permission']) ? AppointmentStatus::waiting : AppointmentStatus::awaiting_approve,
+                'status' => CheckUserInstantApprove::run($info['user_id'], $info['permission']) || $approve ? AppointmentStatus::waiting : AppointmentStatus::awaiting_approve,
                 'type' => AppointmentType::appointment,
                 'message' => $info['message'],
             ]);
@@ -97,9 +97,13 @@ class CreateAppointmentManuelAction
                         throw new AppException('Seçilen hizmette yeterli seansı bulunmuyor.'.$service->service()->name);
                     }
                 }
+
+                \DB::commit();
+
+                return [$appointment->id];
             } else {
                 throw new AppException('Randevu oluşturulamadı.');
             }
-        });
+        }, $approve);
     }
 }

@@ -10,10 +10,14 @@ class CreateCouponAction
 {
     use AsAction;
 
-    public function handle($info): void
+    public function handle($info, $approve = false)
     {
-        Peren::runDatabaseTransactionApprove($info, function () use ($info) {
-            Coupon::create($info);
-        });
+        return Peren::runDatabaseTransactionApprove($info, function () use ($info) {
+            $id = Coupon::create($info);
+
+            \DB::commit();
+
+            return [$id->id];
+        }, $approve);
     }
 }

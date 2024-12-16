@@ -18,9 +18,9 @@ class CreateAdisyonAction
 {
     use AsAction;
 
-    public function handle($info)
+    public function handle($info, $approve = false)
     {
-        Peren::runDatabaseTransactionApprove($info, function () use ($info) {
+        return Peren::runDatabaseTransactionApprove($info, function () use ($info) {
 
             $client = User::query()
                 ->select(['id', 'name', 'branch_id'])
@@ -92,6 +92,10 @@ class CreateAdisyonAction
                     'type' => TransactionType::adisyon_pesinat,
                 ]);
             }
-        });
+
+            \DB::commit();
+
+            return [$adisyon->id];
+        }, $approve);
     }
 }

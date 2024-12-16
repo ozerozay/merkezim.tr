@@ -5,9 +5,12 @@ declare(strict_types=1);
 use App\AppointmentStatus;
 use App\Enum\SettingsType;
 use App\Jobs\SendReportPdfJob;
+use App\Livewire\Reports\AppointmentReport;
 use App\Livewire\Reports\ClientReport;
+use App\Livewire\Reports\KasaReport;
 use App\Livewire\Reports\SaleReport;
 use App\Livewire\Reports\ServiceReport;
+use App\Livewire\Reports\TaksitReport;
 use App\Livewire\Statistics\ClientStatistic;
 use App\Livewire\Web\Profil\AppointmentPage;
 use App\Livewire\Web\Profil\CouponPage;
@@ -189,6 +192,9 @@ Route::middleware([
                 Route::get('/client', ClientReport::class)->name('admin.reports.client');
                 Route::get('/sale', SaleReport::class)->name('admin.reports.sale');
                 Route::get('/service', ServiceReport::class)->name('admin.reports.service');
+                Route::get('/taksit', TaksitReport::class)->name('admin.reports.taksit');
+                Route::get('/appointment', AppointmentReport::class)->name('admin.reports.appointment');
+                Route::get('/kasa', KasaReport::class)->name('admin.reports.kasa');
             });
 
             Route::prefix('statistics')->group(function () {

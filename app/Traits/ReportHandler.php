@@ -15,16 +15,23 @@ trait ReportHandler
 
     public $filters = [];
 
-    public array $sortBy = ['column' => 'date', 'direction' => 'desc'];
-
     #[Url()]
     public $report = null;
 
     public $favori = false;
 
+    public function setSortBy($value)
+    {
+        $this->sortBy = $value;
+    }
+
+    public function getSortBy()
+    {
+        return $this->sortBy;
+    }
+
     public function mount()
     {
-
         if ($this->report != null) {
             $report_check = (! auth()->user()->hasRole('admin'))
             ? UserReport::query()
@@ -41,8 +48,8 @@ trait ReportHandler
                 $this->filters = $report_check->data;
                 $this->favori = true;
             }
-
         }
+
     }
 
     public function deleteReport($id)

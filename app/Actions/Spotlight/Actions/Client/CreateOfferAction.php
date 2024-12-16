@@ -18,9 +18,9 @@ class CreateOfferAction
     /**
      * @throws ToastException
      */
-    public function handle($info)
+    public function handle($info, $approve = false)
     {
-        Peren::runDatabaseTransactionApprove($info, function () use ($info) {
+        return Peren::runDatabaseTransactionApprove($info, function () use ($info) {
 
             $offer = Offer::create([
                 'unique_id' => CreateUniqueID::run('offer'),
@@ -51,6 +51,9 @@ class CreateOfferAction
                 }
             }
 
-        });
+            \DB::commit();
+
+            return [$offer->id];
+        }, $approve);
     }
 }

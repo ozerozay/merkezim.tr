@@ -52,6 +52,7 @@ class ReportQuery
                 ->setTitle('Taksit')
                 ->setGroup('reports')
                 ->setIcon('chart-bar')
+                ->setAction('jump_to', ['path' => route('admin.reports.taksit')])
             );
 
             $results->push(SpotlightResult::make()
@@ -71,12 +72,14 @@ class ReportQuery
                 ->setTitle('Randevu')
                 ->setGroup('reports')
                 ->setIcon('chart-bar')
+                ->setAction('jump_to', ['path' => route('admin.reports.appointment')])
             );
 
             $results->push(SpotlightResult::make()
                 ->setTitle('Kasa')
                 ->setGroup('reports')
                 ->setIcon('chart-bar')
+                ->setAction('jump_to', ['path' => route('admin.reports.kasa')])
             );
 
             $results->push(SpotlightResult::make()

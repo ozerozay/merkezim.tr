@@ -5,12 +5,13 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Modelable;
 use Livewire\Volt\Component;
 
-new class extends Component
-{
+new class extends Component {
     #[Modelable]
     public $staff_ids = [];
 
     public $staffs;
+
+    public $label = 'Personeller';
 
     public function mount()
     {
@@ -26,5 +27,5 @@ new class extends Component
 ?>
 
 <div>
-    <x-choices-offline label="Personeller" wire:model="staff_ids" :options="$staffs" />
+    <x-choices-offline :label="$label" wire:model="staff_ids" :options="$staffs" />
 </div>

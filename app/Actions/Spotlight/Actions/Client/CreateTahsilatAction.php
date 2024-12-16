@@ -12,9 +12,9 @@ class CreateTahsilatAction
 {
     use AsAction;
 
-    public function handle($info): void
+    public function handle($info, $approve = false)
     {
-        Peren::runDatabaseTransactionApprove($info, function () use ($info) {
+        return Peren::runDatabaseTransactionApprove($info, function () use ($info) {
             $info['price'] = (float) $info['price'];
 
             $client = \App\Models\User::query()
@@ -34,11 +34,13 @@ class CreateTahsilatAction
 
             $totalPrice = $info['price'];
 
+            $transaction_ids = [];
+
             foreach ($activeTaksits as $taksit) {
                 if ($totalPrice > 0) {
                     if ($taksit->remaining > $totalPrice) {
                         if ($taksit->sale) {
-                            $taksit->sale->transactions()->create([
+                            $ts = $taksit->sale->transactions()->create([
                                 'kasa_id' => $info['kasa_id'],
                                 'branch_id' => $client->branch_id,
                                 'user_id' => $info['user_id'],
@@ -48,8 +50,9 @@ class CreateTahsilatAction
                                 'message' => $taksit->sale->sale_no.' nolu sözleşmeye yapılan tahsilat.',
                                 'type' => TransactionType::tahsilat,
                             ]);
+                            $transaction_ids[] = $ts->id;
                         } else {
-                            $taksit->transactions()->create([
+                            $ts = $taksit->transactions()->create([
                                 'kasa_id' => $info['kasa_id'],
                                 'branch_id' => $client->branch_id,
                                 'user_id' => $info['user_id'],
@@ -59,6 +62,7 @@ class CreateTahsilatAction
                                 'message' => $taksit->date_human.' tarihli taksit için yapılan tahsilat.',
                                 'type' => TransactionType::tahsilat_taksit,
                             ]);
+                            $transaction_ids[] = $ts->id;
                         }
                         $taksit->remaining -= $totalPrice;
                         $taksit->save();
@@ -66,7 +70,7 @@ class CreateTahsilatAction
                         break;
                     } else {
                         if ($taksit->sale) {
-                            $taksit->sale->transactions()->create([
+                            $ts = $taksit->sale->transactions()->create([
                                 'kasa_id' => $info['kasa_id'],
                                 'branch_id' => $client->branch_id,
                                 'user_id' => $info['user_id'],
@@ -76,8 +80,9 @@ class CreateTahsilatAction
                                 'message' => $taksit->sale->sale_no.' nolu sözleşmeye yapılan tahsilat.',
                                 'type' => TransactionType::tahsilat,
                             ]);
+                            $transaction_ids[] = $ts->id;
                         } else {
-                            $taksit->transactions()->create([
+                            $ts = $taksit->transactions()->create([
                                 'kasa_id' => $info['kasa_id'],
                                 'branch_id' => $client->branch_id,
                                 'user_id' => $info['user_id'],
@@ -87,6 +92,7 @@ class CreateTahsilatAction
                                 'message' => $taksit->date_human.' tarihli taksit için yapılan tahsilat.',
                                 'type' => TransactionType::tahsilat_taksit,
                             ]);
+                            $transaction_ids[] = $ts->id;
                         }
                         $totalPrice -= $taksit->remaining;
                         $taksit->remaining = 0;
@@ -95,6 +101,10 @@ class CreateTahsilatAction
                 }
 
             }
-        });
+
+            \DB::commit();
+
+            return $transaction_ids;
+        }, $approve);
     }
 }

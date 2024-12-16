@@ -15,14 +15,18 @@ class CreateClientAction
     /**
      * @throws ToastException
      */
-    public function handle($info): void
+    public function handle($info, $approve = false)
     {
-        Peren::runDatabaseTransactionApprove($info, function () use ($info) {
+        return Peren::runDatabaseTransactionApprove($info, function () use ($info) {
             $info['name'] = $this->strUpper($info['name']);
             $info['unique_id'] = CreateUniqueID::run('user');
             $info['first_login'] = false;
 
-            User::create($info);
-        });
+            $client = User::create($info);
+
+            \DB::commit();
+
+            return [$client->id];
+        }, $approve);
     }
 }

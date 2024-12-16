@@ -10,9 +10,9 @@ class CreateMahsupAction
 {
     use AsAction;
 
-    public function handle($info)
+    public function handle($info, $approve = false)
     {
-        Peren::runDatabaseTransactionApprove($info, function () use ($info) {
+        return Peren::runDatabaseTransactionApprove($info, function () use ($info) {
             $kasa_mahsup = Mahsup::create([
                 'user_id' => $info['user_id'],
                 'date' => $info['date'],
@@ -46,6 +46,10 @@ class CreateMahsupAction
             $kasa_mahsup->transaction_cikis_id = $transaction_cikis->id;
             $kasa_mahsup->save();
 
-        });
+            \DB::commit();
+
+            return [$transaction_giris->id, $transaction_cikis->id];
+
+        }, $approve);
     }
 }

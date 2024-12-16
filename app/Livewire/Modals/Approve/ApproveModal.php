@@ -13,6 +13,10 @@ class ApproveModal extends SlideOver
 {
     use Toast, WithoutUrlPagination, WithPagination;
 
+    protected $listeners = [
+        'refresh-approves' => '$refresh',
+    ];
+
     #[On('approve-cancel')]
     public function cancelApprove($approveID, $message)
     {

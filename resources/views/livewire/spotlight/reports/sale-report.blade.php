@@ -46,9 +46,8 @@
                     @endscope
                 @endcan
                 @scope('cell_client.name', $sale)
-                    <x-button label="{{ $sale->client->name }}" class="btn-sm"
-                        link="{{ route('admin.client.profil.index', ['user' => $sale->client_id]) }}" external
-                        icon="o-link" />
+                    <a class="link link-primary" target="_blank"
+                        href="{{ route('admin.client.profil.index', ['user' => $sale->client_id]) }}">{{ $sale->client->name }}</a>
                 @endscope
             </x-table>
         @else

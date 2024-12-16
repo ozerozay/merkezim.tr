@@ -17,13 +17,15 @@ class CreateServiceAction
     /**
      * @throws ToastException
      */
-    public function handle($info): void
+    public function handle($info, $approve = false): void
     {
-        Peren::runDatabaseTransactionApprove($info, function () use ($info) {
+        return Peren::runDatabaseTransactionApprove($info, function () use ($info) {
             $client = GetClientByID::run(null, $info['client_id'], [], true);
 
+            $service_ids = [];
+
             foreach ($info['service_ids'] as $service) {
-                ClientService::create([
+                $cs = ClientService::create([
                     'branch_id' => $info['branch_id'],
                     'client_id' => $info['client_id'],
                     'user_id' => $info['user_id'],
@@ -35,7 +37,14 @@ class CreateServiceAction
                     'gift' => $info['gift'],
                     'message' => $info['message'],
                 ]);
+
+                $service_ids[] = $cs->id;
             }
-        });
+
+            \DB::commit();
+
+            return $service_ids;
+
+        }, $approve);
     }
 }

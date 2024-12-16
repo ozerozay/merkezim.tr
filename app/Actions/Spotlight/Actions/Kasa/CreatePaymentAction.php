@@ -13,18 +13,20 @@ class CreatePaymentAction
 {
     use AsAction;
 
-    public function handle($info, $paid = false)
+    public function handle($info, $approve = false)
     {
-        Peren::runDatabaseTransactionApprove($info, function () use ($info, $paid) {
+        return Peren::runDatabaseTransactionApprove($info, function () use ($info) {
             $kasa = Kasa::select(['id', 'name', 'branch_id'])->where('id', $info['kasa_id'])->first();
 
-            if (! $paid) {
+            if (! $info['paid']) {
                 $info['price'] *= -1;
             }
 
+            $transaction_ids = [];
+
             switch ($info['type']) {
                 case 'masraf':
-                    Transaction::create([
+                    $ts = Transaction::create([
                         'kasa_id' => $kasa->id,
                         'branch_id' => $kasa->branch_id,
                         'user_id' => $info['user_id'],
@@ -34,6 +36,7 @@ class CreatePaymentAction
                         'masraf_id' => $info['masraf_id'],
                         'type' => TransactionType::payment_masraf,
                     ]);
+                    $transaction_ids[] = $ts->id;
                     break;
                 case 'client':
                     $client = User::query()
@@ -41,7 +44,7 @@ class CreatePaymentAction
                         ->where('id', $info['client_id'])
                         ->first();
 
-                    $client->client_transactions()->create([
+                    $ts = $client->client_transactions()->create([
                         'kasa_id' => $kasa->id,
                         'branch_id' => $kasa->branch_id,
                         'client_id' => $client->id,
@@ -52,6 +55,7 @@ class CreatePaymentAction
                         'masraf_id' => $info['masraf_id'],
                         'type' => TransactionType::payment_client,
                     ]);
+                    $transaction_ids[] = $ts->id;
                     break;
                 case 'staff':
                     $staff = User::query()
@@ -59,7 +63,7 @@ class CreatePaymentAction
                         ->where('id', $info['staff_id'])
                         ->first();
 
-                    $staff->client_transactions()->create([
+                    $ts = $staff->client_transactions()->create([
                         'kasa_id' => $kasa->id,
                         'branch_id' => $kasa->branch_id,
                         'user_id' => $info['user_id'],
@@ -69,8 +73,13 @@ class CreatePaymentAction
                         'masraf_id' => $info['masraf_id'],
                         'type' => TransactionType::payment_staff,
                     ]);
+                    $transaction_ids[] = $ts->id;
                     break;
             }
-        });
+
+            \DB::commit();
+
+            return $transaction_ids;
+        }, $approve);
     }
 }

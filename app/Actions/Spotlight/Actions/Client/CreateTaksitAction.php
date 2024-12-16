@@ -12,14 +12,15 @@ class CreateTaksitAction
 {
     use AsAction;
 
-    public function handle($info): void
+    public function handle($info, $approve = false)
     {
-
-        Peren::runDatabaseTransactionApprove($info, function () use ($info) {
+        return Peren::runDatabaseTransactionApprove($info, function () use ($info) {
             $client = User::query()
                 ->select('id', 'name', 'branch_id')
                 ->where('id', $info['client_id'])
                 ->first();
+
+            $ids = [];
 
             foreach ($info['taksits'] as $taksit) {
                 $tc = ClientTaksit::create([
@@ -31,6 +32,7 @@ class CreateTaksitAction
                     'status' => SaleStatus::success,
                     'date' => Peren::parseDateField($taksit['date']),
                 ]);
+                $ids[] = $tc->id;
                 foreach ($taksit['locked'] as $tl) {
                     $tc->clientTaksitsLocks()->create([
                         'client_id' => $client->id,
@@ -39,6 +41,10 @@ class CreateTaksitAction
                     ]);
                 }
             }
-        });
+
+            \DB::commit();
+
+            return $ids;
+        }, $approve);
     }
 }

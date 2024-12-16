@@ -13,15 +13,19 @@ class CreateNoteAction
     /**
      * @throws ToastException
      */
-    public function handle($info): void
+    public function handle($info, $approve = false)
     {
-        Peren::runDatabaseTransactionApprove($info, function () use ($info) {
+        return Peren::runDatabaseTransactionApprove($info, function () use ($info) {
             $client = GetClientByID::run(null, $info['client_id'], [], true);
 
-            $client->client_notes()->create([
+            $note = $client->client_notes()->create([
                 'user_id' => $info['user_id'],
                 'message' => $info['message'],
             ]);
-        });
+
+            \DB::commit();
+
+            return [$note->id];
+        }, $approve);
     }
 }

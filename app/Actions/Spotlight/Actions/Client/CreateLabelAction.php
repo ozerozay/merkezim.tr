@@ -13,13 +13,17 @@ class CreateLabelAction
     /**
      * @throws ToastException
      */
-    public function handle($info): void
+    public function handle($info, $approve = false)
     {
-        Peren::runDatabaseTransactionApprove($info, function () use ($info) {
+        return Peren::runDatabaseTransactionApprove($info, function () use ($info) {
             $client = GetClientByID::run(null, $info['client_id'], ['labels'], true);
 
             $client->labels = $info['labels'];
             $client->save();
-        });
+
+            \DB::commit();
+
+            return [$client->id];
+        }, $approve);
     }
 }

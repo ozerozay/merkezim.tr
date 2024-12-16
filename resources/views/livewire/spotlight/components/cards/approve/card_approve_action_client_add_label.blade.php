@@ -1,95 +1,56 @@
+<?php
+
+new class extends \Livewire\Volt\Component {
+    use \App\Traits\ApproveTrait;
+};
+
+?>
 <div class="mx-auto mt-2">
     <x-collapse>
         <x-slot:heading>
-            <div class="card-header p-2 border-b border-gray-300">
+            <div class="card-header border-b border-gray-300">
                 <h2 class="text-sm font-semibold">
-                    Kullanıcı Bilgileri<br />'Kullanıcı düzenleme yetkisi'<br />11/12/2024
+                    DANIŞAN ETİKET DÜZENLEME<br />{{ $approve->user->name }} -
+                    {{ $approve->created_at->format('d/m/Y H:i:s') }}
                 </h2>
             </div>
         </x-slot:heading>
         <x-slot:content>
             <div class="card bg-base-200 shadow-md rounded-lg">
-                <!-- Kart İçerik -->
                 <div class="card-body p-2 space-y-2 text-sm">
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <p class="font-medium">Adı Soyadı:</p>
-                            <p>CİHAT ÖZER ÖZAY</p>
+                            <p>{{ \App\Models\User::select('id', 'name')->where('id', $approve->data['client_id'])->first()?->name }}
+                            </p>
                         </div>
                         <div>
-                            <p class="font-medium">Telefon:</p>
-                            <p>5056277636</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <p class="font-medium">E-posta:</p>
-                            <p>Belirtilmedi</p>
-                        </div>
-                        <div>
-                            <p class="font-medium">Cinsiyet:</p>
-                            <p>Erkek</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <p class="font-medium">Adres:</p>
-                            <p>asdasda</p>
-                        </div>
-                        <div>
-                            <p class="font-medium">TC Kimlik:</p>
-                            <p>34222447480</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <p class="font-medium">Doğum Tarihi:</p>
-                            <p>29/11/2024</p>
-                        </div>
-                        <div>
-                            <p class="font-medium">Ülke Kodu:</p>
-                            <p>90</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <p class="font-medium">İl:</p>
-                            <p>Belirtilmedi</p>
-                        </div>
-                        <div>
-                            <p class="font-medium">İlçe:</p>
-                            <p>Belirtilmedi</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <p class="font-medium">SMS Gönderimi:</p>
-                            <p>Evet</p>
-                        </div>
-                        <div>
-                            <p class="font-medium">Giriş Yapabilir:</p>
-                            <p>Evet</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 gap-2">
-                        <div>
-                            <p class="font-medium">Yetki:</p>
-                            <p>action_edit_user</p>
+                            <p class="font-medium">Etiket:
+                                {{ \App\Peren::pluckNames(\App\Models\Label::select('id', 'name')->whereIn('id', $approve->data['labels'])->get()) }}
+                            </p>
+                            <p></p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Kart Alt Bilgi -->
-                <div class="card-footer p-2 border-t border-gray-300 flex justify-between items-center">
-                    <button class="btn btn-outline">İptal Et</button>
-                    <button class="btn btn-primary">Kaydet</button>
+                <div class="card-body p-2 space-y-2 text-sm">
+                    <div class="grid">
+                        <div>
+                            <p class="font-medium">İşlem Açıklaması:</p>
+                            <p>{{ $approve->message }}</p>
+                        </div>
+                    </div>
                 </div>
+
+                <x-form class="p-2 border-t border-gray-300">
+                    <x-textarea wire:model="message" placeholder="Açıklama" />
+                    <div class="card-footer  flex items-center justify-between">
+                        <x-button wire:click="submitReject" class="btn btn-outline btn-error" icon="tabler.x">İptal
+                            Et</x-button>
+                        <x-button wire:click="submitApprove" class="btn btn-success"
+                            icon="tabler.check">Onayla</x-button>
+                    </div>
+                </x-form>
             </div>
         </x-slot:content>
     </x-collapse>
