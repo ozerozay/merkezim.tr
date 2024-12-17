@@ -11,12 +11,9 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         @foreach ($data->where('status', '!=', \App\AppointmentStatus::finish)->all() as $appointment)
 <x-card shadow class="card w-full bg-base-100 cursor-pointer" wire:click="handleClick" separator>
-            {{-- TITLE --}}
             <x-slot:title class="text-lg font-black">
                 {{ $appointment->date->format('d/m/Y') }}
             </x-slot:title>
-
-            {{-- MENU --}}
             <x-slot:menu>
             {{ $appointment->date_start->format('H:i') }} - {{ $appointment->date_end->format('H:i') }}
             </x-slot:menu>
@@ -24,9 +21,9 @@
                 <span class="badge badge-{{ $appointment->status->color() }} p-3 shadow-lg text-sm"> {{ $appointment->status->label() }} </span>
             </div>
             @if ($show_services)
-<div>{{ $appointment->service_names_public($appointment) }}</div>
+{{ $appointment->service_names_public($appointment) }}
 @endif
-        </x-card>
+                </x-card>
 @endforeach
     </div>
     <x-hr />

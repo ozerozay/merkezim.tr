@@ -86,6 +86,7 @@ class ReportQuery
                 ->setTitle('Ürün Satış')
                 ->setGroup('reports')
                 ->setIcon('chart-bar')
+                ->setAction('jump_to', ['path' => route('admin.reports.sale_product')])
             );
 
             $results->push(SpotlightResult::make()

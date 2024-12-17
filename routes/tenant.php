@@ -8,6 +8,7 @@ use App\Jobs\SendReportPdfJob;
 use App\Livewire\Reports\AppointmentReport;
 use App\Livewire\Reports\ClientReport;
 use App\Livewire\Reports\KasaReport;
+use App\Livewire\Reports\SaleProductReport;
 use App\Livewire\Reports\SaleReport;
 use App\Livewire\Reports\ServiceReport;
 use App\Livewire\Reports\TaksitReport;
@@ -48,6 +49,12 @@ Route::middleware([
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
+
+    /* Route::any('broadcasting/auth', function () {
+         dump('bur');
+
+         return true;
+     });*/
 
     Volt::route('/login', 'login')->name('login');
 
@@ -195,6 +202,7 @@ Route::middleware([
                 Route::get('/taksit', TaksitReport::class)->name('admin.reports.taksit');
                 Route::get('/appointment', AppointmentReport::class)->name('admin.reports.appointment');
                 Route::get('/kasa', KasaReport::class)->name('admin.reports.kasa');
+                Route::get('/sale_product', SaleProductReport::class)->name('admin.reports.sale_product');
             });
 
             Route::prefix('statistics')->group(function () {

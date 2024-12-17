@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2e0b6719e56f65f64cbe9e193f361111",
+    "content-hash": "e3bd80120b9ce9a8088656c5634f8553",
     "packages": [
         {
             "name": "abordage/html-min",
@@ -2172,16 +2172,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v11.35.0",
+            "version": "v11.35.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "f1a7aaa3c1235b7a95ccaa58db90e0cd9d8c3fcc"
+                "reference": "dcfa130ede1a6fa4343dc113410963e791ad34fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/f1a7aaa3c1235b7a95ccaa58db90e0cd9d8c3fcc",
-                "reference": "f1a7aaa3c1235b7a95ccaa58db90e0cd9d8c3fcc",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/dcfa130ede1a6fa4343dc113410963e791ad34fb",
+                "reference": "dcfa130ede1a6fa4343dc113410963e791ad34fb",
                 "shasum": ""
             },
             "require": {
@@ -2383,7 +2383,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2024-12-10T16:09:29+00:00"
+            "time": "2024-12-12T18:25:58+00:00"
         },
         {
             "name": "laravel/octane",
@@ -3485,13 +3485,13 @@
             },
             "type": "library",
             "extra": {
-                "branch-alias": {
-                    "dev-master": "1.x-dev"
-                },
                 "laravel": {
                     "providers": [
                         "Livewire\\Volt\\VoltServiceProvider"
                     ]
+                },
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
                 }
             },
             "autoload": {
@@ -3631,12 +3631,12 @@
             "type": "library",
             "extra": {
                 "laravel": {
-                    "providers": [
-                        "Lorisleiva\\Lody\\LodyServiceProvider"
-                    ],
                     "aliases": {
                         "Lody": "Lorisleiva\\Lody\\Lody"
-                    }
+                    },
+                    "providers": [
+                        "Lorisleiva\\Lody\\LodyServiceProvider"
+                    ]
                 }
             },
             "autoload": {
@@ -3846,6 +3846,67 @@
                 }
             ],
             "time": "2024-12-05T17:15:07+00:00"
+        },
+        {
+            "name": "namu/wirechat",
+            "version": "v0.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/namumakwembo/wirechat.git",
+                "reference": "77136712000188a781cb8d04e87cfdd42172acfa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/namumakwembo/wirechat/zipball/77136712000188a781cb8d04e87cfdd42172acfa",
+                "reference": "77136712000188a781cb8d04e87cfdd42172acfa",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^10.0|^11.0",
+                "livewire/livewire": "^3.2.3",
+                "php": "^8.1|^8.2|^8.3|^8.4"
+            },
+            "require-dev": {
+                "christophrumpel/missing-livewire-assertions": "^2.8",
+                "laravel/pint": "^1.18",
+                "orchestra/testbench": "^8.24|^9.0",
+                "pestphp/pest": "^2.34|^3.0.0",
+                "pestphp/pest-plugin-laravel": "^2.4|^3.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Namu\\WireChat\\WireChatServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Namu\\WireChat\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Namu Makwembo"
+                }
+            ],
+            "description": "A Laravel Livewire messaging app for teams with private chats and group conversations.",
+            "support": {
+                "issues": "https://github.com/namumakwembo/wirechat/issues",
+                "source": "https://github.com/namumakwembo/wirechat/tree/v0.0.6"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/namumakwembo",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-12-16T10:22:14+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -6309,6 +6370,7 @@
                 "issues": "https://github.com/ryangjchandler/blade-tabler-icons/issues",
                 "source": "https://github.com/ryangjchandler/blade-tabler-icons/tree/v2.3.0"
             },
+            "abandoned": "secondnetwork/blade-tabler-icons",
             "time": "2024-03-12T23:54:24+00:00"
         },
         {
@@ -6587,16 +6649,16 @@
         },
         {
             "name": "stancl/jobpipeline",
-            "version": "v1.7.1",
+            "version": "v1.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/archtechx/jobpipeline.git",
-                "reference": "59467693e6782d7f1995d19d2bf1558ec55d0afe"
+                "reference": "6b5aaa16a5c2b6ca32abcefd82c9c1320be8c2f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/archtechx/jobpipeline/zipball/59467693e6782d7f1995d19d2bf1558ec55d0afe",
-                "reference": "59467693e6782d7f1995d19d2bf1558ec55d0afe",
+                "url": "https://api.github.com/repos/archtechx/jobpipeline/zipball/6b5aaa16a5c2b6ca32abcefd82c9c1320be8c2f3",
+                "reference": "6b5aaa16a5c2b6ca32abcefd82c9c1320be8c2f3",
                 "shasum": ""
             },
             "require": {
@@ -6627,9 +6689,9 @@
             "description": "Turn any series of jobs into Laravel listeners.",
             "support": {
                 "issues": "https://github.com/archtechx/jobpipeline/issues",
-                "source": "https://github.com/archtechx/jobpipeline/tree/v1.7.1"
+                "source": "https://github.com/archtechx/jobpipeline/tree/v1.7.2"
             },
-            "time": "2024-11-09T19:58:45+00:00"
+            "time": "2024-12-16T15:45:18+00:00"
         },
         {
             "name": "stancl/tenancy",

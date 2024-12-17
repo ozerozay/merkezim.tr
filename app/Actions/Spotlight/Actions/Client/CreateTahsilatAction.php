@@ -2,6 +2,7 @@
 
 namespace App\Actions\Spotlight\Actions\Client;
 
+use App\Actions\Spotlight\Actions\Create\CreateTaksitLockServiceAction;
 use App\Exceptions\AppException;
 use App\Peren;
 use App\SaleStatus;
@@ -59,7 +60,7 @@ class CreateTahsilatAction
                                 'client_id' => $client->id,
                                 'date' => $info['date'],
                                 'price' => $totalPrice,
-                                'message' => $taksit->date_human.' tarihli taksit için yapılan tahsilat.',
+                                'message' => "{$taksit->date_human} tarihli taksit için yapılan tahsilat.",
                                 'type' => TransactionType::tahsilat_taksit,
                             ]);
                             $transaction_ids[] = $ts->id;
@@ -89,7 +90,7 @@ class CreateTahsilatAction
                                 'client_id' => $client->id,
                                 'date' => $info['date'],
                                 'price' => $taksit->remaining,
-                                'message' => $taksit->date_human.' tarihli taksit için yapılan tahsilat.',
+                                'message' => "{$taksit->date_human} tarihli taksit için yapılan tahsilat.",
                                 'type' => TransactionType::tahsilat_taksit,
                             ]);
                             $transaction_ids[] = $ts->id;
@@ -97,6 +98,7 @@ class CreateTahsilatAction
                         $totalPrice -= $taksit->remaining;
                         $taksit->remaining = 0;
                         $taksit->save();
+                        CreateTaksitLockServiceAction::run($taksit->id);
                     }
                 }
 

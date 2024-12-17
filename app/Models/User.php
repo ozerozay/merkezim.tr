@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Namu\WireChat\Traits\Chatable;
 use Spatie\Permission\Traits\HasRoles;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 class User extends Authenticatable
 {
+    use Chatable;
     use HasFactory;
     use HasJsonRelationships;
     use HasRoles;
@@ -458,5 +460,10 @@ class User extends Authenticatable
             ->whereDate('date', '<=', date('Y-m-d'))
             ->where('status', SaleStatus::success)
             ->sum('remaining');
+    }
+
+    public function canCreateChats(): bool
+    {
+        return true;
     }
 }

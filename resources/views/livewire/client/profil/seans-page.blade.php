@@ -2,7 +2,7 @@
     <x-header title="{{ __('client.menu_seans') }}" separator progress-indicator>
         <x-slot:actions>
             @if ($add_seans)
-                <x-button class="btn-primary btn-sm" icon="o-plus">
+                <x-button class="btn-primary btn-sm" link="{{ route('client.shop.packages') }}" icon="o-plus">
                     {{ __('client.page_seans_add_seans') }}
                 </x-button>
             @endif
@@ -11,9 +11,6 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         @foreach ($data as $service)
             <x-card title="{{ $service->service->name }}" separator class="mb-2 card w-full bg-base-100 cursor-pointer">
-                <x-slot:menu>
-                    <x-button icon="o-plus" class="btn-circle btn-outline btn-sm" />
-                </x-slot:menu>
                 @php
                     $remaining_percentage = ($service->remaining / $service->total) * 100;
 

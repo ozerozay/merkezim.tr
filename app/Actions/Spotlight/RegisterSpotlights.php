@@ -61,7 +61,9 @@ class RegisterSpotlights
 
     public function handle(): void
     {
+
         Spotlight::setup(function () {
+            //dump(\App\Actions\Spotlight\Actions\Get\GetUserAllPermissions::run());
             $this->registerSpotlightGroups();
             $this->registerSpotlightModes();
             $this->registerSpotlightRandomTips();
@@ -189,6 +191,7 @@ class RegisterSpotlights
 
     private function registerSpotlightQueries(): void
     {
+
         Spotlight::registerQueries(
             DefaultQuery::run(),
             ClientQuery::run(),

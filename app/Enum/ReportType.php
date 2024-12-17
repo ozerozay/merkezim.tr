@@ -10,4 +10,5 @@ enum ReportType: string
     case report_taksit = 'report_taksit';
     case report_appointment = 'report_appointment';
     case report_kasa = 'report_kasa';
+    case report_sale_product = 'report_sale_product';
 }

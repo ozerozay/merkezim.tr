@@ -34,6 +34,8 @@ class AppServiceProvider extends ServiceProvider
             return GetAllSettingsAction::run();
         });
 
+        \Broadcast::routes(['middleware' => ['web', 'tenant', 'universal']]);
+
         \Gate::define('viewPulse', function (?\App\Models\User $user) {
             return true;
         });
@@ -94,6 +96,8 @@ class AppServiceProvider extends ServiceProvider
             'sms_template' => 'App\Models\SMSTemplate',
             'cart_item' => 'App\Models\CartItem',
             'cart' => 'App\Models\Cart',
+            'chat_participant' => 'Namu\WireChat\Models\Participant',
+            'chat_message' => 'Namu\WireChat\Models\Message',
         ]);
 
         Blade::directive('price', function ($price) {

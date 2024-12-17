@@ -180,6 +180,10 @@ class DefaultQuery
                 return $collection->where(fn (SpotlightResult $result) => str($result->title())->lower()->contains(str($query)->lower()));
             });
 
+            $pages = $pages->sortBy(function (SpotlightResult $i) {
+                return $i->title();
+            });
+
             return collect()->merge($pages)->merge($users);
         });
     }

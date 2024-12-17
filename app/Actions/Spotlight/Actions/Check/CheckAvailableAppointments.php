@@ -88,8 +88,8 @@ class CheckAvailableAppointments
 
                     foreach ($appointments as $appointment) {
                         $dolu[] = [
-                            'baslangic' => $appointment->date_start->format('H:i'),
-                            'bitis' => $appointment->date_end->format('H:i'),
+                            'baslangic' => $appointment->date_start->subMinutes(1)->format('H:i'),
+                            'bitis' => $appointment->date_end->addMinutes(1)->format('H:i'),
                         ];
                     }
                     //dump($service_room->id);

@@ -2,19 +2,19 @@
 
 namespace App\Livewire\Reports;
 
-use App\Actions\Spotlight\Actions\Report\GetKasaReportAction;
+use App\Actions\Spotlight\Actions\Report\GetSaleProductReportAction;
 use App\Enum\ReportType;
 use App\Traits\ReportHandler;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
-class KasaReport extends Component
+class SaleProductReport extends Component
 {
     use ReportHandler;
 
     public ?ReportType $reportType = ReportType::report_kasa;
 
-    public ?string $reportName = 'kasa-report';
+    public ?string $reportName = 'sale-product-report';
 
     public array $sortBy = ['column' => 'date', 'direction' => 'asc'];
 
@@ -22,13 +22,13 @@ class KasaReport extends Component
     {
         return [
             ['key' => 'branch.name', 'label' => 'Şube', 'sortBy' => 'branch_id'],
-            ['key' => 'kasa.name', 'label' => 'Kasa', 'sortBy' => 'kasa_id'],
-            ['key' => 'client.name', 'label' => 'Danışan', 'sortBy' => 'client_id'],
-            ['key' => 'type', 'label' => 'Çeşit'],
+            ['key' => 'client.name', 'label' => 'Kasa', 'sortBy' => 'client_id'],
+            ['key' => 'unique_id', 'label' => 'Danışan', 'sortBy' => 'unique_id'],
             ['key' => 'date', 'label' => 'Tarih', 'format' => ['date', 'd/m/Y']],
-            ['key' => 'masraf.name', 'label' => 'Masraf', 'sortBy' => 'masraf_id'],
             ['key' => 'price', 'label' => 'Tutar'],
+            ['key' => 'sale_product_items_count', 'label' => 'Ürün'],
             ['key' => 'user.name', 'label' => 'Kullanıcı'],
+            ['key' => 'staff_names', 'label' => 'Personel', 'format' => fn ($row, $field) => $row->staff_names()],
             ['key' => 'message', 'label' => 'Açıklama'],
         ];
     }
@@ -36,6 +36,6 @@ class KasaReport extends Component
     #[Computed()]
     public function getReport()
     {
-        return GetKasaReportAction::run($this->filters, $this->sortBy);
+        return GetSaleProductReportAction::run($this->filters, $this->sortBy);
     }
 }

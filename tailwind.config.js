@@ -13,6 +13,8 @@ export default {
         "./vendor/robsontenorio/mary/src/View/Components/**/*.php",
         './vendor/wire-elements/pro/config/wire-elements-pro.php',
         './vendor/wire-elements/pro/**/*.blade.php',
+        './vendor/namu/wirechat/resources/views/**/*.blade.php',
+        './vendor/namu/wirechat/src/Livewire/**/*.php'
     ],
     theme: {
         extend: {},
