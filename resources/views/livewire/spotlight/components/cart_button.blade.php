@@ -16,8 +16,9 @@ new class extends Livewire\Volt\Component {
 };
 
 ?>
-<div class="fixed bottom-4 left-1/2 transform -translate-x-1/2" wire:key="cart-buttson-zxczxcxz">
+<div class="fixed bottom-4 left-1/2 transform -translate-x-1/2" wire:key="cart-buttson--{{Str::random(10)}}">
     <x-button icon="tabler.shopping-bag" wire:click="$dispatch('slide-over.open', {component: 'client.shop.cart-page'})"
-        label="Sepetim ({{ $cartCount }})" class="btn-primary btn-lg animate-pulse" wire:key="cart-button-zxczxcxz"
-        wire:transition.duration.500ms />
+              label="Sepetim ({{ $cartCount }})" class="btn-primary btn-lg animate-pulse"
+              wire:key="cart-button-{{Str::random(10)}}"
+              wire:transition.duration.500ms/>
 </div>

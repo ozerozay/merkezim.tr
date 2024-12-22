@@ -16,6 +16,7 @@ enum TalepStatus: string
     case iptal = 'iptal';
     case randevu = 'randevu';
     case olmadi = 'olmadi';
+    case satis = 'satis';
 
     public static function has(string $value): bool
     {
@@ -37,6 +38,7 @@ enum TalepStatus: string
             self::iptal => 'İptal',
             self::randevu => 'Randevu',
             self::olmadi => 'Satış Olmadı',
+            self::satis => 'Satış',
         };
     }
 
@@ -55,6 +57,7 @@ enum TalepStatus: string
             self::iptal => 'error',
             self::randevu => 'success',
             self::olmadi => 'error',
+            self::satis => 'success',
         };
     }
 }

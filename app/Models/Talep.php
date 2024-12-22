@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Talep extends Model
 {
@@ -47,12 +47,12 @@ class Talep extends Model
     protected function dateHuman(): Attribute
     {
         return Attribute::make(
-            get: fn(?Carbon $value) => Carbon::parse($this->date)->format(
+            get: fn (?Carbon $value) => Carbon::parse($this->date)->format(
                 'd/m/Y'
             )
         );
     }
-    
+
     public function latestAction()
     {
         return $this->hasOne(TalepProcess::class)

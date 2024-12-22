@@ -58,7 +58,6 @@ class extends \Livewire\Volt\Component {
                 'date' => $this->date,
                 'room_id' => $this->service_room_id,
                 'message' => $this->message,
-                'user_id' => auth()->user()->id,
             ], [
                 'client_id' => 'required|exists:users,id',
                 'category_id' => 'required|exists:service_categories,id',
@@ -309,5 +308,5 @@ class extends \Livewire\Volt\Component {
             @endif
         </x-card>
     </div>
-    
+
 </div>

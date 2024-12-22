@@ -9,7 +9,9 @@ class OfferModal extends SlideOver
 {
     public int|Offer $offer;
 
-    public $group = 'group1';
+    public $group = 'group10';
+
+    public $kasa_id;
 
     public function mount(Offer $offer): void
     {

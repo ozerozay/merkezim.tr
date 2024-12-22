@@ -63,7 +63,7 @@ new #[\Livewire\Attributes\Title('Ajanda')] class extends \Livewire\Volt\Compone
                     $q->where('user_id', auth()->user()->id);
                 }
             })
-            ->with('agenda')
+            ->with('agenda', 'agenda.user:id,name')
             ->get();
     }
 };
@@ -74,47 +74,47 @@ new #[\Livewire\Attributes\Title('Ajanda')] class extends \Livewire\Volt\Compone
         <x-slot:actions>
             <x-dropdown label="Tarih">
                 <x-slot:trigger>
-                    <x-button icon="tabler.filter" class="btn-outline" label="Filtrele" responsive />
+                    <x-button icon="tabler.filter" class="btn-outline" label="Filtrele" responsive/>
                 </x-slot:trigger>
                 <x-form wire:submit="filter">
                     <x-menu-item @click.stop="">
-                        <x-datepicker label="Tarih" wire:model="date" icon="o-calendar" :config="$config2" inline />
+                        <x-datepicker label="Tarih" wire:model="date" icon="o-calendar" :config="$config2" inline/>
                     </x-menu-item>
-                    <x-menu-separator />
+                    <x-menu-separator/>
                     @foreach (auth()->user()->staff_branch as $branch)
                         <x-menu-item @click.stop="">
-                            <x-checkbox wire:model="branches.{{ $branch->id }}.checked" label="{{ $branch->name }}" />
+                            <x-checkbox wire:model="branches.{{ $branch->id }}.checked" label="{{ $branch->name }}"/>
                         </x-menu-item>
                     @endforeach
                     <x:slot:actions>
-                        <x-button class="btn-outline" type="submit" label="Filtrele" />
+                        <x-button class="btn-outline" type="submit" label="Filtrele"/>
                     </x:slot:actions>
                 </x-form>
             </x-dropdown>
             <x-dropdown label="Oluştur" class="btn-primary" right>
                 <x-menu-item title="Randevu"
-                    wire:click="$dispatch('slide-over.open', {'component': 'modals.agenda.create-agenda-appointment'})" />
+                             wire:click="$dispatch('slide-over.open', {'component': 'modals.agenda.create-agenda-appointment'})"/>
                 <x-menu-item title="Hatırlatma"
-                    wire:click="$dispatch('slide-over.open', {'component': 'modals.agenda.create-agenda-appointment'})" />
+                             wire:click="$dispatch('slide-over.open', {'component': 'modals.agenda.create-agenda-appointment'})"/>
                 <x-menu-item title="Ödeme Takip"
-                    wire:click="$dispatch('slide-over.open', {'component': 'modals.agenda.create-agenda-payment-tracking'})" />
+                             wire:click="$dispatch('slide-over.open', {'component': 'modals.agenda.create-agenda-payment-tracking'})"/>
             </x-dropdown>
         </x-slot:actions>
     </x-header>
     <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5 mb-5">
         @foreach ($agendas->groupBy('occurrence_date') as $key => $agendaItems)
             <x-card title="{{ Carbon::createFromFormat('Y-m-d H:i:s', $key)->format('d/m/Y') }}" class="mb-2"
-                separator>
+                    separator>
                 @foreach ($agendaItems as $agendaItem)
                     @if ($agendaItem->agenda->type == \App\AgendaType::appointment)
                         <livewire:components.card.agenda.card_agenda_appointment :item="$agendaItem"
-                            wire:key="{{ $agendaItem->id }}" />
+                                                                                 wire:key="{{ $agendaItem->id }}"/>
                     @elseif ($agendaItem->agenda->type == \App\AgendaType::reminder)
                         <livewire:components.card.agenda.card_agenda_reminder :item="$agendaItem"
-                            wire:key="{{ $agendaItem->id }}" />
+                                                                              wire:key="{{ $agendaItem->id }}"/>
                     @elseif ($agendaItem->agenda->type == \App\AgendaType::payment)
                         <livewire:components.card.agenda.card_agenda_payment_tracking :item="$agendaItem"
-                            wire:key="{{ $agendaItem->id }}" />
+                                                                                      wire:key="{{ $agendaItem->id }}"/>
                     @endif
                 @endforeach
             </x-card>

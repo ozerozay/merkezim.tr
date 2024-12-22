@@ -29,6 +29,7 @@ use App\SaleStatus;
 use App\Support\Spotlight;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use Namu\WireChat\Events\MessageCreated;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
@@ -56,10 +57,19 @@ Route::middleware([
          return true;
      });*/
 
+    Route::any('/paysuccess', function () {
+        echo "<script type='text/javascript'>window.parent.postMessage({ type: 'triggerLivewireEvent', data: '".request()->get('id')."', status: 'success', message: 'Ödeme başarıyla alındı.' }, '*');
+</script>";
+    });
+    Route::any('/payerror', function () {
+        //dump(request()->all());
+        echo "<script type='text/javascript'>window.parent.postMessage({ type: 'triggerLivewireEvent', data: '".request()->get('id')."', status: 'error', message: '".request()->get('fail_message')."' }, '*');
+</script>";
+    });
     Volt::route('/login', 'login')->name('login');
 
     Route::get('/logout', function () {
-        Auth::logout();
+        \Illuminate\Support\Facades\Auth::logout();
         request()->session()->invalidate();
         request()->session()->regenerateToken();
 
@@ -203,6 +213,12 @@ Route::middleware([
                 Route::get('/appointment', AppointmentReport::class)->name('admin.reports.appointment');
                 Route::get('/kasa', KasaReport::class)->name('admin.reports.kasa');
                 Route::get('/sale_product', SaleProductReport::class)->name('admin.reports.sale_product');
+                Route::get('/talep', \App\Livewire\Reports\TalepReport::class)->name('admin.reports.talep');
+                Route::get('/note', \App\Livewire\Reports\NoteReport::class)->name('admin.reports.note');
+                Route::get('/adisyon', \App\Livewire\Reports\AdisyonReport::class)->name('admin.reports.adisyon');
+                Route::get('/offer', \App\Livewire\Reports\OfferReport::class)->name('admin.reports.offer');
+                Route::get('/coupon', \App\Livewire\Reports\CouponReport::class)->name('admin.reports.coupon');
+                Route::get('/approve', \App\Livewire\Reports\ApproveReport::class)->name('admin.reports.approve');
             });
 
             Route::prefix('statistics')->group(function () {
@@ -237,7 +253,18 @@ Route::middleware([
     });
 
     Route::get('/job', function () {
-        SendReportPdfJob::dispatch()->delay(now()->addMinutes(5));
+        //SendReportPdfJob::dispatch();
+        //dump(\Namu\WireChat\Models\Message::all());
+        //MessageCreated::dispatch(\Namu\WireChat\Models\Message::first());
+        dispatch(new \Namu\WireChat\Jobs\BroadcastMessage(\Namu\WireChat\Models\Message::create([
+            'conversation_id' => 1,
+            'sendable_id ' => 1,
+            'sendable_type' => \App\Models\User::class,
+            'body' => 'asdasd',
+            'type' => 'text',
+        ])));
+
+        //broadcast(new MessageCreated(\Namu\WireChat\Models\Message::first()))->toOthers();
 
     });
 
@@ -303,6 +330,10 @@ Route::middleware([
                             SettingsType::client_page_appointment_show_services->name => true,
                             SettingsType::client_page_appointment_create->name => ['manuel', 'range', 'multi'],
                             SettingsType::client_page_appointment_show->name => AppointmentStatus::cases(),
+                            SettingsType::client_page_appointment_create_once_category->name => true,
+                            SettingsType::client_page_appointment_create_branches->name => [1, 2],
+                            SettingsType::client_page_appointment_create_appointment_approve->name => true,
+                            SettingsType::client_page_appointment_create_appointment_late_payment->name => true,
 
                             SettingsType::client_page_taksit->name => true,
                             SettingsType::client_page_taksit_pay->name => true,
@@ -321,11 +352,45 @@ Route::middleware([
 
                             SettingsType::client_page_shop_include_kdv->name => true,
 
+                            SettingsType::client_payment_types->name => ['havale', 'kk'],
+                            SettingsType::payment_taksit_include_kdv->name => 0,
+                            SettingsType::payment_taksit_include_komisyon->name => true,
+
                         ],
                     ]);
                 }
             });
         }
+    });
+
+    Route::get('/bin', function () {
+        $bin = collect((new \App\Managers\PayTRPaymentManager)->bin('54377122', 1));
+
+        $taksit_oran = \App\Models\TaksitOran::where('branch_id', 1)->first();
+
+        dump($taksit_oran['data'][$bin['brand']]);
+    });
+
+    Route::get('/oran', function () {
+        (new \App\Managers\PayTRPaymentManager)->getTaksitOran(1);
+    });
+
+    Route::get('/apikey', function () {
+
+        $apikey = \App\Models\ApiKey::create([
+            'branch_id' => 1,
+            'merchant_id' => '473481',
+            'merchant_key' => encrypt('1GXhbbBFT5Cw492p'),
+            'merchant_salt' => encrypt('NHfc2iinP1nekZwz'),
+        ]);
+
+        $apikey = \App\Models\ApiKey::create([
+            'branch_id' => 2,
+            'merchant_id' => '473481',
+            'merchant_key' => encrypt('1GXhbbBFT5Cw492p'),
+            'merchant_salt' => encrypt('NHfc2iinP1nekZwz'),
+        ]);
+
     });
 
     Route::get('/ss', function () {});

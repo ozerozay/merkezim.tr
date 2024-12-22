@@ -114,11 +114,9 @@ class SettingsQuery
                         ]));
             }
 
-            $results = $results->when(! blank($query), function ($collection) use ($query) {
+            return $results->when(! blank($query), function ($collection) use ($query) {
                 return $collection->where(fn (SpotlightResult $result) => str($result->title())->lower()->contains(str($query)->lower()));
             });
-
-            return $results;
         });
     }
 }

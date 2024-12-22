@@ -4,34 +4,45 @@
         <div class="p-4 border-b border-gray-200 flex justify-between items-center">
             <h1 class="text-lg font-semibold">Sepetim</h1>
             <x-button icon="tabler.x" class="btn-sm btn-outline text-gray-600 ml-auto"
-                wire:click="$dispatch('slide-over.close')" />
+                      wire:click="$dispatch('slide-over.close')"/>
         </div>
         <div class="flex-1 overflow-y-auto p-4 space-y-4 ">
-            @php
-                $quantities = [];
 
-                for ($i = 0; $i <= 99; $i++) {
-                    $quantities[] = [
-                        'id' => $i,
-                        'name' => $i,
-                    ];
-                }
-            @endphp
             @if ($cart->isEmpty())
                 <div class="text-center text-gray-500 py-4">
                     <p class="text-lg">Sepetiniz boş!</p>
-                    <x-button label="Alışverişe Başla" class="mt-4 btn-primary" />
+                    <x-button label="Alışverişe Başla" class="mt-4 btn-primary"/>
                 </div>
             @else
                 @auth
                     @foreach ($cart as $c)
+                        @php
+                            $quantities = [];
+                            $max = $c->item->buy_max ?? 50;
+
+                            for ($i = 0; $i <= $max; $i++) {
+                                $quantities[] = [
+                                    'id' => $i,
+                                    'name' => $i,
+                                ];
+                            }
+                        @endphp
                         <x-list-item :item="$c" wire:key="itm-{{ $c->id }}">
                             <x-slot:avatar>
 
-                                <x-select wire:key="dfdsf-{{ $loop->index }}"
-                                    wire:model.number.live="cart_array.{{ $loop->index }}.quantity" :options="$quantities"
-                                    wire:change="changeQuantity({{ $c->id }}, $event.target.value)"
-                                    class="select-sm" />
+                                <div class="flex justify-start mt-4">
+                                    <x-select wire:key="dfdsf-{{ $loop->index }}"
+                                              wire:model.number.live="cart_array.{{ $loop->index }}.quantity"
+                                              :options="$quantities"
+                                              wire:change="changeQuantity({{ $c->id }}, $event.target.value)"
+                                              class="select-sm"/>
+                                </div>
+                                <div class="flex justify-start mt-4">
+                                    <x-button class="btn btn-sm btn-outline btn-error"
+                                              wire:confirm="Emin misiniz ?"
+                                              wire:click="deleteItem({{ $c->id }})"> SİL
+                                    </x-button>
+                                </div>
                             </x-slot:avatar>
                             <x-slot:value>
                                 {{ $c->item->name }}
@@ -49,10 +60,22 @@
                 @endauth
 
                 @guest
+
                     @foreach ($cart as $c)
+                        @php
+                            $quantities = [];
+                            $max = $c->item->buy_max ?? 50;
+
+                            for ($i = 0; $i <= $max; $i++) {
+                                $quantities[] = [
+                                    'id' => $i,
+                                    'name' => $i,
+                                ];
+                            }
+                        @endphp
                         <x-list-item :item="$c" wire:key="itm-{{ $c['id'] }}">
                             <x-slot:avatar>
-                                <x-badge value="{{ $c['quantity'] }}" />
+                                <x-badge value="{{ $c['quantity'] }}"/>
                             </x-slot:avatar>
                             <x-slot:value>
                                 {{ $c['name'] }}
@@ -89,15 +112,15 @@
                     <p>@price($subTotal + $totalTax)</p>
                 </div>
                 <x-button label="Devam"
-                    wire:click="$dispatch('slide-over.open',
+                          wire:click="$dispatch('slide-over.open',
                 {component: 'web.shop.checkout-page' })"
-                    class="btn btn-primary w-full py-2 mt-4" />
+                          class="btn btn-primary w-full py-2 mt-4"/>
             @endauth
             @guest
                 <x-button label="Devam etmek için giriş yapın"
-                    wire:click="$dispatch('slide-over.open',
+                          wire:click="$dispatch('slide-over.open',
                 {component: 'login.login-page'})"
-                    class="btn btn-primary w-full py-2 mt-4" />
+                          class="btn btn-primary w-full py-2 mt-4"/>
             @endguest
 
         </div>

@@ -3,8 +3,7 @@
 use Livewire\Attributes\Modelable;
 use Livewire\Volt\Component;
 
-new class extends Component
-{
+new class extends Component {
     #[Modelable]
     public $products = [];
 
@@ -22,6 +21,6 @@ new class extends Component
 ?>
 
 <div>
-    <x-choices-offline wire:key="scsesde-{{ Str::random(20) }}" wire:model="products" :options="$product_collection"
-        option-sub-label="stok" label="Ürün" icon="o-magnifying-glass" searchable="true" />
+    <x-choices-offline wire:key="scsescde-{{ Str::random(20) }}" wire:model="products" :options="$product_collection"
+                       option-sub-label="stok" label="Ürün" icon="o-magnifying-glass" searchable="true"/>
 </div>

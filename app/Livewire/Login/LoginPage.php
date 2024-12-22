@@ -205,7 +205,7 @@ class LoginPage extends SlideOver
                     return;
                 }
 
-                $user->phone_code = rand(100000, 999999);
+                $user->phone_code = 1111; //rand(100000, 999999);
                 $user->save();
             } else {
 
@@ -214,7 +214,7 @@ class LoginPage extends SlideOver
                     'unique_id' => CreateUniqueID::run('user'),
                     'country' => '90',
                     'phone' => $this->phone,
-                    'phone_code' => rand(100000, 999999),
+                    'phone_code' => 1111, // rand(100000, 999999),
                 ]);
 
                 $user->delete();

@@ -231,6 +231,16 @@ return [
         'date' => 'Tarih',
         'room' => 'Hizmet odası',
         'now' => 'şu an',
+        'cardNumber' => 'Kredi kartı numarası',
+        'cardName' => 'Kartın üzerinde yazan isim',
+        'expiryDate' => 'Son kullanma tarihi',
+        'cvv' => 'CVV',
+        'selectedInstallment' => 'Seçilen taksit',
+        'total' => 'Toplam',
+        'fatura' => 'Fatura',
+        'expiryMonth' => 'Son kullanma tarihi',
+        'expiryYear' => 'Son kullanma tarihi',
+        'price_manuel' => 'Tutar',
     ],
 
 ];

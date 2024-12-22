@@ -50,70 +50,75 @@ new class extends Component {
 };
 ?>
 <div>
-    <livewire:components.card.statistic.card_statistic wire:key="scvrr-{{ Str::random() }}" :data="$statistic" />
+    @if (1==2)
+        <livewire:components.card.statistic.card_statistic wire:key="scvrr-{{ Str::random(10) }}" :data="$statistic"/>
+    @endif
     <div class="flex justify-end mb-4 gap-2">
         <p>Sıralama işlemlerini tablo görünümünden yapabilirsiniz.</p>
         <x-button wire:click="changeView" label="{{ $view == 'table' ? 'LİSTE' : 'TABLO' }}"
-            icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline" />
+                  icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline"/>
     </div>
     @if ($view)
         <div>
             <x-card>
-                <x-table :headers="$headers" :rows="$data" wire:model="expanded" :sort-by="$sortBy" striped
-                    with-pagination expandable>
+                <x-table :headers="$headers" wire:key="cvkss-{{Str::random(10)}}" :rows="$data" wire:model="expanded"
+                         :sort-by="$sortBy" striped
+                         with-pagination expandable>
                     <x-slot:empty>
-                        <x-icon name="o-cube" label="Hizmet bulunmuyor." />
+                        <x-icon name="o-cube" label="Hizmet bulunmuyor."/>
                     </x-slot:empty>
                     @can('service_process')
                         @scope('actions', $service)
-                            <div class="flex">
-                            </div>
+                        <div class="flex">
+                        </div>
                         @endscope
                     @endcan
                     @scope('cell_sale.unique_id', $service)
-                        {{ $service->sale->unique_id ?? 'Yok' }}
+                    {{ $service->sale->unique_id ?? 'Yok' }}
                     @endscope
                     @scope('cell_package.name', $service)
-                        {{ $service->package->name ?? 'Yok' }}
+                    {{ $service->package->name ?? 'Yok' }}
                     @endscope
                     @scope('expansion', $service)
-                        Personel : {{ $service->userServices->name ?? '' }}
-                        <div class="bg-base-200 p-8 font-bold">
-                            @foreach ($service->clientServiceUses as $uses)
-                                <x-list-item :item="$uses" no-separator no-hover>
-                                    <x-slot:avatar>
-                                        <x-badge value="{{ $uses->seans }} seans" class="badge-primary" />
-                                    </x-slot:avatar>
-                                    <x-slot:value>
-                                        {{ $uses->date_human_created }} - {{ $uses->message }}
-                                    </x-slot:value>
-                                    <x-slot:sub-value>
-                                        {{ $uses->user->name ?? '' }}
-                                    </x-slot:sub-value>
-                                </x-list-item>
-                            @endforeach
-                        </div>
+                    Personel : {{ $service->userServices->name ?? '' }}
+                    <div class="bg-base-200 p-8 font-bold">
+                        @foreach ($service->clientServiceUses as $uses)
+                            <x-list-item wire:key="cvksaqs-{{Str::random(10)}}" :item="$uses" no-separator no-hover>
+                                <x-slot:avatar>
+                                    <x-badge value="{{ $uses->seans }} seans" class="badge-primary"/>
+                                </x-slot:avatar>
+                                <x-slot:value>
+                                    {{ $uses->date_human_created }} - {{ $uses->message }}
+                                </x-slot:value>
+                                <x-slot:sub-value>
+                                    {{ $uses->user->name ?? '' }}
+                                </x-slot:sub-value>
+                            </x-list-item>
+                        @endforeach
+                    </div>
                     @endscope
                     @scope('cell_status', $service)
-                        <x-badge :value="$service->status->label()" class="badge-{{ $service->status->color() }}" />
+                    <x-badge wire:key="bbcvkss-{{Str::random(10)}}" :value="$service->status->label()"
+                             class="badge-{{ $service->status->color() }}"/>
                     @endscope
                     @scope('cell_gift', $service)
-                        @if ($service->gift)
-                            <x-icon name="o-check" class="text-green-500" />
-                        @endif
+                    @if ($service->gift)
+                        <x-icon wire:key="bibcvkss-{{Str::random(10)}}" name="o-check" class="text-green-500"/>
+                    @endif
                     @endscope
                     @scope('cell_remaining', $service)
-                        @if ($service->remaining < 1)
-                            <x-icon name="o-x-circle" class="text-red-500" />
-                        @else
-                            {{ $service->remaining }}
-                        @endif
+                    @if ($service->remaining < 1)
+                        <x-icon wire:key="bbcvkwss-{{Str::random(10)}}" name="o-x-circle" class="text-red-500"/>
+                    @else
+                        {{ $service->remaining }}
+                    @endif
                     @endscope
                     @can('service_process')
                         @scope('actions', $service)
-                            <x-button icon="tabler.settings"
-                                wire:click="$dispatch('slide-over.open', {component: 'modals.client.service-modal', arguments : {'service' : {{ $service->id }}}})"
-                                class="btn-circle btn-sm btn-primary" />
+                        <x-button icon="tabler.settings"
+                                  wire:key="bbcvksaqs-{{Str::random(10)}}"
+                                  wire:click="$dispatch('slide-over.open', {component: 'modals.client.service-modal', arguments : {'service' : {{ $service->id }}}})"
+                                  class="btn-circle btn-sm btn-primary"/>
                         @endscope
                     @endcan
                 </x-table>
@@ -125,13 +130,15 @@ new class extends Component {
                 <p class="text-center">Hizmet bulunmuyor.</p>
             @endif
             @foreach ($data as $service)
-                <x-card title="{{ $service->service->name }}" separator class="mb-2">
-                    <x-list-item :item="$service">
+                <x-card title="{{ $service->service->name }}" wire:key="cvaqkss-{{Str::random(10)}}" separator
+                        class="mb-2">
+                    <x-list-item :item="$service" wire:key="cvqe2kss-{{Str::random(10)}}">
                         <x-slot:value>
                             Durum
                         </x-slot:value>
                         <x-slot:actions>
-                            <x-badge :value="$service->status->label()" class="badge-{{ $service->status->color() }}" />
+                            <x-badge wire:key="cvxakss-{{Str::random(10)}}" :value="$service->status->label()"
+                                     class="badge-{{ $service->status->color() }}"/>
                         </x-slot:actions>
                     </x-list-item>
                     <x-list-item :item="$service">
@@ -156,7 +163,7 @@ new class extends Component {
                         </x-slot:value>
                         <x-slot:actions>
                             @if ($service->gift)
-                                <x-icon name="o-check" class="text-green-500" />
+                                <x-icon name="o-check" class="text-green-500"/>
                             @endif
                         </x-slot:actions>
                     </x-list-item>
@@ -202,9 +209,9 @@ new class extends Component {
                     </x-list-item>
                     <div class="bg-base-200 p-8 font-bold">
                         @foreach ($service->clientServiceUses as $uses)
-                            <x-list-item :item="$uses" no-separator no-hover>
+                            <x-list-item wire:key="cvksseeq-{{Str::random(10)}}" :item="$uses" no-separator no-hover>
                                 <x-slot:avatar>
-                                    <x-badge value="{{ $uses->seans }} seans" class="badge-primary" />
+                                    <x-badge value="{{ $uses->seans }} seans" class="badge-primary"/>
                                 </x-slot:avatar>
                                 <x-slot:value>
                                     {{ $uses->date_human_created }} - {{ $uses->message }}
@@ -217,8 +224,9 @@ new class extends Component {
                     </div>
                     <x:slot:menu>
                         <x-button icon="tabler.settings"
-                            wire:click="$dispatch('slide-over.open', {component: 'modals.client.service-modal', arguments : {'service' : {{ $service->id }}}})"
-                            class="btn-circle btn-sm btn-primary" />
+                                  wire:key="bbc32sdvkss-{{Str::random(10)}}"
+                                  wire:click="$dispatch('slide-over.open', {component: 'modals.client.service-modal', arguments : {'service' : {{ $service->id }}}})"
+                                  class="btn-circle btn-sm btn-primary"/>
                     </x:slot:menu>
                 </x-card>
             @endforeach

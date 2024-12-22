@@ -3,7 +3,6 @@
 namespace App\Actions\Spotlight\Actions\Client\Commands;
 
 use App\Models\Note;
-use App\Peren;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class DeleteClientNoteAction
@@ -12,8 +11,6 @@ class DeleteClientNoteAction
 
     public function handle($info)
     {
-        Peren::runDatabaseTransactionApprove($info, function () use ($info) {
-            Note::where('id', $info['id'])->delete();
-        });
+        Note::where('id', $info)->delete();
     }
 }

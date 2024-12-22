@@ -19,6 +19,16 @@ class TalepReportFilter extends SlideOver
 
     public $types = [];
 
+    public static function behavior(): array
+    {
+        return [
+            'close-on-escape' => true,
+            'close-on-backdrop-click' => true,
+            'trap-focus' => true,
+            'remove-state-on-close' => true,
+        ];
+    }
+
     public function render()
     {
         return view('livewire.spotlight.reports.filter.talep-report-filter');

@@ -22,7 +22,7 @@ return [
 
     'menu_payments' => 'Taksitlerim',
     'page_taksit_subtitle' => 'İşlem yapmak takside kupona dokunun.',
-    'page_taksit_pay' => 'Ödeme Yap.',
+    'page_taksit_pay' => 'ÖDEME YAP',
 
     'menu_offer' => 'Tekliflerim',
     'page_offer_subtitle' => 'İşlem yapmak istediğiniz teklife dokunun.',

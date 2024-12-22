@@ -4,10 +4,13 @@ namespace App\Livewire\Web\Shop;
 
 use App\Managers\ShoppingCartManager;
 use App\Models\CartItem;
+use Mary\Traits\Toast;
 use WireElements\Pro\Components\SlideOver\SlideOver;
 
 class CartPage extends SlideOver
 {
+    use Toast;
+
     public $cart = [];
 
     public $cart_array = [];
@@ -16,14 +19,39 @@ class CartPage extends SlideOver
         'client-logged-in' => '$refresh',
     ];
 
+    public function deleteItem($id)
+    {
+        CartItem::where('id', $id)->delete();
+        $this->cart = [];
+        $this->cart_array = [];
+        $this->updateCart();
+        $this->dispatch('cart-item-added');
+    }
+
     public function changeQuantity($id, $quantity)
     {
-
         switch ($quantity) {
             case 0:
                 CartItem::where('id', $id)->delete();
                 break;
             default:
+                $item = CartItem::where('id', $id)->first();
+                if ($item->item->buy_max) {
+                    if ($item->item->buy_max < $quantity) {
+                        $this->error('En fazla '.$item->item->buy_max.' adet alabilirsiniz.');
+                        $this->updateCart();
+
+                        return;
+                    }
+                }
+                if ($item->item->buy_min) {
+                    if ($item->item->buy_min > $quantity) {
+                        $this->error('En az '.$item->item->buy_min.' adet alabilirsiniz.');
+                        $this->updateCart();
+
+                        return;
+                    }
+                }
                 CartItem::where('id', $id)->update(['quantity' => $quantity]);
                 break;
         }

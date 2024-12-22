@@ -19,9 +19,9 @@ class ReportQuery
             $results = collect();
 
             $reports = (! auth()->user()->hasRole('admin'))
-            ? UserReport::query()
-                ->where('user_id', auth()->user()->id)
-                ->get()
+                ? UserReport::query()
+                    ->where('user_id', auth()->user()->id)
+                    ->get()
                 : UserReport::query()
                     ->get();
 
@@ -93,6 +93,7 @@ class ReportQuery
                 ->setTitle('Talep')
                 ->setGroup('reports')
                 ->setIcon('chart-bar')
+                ->setAction('jump_to', ['path' => route('admin.reports.talep')])
             );
 
             $results->push(SpotlightResult::make()
@@ -111,30 +112,35 @@ class ReportQuery
                 ->setTitle('Notlar')
                 ->setGroup('reports')
                 ->setIcon('chart-bar')
+                ->setAction('jump_to', ['path' => route('admin.reports.note')])
             );
 
             $results->push(SpotlightResult::make()
                 ->setTitle('Adisyon')
                 ->setGroup('reports')
                 ->setIcon('chart-bar')
+                ->setAction('jump_to', ['path' => route('admin.reports.adisyon')])
             );
 
             $results->push(SpotlightResult::make()
                 ->setTitle('Teklif')
                 ->setGroup('reports')
                 ->setIcon('chart-bar')
+                ->setAction('jump_to', ['path' => route('admin.reports.offer')])
             );
 
             $results->push(SpotlightResult::make()
                 ->setTitle('Kupon')
                 ->setGroup('reports')
                 ->setIcon('chart-bar')
+                ->setAction('jump_to', ['path' => route('admin.reports.coupon')])
             );
 
             $results->push(SpotlightResult::make()
                 ->setTitle('Onay')
                 ->setGroup('reports')
                 ->setIcon('chart-bar')
+                ->setAction('jump_to', ['path' => route('admin.reports.approve')])
             );
 
             $results = $results->when(! blank($query), function ($collection) use ($query) {

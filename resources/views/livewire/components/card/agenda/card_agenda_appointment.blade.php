@@ -8,7 +8,7 @@ new class extends \Livewire\Volt\Component {
 
 ?>
 <div>
-    <x-card subtitle="{{ $item->agenda->time->format('H:i') }}">
+    <x-card subtitle="{{ $item->agenda->user->name }}">
         <x-slot:title>
             <div class="flex flex-auto items-center">
                 <x-badge class="{{ $item->agenda->type->color() }}"/>
@@ -16,9 +16,11 @@ new class extends \Livewire\Volt\Component {
             </div>
         </x-slot:title>
         <x-slot:menu>
-            <x-button icon="{{ $item->agenda->status->icon() }}"
-                      class="btn-circle btn-{{ $item->agenda->status->color() }}"/>
+            <x-button icon="{{ $item->status->icon() }}"
+                      wire:click="$dispatch('slide-over.open', {'component': 'modals.agenda.update-agenda-status', 'arguments' : {'occurrence': {{ $item->id }}}})"
+                      class="btn-circle btn-sm btn-{{ $item->status->color() }}"/>
         </x-slot:menu>
-        {{ $item->agenda->message }}
+        <p class="break-all">{{ $item->agenda->message }}</p>
+
     </x-card>
 </div>

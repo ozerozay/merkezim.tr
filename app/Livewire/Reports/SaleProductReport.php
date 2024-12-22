@@ -21,14 +21,13 @@ class SaleProductReport extends Component
     public function getHeaders(): array
     {
         return [
+            ['key' => 'date', 'label' => 'Tarih', 'format' => ['date', 'd/m/Y']],
             ['key' => 'branch.name', 'label' => 'Şube', 'sortBy' => 'branch_id'],
             ['key' => 'client.name', 'label' => 'Kasa', 'sortBy' => 'client_id'],
             ['key' => 'unique_id', 'label' => 'Danışan', 'sortBy' => 'unique_id'],
-            ['key' => 'date', 'label' => 'Tarih', 'format' => ['date', 'd/m/Y']],
             ['key' => 'price', 'label' => 'Tutar'],
             ['key' => 'sale_product_items_count', 'label' => 'Ürün'],
             ['key' => 'user.name', 'label' => 'Kullanıcı'],
-            ['key' => 'staff_names', 'label' => 'Personel', 'format' => fn ($row, $field) => $row->staff_names()],
             ['key' => 'message', 'label' => 'Açıklama'],
         ];
     }

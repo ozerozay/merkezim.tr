@@ -21,6 +21,8 @@ class Offer extends Model
     {
         return [
             'status' => 'App\OfferStatus',
+            'expire_date' => 'date:Y-m-d',
+            'created_at' => 'date:Y-m-d H:i:s',
         ];
     }
 

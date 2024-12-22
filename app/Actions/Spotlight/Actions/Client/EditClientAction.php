@@ -8,7 +8,7 @@ use Lorisleiva\Actions\Concerns\AsAction;
 
 class EditClientAction
 {
-    use AsAction ,StrHelper;
+    use AsAction, StrHelper;
 
     public function handle($info, $approve = false)
     {

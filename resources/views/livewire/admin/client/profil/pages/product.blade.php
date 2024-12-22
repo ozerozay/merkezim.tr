@@ -14,7 +14,7 @@ new class extends \Livewire\Volt\Component {
     public bool $editing = false;
 
     protected $listeners = [
-        'refresh-client-sales' => '$refresh',
+        'refresh-client-product-sales' => '$refresh',
     ];
 
     public function getData()
@@ -45,27 +45,27 @@ new class extends \Livewire\Volt\Component {
 
 ?>
 <div>
-    <livewire:components.card.statistic.card_statistic :data="$statistic" />
+    <livewire:components.card.statistic.card_statistic :data="$statistic"/>
     <div class="flex justify-end mb-4 mt-5 gap-2">
         <p>Sıralama işlemlerini tablo görünümünden yapabilirsiniz.</p>
         <x-button wire:click="changeView" label="{{ $view == 'table' ? 'LİSTE' : 'TABLO' }}"
-            icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline" />
+                  icon="{{ $view == 'table' ? 'tabler.list' : 'tabler.table' }}" class="btn btn-sm btn-outline"/>
     </div>
     @if ($view)
         <div>
             <x-card>
                 <x-table :headers="$headers" :rows="$data" :sort-by="$sortBy" striped with-pagination>
                     <x-slot:empty>
-                        <x-icon name="o-cube" label="Ürün satışı bulunmuyor." />
+                        <x-icon name="o-cube" label="Ürün satışı bulunmuyor."/>
                     </x-slot:empty>
                     @scope('cell_date', $taksit)
-                        {{ $taksit->date_human }}
+                    {{ $taksit->date_human }}
                     @endscope
                     @can('sale_product_process')
                         @scope('actions', $taksit)
-                            <x-button icon="tabler.settings"
-                                wire:click="$dispatch('slide-over.open', {component: 'modals.client.sale-product-modal', arguments : {'product' : {{ $taksit->id }}}})"
-                                class="btn-circle btn-sm btn-primary" />
+                        <x-button icon="tabler.settings"
+                                  wire:click="$dispatch('slide-over.open', {component: 'modals.client.sale-product-modal', arguments : {'product' : {{ $taksit->id }}}})"
+                                  class="btn-circle btn-sm btn-primary"/>
                         @endscope
                     @endcan
                 </x-table>
@@ -81,8 +81,8 @@ new class extends \Livewire\Volt\Component {
                     @can('sale_product_process')
                         <x-slot:menu>
                             <x-button icon="tabler.settings"
-                                wire:click="$dispatch('slide-over.open', {component: 'modals.client.sale-product-modal', arguments : {'product' : {{ $taksit->id }}}})"
-                                class="btn-circle btn-sm btn-primary" />
+                                      wire:click="$dispatch('slide-over.open', {component: 'modals.client.sale-product-modal', arguments : {'product' : {{ $taksit->id }}}})"
+                                      class="btn-circle btn-sm btn-primary"/>
                         </x-slot:menu>
                     @endcan
 
@@ -123,6 +123,6 @@ new class extends \Livewire\Volt\Component {
         </div>
     @endif
     @can('sale_product_processs')
-        <livewire:components.drawers.drawer_sale_product wire:model="editing" />
+        <livewire:components.drawers.drawer_sale_product wire:model="editing"/>
     @endcan
 </div>

@@ -1,6 +1,6 @@
 <div>
     <x-header title="{{ __('client.menu_offer') }}" subtitle="{{ __('client.page_offer_subtitle') }}." separator
-        progress-indicator>
+              progress-indicator>
         @if ($show_request)
             <x-slot:actions>
                 <x-button class="btn-primary" icon="o-plus">
@@ -38,10 +38,13 @@
                             {{ $item->itemable->category->name ?? 'PAKET' }}
                         </x-slot:sub-value>
                         <x-slot:avatar>
-                            <x-badge value="{{ $item->quantity }}" class="badge-primary" />
+                            <x-badge value="{{ $item->quantity }}" class="badge-primary"/>
                         </x-slot:avatar>
                     </x-list-item>
                 @endforeach
+                <x-hr/>
+                <x-button class="btn btn-full w-full btn-outline" wire:click="addToCart({{ $item->id }})"
+                          label="Sepete Ekle"/>
             </x-card>
         @endforeach
     </div>

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Modals\Talep;
 
+use App\Actions\Spotlight\Actions\Talep\CreateTalepAppointmentAction;
 use App\Actions\Spotlight\Actions\Talep\CreateTalepProcessAction;
 use App\Actions\Spotlight\Actions\Talep\EditTalepAction;
 use App\Enum\PermissionType;
@@ -139,6 +140,40 @@ class TalepModal extends SlideOver
         }
 
         CreateTalepProcessAction::run($validator->validated());
+
+        $this->dispatch('refresh-taleps');
+        $this->success('İşlem eklendi.');
+        $this->close();
+    }
+
+    public function addAppointment(): void
+    {
+
+        $validator = \Validator::make([
+            'id' => $this->talep->id,
+            'status' => $this->statusProcessRandevu,
+            'message' => $this->messageProcessRandevu,
+            'user_id' => auth()->user()->id,
+            'date' => date('Y-m-d H:i:s'),
+            'talep_id' => $this->talep->id,
+            'permission' => PermissionType::page_talep,
+        ], [
+            'id' => 'required|exists:taleps,id',
+            'status' => 'required',
+            'message' => 'required',
+            'user_id' => 'required|exists:users,id',
+            'date' => 'required',
+            'talep_id' => 'required|exists:taleps,id',
+            'permission' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $this->error($validator->messages()->first());
+
+            return;
+        }
+
+        CreateTalepAppointmentAction::run($validator->validated());
 
         $this->dispatch('refresh-taleps');
         $this->success('İşlem eklendi.');

@@ -60,6 +60,7 @@ enum PermissionType: string
     case kasa_detail_process = 'kasa_detail_process';
     case appointment_process = 'appointment_process';
     case adisyon_process = 'adisyon_process';
+    case talep_process = 'process_process';
 
     public function label(): string
     {

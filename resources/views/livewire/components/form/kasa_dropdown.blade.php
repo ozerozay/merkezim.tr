@@ -5,8 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Modelable;
 use Livewire\Volt\Component;
 
-new class extends Component
-{
+new class extends Component {
     #[Modelable]
     public $kasa_id;
 
@@ -36,6 +35,10 @@ new class extends Component
     }
 };
 ?>
-<div>
-    <x-choices-offline :label="$label" option-sub-label="branch.name" single wire:model="kasa_id" :options="$kasas" />
+<div wire:key="djxn-{{Str::random(10)}}">
+    <x-choices-offline wire:key="djn-{{Str::random(10)}}"
+                       :label="$label"
+                       option-sub-label="branch.name" single
+                       class="absolute"
+                       wire:model="kasa_id" :options="$kasas"/>
 </div>

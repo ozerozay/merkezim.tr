@@ -5,6 +5,7 @@ namespace App\Actions\Spotlight\Actions\Create;
 use App\Exceptions\AppException;
 use App\Models\Adisyon;
 use App\Models\Offer;
+use App\Models\Payment;
 use App\Models\Sale;
 use App\Models\SaleProduct;
 use App\Models\ShopPackage;
@@ -70,6 +71,12 @@ class CreateUniqueID
             do {
                 $code = random_int(100000000, 999999999);
             } while (UserReport::select('unique_id')->where('unique_id', '=', $code)->exists());
+
+            return $code;
+        } elseif ($type == 'payment') {
+            do {
+                $code = random_int(100000000, 999999999);
+            } while (Payment::select('unique_id')->where('unique_id', '=', $code)->exists());
 
             return $code;
         } else {

@@ -6,7 +6,8 @@
     <x-header title="{{ __('client.menu_payments') }}" separator progress-indicator>
         @if ($show_pay)
             <x-slot:actions>
-                <x-button class="btn-primary" icon="tabler.brand-mastercard">
+                <x-button class="btn-primary" icon="tabler.brand-mastercard"
+                          wire:click="$dispatch('slide-over.open', {component: 'web.modal.taksit-payment-modal'})">
                     {{ __('client.page_taksit_pay') }}
                 </x-button>
             </x-slot:actions>
@@ -28,7 +29,7 @@
                     <div class="absolute top-0 right-0 -mt-4 -mr-1">
                         <span class="badge badge-error p-3 shadow-lg text-sm"> Gecikmiş </span>
                     </div>
-                @else
+                @elseif (1==2)
                     <div class="absolute top-0 right-0 -mt-4 -mr-1">
                         <span class="badge badge-warning p-3 shadow-lg text-sm"> Bekleniyor </span>
                     </div>
@@ -37,11 +38,11 @@
         @endforeach
     </div>
     @if ($show_zero)
-        <x-hr />
+        <x-hr/>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             @foreach ($data->where('remaining', 0)->all() as $taksit)
                 <x-card shadow class="card w-full bg-base-100 cursor-pointer border" wire:click="handleClick"
-                    subtitle="{{ $taksit->sale->unique_id }}">
+                        subtitle="{{ $taksit->sale->unique_id }}">
                     {{-- TITLE --}}
                     <x-slot:title class="text-lg font-black">
                         {{ $taksit->date->format('d/m/Y') }}

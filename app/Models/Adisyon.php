@@ -24,6 +24,7 @@ class Adisyon extends Model
         return [
             'staff_ids' => 'json',
             'price' => 'float',
+            'date' => 'date:Y-m-d',
         ];
     }
 
@@ -70,6 +71,13 @@ class Adisyon extends Model
     public function staffs()
     {
         return $this->belongsToJson(User::class, 'staff_ids');
+    }
+
+    public function staff_names()
+    {
+        return $this->staffs()
+            ->pluck('name')
+            ->implode(', ');
     }
 
     protected function dateHuman(): Attribute

@@ -71,8 +71,7 @@ class KasaQuery
             foreach ($transactions as $transaction) {
                 $transaction['bakiye'] = $transaction['devir'] + $transaction['odenen'] + $transaction['tahsilat'];
                 $results->push(SpotlightResult::make()
-                    ->setTitle($transaction['kasa_adi'])
-                    ->setSubtitle('Devir: '.$transaction['devir'].' | Tahsilat: '.$transaction['tahsilat'].' | Ödenen: '.$transaction['odenen'].' | Bakiye: '.$transaction['bakiye'])
+                    ->setTitle($transaction['kasa_adi'].' - '.'Devir: '.$transaction['devir'].' | Tahsilat: '.$transaction['tahsilat'].' | Ödenen: '.$transaction['odenen'].' | Bakiye: '.$transaction['bakiye'])
                     ->setGroup($transaction['branch_name'])
                     ->setIcon('check-circle')
                     ->setAction('dispatch_event',

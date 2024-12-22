@@ -17,7 +17,7 @@ class AppointmentPage extends Component
 {
     use Toast, WebSettingsHandler;
 
-    public ?Collection $create_seans;
+    public ?Collection $create_appointment;
 
     public ?Collection $statuses;
 
@@ -27,7 +27,7 @@ class AppointmentPage extends Component
     {
         try {
             $this->getSettings();
-            $this->create_seans = $this->getCollection(SettingsType::client_page_appointment_create->name);
+            $this->create_appointment = $this->getCollection(SettingsType::client_page_appointment_create->name);
             $this->statuses = $this->getCollection(SettingsType::client_page_appointment_show->name);
             $this->show_services = $this->getBool(SettingsType::client_page_appointment_show_services->name);
         } catch (\Throwable $e) {

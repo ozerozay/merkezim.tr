@@ -13,6 +13,14 @@ class Coupon extends Model
 
     protected $guarded = ['id'];
 
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'date:Y-m-d H:i:s',
+            'end_date' => 'date:Y-m-d',
+        ];
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

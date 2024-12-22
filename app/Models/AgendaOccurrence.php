@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AgendaOccurrence extends Model
 {
@@ -19,11 +19,12 @@ class AgendaOccurrence extends Model
     {
         return [
             'occurrence_date' => 'date:Y-m-d',
+            'status' => 'App\AgendaStatus',
         ];
     }
 
     public function agenda()
     {
-        return $this->belongsTo(Agenda::class);
+        return $this->belongsTo(Agenda::class, 'agenda_id');
     }
 }

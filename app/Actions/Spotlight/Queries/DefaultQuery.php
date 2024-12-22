@@ -32,7 +32,6 @@ class DefaultQuery
                 if (count(auth()->user()->staff_branches) > 1) {
                     $pages->push(SpotlightResult::make()
                         ->setTitle('Randevu')
-                        ->setSubtitle('Randevularınızı görüntüleyin, yeni randevu oluşturun.')
                         ->setGroup('pages')
                         ->setTokens(['page_appointment' => new Appointment])
                         ->setIcon('calendar-days'), );
@@ -41,8 +40,7 @@ class DefaultQuery
 
             if (SpotlightCheckPermission::run(PermissionType::page_approve)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Onay - 4 İşlem')
-                    ->setSubtitle('Onay bekleyen işlemleri görüntüleyin.')
+                    ->setTitle('Onay')
                     ->setGroup('pages')
                     ->setTokens(['kasa' => new Kasa])
                     ->setIcon('check-circle')->setAction('dispatch_event',
@@ -54,7 +52,6 @@ class DefaultQuery
             if (SpotlightCheckPermission::run(PermissionType::page_kasa)) {
                 $pages->push(SpotlightResult::make()
                     ->setTitle('Kasa')
-                    ->setSubtitle('Gelir-gider işlemleri')
                     ->setGroup('pages')
                     ->setTokens(['kasa' => new Kasa])
                     ->setIcon('banknotes'), );
@@ -91,6 +88,14 @@ class DefaultQuery
                     ->setGroup('pages')
                     ->setTokens(['statistics' => new User])
                     ->setIcon('chart-bar'), );
+            }
+
+            if (SpotlightCheckPermission::run(PermissionType::admin_settings)) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle('Ayarlar')
+                    ->setGroup('pages')
+                    ->setTokens(['settings' => new User])
+                    ->setIcon('cog-6-tooth'));
             }
 
             /*if (SpotlightCheckPermission::run(PermissionType::page_statistics)) {

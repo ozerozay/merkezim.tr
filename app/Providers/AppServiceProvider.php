@@ -96,6 +96,7 @@ class AppServiceProvider extends ServiceProvider
             'sms_template' => 'App\Models\SMSTemplate',
             'cart_item' => 'App\Models\CartItem',
             'cart' => 'App\Models\Cart',
+            'kasa_havale' => 'App\Models\KasaHavale',
             'chat_participant' => 'Namu\WireChat\Models\Participant',
             'chat_message' => 'Namu\WireChat\Models\Message',
         ]);

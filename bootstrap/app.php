@@ -15,6 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         //$middleware->append(\Abordage\LaravelHtmlMin\Middleware\HtmlMinify::class);
 
+        $middleware->validateCsrfTokens(except: [
+            'payerror', // <-- exclude this route
+        ]);
+
         $middleware->web(append: [
             \App\Http\Middleware\LanguageMiddleWare::class,
             \App\Http\Middleware\ReferansMiddleWare::class,

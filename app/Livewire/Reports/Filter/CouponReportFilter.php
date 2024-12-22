@@ -15,6 +15,8 @@ class CouponReportFilter extends SlideOver
 
     public $staffs = [];
 
+    public $branches = [];
+
     public function render()
     {
         return view('livewire.spotlight.reports.filter.coupon-report-filter');

@@ -17,6 +17,10 @@ enum SettingsType: string
     case client_page_appointment_show_services = 'client_page_appointment_show_services';
     case client_page_appointment_create = 'client_page_appointment_create';
     case client_page_appointment_show = 'client_page_appointment_show';
+    case client_page_appointment_create_once_category = 'client_page_appointment_create_once_category';
+    case client_page_appointment_create_branches = 'client_page_appointment_create_branches';
+    case client_page_appointment_create_appointment_approve = 'client_page_appointment_create_appointment_approve';
+    case client_page_appointment_create_appointment_late_payment = 'client_page_appointment_create_appointment_late_payment';
 
     case client_page_taksit = 'client_page_taksit';
     case client_page_taksit_pay = 'client_page_taksit_pay';
@@ -34,4 +38,10 @@ enum SettingsType: string
     case client_page_support = 'client_page_support';
 
     case client_page_shop_include_kdv = 'client_page_shop_include_kdv';
+
+    case client_payment_types = 'client_payment_types';
+
+    case payment_taksit_include_kdv = 'payment_taksit_include_kdv';
+    case payment_taksit_include_komisyon = 'payment_taksit_include_komisyon';
+
 }
