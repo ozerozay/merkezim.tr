@@ -17,7 +17,7 @@ class GetGeneralSettings
 
             return collect($settings);
         } catch (\Throwable $e) {
-            return [];
+            return collect([]);
         }
     }
 }
