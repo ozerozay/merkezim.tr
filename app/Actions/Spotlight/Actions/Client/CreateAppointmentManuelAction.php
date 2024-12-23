@@ -23,87 +23,94 @@ class CreateAppointmentManuelAction
     /**
      * @throws ToastException
      */
-    public function handle($info, $approve = false)
+    public function handle($info, $approve = false, $client = false)
     {
-        return Peren::runDatabaseTransactionApprove($info, function () use ($info, $approve) {
-            $info['date'] = Carbon::parse($info['date']);
-
-            $client = User::query()
-                ->select(['id', 'name', 'branch_id'])
-                ->where('id', $info['client_id'])
-                ->first();
-
-            throw_if($info['date']->lt(Carbon::now()), new AppException('Geçmiş tarihe randevu oluşturamazsınız.'));
-
-            $branch = Branch::query()
-                ->select('id', 'name', 'opening_hours')
-                ->where('id', $client->branch_id)
-                ->first();
-
-            throw_if(! $branch->isOpen($info['date']->toDateTime()), new AppException('Belirtilen gün veya saatte şube açık değil.'));
-
-            $services = ClientService::query()
-                ->select(['id', 'remaining', 'service_id', 'client_id'])
-                ->whereIn('id', $info['service_ids'])
-                ->with('service')
-                ->get();
-
-            $total_duration = CalculateClientServicesDuration::run($info['service_ids']);
-
-            $start_date = $info['date'];
-            $end_date = $info['date']->copy()->addMinutes($total_duration);
-
-            $check_appointment = CheckAppointmentTimeAvaible::run([
-                'service_room_id' => $info['room_id'],
-                'start_date' => $start_date,
-                'end_date' => $end_date,
-            ]);
-
-            throw_if($check_appointment, new AppException('Seçtiğiniz tarih ve saatte randevu bulunuyor.'));
-
-            $appointment = Appointment::create([
-                'client_id' => $client->id,
-                'branch_id' => $client->branch_id,
-                'service_room_id' => $info['room_id'],
-                'service_category_id' => $info['category_id'],
-                'service_ids' => $info['service_ids'],
-                'date' => $start_date->format('Y-m-d'),
-                'duration' => $total_duration,
-                'date_start' => $start_date->format('Y-m-d H:i:s'),
-                'date_end' => $end_date->format('Y-m-d H:i:s'),
-                'status' => CheckUserInstantApprove::run($info['user_id'], $info['permission']) || $approve ? AppointmentStatus::waiting : AppointmentStatus::awaiting_approve,
-                'type' => AppointmentType::appointment,
-                'message' => $info['message'],
-            ]);
-
-            if ($appointment) {
-                $appointment->appointmentStatuses()->create([
-                    'user_id' => $info['user_id'],
-                    'message' => 'Randevu oluşturuldu.',
-                    'status' => $appointment->status,
-                ]);
-                foreach ($services as $service) {
-                    if ($service->remaining > 0) {
-                        $service->remaining -= 1;
-                        $service->clientServiceUses()->create([
-                            'user_id' => $info['user_id'],
-                            'client_id' => $client->id,
-                            'client_service_id' => $service->id,
-                            'seans' => 1,
-                            'message' => $start_date->format('d/m/Y H:i:s').' tarihli randevu kullanımı',
-                        ]);
-                        $service->save();
-                    } else {
-                        throw new AppException('Seçilen hizmette yeterli seansı bulunmuyor.'.$service->service()->name);
-                    }
-                }
-
-                \DB::commit();
-
-                return [$appointment->id];
-            } else {
-                throw new AppException('Randevu oluşturulamadı.');
-            }
+        return $client ? Peren::runDatabaseTransaction(function () use ($info) {
+            return $this->makeAppointment($info, false, true);
+        }) : Peren::runDatabaseTransactionApprove($info, function () use ($info, $approve) {
+            return $this->makeAppointment($info, $approve, false);
         }, $approve);
+    }
+
+    public function makeAppointment($info, $approve, $client)
+    {
+        $info['date'] = Carbon::parse($info['date']);
+
+        $client = User::query()
+            ->select(['id', 'name', 'branch_id'])
+            ->where('id', $info['client_id'])
+            ->first();
+
+        throw_if($info['date']->lt(Carbon::now()), new AppException('Geçmiş tarihe randevu oluşturamazsınız.'));
+
+        $branch = Branch::query()
+            ->select('id', 'name', 'opening_hours')
+            ->where('id', $client->branch_id)
+            ->first();
+
+        throw_if(! $branch->isOpen($info['date']->toDateTime()), new AppException('Belirtilen gün veya saatte şube açık değil.'));
+
+        $services = ClientService::query()
+            ->select(['id', 'remaining', 'service_id', 'client_id'])
+            ->whereIn('id', $info['service_ids'])
+            ->with('service')
+            ->get();
+
+        $total_duration = CalculateClientServicesDuration::run($info['service_ids']);
+
+        $start_date = $info['date'];
+        $end_date = $info['date']->copy()->addMinutes($total_duration);
+
+        $check_appointment = CheckAppointmentTimeAvaible::run([
+            'service_room_id' => $info['room_id'],
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+        ]);
+
+        throw_if($check_appointment, new AppException('Seçtiğiniz tarih ve saatte randevu bulunuyor.'));
+
+        $appointment = Appointment::create([
+            'client_id' => $client->id,
+            'branch_id' => $client->branch_id,
+            'service_room_id' => $info['room_id'],
+            'service_category_id' => $info['category_id'],
+            'service_ids' => $info['service_ids'],
+            'date' => $start_date->format('Y-m-d'),
+            'duration' => $total_duration,
+            'date_start' => $start_date->format('Y-m-d H:i:s'),
+            'date_end' => $end_date->format('Y-m-d H:i:s'),
+            'status' => $client ? AppointmentStatus::waiting : (CheckUserInstantApprove::run($info['user_id'], $info['permission']) || $approve ? AppointmentStatus::waiting : AppointmentStatus::awaiting_approve),
+            'type' => AppointmentType::appointment,
+            'message' => $info['message'],
+        ]);
+
+        if ($appointment) {
+            $appointment->appointmentStatuses()->create([
+                'user_id' => $info['user_id'],
+                'message' => 'Randevu oluşturuldu.',
+                'status' => $appointment->status,
+            ]);
+            foreach ($services as $service) {
+                if ($service->remaining > 0) {
+                    $service->remaining -= 1;
+                    $service->clientServiceUses()->create([
+                        'user_id' => $info['user_id'],
+                        'client_id' => $client->id,
+                        'client_service_id' => $service->id,
+                        'seans' => 1,
+                        'message' => $start_date->format('d/m/Y H:i:s').' tarihli randevu kullanımı',
+                    ]);
+                    $service->save();
+                } else {
+                    throw new AppException('Seçilen hizmette yeterli seansı bulunmuyor.'.$service->service()->name);
+                }
+            }
+
+            \DB::commit();
+
+            return [$appointment->id];
+        } else {
+            throw new AppException('Randevu oluşturulamadı.');
+        }
     }
 }

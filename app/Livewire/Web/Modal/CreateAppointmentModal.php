@@ -3,10 +3,14 @@
 namespace App\Livewire\Web\Modal;
 
 use App\Actions\Spotlight\Actions\Check\CheckAvailableAppointments;
+use App\Actions\Spotlight\Actions\Client\CreateAppointmentManuelAction;
 use App\Actions\Spotlight\Actions\Client\Get\GetClientServiceCategory;
+use App\Actions\Spotlight\Actions\User\RequestApproveAction;
+use App\Enum\PermissionType;
 use App\Enum\SettingsType;
 use App\Models\Branch;
 use App\Models\ClientService;
+use App\Models\ServiceRoom;
 use App\Peren;
 use App\SaleStatus;
 use App\Traits\WebSettingsHandler;
@@ -23,6 +27,8 @@ class CreateAppointmentModal extends SlideOver
 
     public ?bool $once_category = false;
 
+    public ?bool $create_appointment_approve = true;
+
     public ?Collection $create_appointment_branches;
 
     public $step = 1;
@@ -35,6 +41,8 @@ class CreateAppointmentModal extends SlideOver
 
     public ?Collection $services;
 
+    public ?Collection $rooms;
+
     public $appointmentType = null;
 
     public $selectedBranch = null;
@@ -42,6 +50,8 @@ class CreateAppointmentModal extends SlideOver
     public $selectedCategory = null;
 
     public $selectedServices = [];
+
+    public $selectedRoom = null;
 
     public ?Collection $selectedServicesCollection;
 
@@ -51,16 +61,20 @@ class CreateAppointmentModal extends SlideOver
 
     public $selected_available_date;
 
+    public $appointmentMessage;
+
     public function mount(): void
     {
         try {
             $this->getSettings();
             $this->create_appointment = $this->getCollection(SettingsType::client_page_appointment_create->name);
             $this->once_category = $this->getBool(SettingsType::client_page_appointment_create_once_category->name);
+            $this->create_appointment_approve = $this->getBool(SettingsType::client_page_appointment_create_appointment_approve->name);
             $this->create_appointment_branches = $this->getCollection(SettingsType::client_page_appointment_create_branches->name);
             $this->branches = collect();
             $this->serviceCategories = collect();
             $this->services = collect();
+            $this->rooms = collect();
             $this->selectedServicesCollection = collect();
         } catch (\Throwable $e) {
             $this->error('Lütfen tekrar deneyin.');
@@ -144,6 +158,7 @@ class CreateAppointmentModal extends SlideOver
     {
         if ($this->selectedCategory) {
             $this->getServices($this->selectedCategory);
+            $this->getRooms($this->selectedCategory);
             $this->goToService();
         } else {
             $this->step = 3;
@@ -184,29 +199,51 @@ class CreateAppointmentModal extends SlideOver
 
     public function createAppointmentManuel(): void
     {
-        $validator = \Illuminate\Support\Facades\Validator::make(
-            [
-                'client_id' => auth()->user()->id,
-                'category_id' => $this->selectedCategory,
-                'service_ids' => $this->selectedServices,
-                'date' => $this->date,
-                'message' => $this->message,
-                'user_id' => auth()->user()->id,
-            ], [
-                'client_id' => 'required|exists:users,id',
-                'category_id' => 'required|exists:service_categories,id',
-                'service_ids' => 'required|array',
-                'date' => 'required|date|after:now',
-                'message' => 'required',
-                'user_id' => 'required|exists:users,id',
-            ]
-        );
+        try {
+            $validator = \Validator::make(
+                [
+                    'client_id' => auth()->user()->id,
+                    'category_id' => $this->selectedCategory,
+                    'service_ids' => $this->selectedServices->filter(function ($value) {
+                        return $value === true;
+                    })->keys()->toArray(),
+                    'date' => $this->selectedDate,
+                    'room_id' => $this->selectedRoom,
+                    'message' => $this->appointmentMessage,
+                    'user_id' => auth()->user()->id,
+                ], [
+                    'client_id' => 'required|exists:users,id',
+                    'category_id' => 'required|exists:service_categories,id',
+                    'service_ids' => 'required|array',
+                    'date' => 'required|date|after:now',
+                    'room_id' => 'required|exists:service_rooms,id',
+                    'message' => 'required',
+                    'user_id' => 'required|exists:users,id',
+                ]
+            );
 
-        if ($validator->fails()) {
-            $this->error($validator->messages()->first());
+            if ($validator->fails()) {
+                $this->error($validator->messages()->first());
 
-            return;
+                return;
+            }
+
+            if ($this->create_appointment_approve) {
+                RequestApproveAction::run($validator->validated(), auth()->user()->id, PermissionType::action_client_create_appointment, $this->appointmentMessage ?? '');
+
+                $this->success('Randevu talebiniz onaylandığında bildirim alacaksınız.');
+                $this->close();
+            } else {
+
+                CreateAppointmentManuelAction::run($validator->validated(), false, true);
+
+                $this->success('Randevunuz oluşturuldu.');
+                $this->close();
+            }
+        } catch (\Throwable $e) {
+            $this->error('Lütfen tekrar deneyin.');
         }
+
     }
 
     public function createAppointmentMulti(): void
@@ -339,6 +376,18 @@ class CreateAppointmentModal extends SlideOver
             ->whereRelation('service', 'active', '=', true)
             ->with('service:name,id,category_id,duration', 'service.category:id,name', 'sale:id,unique_id')
             ->groupBy('service_id')
+            ->get();
+    }
+
+    public function getRooms($category): void
+    {
+        $this->rooms = ServiceRoom::query()
+            ->where('branch_id', auth()->user()->branch_id)
+            ->whereHas('categories', function ($q) use ($category) {
+                $q->where('id', $category);
+            })
+            ->where('active', true)
+            ->orderBy('name')
             ->get();
     }
 

@@ -1,10 +1,32 @@
 <div>
-    <div class="overflow-x-hidden">
+
+    <div
+        class="fixed inset-y-0 right-0 w-full max-w-md shadow-lg flex flex-col h-screen overflow-x-hidden  bg-base-100">
+        <div wire:loading>
+            <!-- Overlay for this div -->
+            <div class="absolute inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-10">
+                <div class="flex flex-col items-center justify-center space-y-4">
+                    <!-- Loading Spinner -->
+                    <div class="flex items-center justify-center">
+                        <svg class="animate-spin h-16 w-16 text-black-500" xmlns="http://www.w3.org/2000/svg"
+                             fill="none"
+                             viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg>
+                    </div>
+                    <!-- Loading Text -->
+                    <p class="text-black-500 text-xl font-semibold">Lütfen bekleyin...</p>
+                </div>
+            </div>
+        </div>
         <x-card title="Randevu Oluştur" subtitle="Saniyeler içerisinde randevu oluşturun" separator progress-indicator>
             <x-slot:menu>
                 <x-button icon="tabler.x" class="btn-sm btn-outline" wire:click="$dispatch('slide-over.close')"/>
             </x-slot:menu>
-            <div wire:loading.remove x-data="{ step: @entangle('step') }" class="w-full max-w-2xl mx-auto space-y-8">
+            <div x-data="{ step: @entangle('step') }" class="w-full max-w-2xl mx-auto space-y-8">
                 <!-- Step Progress -->
                 <div class="flex items-center justify-between">
                     <template
@@ -74,6 +96,30 @@
 
                 <!-- Step 4: Hizmet Seçimi -->
                 <div x-show="step === 4" class="space-y-4">
+                    @if ($appointmentType == 'date')
+                        <h1 class="text-2xl font-semibold text-center">Oda Seçimi</h1>
+                        <div class="grid grid-cols-1 gap-4">
+                            @foreach($rooms as $room)
+                                <label class="block cursor-pointer mt-2">
+                                    <div
+                                        class="relative flex items-center p-4 border rounded-lg hover:shadow transition">
+
+                                        <!-- Radio Button -->
+                                        <input type="radio"
+                                               name="selectedRoom"
+                                               value="{{ $room->id }}"
+                                               wire:model="selectedRoom"
+                                               wire:key="rdo-{{ Str::random(10) }}"
+                                               class="form-radio text-theme ml-2">
+
+                                        <span
+                                            class="ml-8">{{ $room->name }}</span>
+                                    </div>
+                                </label>
+                            @endforeach
+                        </div>
+                        <x-hr/>
+                    @endif
                     <h1 class="text-2xl font-semibold text-center">Hizmet Seçimi</h1>
                     <div class="grid grid-cols-1 gap-4">
                         @foreach ($services as $service)
@@ -99,6 +145,7 @@
                     </div>
                 </div>
 
+
                 <div x-show="step === 5" class="space-y-4">
                     <h1 class="text-2xl font-semibold text-center">Randevu Tarihi Seçimi</h1>
 
@@ -109,19 +156,22 @@
                                             label="Boş Tarihler"/>
 
                         </div>
-                        <x-textarea label="Randevu notunuz" wire:model="messageAppointment"/>
+                        <x-textarea label="Randevu notunuz" wire:model="appointmentMessage"/>
                         <x-button class="btn-primary btn-block mt-2" wire:click="createAppointmentMulti">
                             RANDEVU OLUŞTUR
                         </x-button>
                     @else
                         <div class="p-3 border rounded-lg ">
+
                             @if ($appointmentType == 'date')
+
                                 <livewire:components.form.date_time
                                     label="Tarih Seçin"
                                     minDate="{{ date('Y-m-d') }}"
                                     wire:model="selectedDate"
                                     :enableTime="true"
                                     wire:key="xvk-{{Str::random()}}"/>
+                                <x-textarea label="Notunuz" class="mt-2" wire:model="appointmentMessage"/>
                                 <x-button class="btn-primary btn-block mt-2" wire:click="createAppointmentManuel">
                                     Randevu
                                     Oluştur
@@ -182,17 +232,7 @@
                     </div>
                 @endif
             </div>
-            <div wire:loading class="flex items-center justify-center">
-                <div class="text-center">
-                    <svg class="animate-spin h-10 w-10 text-primary mx-auto" xmlns="http://www.w3.org/2000/svg"
-                         fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                    </svg>
-                    <p class="mt-4 text-primary font-semibold">Lütfen Bekleyin...</p>
-                </div>
-            </div>
+
         </x-card>
     </div>
 </div>

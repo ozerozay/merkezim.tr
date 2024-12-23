@@ -109,9 +109,6 @@ class CreateManuelAppointmentAction
             }
 
             DB::commit();
-        } catch (AppException $e) {
-            DB::rollBack();
-            throw ToastException::error($e->getMessage());
         } catch (\Throwable $e) {
             DB::rollBack();
             throw ToastException::error('İşlem tamamlanamadı.'.$e->getMessage());

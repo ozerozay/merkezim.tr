@@ -13,7 +13,7 @@ class PaymentSuccessModal extends SlideOver
     {
         $this->payment = Payment::where('unique_id', $id)->first();
 
-        if (! $this->payment) {
+        if ($this->payment == null) {
             $this->close();
         }
     }

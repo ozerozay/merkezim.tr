@@ -85,6 +85,13 @@ class Appointment extends Model
         );
     }
 
+    protected function serviceNamesPublic(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->services->map(fn ($service) => ($service->service->is_visible && $service->service->active) ? $service->service->name.'(1)' : '')->implode(', ')
+        );
+    }
+
     protected function finishServiceNames(): Attribute
     {
         return Attribute::make(
@@ -99,9 +106,11 @@ class Appointment extends Model
 
     public function service_names_public(Appointment $appointment)
     {
-        return $appointment->services->map(function ($service) {
-            if ($service->service->is_visible && $service->service->active) {
-                return $service->service->name;
+        //dump($appointment->services);
+
+        return $appointment->services->map(function ($s) {
+            if ($s->service->is_visible && $s->service->active) {
+                return $s->service->name;
             }
 
             return null;

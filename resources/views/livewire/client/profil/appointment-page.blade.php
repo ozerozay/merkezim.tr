@@ -33,7 +33,7 @@
     <x-hr/>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         @foreach ($data->where('status', \App\AppointmentStatus::finish)->all() as $appointment)
-            <x-card shadow class="card w-full bg-base-100 cursor-pointer" wire:click="handleClick" separator>
+            <x-card shadow class="card w-full bg-base-100" separator>
                 {{-- TITLE --}}
                 <x-slot:title class="text-lg font-black">
                     {{ $appointment->date->format('d/m/Y') }}
@@ -52,7 +52,9 @@
                     <x-hr/>
                 @endif
                 <div class="text-center">
-                    <x-button label="Değerlendir & Bahşiş" icon="tabler.star" class="btn-success btn-outline"/>
+                    <x-button label="Değerlendir & Bahşiş" icon="tabler.star"
+                              wire:click="$dispatch('slide-over.open', {'component': 'web.modal.rate-appointment-modal', 'arguments': {'appointment': '{{ $appointment->id }}'}})"
+                              class="btn-success btn-outline"/>
                 </div>
             </x-card>
         @endforeach

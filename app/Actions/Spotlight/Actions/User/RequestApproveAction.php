@@ -29,8 +29,10 @@ class RequestApproveAction
                 'data' => $info,
             ]);
 
+            \DB::commit();
             $users = User::select('id', 'name')->permission('page_approve')->get();
             Notification::send($users, new ApproveRequested($approve));
+
         });
     }
 }

@@ -94,23 +94,19 @@
                 @endif
                 @if ($allSettings->contains(\App\Enum\SettingsType::client_page_appointment->name))
                     <x-menu-item title="{{ __('client.menu_appointment') }}" icon="tabler.calendar"
-                                 link="{{ route('client.profil.appointment') }}" badge="1"
-                                 badge-classes="float-right !badge-warning"/>
+                                 link="{{ route('client.profil.appointment') }}"/>
                 @endif
                 @if ($allSettings->contains(\App\Enum\SettingsType::client_page_taksit->name))
                     <x-menu-item title="{{ __('client.menu_payments') }}" icon="tabler.file-invoice"
-                                 link="{{ route('client.profil.taksit') }}" badge="1"
-                                 badge-classes="float-right !badge-error"/>
+                                 link="{{ route('client.profil.taksit') }}"/>
                 @endif
                 @if ($allSettings->contains(\App\Enum\SettingsType::client_page_offer->name))
                     <x-menu-item title="{{ __('client.menu_offer') }}" icon="tabler.confetti"
-                                 link="{{ route('client.profil.offer') }}" badge="1"
-                                 badge-classes="float-right !badge-success"/>
+                                 link="{{ route('client.profil.offer') }}"/>
                 @endif
                 @if ($allSettings->contains(\App\Enum\SettingsType::client_page_coupon->name))
                     <x-menu-item title="{{ __('client.menu_coupon') }}" icon="tabler.gift-card"
-                                 link="{{ route('client.profil.coupon') }}" badge="1"
-                                 badge-classes="float-right !badge-success"/>
+                                 link="{{ route('client.profil.coupon') }}"/>
                 @endif
                 @if ($allSettings->contains(\App\Enum\SettingsType::client_page_referans->name))
                     <x-menu-item title="{{ __('client.menu_referans') }}" icon="tabler.user-plus"

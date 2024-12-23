@@ -128,12 +128,13 @@ class Peren
     /**
      * @throws ToastException
      */
-    public static function runDatabaseTransaction(callable $callback): void
+    public static function runDatabaseTransaction(callable $callback)
     {
         try {
             \DB::beginTransaction();
-            $callback();
-            \DB::commit();
+
+            return $callback();
+
         } catch (\Throwable $e) {
             \DB::rollBack();
             throw ToastException::error('İşlem tamamlanamadı.');

@@ -241,6 +241,7 @@ return [
         'expiryMonth' => 'Son kullanma tarihi',
         'expiryYear' => 'Son kullanma tarihi',
         'price_manuel' => 'Tutar',
+        'rank' => 'Değerlendirme',
     ],
 
 ];

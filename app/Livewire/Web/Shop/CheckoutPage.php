@@ -185,12 +185,7 @@ class CheckoutPage extends SlideOver
             ]);
         } else {
             $this->close(withForce: true);
-            $this->dispatch('slide-over.open', [
-                'component' => 'web.shop.payment-success-modal',
-                'arguments' => [
-                    'id' => $id,
-                ],
-            ]);
+            $this->dispatch('slide-over.open', component: 'web.shop.payment-success-modal', arguments: ['id' => $id]);
         }
     }
 
@@ -325,12 +320,9 @@ class CheckoutPage extends SlideOver
         ];
 
         if ($payment = CreateHavaleAction::run($info)) {
-            $this->close(withForce: true);
-            $this->dispatch('slide-over.open', [
-                'component' => 'web.shop.payment-success-modal',
-                'arguments' => [
-                    'id' => $payment->unique_id,
-                ],
+
+            $this->dispatch('slide-over.open', component: 'web.shop.payment-success-modal', arguments: [
+                'id' => $payment->unique_id,
             ]);
         } else {
             $this->error('Lütfen tekrar deneyin.');

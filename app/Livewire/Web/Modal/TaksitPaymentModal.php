@@ -79,10 +79,7 @@ class TaksitPaymentModal extends SlideOver
             return;
         }
 
-        $this->dispatch('slide-over.open', [
-            'component' => 'web.shop.checkout-page',
-            'arguments' => $arguments,
-        ]);
+        $this->dispatch('slide-over.open', component: 'web.shop.checkout-page', arguments: $arguments);
 
     }
 
