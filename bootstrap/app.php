@@ -21,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             \App\Http\Middleware\LanguageMiddleWare::class,
-            \App\Http\Middleware\ReferansMiddleWare::class,
+            //\App\Http\Middleware\ReferansMiddleWare::class,
         ]);
 
         $middleware->alias([
