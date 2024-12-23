@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('country');
             $table->string('phone');
             $table->text('message');
-            $table->string('type_id')->nullable();
+            //$table->string('type_id')->nullable();
             $table->string('campaign_id')->nullable();
             $table->json('status')->nullable();
             $table->rawIndex('(cast(`status` as unsigned array))', 'sms_status_index');
