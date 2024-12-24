@@ -87,7 +87,7 @@ Route::middleware([
 
     Route::middleware('auth')->group(function () {
 
-        Route::get('/seans', SeansPage::class)->name('client.profil.seans');
+        Route::get('/seans', SeansPage::class)->name('client.profil.seans')->middleware('minify');
         Route::get('/randevu', AppointmentPage::class)->name('client.profil.appointment');
         Route::get('/taksit', TaksitPage::class)->name('client.profil.taksit');
         Route::get('/teklif', OfferPage::class)->name('client.profil.offer');

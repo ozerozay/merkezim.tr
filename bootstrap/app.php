@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             \App\Http\Middleware\LanguageMiddleWare::class,
+            \App\Http\Middleware\MinifyHtml::class,
             //\App\Http\Middleware\ReferansMiddleWare::class,
         ]);
 
@@ -28,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'minify' => \App\Http\Middleware\MinifyHtml::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
