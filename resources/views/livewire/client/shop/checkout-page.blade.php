@@ -197,8 +197,7 @@
 
 
             <!-- Sabit Alt Kısım -->
-            <div class="p-4 border-t border-gray-200 bg-base-100 fixed bottom-0 right-0 w-full max-w-md box-border">
-
+            <div class="p-4 border-t border-gray-200 bg-base-100 relative bottom-0 right-0 w-full max-w-md box-border">
 
                 <div class="flex justify-between text-sm">
                     <p>Ara Toplam</p>
