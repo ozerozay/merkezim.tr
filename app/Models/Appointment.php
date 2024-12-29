@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
@@ -104,6 +105,20 @@ class Appointment extends Model
         return $appointment->services->map(fn ($service) => $service->service->name.'(1)')->implode(', ');
     }
 
+    public function getServiceNamesPublic()
+    {
+        //dump($this->services);
+
+        return $this->services->map(function ($s) {
+            // Eğer hizmet görünür ve aktifse, adını döndür.
+            if ($s->service->is_visible && $s->service->active) {
+                return $s->service->name;
+            }
+
+            return null; // Eğer şartlar sağlanmazsa null döndür
+        })->filter()->implode(', '); // null değerleri filtreleyip, virgülle ayırarak döndür
+    }
+
     public function service_names_public(Appointment $appointment)
     {
         //dump($appointment->services);
@@ -115,6 +130,17 @@ class Appointment extends Model
 
             return null;
         })->implode(', ');
+    }
+
+    public function getFinishServiceNamesPublic()
+    {
+        return $this->finish_services->map(function ($service) {
+            if ($service->service->is_visible && $service->service->active) {
+                return $service->service->name;
+            }
+
+            return null; // Eğer şartlar sağlanmazsa null döndür
+        })->filter()->implode(', '); // null değerleri filtreleyip, virgülle ayırarak döndür
     }
 
     public function finish_service_names_public(Appointment $appointment)
@@ -147,5 +173,10 @@ class Appointment extends Model
         return Attribute::make(
             get: fn (?Carbon $value) => Carbon::parse($this->date_end)->format('H:i')
         );
+    }
+
+    public function review(): HasOne
+    {
+        return $this->hasOne(AppointmentReview::class, 'appointment_id');
     }
 }

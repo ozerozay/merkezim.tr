@@ -1,7 +1,9 @@
 <div>
     <div class="overflow-x-hidden">
         <x-card title="Sepetim" subtitle="asd" separator progress-indicator>
-
+            <x-slot:menu>
+                <x-button icon="tabler.x" class="btn-sm btn-outline" wire:click="$dispatch('slide-over.close')"/>
+            </x-slot:menu>
             @if ($cart->isEmpty())
                 <div class="text-center text-gray-500 py-4">
                     <p class="text-lg">Sepetiniz boş!</p>
@@ -24,133 +26,7 @@
                         <x-list-item :item="$c" wire:key="itm-{{ $c->id }}">
                             <x-slot:avatar>
 
-                                <div class="flex justify-start mt-4">
-                                    <x-select wire:key="dfdsf-{{ $loop->index }}"
-                                              wire:model.number.live="cart_array.{{ $loop->index }}.quantity"
-                                              :options="$quantities"
-                                              wire:change="changeQuantity({{ $c->id }}, $event.target.value)"
-                                              class="select-sm"/>
-                                </div>
-                                <div class="flex justify-start mt-4">
-                                    <x-button class="btn btn-sm btn-outline btn-error"
-                                              wire:confirm="Emin misiniz ?"
-                                              wire:click="deleteItem({{ $c->id }})"> SİL
-                                    </x-button>
-                                </div>
-                            </x-slot:avatar>
-                            <x-slot:value>
-                                {{ $c->item->name }}
-                            </x-slot:value>
-                            <x-slot:sub-value>
-                                @price($c->item->price)
-                            </x-slot:sub-value>
-                            <x-slot:actions>
-                                <div class="flex flex-col">
-                                    @price($c->price * $c->quantity)
-                                </div>
-                            </x-slot:actions>
-                        </x-list-item>
-                    @endforeach
-                    @foreach ($cart as $c)
-                        @php
-                            $quantities = [];
-                            $max = $c->item->buy_max ?? 50;
-
-                            for ($i = 0; $i <= $max; $i++) {
-                                $quantities[] = [
-                                    'id' => $i,
-                                    'name' => $i,
-                                ];
-                            }
-                        @endphp
-                        <x-list-item :item="$c" wire:key="itm-{{ $c->id }}">
-                            <x-slot:avatar>
-
-                                <div class="flex justify-start mt-4">
-                                    <x-select wire:key="dfdsf-{{ $loop->index }}"
-                                              wire:model.number.live="cart_array.{{ $loop->index }}.quantity"
-                                              :options="$quantities"
-                                              wire:change="changeQuantity({{ $c->id }}, $event.target.value)"
-                                              class="select-sm"/>
-                                </div>
-                                <div class="flex justify-start mt-4">
-                                    <x-button class="btn btn-sm btn-outline btn-error"
-                                              wire:confirm="Emin misiniz ?"
-                                              wire:click="deleteItem({{ $c->id }})"> SİL
-                                    </x-button>
-                                </div>
-                            </x-slot:avatar>
-                            <x-slot:value>
-                                {{ $c->item->name }}
-                            </x-slot:value>
-                            <x-slot:sub-value>
-                                @price($c->item->price)
-                            </x-slot:sub-value>
-                            <x-slot:actions>
-                                <div class="flex flex-col">
-                                    @price($c->price * $c->quantity)
-                                </div>
-                            </x-slot:actions>
-                        </x-list-item>
-                    @endforeach
-                    @foreach ($cart as $c)
-                        @php
-                            $quantities = [];
-                            $max = $c->item->buy_max ?? 50;
-
-                            for ($i = 0; $i <= $max; $i++) {
-                                $quantities[] = [
-                                    'id' => $i,
-                                    'name' => $i,
-                                ];
-                            }
-                        @endphp
-                        <x-list-item :item="$c" wire:key="itm-{{ $c->id }}">
-                            <x-slot:avatar>
-
-                                <div class="flex justify-start mt-4">
-                                    <x-select wire:key="dfdsf-{{ $loop->index }}"
-                                              wire:model.number.live="cart_array.{{ $loop->index }}.quantity"
-                                              :options="$quantities"
-                                              wire:change="changeQuantity({{ $c->id }}, $event.target.value)"
-                                              class="select-sm"/>
-                                </div>
-                                <div class="flex justify-start mt-4">
-                                    <x-button class="btn btn-sm btn-outline btn-error"
-                                              wire:confirm="Emin misiniz ?"
-                                              wire:click="deleteItem({{ $c->id }})"> SİL
-                                    </x-button>
-                                </div>
-                            </x-slot:avatar>
-                            <x-slot:value>
-                                {{ $c->item->name }}
-                            </x-slot:value>
-                            <x-slot:sub-value>
-                                @price($c->item->price)
-                            </x-slot:sub-value>
-                            <x-slot:actions>
-                                <div class="flex flex-col">
-                                    @price($c->price * $c->quantity)
-                                </div>
-                            </x-slot:actions>
-                        </x-list-item>
-                    @endforeach
-                    @foreach ($cart as $c)
-                        @php
-                            $quantities = [];
-                            $max = $c->item->buy_max ?? 50;
-
-                            for ($i = 0; $i <= $max; $i++) {
-                                $quantities[] = [
-                                    'id' => $i,
-                                    'name' => $i,
-                                ];
-                            }
-                        @endphp
-                        <x-list-item :item="$c" wire:key="itm-{{ $c->id }}">
-                            <x-slot:avatar>
-
-                                <div class="flex justify-start mt-4">
+                                <div class="flex justify-start mb-4">
                                     <x-select wire:key="dfdsf-{{ $loop->index }}"
                                               wire:model.number.live="cart_array.{{ $loop->index }}.quantity"
                                               :options="$quantities"
@@ -180,7 +56,6 @@
                 @endauth
 
                 @guest
-
                     @foreach ($cart as $c)
                         @php
                             $quantities = [];
@@ -213,7 +88,7 @@
                 @endguest
 
             @endif
-            <div class="p-4 border-t border-gray-200 bg-base-200 fixed bottom-0 right-0 w-full max-w box-border">
+            <div class="p-4 border-t border-gray-200 bg-base-200 box-border">
                 @auth
                     <div class="flex justify-between text-sm">
                         <p>Ara Toplam</p>

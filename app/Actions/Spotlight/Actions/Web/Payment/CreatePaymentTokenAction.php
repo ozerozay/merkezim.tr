@@ -3,6 +3,7 @@
 namespace App\Actions\Spotlight\Actions\Web\Payment;
 
 use App\Actions\Spotlight\Actions\Create\CreateUniqueID;
+use App\Enum\PaymentStatus;
 use App\Exceptions\AppException;
 use App\Managers\PayTRPaymentManager;
 use App\Models\Payment;
@@ -31,9 +32,15 @@ class CreatePaymentTokenAction
 
             $payment = Payment::create([
                 'unique_id' => CreateUniqueID::run('payment'),
-                'data' => collect($info)->forget('cardNumber')->forget('cardName')->forget('expiryMonth')->forget('expiryYear')->forget('cvv'),
+                'data' => collect($info)->forget('cardNumber')->forget('cardName')->forget('expiryMonth')->forget('expiryYear')->forget('cvv')->toArray(),
                 'type' => $info['type'],
+                'status' => PaymentStatus::pending->name,
+                'client_id' => $info['client_id'],
             ]);
+
+            if (! $payment) {
+                throw new AppException('Lütfen tekrar deneyin.');
+            }
 
             $merchant_oid = (string) $payment->unique_id;
             $test_mode = 0;
@@ -43,7 +50,7 @@ class CreatePaymentTokenAction
 
             $email = 'ozerozay@gmail.com';
 
-            $payment_amount = $info['total'];
+            $payment_amount = $this->numberFormat($info['total']);
             $currency = 'TL';
 
             $installment_count = $info['selectedInstallment'] == 'pesin' ? 0 : $info['selectedInstallment'];
@@ -55,7 +62,7 @@ class CreatePaymentTokenAction
             $resource_array = [
                 'ip' => $user_ip,
                 'merchant_oid' => $payment->unique_id,
-                'payment_amount' => number_format((float) $info['total'], 2),
+                'payment_amount' => $this->numberFormat($info['total']),
                 'user_name' => auth()->user()->name,
                 'user_phone' => auth()->user()->phone,
                 'user_basket' => $user_basket,
@@ -104,15 +111,18 @@ class CreatePaymentTokenAction
 
             if (curl_errno($ch)) {
                 \DB::rollBack();
+                dump('curl');
 
                 throw new AppException('Lütfen tekrar deneyin.');
             }
             curl_close($ch);
             if (str_contains($result, 'failed')) {
                 \DB::rollBack();
-
+                dump('failed');
                 throw new AppException($result);
             }
+
+            \DB::commit();
 
             return $result;
             /*dump($token);
@@ -123,6 +133,10 @@ class CreatePaymentTokenAction
 
             return null;
         }
+    }
 
+    public function numberFormat($number): string
+    {
+        return number_format((float) $number, 2, '.', '');
     }
 }

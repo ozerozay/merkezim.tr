@@ -16,7 +16,7 @@ class GetPageOfferAction
         try {
             return Offer::query()
                 ->where('client_id', auth()->user()->id)
-                ->where('status', OfferStatus::success)
+                ->whereIn('status', [OfferStatus::success, OfferStatus::waiting])
                 ->latest()
                 ->with('items.itemable')
                 ->get();

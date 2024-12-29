@@ -17,9 +17,9 @@ class CreateServiceAction
     /**
      * @throws ToastException
      */
-    public function handle($info, $approve = false): void
+    public function handle($info, $approve = false)
     {
-        return Peren::runDatabaseTransactionApprove($info, function () use ($info) {
+        return Peren::runDatabaseTransactionApprove($info, function () use ($info, $approve) {
             $client = GetClientByID::run(null, $info['client_id'], [], true);
 
             $service_ids = [];
@@ -33,7 +33,7 @@ class CreateServiceAction
                     'sale_id' => $info['sale_id'],
                     'total' => $info['total'],
                     'remaining' => $info['remaining'],
-                    'status' => CheckUserInstantApprove::run(auth()->user()->id, PermissionType::action_client_create_service) ? SaleStatus::success : SaleStatus::waiting,
+                    'status' => $approve ? SaleStatus::success : (CheckUserInstantApprove::run(auth()->user()->id, PermissionType::action_client_create_service) ? SaleStatus::success : SaleStatus::waiting),
                     'gift' => $info['gift'],
                     'message' => $info['message'],
                 ]);

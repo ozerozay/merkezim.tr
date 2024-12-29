@@ -28,9 +28,7 @@
 {{-- NAVBAR mobile only --}}
 <x-nav sticky class="lg:hidden">
     <x-slot:brand>
-        <p class="text-2xl font-bold">
-            {{ $site_name }}
-        </p>
+        <x-app-brand/>
     </x-slot:brand>
     <x-slot:actions>
 
@@ -52,81 +50,96 @@
 {{-- MAIN --}}
 <x-main>
     {{-- SIDEBAR --}}
-    <x-slot:sidebar drawer="main-drawer" collapse-text="Küçült" collapsible class="bg-base-100 lg:bg-inherit">
-        {{-- MENU --}}
+    <x-slot:sidebar drawer="main-drawer" collapse-text="Küçült" collapsible class="bg-base-100 p-3 lg:bg-inherit">
+
         <x-menu class="mt-2" activate-by-route>
-            {{-- User --}}
-            <div class="flex items-center">
-                <p class="text-2xl font-bold flex-1">
-                    {{ $site_name }}
-                </p>
-                <x-theme-toggle class="btn btn-circle ml-auto"/>
-            </div>
 
 
-            <x-menu-separator/>
             @if (1 == 2)
                 <x-button label="Hi!" class="btn-outline" data-set-theme="cupcake" data-key="mary-theme"/>
             @endif
             @if ($user = auth()->user())
-                <x-list-item :item="$user" no-separator no-hover class="-mx-2 !-my-2 rounded">
-                    <x-slot:value>
+
+                <x-list-item :item="$user" value="name" sub-value="client_branch.name" no-separator no-hover
+                             class="-mx-2 !-my-2 rounded">
+                    <x-slot:value class="font-semibold text-xl overflow-hidden text-ellipsis whitespace-nowrap">
                         {{ auth()->user()->name }}
                     </x-slot:value>
-                    <x-slot:sub-value>
-                        {{ auth()->user()->unique_id }}
-                    </x-slot:sub-value>
                     <x-slot:actions>
-                        <x-button icon="tabler.bell" class="btn-circle" link="{{ route('logout') }}"/>
+                        <x-dropdown>
+                            <x-slot:trigger>
+                                <x-button icon="o-cog-6-tooth"
+                                          class="btn-circle text-white transition-colors duration-200"/>
+                            </x-slot:trigger>
+                            <x-menu-item icon="tabler.user-circle" label="Bilgilerini Düzenle"
+                                         @click.stop="$dispatch('mary-toggle-theme')"/>
+                            <x-menu-item icon="tabler.camera-plus" label="Profil Fotoğrafı Yükle"
+                                         @click.stop="$dispatch('mary-toggle-theme')"/>
+                            <x-menu-item icon="tabler.moon" label="Koyu Mod"
+                                         @click.stop="$dispatch('mary-toggle-theme')"/>
+                            <x-menu-item icon="o-power" label="Çıkış" link="/logout" no-wire-navigate/>
+                        </x-dropdown>
                     </x-slot:actions>
                 </x-list-item>
-                @php
-                    $allSettings = \App\Actions\Spotlight\Actions\Settings\GetAllSettingsAction::run();
-                @endphp
-                @if ($shop_active)
-                    <x-menu-item title="{{ __('client.menu_shop') }}" class="underline font-bold"
-                                 icon="tabler.circle-plus" link="{{ route('client.shop.packages') }}"/>
-                @endif
+                <x-menu-item
+                    icon="tabler.user-circle"
+                    class="bg-gray-900 text-white hover:bg-gray-700 transition-all duration-300 p-4 rounded-lg mb-4 shadow-lg"
+                >
+                    <x-slot:title>
+                        <div class="flex items-center justify-between w-full">
+                            <!-- Avatar -->
+                            <div class="flex items-center space-x-4">
+                                <img class="w-14 h-14 rounded-full border-4 border-gray-700 dark:border-gray-500"
+                                     src="https://i.pravatar.cc/150?img=1" alt="Avatar">
 
-                @if ($allSettings->contains(\App\Enum\SettingsType::client_page_seans->name))
-                    <x-menu-item title="{{ __('client.menu_seans') }}" icon="tabler.mood-check"
-                                 link="{{ route('client.profil.seans') }}"/>
-                @endif
-                @if ($allSettings->contains(\App\Enum\SettingsType::client_page_appointment->name))
-                    <x-menu-item title="{{ __('client.menu_appointment') }}" icon="tabler.calendar"
-                                 link="{{ route('client.profil.appointment') }}"/>
-                @endif
-                @if ($allSettings->contains(\App\Enum\SettingsType::client_page_taksit->name))
-                    <x-menu-item title="{{ __('client.menu_payments') }}" icon="tabler.file-invoice"
-                                 link="{{ route('client.profil.taksit') }}"/>
-                @endif
-                @if ($allSettings->contains(\App\Enum\SettingsType::client_page_offer->name))
-                    <x-menu-item title="{{ __('client.menu_offer') }}" icon="tabler.confetti"
-                                 link="{{ route('client.profil.offer') }}"/>
-                @endif
-                @if ($allSettings->contains(\App\Enum\SettingsType::client_page_coupon->name))
-                    <x-menu-item title="{{ __('client.menu_coupon') }}" icon="tabler.gift-card"
-                                 link="{{ route('client.profil.coupon') }}"/>
-                @endif
-                @if ($allSettings->contains(\App\Enum\SettingsType::client_page_referans->name))
-                    <x-menu-item title="{{ __('client.menu_referans') }}" icon="tabler.user-plus"
-                                 link="{{ route('client.profil.invite') }}"/>
-                @endif
+                                <div>
+                                    <!-- Kullanıcı Adı ve Şube Adı -->
+                                    <span class="font-semibold text-xl text-gray-200 dark:text-white">
+                        {{ Str::substr(auth()->user()->name, 0, 20) }}
+                    </span>
+                                    <span class="text-sm text-gray-400 dark:text-gray-300">
+                        {{ auth()->user()->client_branch->name }}
+                    </span>
+                                </div>
+                            </div>
 
-                @if ($allSettings->contains(\App\Enum\SettingsType::client_page_earn->name))
-                    <x-menu-item title="{{ __('client.menu_earn') }}" icon="tabler.heart"
-                                 link="{{ route('login') }}"/>
+                            <!-- Ayarlar Butonu -->
+                            <button
+                                class="btn btn-sm bg-transparent border-2 border-gray-400 text-gray-200 hover:bg-gray-600 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 rounded-md">
+                                Ayarlar
+                            </button>
+                        </div>
+                    </x-slot:title>
+                </x-menu-item>
+
+                <livewire:client.menu.client-auth-menu wire:key="mngfjn-{{Str::random(10)}}"/>
+                @if (1==2)
+                    <x-menu-item
+                        title="{{ __('client.menu_profil') }}"
+                        icon="tabler.user-circle"
+                        link="{{ route('login') }}"
+                        class="bg-gray-800 text-white hover:bg-gray-700 transition-all duration-300 p-3 rounded-lg mb-2"
+                    >
+                    </x-menu-item>
                 @endif
-                @if ($allSettings->contains(\App\Enum\SettingsType::client_page_fatura->name))
-                    <x-menu-item title="{{ __('client.menu_invoice') }}" icon="tabler.file-invoice"
-                                 link="{{ route('login') }}"/>
-                @endif
-                <x-menu-item title="{{ __('client.menu_profil') }}" icon="tabler.user-circle"
-                             link="{{ route('login') }}"/>
-                <x-menu-item title="{{ __('client.menu_logout') }}" icon="tabler.logout"
-                             link="{{ route('logout') }}"/>
+                <x-menu-item
+                    title="{{ __('client.menu_logout') }}"
+                    icon="tabler.logout"
+                    link="{{ route('logout') }}"
+                    class="bg-red-600 text-white hover:bg-red-500 transition-all duration-300 p-3 rounded-lg"
+                >
+                </x-menu-item>
+
                 <x-menu-separator/>
             @else
+                {{-- User --}}
+                <div class="flex items-center">
+                    <p class="text-2xl font-bold flex-1">
+                        {{ $site_name }}
+                    </p>
+                    <x-theme-toggle class="btn btn-circle ml-auto"/>
+                </div>
+                <x-hr/>
                 <livewire:spotlight.components.login_button wire:key="lg-xks-{{ Str::random(10) }}"/>
                 <x-menu-separator/>
             @endif
@@ -176,10 +189,24 @@
 @livewire('slide-over-pro')
 @livewire('modal-pro')
 <x-toast/>
+<x-theme-toggle class="hidden"/>
 @endpersist()
 
 
 </body>
+<script>
+    document.addEventListener('livewire:init', () => {
+        Livewire.hook('request', ({fail}) => {
+            fail(({status, preventDefault}) => {
+                if (status === 419) {
+                    confirm('asdadsd')
+
+                    preventDefault()
+                }
+            })
+        })
+    })
+</script>
 <script type="text/javascript">
     /*document.addEventListener("contextmenu", function(e) {
         e.preventDefault();

@@ -62,9 +62,20 @@ Route::middleware([
 </script>";
     });
     Route::any('/payerror', function () {
-        //dump(request()->all());
-        echo "<script type='text/javascript'>window.parent.postMessage({ type: 'triggerLivewireEvent', data: '".request()->get('id')."', status: 'error', message: '".request()->get('fail_message')."' }, '*');
+        try {
+            $payment = \App\Models\Payment::find(request()->get('id'));
+            if ($payment) {
+                $payment->status = \App\Enum\PaymentStatus::error;
+                $payment->status_message = request()->get('fail_message');
+                $payment->save();
+            }
+
+            echo "<script type='text/javascript'>window.parent.postMessage({ type: 'triggerLivewireEvent', data: '".request()->get('id')."', status: 'error', message: '".request()->get('fail_message')."' }, '*');
 </script>";
+        } catch (\Throwable $e) {
+
+        }
+
     });
     Volt::route('/login', 'login')->name('login');
 
@@ -334,6 +345,7 @@ Route::middleware([
                             SettingsType::client_page_appointment_create_branches->name => [1, 2],
                             SettingsType::client_page_appointment_create_appointment_approve->name => true,
                             SettingsType::client_page_appointment_create_appointment_late_payment->name => true,
+                            SettingsType::client_page_appointment_cancel_time->name => 0,
 
                             SettingsType::client_page_taksit->name => true,
                             SettingsType::client_page_taksit_pay->name => true,
@@ -350,12 +362,16 @@ Route::middleware([
                             SettingsType::client_page_fatura->name => true,
                             SettingsType::client_page_support->name => true,
 
-                            SettingsType::client_page_shop_include_kdv->name => true,
+                            SettingsType::client_page_shop_include_kdv->name => 0,
 
                             SettingsType::client_payment_types->name => ['havale', 'kk'],
-                            SettingsType::payment_taksit_include_kdv->name => 0,
-                            SettingsType::payment_taksit_include_komisyon->name => true,
 
+                            SettingsType::payment_taksit_include_kdv->name => 0,
+                            SettingsType::payment_taksit_include_komisyon->name => 0,
+                            SettingsType::payment_tip_include_kdv->name => 0,
+                            SettingsType::payment_tip_include_komisyon->name => 0,
+                            SettingsType::payment_offer_include_kdv->name => 0,
+                            SettingsType::payment_offer_include_komisyon->name => 0,
                         ],
                     ]);
                 }

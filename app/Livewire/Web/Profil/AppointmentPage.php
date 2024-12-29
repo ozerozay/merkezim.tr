@@ -23,6 +23,10 @@ class AppointmentPage extends Component
 
     public bool $show_services = false;
 
+    protected $listeners = [
+        'refresh-client-appointments' => '$refresh',
+    ];
+
     public function mount(): void
     {
         try {

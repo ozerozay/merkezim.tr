@@ -22,15 +22,15 @@
             <div class="flex flex-col items-center">
                 <h3 class="text-lg font-semibold mb-3">Bahşiş Vermek İster misiniz?</h3>
                 <div x-data="{ customAmount: '' }" class="flex gap-4">
-                    
+
                     <x-button class="btn btn-circle btn-outline bg-base-300"
-                              @click="customAmount = (10.00).toFixed(2)">10₺
+                              @click="customAmount = (50.00).toFixed(2); $wire.set('customAmount', customAmount)">10₺
                     </x-button>
                     <x-button class="btn btn-circle btn-outline bg-base-300"
-                              @click="customAmount = (20.00).toFixed(2)">20₺
+                              @click="customAmount = (50.00).toFixed(2); $wire.set('customAmount', customAmount)">20₺
                     </x-button>
                     <x-button class="btn btn-circle btn-outline bg-base-300"
-                              @click="customAmount = (50.00).toFixed(2)">50₺
+                              @click="customAmount = (50.00).toFixed(2); $wire.set('customAmount', customAmount)">50₺
                     </x-button>
                     <div class="form-control">
                         <x-input
@@ -43,8 +43,9 @@
                         />
                     </div>
                 </div>
-
             </div>
+            <hr class="my-4 border-gray-400">
+            <x-textarea wire:model="message" label="Mesajınız" placeholder="Fikirleriniz bizim için çok değerli..."/>
         </div>
     </x-slide-over>
 </div>

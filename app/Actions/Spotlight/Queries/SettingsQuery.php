@@ -23,7 +23,11 @@ class SettingsQuery
                 $results->push(SpotlightResult::make()
                     ->setTitle('Şube')
                     ->setGroup('definations')
-                    ->setIcon('building-storefront'));
+                    ->setIcon('building-storefront')
+                    ->setAction('dispatch_event',
+                        ['name' => 'slide-over.open',
+                            'data' => ['component' => 'settings.defination.branch.branch-defination'],
+                        ]));
                 $results->push(SpotlightResult::make()
                     ->setTitle('Kasa')
                     ->setGroup('definations')
@@ -113,6 +117,10 @@ class SettingsQuery
                             'data' => ['component' => 'settings.defination.s-m-s-template.s-m-s-template-defination'],
                         ]));
             }
+
+            $results = $results->sortBy(function (SpotlightResult $q) {
+                return $q->title();
+            });
 
             return $results->when(! blank($query), function ($collection) use ($query) {
                 return $collection->where(fn (SpotlightResult $result) => str($result->title())->lower()->contains(str($query)->lower()));

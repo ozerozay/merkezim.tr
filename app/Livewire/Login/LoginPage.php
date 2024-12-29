@@ -161,7 +161,7 @@ class LoginPage extends SlideOver
                 }
 
                 auth()->login($user, true);
-                request()->session()->regenerate();
+                //
 
                 if ($this->redirectOrDispatch) {
                     $this->redirectIntended('/');
@@ -169,6 +169,8 @@ class LoginPage extends SlideOver
                     $this->dispatch('client-logged-in');
                     $this->close();
                 }
+
+                request()->session()->regenerate();
 
             }
 

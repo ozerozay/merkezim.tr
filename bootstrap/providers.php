@@ -2,6 +2,7 @@
 
 return [
     App\Providers\AppServiceProvider::class,
+    App\Providers\HorizonServiceProvider::class,
     App\Providers\TenancyServiceProvider::class,
     App\Providers\VoltServiceProvider::class,
     WireElements\Pro\Components\Modal\ModalServiceProvider::class,

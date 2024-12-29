@@ -1,10 +1,12 @@
 <div>
-    <div class="fixed inset-y-0 right-0 w-full max-w-md shadow-lg flex flex-col h-screen  bg-base-100">
+    <div class="relative overflow-x-hidden overflow-y-auto" class="bg-base-100">
         <!-- Başlık -->
         <div class="p-4 border-b border-base-200 flex justify-between items-center">
             <h1 class="text-lg font-semibold">{{ \App\Enum\PaymentType::from($type)->label() }}</h1>
-            <x-button icon="tabler.x" class="btn-sm btn-outline text-gray-600 ml-auto"
-                      wire:click="$dispatch('slide-over.close')"/>
+            @if ($frame_code == null)
+                <x-button icon="tabler.x" class="btn-sm btn-outline text-gray-600 ml-auto"
+                          wire:click="$dispatch('slide-over.close', { force: true })"/>
+            @endif
         </div>
 
         <div wire:loading>
@@ -27,8 +29,13 @@
             </div>
         </div>
         @if ($frame_code)
-            <iframe id="paymentFrame" name="paymentFrame" srcdoc="{{$frame_code}}"
-                    style="width:100%; height:100%; border:none;"></iframe>
+            <div class="h-screen">
+                <div class="h-full w-full">
+                    <iframe id="paymentFrame" name="paymentFrame" srcdoc="{{$frame_code}}"
+                            style="width:100%; height:100%; border:none;"></iframe>
+                </div>
+            </div>
+
         @else
 
             <div class="flex-1 overflow-y-auto p-4 space-y-4 ">
@@ -37,26 +44,28 @@
                     <x-alert title="Hata" description="{{ $frame_error }}" class="alert-error" dismissible/>
                 @endif
 
-                <div class="bg-base-100 border border-gray-600 p-4 rounded-lg">
-                    <div class="flex justify-center gap-0">
-                        @if ($this->paymentTypes->contains('kk'))
-                            <x-button
-                                icon="{{ $selectedMethod == 1 ? 'tabler.check' : 'tabler.credit-card' }}"
-                                wire:click="changeMethod(1)"
-                                class="w-1/2 px-4 py-2  font-medium rounded-l-full {{ $selectedMethod == 1 ? 'btn-primary' : 'btn-outline' }}">
-                                Kredi Kartı
-                            </x-button>
-                        @endif
-                        @if ($this->paymentTypes->contains('havale'))
-                            <x-button
-                                wire:click="changeMethod(2)"
-                                icon="{{ $selectedMethod == 2 ? 'tabler.check' : 'tabler.cash-banknote' }}"
-                                class="w-1/2 px-4 py-2  font-medium rounded-r-full {{ $selectedMethod == 2 ? 'btn-primary' : 'btn-outline' }}">
-                                Havale
-                            </x-button>
-                        @endif
+                @if ($this->paymentTypes->count() > 1)
+                    <div class="bg-base-100 border border-gray-600 p-4 rounded-lg">
+                        <div class="flex justify-center gap-0">
+                            @if ($this->paymentTypes->contains('kk'))
+                                <x-button
+                                    icon="{{ $selectedMethod == 1 ? 'tabler.check' : 'tabler.credit-card' }}"
+                                    wire:click="changeMethod(1)"
+                                    class="w-1/2 px-4 py-2  font-medium rounded-l-full {{ $selectedMethod == 1 ? 'btn-primary' : 'btn-outline' }}">
+                                    Kredi Kartı
+                                </x-button>
+                            @endif
+                            @if ($this->paymentTypes->contains('havale'))
+                                <x-button
+                                    wire:click="changeMethod(2)"
+                                    icon="{{ $selectedMethod == 2 ? 'tabler.check' : 'tabler.cash-banknote' }}"
+                                    class="w-1/2 px-4 py-2  font-medium rounded-r-full {{ $selectedMethod == 2 ? 'btn-primary' : 'btn-outline' }}">
+                                    Havale
+                                </x-button>
+                            @endif
+                        </div>
                     </div>
-                </div>
+                @endif
                 @if ($selectedMethod == 1)
                     <div class="bg-base-100 border border-gray-600 p-4 rounded-lg flex items-center gap-4">
                         <form wire:submit.prevent="processPayment">
@@ -89,7 +98,7 @@
                             </div>
                             <div class="grid grid-cols-2 gap-2">
                                 <div class="form-control mb-4">
-                                    <x-input inputmode="numeric" placeholder="GG/AA" label="Son Kullanma Tarihi"
+                                    <x-input inputmode="numeric" placeholder="GG/AA" label="SKT"
                                              wire:model="expiryDate" maxLength="5" icon="o-calendar-days"
                                              clearable
                                              x-mask="99/99"/>
@@ -129,9 +138,12 @@
                                            value="pesin"
                                     />
                                 </label>
+                                @php
+                                    $totalP = $this->calculateTotal();
+                                @endphp
                                 @foreach($taksit_orans as $key=>$oran)
                                     @php
-                                        $oran_price = $this->calculateTotal() * (float) $oran / 100;
+                                        $oran_price = $totalP * (float) $oran / 100;
                                     @endphp
 
                                     <label class="label cursor-pointer">
@@ -146,6 +158,9 @@
                     @endif
                 @endif
                 @if ($selectedMethod == 2)
+                    <x-alert title="Hatırlatma"
+                             description="Ödemenizi gerçekleştirdikten sonra, ödeme yaptım butonuna dokunun."
+                             icon="tabler.check" class="alert-info"/>
                     <x-accordion wire:model="havale_group" separator class="bg-base-200">
                         @foreach($havale_accounts as $account)
                             <x-collapse name="group{{ $loop->index }}">
@@ -197,7 +212,7 @@
 
 
             <!-- Sabit Alt Kısım -->
-            <div class="p-4 border-t border-gray-200 bg-base-100 relative bottom-0 right-0 w-full max-w-md box-border">
+            <div class="p-4 border-t">
 
                 <div class="flex justify-between text-sm">
                     <p>Ara Toplam</p>
@@ -213,6 +228,10 @@
                         <p class="font-medium">@price($this->calculateDiscount() * -1)</p>
                     </div>
                 @endif
+                <div class="flex justify-between text-sm">
+                    <p>Komisyon</p>
+                    <p class="font-medium">@price($this->calculateKomisyon())</p>
+                </div>
                 <div class="flex justify-between text-sm font-bold">
                     <p>Toplam</p>
                     <p>@price($this->calculateTotalAndKomisyon())</p>

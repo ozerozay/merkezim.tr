@@ -44,8 +44,8 @@ return [
      */
     'routes' => [
         'prefix' => '/chats',
-        'middleware' => ['web', 'auth', InitializeTenancyByDomain::class,
-            PreventAccessFromCentralDomains::class, ],
+        'middleware' => [InitializeTenancyByDomain::class,
+            PreventAccessFromCentralDomains::class, 'web', 'auth', ],
     ],
 
     /**

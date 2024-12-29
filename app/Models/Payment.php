@@ -14,7 +14,7 @@ class Payment extends Model
     protected function casts(): array
     {
         return [
-            'data' => 'array',
+            'data' => 'json',
         ];
     }
 }

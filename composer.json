@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "ext-curl": "*",
         "abordage/laravel-html-min": "^0.2.1",
         "barryvdh/laravel-dompdf": "^3.0",
         "laravel/framework": "^11.9",
@@ -23,13 +24,12 @@
         "openai-php/laravel": "^0.10.2",
         "predis/predis": "2.0",
         "robsontenorio/mary": "^1.35",
-        "ryangjchandler/blade-tabler-icons": "^2.3",
+        "secondnetwork/blade-tabler-icons": "^3.26",
         "spatie/laravel-permission": "^6.9",
         "spatie/opening-hours": "^4.0",
         "stancl/tenancy": "^3.8",
         "staudenmeir/eloquent-json-relations": "^1.13",
-        "wire-elements/pro": "^4.0.13",
-        "ext-curl": "*"
+        "wire-elements/pro": "^4.0.13"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.13",

@@ -1,18 +1,6 @@
 <?php
 
 return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Authentication Language Lines
-    |--------------------------------------------------------------------------
-    |
-    | The following language lines are used during authentication for various
-    | messages that we need to display to the user. You are free to modify
-    | these language lines according to your application's requirements.
-    |
-    */
-
     'menu_seans' => 'Services',
     'menu_appointment' => 'Appointments',
     'menu_payments' => 'Installments',
@@ -24,4 +12,61 @@ return [
     'menu_invoice' => 'Invoices',
     'menu_profil' => 'Profile',
 
+    'page_seans_add_seans' => 'Add Service',
+
+    'page_appointment_subtitle' => 'Tap on the appointment you want to make an action on.',
+    'page_appointment_create' => 'Create Appointment',
+    'page_appointment_review_tip' => 'REVIEW',
+
+    'page_seans_category' => 'Category',
+    'page_seans_remaining' => 'Remaining',
+    'page_seans_total' => 'Total',
+
+    'waiting' => 'Waiting',
+    'awaiting_approve' => 'Awaiting Approval',
+    'confirmed' => 'Confirmed',
+    'rejected' => 'Rejected',
+    'cancel' => 'Cancelled',
+    'merkez' => 'At the Center',
+    'late' => 'Late',
+    'forwarded' => 'Forwarded',
+    'finish' => 'Finished',
+    'teyitli' => 'Verified',
+
+    'menu_shop' => 'SHOP',
+
+    'loading_overlay_message' => 'Please wait...',
+    'page_appointment_create' => 'Create Appointment',
+    'page_appointment_subtitle' => 'Create an appointment in seconds',
+    'appointment_step_titles' => ['Appointment', 'Branch', 'Category', 'Service', 'Date', 'Complete'],
+    'appointment_type_date' => [
+        'title' => 'Select Date and Time',
+        'description' => 'Create an appointment by selecting a specific date and time.',
+        'example' => 'Example: :date',
+    ],
+    'appointment_type_range' => [
+        'title' => 'Specify Date Range',
+        'description' => 'Define a date range to create an appointment slot.',
+        'example' => 'Example: See availability between :start_date and :end_date',
+    ],
+    'appointment_type_multi' => [
+        'title' => 'Select Multiple Dates',
+        'description' => 'Choose multiple dates to create appointments.',
+        'example' => 'Example: Check availability on :days.',
+    ],
+    'branch_selection_title' => 'Branch Selection',
+    'branch_selection_description' => 'You can proceed with this branch.',
+    'service_category_selection_title' => 'Service Category Selection',
+    'service_category_selection_description' => 'You can choose services in this category.',
+    'room_selection_title' => 'Room Selection',
+    'service_selection_title' => 'Service Selection',
+    'service_remaining' => 'Remaining: :remaining',
+    'appointment_date_selection_title' => 'Appointment Date Selection',
+    'appointment_notes_label' => 'Your Notes',
+    'appointment_create_button' => 'Create Appointment',
+    'appointment_range_find_button' => 'Show Availability',
+    'appointment_complete_title' => 'Complete',
+    'appointment_complete_message' => 'Appointment completed. You can proceed now.',
+    'navigation_back' => 'Back',
+    'navigation_next' => 'Next',
 ];

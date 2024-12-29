@@ -26,6 +26,11 @@ trait WebSettingsHandler
         return (int) $this->settings->get($enum) ?? 0;
     }
 
+    public function getFloat($enum): float
+    {
+        return (float) $this->settings->get($enum) ?? 0.0;
+    }
+
     public function getCollection($name): Collection
     {
         return collect($this->settings->get($name) ?? []);

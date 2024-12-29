@@ -6,6 +6,7 @@ use App\Actions\Spotlight\Actions\Web\Payment\CreateHavaleAction;
 use App\Actions\Spotlight\Actions\Web\Payment\CreatePaymentTokenAction;
 use App\Actions\Spotlight\Actions\Web\Payment\GetBinAction;
 use App\Actions\Spotlight\Actions\Web\Payment\GetTaksitOranAction;
+use App\Enum\PaymentStatus;
 use App\Enum\PaymentType;
 use App\Enum\SettingsType;
 use App\Models\KasaHavale;
@@ -43,7 +44,7 @@ class CheckoutPage extends SlideOver
 
     public $includeKDV = 0;
 
-    public $includeKomisyon = true;
+    public $includeKomisyon = 0.0;
 
     public ?Collection $paymentTypes;
 
@@ -102,22 +103,25 @@ class CheckoutPage extends SlideOver
         try {
             [$expiryMonth, $expiryYear] = $this->expiryDate != null ? explode('/', $this->expiryDate) : [null, null];
             $validator = \Validator::make([
+                'client_id' => auth()->user()->id,
                 'cardNumber' => \Str::replace('-', '', $this->cardNumber),
                 'cardName' => $this->cardName,
                 'expiryMonth' => $expiryMonth,
                 'expiryYear' => $expiryYear,
                 'cvv' => $this->cvv,
                 'selectedInstallment' => $this->selectedInstallment,
-                'total' => number_format((float) $this->calculateTotalAndKomisyon(), 2),
+                'total' => $this->numberFormat($this->calculateTotalAndKomisyon()),
                 'fatura' => $this->fatura,
-                'ara' => $this->calculateAraToplam(),
-                'vergi' => $this->calculateVergi(),
-                'discount' => $this->calculateDiscount(),
-                'komisyon' => $this->calculateKomisyon(),
+                'ara' => $this->numberFormat($this->calculateAraToplam()),
+                'vergi' => $this->numberFormat($this->calculateVergi()),
+                'discount' => $this->numberFormat($this->calculateDiscount()),
+                'komisyon' => $this->numberFormat($this->calculateKomisyon()),
                 'bin' => $this->bin->toArray(),
                 'client_id' => auth()->user()->id,
-                'type' => $this->type,
+                'type' => $this->paymentMethod,
+                'data' => $this->data,
             ], [
+                'client_id' => 'required',
                 'cardNumber' => ['required', 'digits:16', function ($attribute, $value, $fail) {
                     if (! $this->luhnCheck($value)) {
                         return $fail('Kart numarası hatalı.');
@@ -143,9 +147,12 @@ class CheckoutPage extends SlideOver
                 'komisyon' => 'required',
                 'fatura' => 'nullable',
                 'bin' => 'array',
-                'client_id' => 'required',
                 'type' => 'required',
+                'data' => 'required',
+                'client_id' => 'required',
             ]);
+
+            dump($validator->validated());
 
             if ($validator->fails()) {
                 $this->error($validator->messages()->first());
@@ -156,6 +163,7 @@ class CheckoutPage extends SlideOver
             $this->frame_code = CreatePaymentTokenAction::run($validator->validated());
 
         } catch (\Throwable $e) {
+            dump($e);
             $this->error('Lütfen kontrol ederek, tekrar deneyin.');
             $this->frame_code = null;
         }
@@ -189,9 +197,15 @@ class CheckoutPage extends SlideOver
             $this->frame_code = null;
             $this->frame_error = $message;
 
-            Payment::where('unique_id', $id)->update([
-                'status' => 'cancel',
-            ]);
+            $payment = Payment::where('unique_id', $id)->first();
+
+            if ($payment) {
+                $payment->update([
+                    'status' => PaymentStatus::error->name,
+                    'status_message' => $message,
+                ]);
+            }
+
         } else {
             $this->close(withForce: true);
             $this->dispatch('slide-over.open', component: 'web.shop.payment-success-modal', arguments: ['id' => $id]);
@@ -208,25 +222,8 @@ class CheckoutPage extends SlideOver
     {
         $this->selectedInstallment = 'pesin';
         $this->taksit_orans = collect();
+        $this->paymentMethod = $id == 1 ? 'kk' : 'havale';
         $this->selectedMethod = $id;
-    }
-
-    public function processPayment()
-    {
-        if ($this->paymentMethod === 'kredi_karti') {
-            // Kredi kartı ödeme işlemi
-            $this->validate([
-                'cardNumber' => 'required|digits:16',
-                'expiryDate' => 'required',
-                'cvv' => 'required|digits:3',
-            ]);
-
-            // Ödeme işleme mantığı
-        } else {
-            // Havale işlemi (gerekirse doğrulama eklenebilir)
-        }
-
-        // Ödeme sonrası işlem
     }
 
     public function mount($type, $data): void
@@ -241,10 +238,38 @@ class CheckoutPage extends SlideOver
 
         $this->getSettings();
 
-        if ($type == PaymentType::taksit->name) {
-            $this->includeKDV = $this->getInt(SettingsType::payment_taksit_include_kdv->name);
-            $this->includeKomisyon = $this->getBool(SettingsType::payment_taksit_include_komisyon->name);
-            $this->paymentTypes = $this->getCollection(SettingsType::client_payment_types->name);
+        $this->paymentTypes = $this->getCollection(SettingsType::client_payment_types->name);
+
+        if ($this->paymentTypes->isEmpty()) {
+            $this->close();
+
+            return;
+        }
+        if ($this->paymentTypes->count() == 1) {
+            $this->paymentMethod = $this->paymentTypes->first();
+            $this->selectedMethod = $this->paymentMethod == 'kk' ? 1 : 2;
+        }
+
+        $type_settings = match ($type) {
+            PaymentType::taksit->name => [
+                'includeKDV' => SettingsType::payment_taksit_include_kdv->name,
+                'includeKomisyon' => SettingsType::payment_taksit_include_komisyon->name,
+            ],
+            PaymentType::tip->name => [
+                'includeKDV' => SettingsType::payment_tip_include_kdv->name,
+                'includeKomisyon' => SettingsType::payment_tip_include_komisyon->name,
+            ],
+            PaymentType::offer->name => [
+                'includeKDV' => SettingsType::payment_offer_include_kdv->name,
+                'includeKomisyon' => SettingsType::payment_offer_include_komisyon->name,
+            ],
+            default => null,
+        };
+
+        if ($type_settings) {
+            $this->includeKDV = $this->getInt($type_settings['includeKDV']);
+            $this->includeKomisyon = $this->getFloat($type_settings['includeKomisyon']);
+            //dump($this->includeKomisyon);
         }
 
         $this->havale_accounts = KasaHavale::query()
@@ -260,7 +285,11 @@ class CheckoutPage extends SlideOver
     public function calculateAraToplam(): float|int
     {
         if ($this->type == PaymentType::taksit->name) {
-            return (float) $this->data;
+            return $this->numberFormat((float) $this->data);
+        } elseif ($this->type == PaymentType::tip->name) {
+            return $this->numberFormat((float) $this->data['amount']);
+        } elseif ($this->type == PaymentType::offer->name) {
+            return $this->numberFormat((float) $this->data['amount']);
         }
 
         return 0;
@@ -269,7 +298,7 @@ class CheckoutPage extends SlideOver
     #[Computed]
     public function calculateVergi(): float|int
     {
-        return $this->includeKDV > 0 ? ($this->calculateAraToplam() * $this->includeKDV / 100) : 0;
+        return $this->numberFormat($this->includeKDV > 0 ? ($this->calculateAraToplam() * $this->includeKDV / 100) : 0);
     }
 
     #[Computed]
@@ -286,14 +315,15 @@ class CheckoutPage extends SlideOver
     public function calculateKomisyon(): float|int
     {
         try {
-            $oran = 0;
+            $oran = 0.0;
             if ($this->selectedInstallment != 'pesin') {
                 $oran = $this->taksit_orans['taksit_'.$this->selectedInstallment];
+            } else {
+                $oran = $this->includeKomisyon;
             }
-
             //dump($oran);
 
-            return $this->calculateTotal() * (float) $oran / 100;
+            return $this->numberFormat($this->calculateTotal() * (float) $oran / 100);
         } catch (\Throwable $e) {
             dump($e);
 
@@ -305,13 +335,13 @@ class CheckoutPage extends SlideOver
     #[Computed]
     public function calculateTotal(): float|int
     {
-        return $this->calculateAraToplam() + $this->calculateVergi() - ($this->calculateDiscount() * -1);
+        return $this->numberFormat($this->calculateAraToplam() + $this->calculateVergi() - ($this->calculateDiscount() * -1));
     }
 
     #[Computed]
     public function calculateTotalAndKomisyon(): float|int
     {
-        return $this->calculateTotal() + $this->calculateKomisyon();
+        return $this->numberFormat($this->calculateTotal() + $this->calculateKomisyon());
     }
 
     public function submitHavale(): void
@@ -326,6 +356,8 @@ class CheckoutPage extends SlideOver
             'fatura' => $this->fatura,
             'type' => $this->type,
             'group' => $this->group,
+            'client_id' => auth()->user()->id,
+            'data' => $this->data,
         ];
 
         if ($payment = CreateHavaleAction::run($info)) {
@@ -336,6 +368,11 @@ class CheckoutPage extends SlideOver
         } else {
             $this->error('Lütfen tekrar deneyin.');
         }
+    }
+
+    public function numberFormat($number): string
+    {
+        return number_format((float) $number, 2, '.', '');
     }
 
     public function render()

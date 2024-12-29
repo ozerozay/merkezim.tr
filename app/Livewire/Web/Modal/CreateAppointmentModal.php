@@ -66,6 +66,7 @@ class CreateAppointmentModal extends SlideOver
     public function mount(): void
     {
         try {
+
             $this->getSettings();
             $this->create_appointment = $this->getCollection(SettingsType::client_page_appointment_create->name);
             $this->once_category = $this->getBool(SettingsType::client_page_appointment_create_once_category->name);
@@ -76,6 +77,9 @@ class CreateAppointmentModal extends SlideOver
             $this->services = collect();
             $this->rooms = collect();
             $this->selectedServicesCollection = collect();
+
+            // ŞUBE YOKSA
+            // AYNI ANDA RANDEVUSU OLUP OLMADIĞI
         } catch (\Throwable $e) {
             $this->error('Lütfen tekrar deneyin.');
             $this->close();
@@ -123,7 +127,7 @@ class CreateAppointmentModal extends SlideOver
 
     }
 
-    public function selectService()
+    public function selectService(): void
     {
         $this->selectedServices = collect($this->selectedServices);
         if ($this->selectedServices->isEmpty() || $this->selectedServices->doesntContain(fn ($value) => $value == true)) {
@@ -132,12 +136,18 @@ class CreateAppointmentModal extends SlideOver
             return;
         }
 
+        if ($this->appointmentType == 'date') {
+            if ($this->selectedRoom == null) {
+                $this->warning('Oda seçmelisiniz.');
+
+                return;
+            }
+        }
+
         $selectedServices = $this->selectedServices->keys();
 
         $this->selectedServicesCollection = ClientService::query()
-            ->whereHas('service', function ($q) use ($selectedServices) {
-                $q->whereIn('id', $selectedServices);
-            })
+            ->whereIn('id', $selectedServices)
             ->with('service:id,name,duration')
             ->get();
 
@@ -148,6 +158,7 @@ class CreateAppointmentModal extends SlideOver
     public function goToBranch(): void
     {
         if ($this->selectedBranch) {
+            $this->getServiceCategories($this->selectedBranch);
             $this->goToCategory();
         } else {
             $this->step = 2;
@@ -167,12 +178,45 @@ class CreateAppointmentModal extends SlideOver
 
     public function goToService(): void
     {
+        $this->selectedServices = [];
+        $this->selectedRoom = null;
+        $this->getServices($this->selectedCategory);
+        $this->getRooms($this->selectedCategory);
+
         $this->step = 4;
     }
 
     public function goToDate(): void
     {
         $this->step = 5;
+    }
+
+    public function backToType(): void
+    {
+        $this->step = 1;
+    }
+
+    public function backToBranch(): void
+    {
+        if ($this->branches->count() > 1) {
+            $this->step = 2;
+        } else {
+            $this->step = 1;
+        }
+    }
+
+    public function backToCategory(): void
+    {
+        if ($this->serviceCategories->count() > 1) {
+            $this->step = 3;
+        } else {
+            $this->step = 2;
+        }
+    }
+
+    public function backToService(): void
+    {
+        $this->step = 4;
     }
 
     public function getBranches(): void
@@ -197,29 +241,32 @@ class CreateAppointmentModal extends SlideOver
         });
     }
 
-    public function createAppointmentManuel(): void
+    public function createAppointmentManuel($info = []): void
     {
         try {
             $validator = \Validator::make(
-                [
-                    'client_id' => auth()->user()->id,
-                    'category_id' => $this->selectedCategory,
-                    'service_ids' => $this->selectedServices->filter(function ($value) {
-                        return $value === true;
-                    })->keys()->toArray(),
-                    'date' => $this->selectedDate,
-                    'room_id' => $this->selectedRoom,
-                    'message' => $this->appointmentMessage,
-                    'user_id' => auth()->user()->id,
-                ], [
-                    'client_id' => 'required|exists:users,id',
-                    'category_id' => 'required|exists:service_categories,id',
-                    'service_ids' => 'required|array',
-                    'date' => 'required|date|after:now',
-                    'room_id' => 'required|exists:service_rooms,id',
-                    'message' => 'required',
-                    'user_id' => 'required|exists:users,id',
-                ]
+                count($info) > 0 ? $info :
+                    [
+                        'client_id' => auth()->user()->id,
+                        'category_id' => $this->selectedCategory,
+                        'service_ids' => $this->selectedServices->filter(function ($value) {
+                            return $value === true;
+                        })->keys()->toArray(),
+                        'date' => $this->selectedDate,
+                        'room_id' => $this->selectedRoom,
+                        'message' => $this->appointmentMessage,
+                        'user_id' => auth()->user()->id,
+                        'permission' => PermissionType::action_client_create_appointment->name,
+                    ], [
+                        'client_id' => 'required|exists:users,id',
+                        'category_id' => 'required|exists:service_categories,id',
+                        'service_ids' => 'required|array',
+                        'date' => 'required|date|after:now',
+                        'room_id' => 'required|exists:service_rooms,id',
+                        'message' => 'required',
+                        'user_id' => 'required|exists:users,id',
+                        'permission' => 'required',
+                    ]
             );
 
             if ($validator->fails()) {
@@ -228,25 +275,24 @@ class CreateAppointmentModal extends SlideOver
                 return;
             }
 
-            if ($this->create_appointment_approve) {
-                RequestApproveAction::run($validator->validated(), auth()->user()->id, PermissionType::action_client_create_appointment, $this->appointmentMessage ?? '');
+            if (! $this->create_appointment_approve) {
+                RequestApproveAction::run($validator->validated(), auth()->user()->id, PermissionType::action_client_create_appointment->name, $this->appointmentMessage ?? '');
 
                 $this->success('Randevu talebiniz onaylandığında bildirim alacaksınız.');
-                $this->close();
             } else {
 
                 CreateAppointmentManuelAction::run($validator->validated(), false, true);
 
                 $this->success('Randevunuz oluşturuldu.');
-                $this->close();
             }
+            $this->close();
         } catch (\Throwable $e) {
             $this->error('Lütfen tekrar deneyin.');
         }
 
     }
 
-    public function createAppointmentMulti(): void
+    public function findAvaibleAppointmentsMulti(): void
     {
         try {
 
@@ -302,6 +348,15 @@ class CreateAppointmentModal extends SlideOver
                 }
             }
 
+            $firstElementKey = array_key_first($toSelect);
+
+            if ($firstElementKey !== null && isset($toSelect[$firstElementKey][0]['id'])) {
+                $firstId = $toSelect[$firstElementKey][0]['id'];
+                $this->selected_available_date = $firstId;
+            } else {
+                $this->selected_available_date = null;
+            }
+
             $this->available_appointments_range = $toSelect;
 
         } catch (\Throwable $e) {
@@ -312,11 +367,44 @@ class CreateAppointmentModal extends SlideOver
     public function createAppointmentRange(): void
     {
         try {
+            if (! $this->selected_available_date) {
+                $this->error('Tarih seçin.');
+
+                return;
+            }
+            $value = explode('||', $this->selected_available_date);
+
+            $service_room_id = \App\Models\ServiceRoom::where('name', $value[1])->first()->id;
+            $time_split = explode('-', $value[2]);
+            $range_date = \Carbon\Carbon::createFromFormat('d/m/Y H:i', $value[0].' '.$time_split[0])->format('Y-m-d H:i');
+
+            $this->createAppointmentManuel([
+                'client_id' => auth()->user()->id,
+                'category_id' => $this->selectedCategory,
+                'service_ids' => $this->selectedServices->filter(function ($value) {
+                    return $value === true;
+                })->keys()->toArray(),
+                'date' => $range_date,
+                'room_id' => $service_room_id,
+                'message' => $this->appointmentMessage,
+                'user_id' => auth()->user()->id,
+                'permission' => PermissionType::action_client_create_appointment->name,
+            ]);
+
+        } catch (\Throwable $e) {
+            $this->error('Lütfen daha sonra tekrar deneyin.'.$e->getMessage());
+        }
+    }
+
+    public function findAvaibleAppointmentsRange(): void
+    {
+        try {
             if ($this->selectedServicesCollection->isempty()) {
                 $this->error('Hizmet seçmelisiniz.');
 
                 return;
             }
+
             if (! $this->selectedDate) {
                 $this->error('Tarih seçmelisiniz.');
 
@@ -332,6 +420,8 @@ class CreateAppointmentModal extends SlideOver
             }
 
             $client = \App\Models\User::query()->where('id', auth()->user()->id)->first();
+
+            //dump($this->selectedDate);
 
             $format_range = Peren::formatRangeDate($this->selectedDate);
 
@@ -360,22 +450,33 @@ class CreateAppointmentModal extends SlideOver
                 }
             }
 
+            $firstElementKey = array_key_first($toSelect);
+
+            if ($firstElementKey !== null && isset($toSelect[$firstElementKey][0]['id'])) {
+                $firstId = $toSelect[$firstElementKey][0]['id'];
+                $this->selected_available_date = $firstId;
+            } else {
+                $this->selected_available_date = null;
+            }
+
             $this->available_appointments_range = $toSelect;
         } catch (\Throwable $e) {
-            $this->error('Lütfen daha sonra tekrar deneyin.');
+            $this->error('Lütfen daha sonra tekrar deneyin.'.$e->getMessage());
         }
     }
 
     public function getServices($category): void
     {
-        $this->services = ClientService::selectRaw('id, client_id, service_id,status ,SUM(remaining) as remaining')
+        $this->services = ClientService::query()
             ->where('client_id', auth()->user()->id)
             ->where('status', SaleStatus::success)
             ->where('remaining', '>', 0)
+            ->whereHas('service.category', function ($q) use ($category) {
+                $q->where('id', $category);
+            })
             ->whereRelation('service', 'is_visible', '=', true)
             ->whereRelation('service', 'active', '=', true)
             ->with('service:name,id,category_id,duration', 'service.category:id,name', 'sale:id,unique_id')
-            ->groupBy('service_id')
             ->get();
     }
 
@@ -395,6 +496,11 @@ class CreateAppointmentModal extends SlideOver
     {
         $this->error($message);
         $this->close();
+    }
+
+    public function toggleStep($step)
+    {
+        $this->step = $step; // Her bir adım arasında geçiş yapıyoruz
     }
 
     public function render()

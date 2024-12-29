@@ -18,6 +18,16 @@ return new class extends Migration
             $table->string('type');
             $table->string('payment_type')->default('pos');
             $table->string('status')->default('pending');
+            $table->text('status_message')->nullable();
+            $table
+                ->bigInteger('client_id')
+                ->unsigned()
+                ->index();
+
+            $table
+                ->foreign('client_id')
+                ->references('id')
+                ->on('users');
             $table->timestamps();
             $table->softDeletes();
         });
