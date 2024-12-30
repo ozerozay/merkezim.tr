@@ -71,72 +71,74 @@ new #[\Livewire\Attributes\Layout('components.layouts.client')] class extends \L
     @if (1==2)
         <x-carousel :slides="$slides" class="mt-2"/>
     @endif
-    <x-card title="En çok tercih edilenler" separator class="mt-5">
-        <div class="grid md:grid-cols-2  lg:grid-cols-4 gap-4 mt-5">
+    @if (1==2)
+        <x-card title="En çok tercih edilenler" separator class="mt-5">
+            <div class="grid md:grid-cols-2  lg:grid-cols-4 gap-4 mt-5">
 
-            <x-card shadow
-                    class="card w-full bg-base-100 shadow-xl hover:shadow-pink-300 hover:shadow-2xl cursor-pointer border border-pink-300"
-                    wire:click="handleClick">
-                {{-- TITLE --}}
-                <x-slot:title class="text-lg font-black">
-                    8 SEANS EPİLASYON TÜM VÜCUT
-                </x-slot:title>
+                <x-card shadow
+                        class="card w-full bg-base-100 shadow-xl hover:shadow-pink-300 hover:shadow-2xl cursor-pointer border border-pink-300"
+                        wire:click="handleClick">
+                    {{-- TITLE --}}
+                    <x-slot:title class="text-lg font-black">
+                        8 SEANS EPİLASYON TÜM VÜCUT
+                    </x-slot:title>
 
-                <x-slot:subtitle>
-                    @price(150000)
-                </x-slot:subtitle>
+                    <x-slot:subtitle>
+                        @price(150000)
+                    </x-slot:subtitle>
 
-                {{-- MENU --}}
-                <x-slot:menu>
-                    <x-button icon="tabler.woman" tooltip="Sepete Ekle" class="btn-sm" spinner/>
-                </x-slot:menu>
-                <div class="absolute top-0 right-0 -mt-4 -mr-1">
-                    <span class="badge badge-primary p-3 shadow-lg text-sm"> %40 İndirim </span>
-                </div>
-                <div>BAKIRKÖY - BEYLİKDÜZÜ - KADIKÖY - MECİDİYEKÖY</div>
-            </x-card>
-            <x-card shadow
-                    class="card w-full bg-base-100 shadow-xl hover:shadow-blue-300 hover:shadow-2xl cursor-pointer border border-blue-300"
-                    wire:click="handleClick">
-                {{-- TITLE --}}
-                <x-slot:title class="text-lg font-black">
-                    8 SEANS EPİLASYON TÜM VÜCUT
-                </x-slot:title>
+                    {{-- MENU --}}
+                    <x-slot:menu>
+                        <x-button icon="tabler.woman" tooltip="Sepete Ekle" class="btn-sm" spinner/>
+                    </x-slot:menu>
+                    <div class="absolute top-0 right-0 -mt-4 -mr-1">
+                        <span class="badge badge-primary p-3 shadow-lg text-sm"> %40 İndirim </span>
+                    </div>
+                    <div>BAKIRKÖY - BEYLİKDÜZÜ - KADIKÖY - MECİDİYEKÖY</div>
+                </x-card>
+                <x-card shadow
+                        class="card w-full bg-base-100 shadow-xl hover:shadow-blue-300 hover:shadow-2xl cursor-pointer border border-blue-300"
+                        wire:click="handleClick">
+                    {{-- TITLE --}}
+                    <x-slot:title class="text-lg font-black">
+                        8 SEANS EPİLASYON TÜM VÜCUT
+                    </x-slot:title>
 
-                <x-slot:subtitle>
-                    @price(150000)
-                </x-slot:subtitle>
+                    <x-slot:subtitle>
+                        @price(150000)
+                    </x-slot:subtitle>
 
-                {{-- MENU --}}
-                <x-slot:menu>
-                    <x-button icon="tabler.man" tooltip="Sepete Ekle" class="btn-sm" spinner/>
-                </x-slot:menu>
-                <div class="absolute top-0 right-0 -mt-4 -mr-1">
-                    <span class="badge badge-primary p-3 shadow-lg text-sm"> %40 İndirim </span>
-                </div>
-                <div>BAKIRKÖY - BEYLİKDÜZÜ - KADIKÖY - MECİDİYEKÖY</div>
-            </x-card>
-            <x-card shadow
-                    class="card w-full bg-base-100 shadow-xl hover:shadow-gray-300 hover:shadow-2xl cursor-pointer border border-gray-300"
-                    wire:click="handleClick">
-                {{-- TITLE --}}
-                <x-slot:title class="text-lg font-black">
-                    8 SEANS EPİLASYON TÜM VÜCUT
-                </x-slot:title>
+                    {{-- MENU --}}
+                    <x-slot:menu>
+                        <x-button icon="tabler.man" tooltip="Sepete Ekle" class="btn-sm" spinner/>
+                    </x-slot:menu>
+                    <div class="absolute top-0 right-0 -mt-4 -mr-1">
+                        <span class="badge badge-primary p-3 shadow-lg text-sm"> %40 İndirim </span>
+                    </div>
+                    <div>BAKIRKÖY - BEYLİKDÜZÜ - KADIKÖY - MECİDİYEKÖY</div>
+                </x-card>
+                <x-card shadow
+                        class="card w-full bg-base-100 shadow-xl hover:shadow-gray-300 hover:shadow-2xl cursor-pointer border border-gray-300"
+                        wire:click="handleClick">
+                    {{-- TITLE --}}
+                    <x-slot:title class="text-lg font-black">
+                        8 SEANS EPİLASYON TÜM VÜCUT
+                    </x-slot:title>
 
-                <x-slot:subtitle>
-                    @price(150000)
-                </x-slot:subtitle>
+                    <x-slot:subtitle>
+                        @price(150000)
+                    </x-slot:subtitle>
 
-                {{-- MENU --}}
-                <x-slot:menu>
-                    <x-button icon="tabler.friends" tooltip="Sepete Ekle" class="btn-sm" spinner/>
-                </x-slot:menu>
-                <div class="absolute top-0 right-0 -mt-4 -mr-1">
-                    <span class="badge badge-primary p-3 shadow-lg text-sm"> %40 İndirim </span>
-                </div>
-                <div>BAKIRKÖY - BEYLİKDÜZÜ - KADIKÖY - MECİDİYEKÖY</div>
-            </x-card>
-        </div>
-    </x-card>
+                    {{-- MENU --}}
+                    <x-slot:menu>
+                        <x-button icon="tabler.friends" tooltip="Sepete Ekle" class="btn-sm" spinner/>
+                    </x-slot:menu>
+                    <div class="absolute top-0 right-0 -mt-4 -mr-1">
+                        <span class="badge badge-primary p-3 shadow-lg text-sm"> %40 İndirim </span>
+                    </div>
+                    <div>BAKIRKÖY - BEYLİKDÜZÜ - KADIKÖY - MECİDİYEKÖY</div>
+                </x-card>
+            </div>
+        </x-card>
+    @endif
 </div>
