@@ -32,13 +32,15 @@
     }">
                         <x-input autofocus autocomplete="one-time-code" inputmode="numeric" label="Kod"
                                  wire:model="code" icon="o-phone" x-mask="9999" x-on:input="checkValue"
-                                 hint="Telefonunuza gönderilen 4 haneli kodu girin."/>
+                                 hint="Telefonunuza gönderilen 4 haneli kodu girin."
+                                 wire:loading.attr="disabled" wire:loading.class="opacity-50 cursor-not-allowed"/>
                     </div>
                     <x-slot:actions>
                         <x-button label="Giriş" type="submit" icon="o-paper-airplane" class="btn btn-primary w-full"
-                                  spinner="submitCode"/>
+                                  spinner="submitCode" wire:loading.attr="disabled"/>
                     </x-slot:actions>
                 </x-form>
+
 
                 <x-hr/>
                 <div class="grid gap-1 grid-cols-3">
