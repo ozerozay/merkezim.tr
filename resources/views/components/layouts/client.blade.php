@@ -114,6 +114,12 @@
                         </x-slot:title>
                     </x-menu-item>
                 @endif
+                <x-menu-item title="Anasayfa"
+                             class="text-white bg-cyan-500 hover:bg-cyan-700 p-3 rounded-lg transition-all duration-300"
+                             icon="tabler.home" link="/"/>
+                <x-menu-item title="Bize Ulaşın"
+                             class="text-white bg-green-500 hover:bg-green-700 p-3 rounded-lg transition-all duration-300"
+                             icon="tabler.help"/>
                 <livewire:client.menu.client-auth-menu wire:key="mngfjn-{{Str::random(10)}}"/>
                 @if (1==2)
                     <x-menu-item
@@ -132,7 +138,6 @@
                 >
                 </x-menu-item>
 
-                <x-menu-separator/>
             @else
                 {{-- User --}}
                 <div class="flex items-center">
@@ -145,20 +150,26 @@
                 <livewire:spotlight.components.login_button wire:key="lg-xks-{{ Str::random(10) }}"/>
                 <x-menu-separator/>
             @endif
-            <x-menu-item title="Anasayfa" link="/" icon="tabler.home"/>
-            <x-menu-sub title="Hizmetlerimiz" icon="tabler.heart">
-                <x-menu-item title="LAZER EPİLASYON" icon="tabler.arrow-right"
-                             link="{{ route('client.service') }}"/>
-                <x-menu-item title="CİLT BAKIMI" icon="tabler.arrow-right" link="{{ route('client.service') }}"/>
-                <x-menu-item title="BÖLGESEL ZAYIFLAMA" icon="tabler.arrow-right"
-                             link="{{ route('client.service') }}"/>
-            </x-menu-sub>
-            <x-menu-sub title="Bize Ulaşın" icon="tabler.help" link="{{ route('client.contact') }}">
-                <x-menu-item title="İletişim Formu" icon="tabler.help-octagon"
-                             link="{{ route('client.contact') }}"/>
-                <x-menu-item title="Yol Tarifi" icon="tabler.map-pin" link="{{ route('client.location') }}"/>
-            </x-menu-sub>
-            <x-menu-separator/>
+            <div>
+                @if (1==2)
+                    <x-menu-separator/>
+                    <x-menu-sub title="Hizmetlerimiz"
+                                class="text-white bg-orange-500 hover:bg-orange-700 p-3 rounded-lg transition-all duration-300"
+                                icon="tabler.heart">
+                        <x-menu-item title="LAZER EPİLASYON"
+                                     class="text-white bg-orange-400 hover:bg-orange-600 p-2 rounded-lg transition-all duration-300"
+                                     icon="tabler.arrow-right" link="{{ route('client.service') }}"/>
+                        <x-menu-item title="CİLT BAKIMI"
+                                     class="text-white bg-orange-400 hover:bg-orange-600 p-2 rounded-lg transition-all duration-300"
+                                     icon="tabler.arrow-right" link="{{ route('client.service') }}"/>
+                        <x-menu-item title="BÖLGESEL ZAYIFLAMA"
+                                     class="text-white bg-orange-400 hover:bg-orange-600 p-2 rounded-lg transition-all duration-300"
+                                     icon="tabler.arrow-right" link="{{ route('client.service') }}"/>
+                    </x-menu-sub>
+                    <x-menu-separator/>
+                @endif
+            </div>
+
 
             @if (1 == 2)
                 <x-menu-item title="0850 241 1010" icon="tabler.phone" external
