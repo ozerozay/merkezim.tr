@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="cupcake">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 @php
     $general_settings = \App\Actions\Spotlight\Actions\Settings\GetGeneralSettings::run();
     $site_name = $general_settings->get(\App\Enum\SettingsType::site_name->name);
