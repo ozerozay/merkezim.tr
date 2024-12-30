@@ -82,10 +82,10 @@ Route::middleware([
 
     Route::get('/logout', function () {
         \Illuminate\Support\Facades\Auth::logout();
-        request()->session()->invalidate();
-        request()->session()->regenerateToken();
+        session()->flush();
+        session()->regenerate();
 
-        return redirect('/');
+        return redirect()->route('client.index');
     })->name('logout');
 
     //Route::get('/spotlight2', [Spotlight::class, 'search'])->name('mary.spotlight');

@@ -77,7 +77,7 @@
                                          @click.stop="$dispatch('mary-toggle-theme')"/>
                             <x-menu-item icon="tabler.moon" label="Koyu Mod"
                                          @click.stop="$dispatch('mary-toggle-theme')"/>
-                            <x-menu-item icon="o-power" label="Çıkış" link="/logout" no-wire-navigate/>
+                            <x-menu-item icon="o-power" label="Çıkış" link="{{ route('logout') }}"/>
                         </x-dropdown>
                     </x-slot:actions>
                 </x-list-item>
