@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         //$middleware->append(\Abordage\LaravelHtmlMin\Middleware\HtmlMinify::class);
+        //$middleware->redirectGuestsTo('/?login=true');
 
         $middleware->validateCsrfTokens(except: [
             'payerror', // <-- exclude this route
