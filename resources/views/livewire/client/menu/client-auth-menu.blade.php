@@ -38,7 +38,7 @@
     @if ($this->checkSetting(\App\Enum\SettingsType::client_page_earn->name))
         <x-menu-item title="{{ __('client.menu_earn') }}"
                      class="text-white bg-pink-500 hover:bg-pink-700 p-3 rounded-lg transition-all duration-300"
-                     icon="tabler.heart" link="{{ route('login') }}"/>
+                     icon="tabler.heart" link="{{ route('client.profil.earn') }}"/>
     @endif
     @if ($this->checkSetting(\App\Enum\SettingsType::client_page_fatura->name))
         <x-menu-item title="{{ __('client.menu_invoice') }}"

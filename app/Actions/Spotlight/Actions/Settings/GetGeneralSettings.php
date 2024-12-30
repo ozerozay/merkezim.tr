@@ -12,11 +12,13 @@ class GetGeneralSettings
     {
         try {
             $settings = \Cache::rememberForever('tenant.'.tenant()->id.'.gsettings', function () {
-                return \App\Models\Settings::whereNull('branch_id')->toArray()['data'];
+                return \App\Models\Settings::whereNull('branch_id')->first()->toArray()['data'];
             });
 
             return collect($settings);
         } catch (\Throwable $e) {
+            dump($e);
+
             return collect([]);
         }
     }

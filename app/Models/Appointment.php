@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\ClientRequestStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -178,5 +179,13 @@ class Appointment extends Model
     public function review(): HasOne
     {
         return $this->hasOne(AppointmentReview::class, 'appointment_id');
+    }
+
+    public function hasCancelRequest(): bool
+    {
+        return \App\Models\ClientRequest::query()
+            ->whereJsonContains('data->appointment_id', $this->id)
+            ->where('status', ClientRequestStatus::pending)
+            ->exists();
     }
 }

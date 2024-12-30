@@ -3,9 +3,11 @@
               progress-indicator>
         @if ($show_request)
             <x-slot:actions>
-                <x-button class="btn-primary" icon="o-plus">
-                    Teklif İste
+                <x-button class="btn-primary"
+                          wire:click="$dispatch('modal.open', {component: 'web.modal.request-offer-modal'})">
+                    ✨ Teklif Al
                 </x-button>
+
             </x-slot:actions>
         @endif
     </x-header>

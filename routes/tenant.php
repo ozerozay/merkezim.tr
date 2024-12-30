@@ -15,6 +15,7 @@ use App\Livewire\Reports\TaksitReport;
 use App\Livewire\Statistics\ClientStatistic;
 use App\Livewire\Web\Profil\AppointmentPage;
 use App\Livewire\Web\Profil\CouponPage;
+use App\Livewire\Web\Profil\EarnPage;
 use App\Livewire\Web\Profil\InvitePage;
 use App\Livewire\Web\Profil\OfferPage;
 use App\Livewire\Web\Profil\SeansPage;
@@ -104,6 +105,7 @@ Route::middleware([
         Route::get('/teklif', OfferPage::class)->name('client.profil.offer');
         Route::get('/kupon', CouponPage::class)->name('client.profil.coupon');
         Route::get('/davet', InvitePage::class)->name('client.profil.invite');
+        Route::get('/kazan', EarnPage::class)->name('client.profil.earn');
 
         Route::prefix('admin')->group(function () {
             Volt::route('/', 'admin-page')->name('admin.index');

@@ -17,7 +17,7 @@
                 <div class="card bg-base-200 shadow-md p-6 w-full max-w-lg mx-auto">
                     <h2 class="text-xl font-bold mb-4 text-center">İptal Talebi</h2>
                     <div class="flex flex-col gap-2 mb-6">
-                        <x-textarea label="İptal nedeni"/>
+                        <x-textarea label="İptal nedeni" wire:model="cancel_message"/>
                         <x-button type="submit" spinner="save" class="btn-primary btn-block" icon="tabler.send">
                             Gönder
                         </x-button>

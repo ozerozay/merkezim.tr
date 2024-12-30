@@ -21,6 +21,43 @@ class CartButtonPage extends Component
         $this->cartCount = (new ShoppingCartManager)->getCartCount();
     }
 
+    #[On('card-add-item')]
+    public function incrementItemPackage($package): void
+    {
+
+        $this->shoppingCartManager = new ShoppingCartManager;
+
+        // Sepete ürün ekleme
+        $product = [
+            'id' => $package->id,
+            'name' => $package->name,
+            'price' => $package->price,
+            'type' => 'package', // 'type' burada 'product' olarak belirtilir
+        ];
+        $quantity = $this->shoppingCartManager->addItem(
+            $product,
+            1
+        );
+
+        $this->cartQuantity = $quantity;
+    }
+
+    public function decrementItemPackage(): void
+    {
+        if ($this->cartQuantity > 0) {
+            $this->cartQuantity--;
+
+            // Sepetten ürün çıkarma
+            $quantity = this->shoppingCartManager->addItem(
+                ['type' => 'package', 'id' => $this->package->id],
+                -1
+            );
+            $this->cartQuantity = $quantity;
+        } else {
+            //$this->shoppingCartManager
+        }
+    }
+
     public function render()
     {
         return view('livewire.client.shop.cart-button-page');

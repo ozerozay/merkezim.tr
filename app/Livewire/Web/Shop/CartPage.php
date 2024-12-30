@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Web\Shop;
 
+use App\Enum\PaymentType;
 use App\Managers\ShoppingCartManager;
 use App\Models\CartItem;
 use Mary\Traits\Toast;
@@ -72,14 +73,22 @@ class CartPage extends SlideOver
         $manager = new ShoppingCartManager;
         $this->cart = [];
         $this->cart_array = [];
-        $this->cart = $manager->getCart();
+        $this->cart = $manager->getCart()->items;
         $this->cart_array = collect($this->cart)->toArray();
     }
 
     public function checkout()
     {
+        $manager = new ShoppingCartManager;
+        $arguments = [
+            'type' => PaymentType::cart->name ?? null,
+            'data' => [
+                'cart_id' => $manager->getCart()->id,
+                'amount' => $manager->getSubTotal(),
+            ],
+        ];
 
-        // $this->dispatch('slide-over.open', ['component' => 'web.shop.checkout-page']);
+        $this->dispatch('slide-over.open', component: 'web.shop.checkout-page', arguments: $arguments);
     }
 
     public static function behavior(): array

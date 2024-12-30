@@ -34,6 +34,10 @@ class AppServiceProvider extends ServiceProvider
             return GetAllSettingsAction::run();
         });
 
+        $this->app->singleton(\App\Managers\ShoppingCartManager::class, function ($app) {
+            return new \App\Managers\ShoppingCartManager;
+        });
+
         \Broadcast::routes(['middleware' => ['web', 'tenant', 'universal']]);
 
         \Gate::define('viewPulse', function (?\App\Models\User $user) {
@@ -99,6 +103,8 @@ class AppServiceProvider extends ServiceProvider
             'kasa_havale' => 'App\Models\KasaHavale',
             'chat_participant' => 'Namu\WireChat\Models\Participant',
             'chat_message' => 'Namu\WireChat\Models\Message',
+            'shop_package' => 'App\Models\ShopPackage',
+            'shop_service' => 'App\Models\ShopService',
         ]);
 
         Blade::directive('price', function ($price) {

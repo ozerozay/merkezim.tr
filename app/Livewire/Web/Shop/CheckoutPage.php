@@ -263,6 +263,10 @@ class CheckoutPage extends SlideOver
                 'includeKDV' => SettingsType::payment_offer_include_kdv->name,
                 'includeKomisyon' => SettingsType::payment_offer_include_komisyon->name,
             ],
+            PaymentType::cart->name => [
+                'includeKDV' => SettingsType::payment_offer_include_kdv->name,
+                'includeKomisyon' => SettingsType::payment_offer_include_komisyon->name,
+            ],
             default => null,
         };
 
@@ -289,6 +293,8 @@ class CheckoutPage extends SlideOver
         } elseif ($this->type == PaymentType::tip->name) {
             return $this->numberFormat((float) $this->data['amount']);
         } elseif ($this->type == PaymentType::offer->name) {
+            return $this->numberFormat((float) $this->data['amount']);
+        } elseif ($this->type == PaymentType::cart->name) {
             return $this->numberFormat((float) $this->data['amount']);
         }
 

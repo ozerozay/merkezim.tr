@@ -52,7 +52,7 @@
     {{-- SIDEBAR --}}
     <x-slot:sidebar drawer="main-drawer" collapse-text="Küçült" collapsible class="bg-base-100 p-3 lg:bg-inherit">
 
-        <x-menu class="mt-2" activate-by-route>
+        <x-menu class="mt-2 " activate-by-route>
 
 
             @if (1 == 2)
@@ -81,37 +81,39 @@
                         </x-dropdown>
                     </x-slot:actions>
                 </x-list-item>
-                <x-menu-item
-                    icon="tabler.user-circle"
-                    class="bg-gray-900 text-white hover:bg-gray-700 transition-all duration-300 p-4 rounded-lg mb-4 shadow-lg"
-                >
-                    <x-slot:title>
-                        <div class="flex items-center justify-between w-full">
-                            <!-- Avatar -->
-                            <div class="flex items-center space-x-4">
-                                <img class="w-14 h-14 rounded-full border-4 border-gray-700 dark:border-gray-500"
-                                     src="https://i.pravatar.cc/150?img=1" alt="Avatar">
 
-                                <div>
-                                    <!-- Kullanıcı Adı ve Şube Adı -->
-                                    <span class="font-semibold text-xl text-gray-200 dark:text-white">
+                @if (1==2)
+                    <x-menu-item
+                        icon="tabler.user-circle"
+                        class="bg-gray-900 text-white hover:bg-gray-700 transition-all duration-300 p-4 rounded-lg mb-4 shadow-lg"
+                    >
+                        <x-slot:title>
+                            <div class="flex items-center justify-between w-full">
+                                <!-- Avatar -->
+                                <div class="flex items-center space-x-4">
+                                    <img class="w-14 h-14 rounded-full border-4 border-gray-700 dark:border-gray-500"
+                                         src="https://i.pravatar.cc/150?img=1" alt="Avatar">
+
+                                    <div>
+                                        <!-- Kullanıcı Adı ve Şube Adı -->
+                                        <span class="font-semibold text-xl text-gray-200 dark:text-white">
                         {{ Str::substr(auth()->user()->name, 0, 20) }}
                     </span>
-                                    <span class="text-sm text-gray-400 dark:text-gray-300">
+                                        <span class="text-sm text-gray-400 dark:text-gray-300">
                         {{ auth()->user()->client_branch->name }}
                     </span>
+                                    </div>
                                 </div>
+
+                                <!-- Ayarlar Butonu -->
+                                <button
+                                    class="btn btn-sm bg-transparent border-2 border-gray-400 text-gray-200 hover:bg-gray-600 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 rounded-md">
+                                    Ayarlar
+                                </button>
                             </div>
-
-                            <!-- Ayarlar Butonu -->
-                            <button
-                                class="btn btn-sm bg-transparent border-2 border-gray-400 text-gray-200 hover:bg-gray-600 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 rounded-md">
-                                Ayarlar
-                            </button>
-                        </div>
-                    </x-slot:title>
-                </x-menu-item>
-
+                        </x-slot:title>
+                    </x-menu-item>
+                @endif
                 <livewire:client.menu.client-auth-menu wire:key="mngfjn-{{Str::random(10)}}"/>
                 @if (1==2)
                     <x-menu-item
