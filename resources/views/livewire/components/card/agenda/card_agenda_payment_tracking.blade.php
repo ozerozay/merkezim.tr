@@ -18,7 +18,7 @@ new class extends \Livewire\Volt\Component {
             @price($item->agenda->price)
         </x-slot:subtitle>
         <x-slot:menu>
-            <x-button icon="{{ $item->status->icon() ?? null }}"
+            <x-button icon="{{ $item->status?->icon() ?? null }}"
                       wire:click="$dispatch('slide-over.open', {'component': 'modals.agenda.update-agenda-status', 'arguments' : {'occurrence': {{ $item->id }}}})"
                       class="btn-circle btn-sm btn-{{ $item->status->color() }}"/>
         </x-slot:menu>
