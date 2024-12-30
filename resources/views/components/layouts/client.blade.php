@@ -213,13 +213,16 @@
         Livewire.hook('request', ({fail}) => {
             fail(({status, preventDefault}) => {
                 if (status === 419) {
-                    confirm('asdadsd')
+                    // Sayfayı yenile
+                    location.reload();
 
-                    preventDefault()
+                    // Varsayılan davranışı engelle
+                    preventDefault();
                 }
-            })
-        })
-    })
+            });
+        });
+    });
+
 </script>
 <script type="text/javascript">
     /*document.addEventListener("contextmenu", function(e) {

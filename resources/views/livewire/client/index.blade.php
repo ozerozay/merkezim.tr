@@ -68,8 +68,9 @@ new #[\Livewire\Attributes\Layout('components.layouts.client')] class extends \L
         </x-slot:actions>
     </x-alert>
 
-    <x-carousel :slides="$slides" class="mt-2"/>
-
+    @if (1==2)
+        <x-carousel :slides="$slides" class="mt-2"/>
+    @endif
     <x-card title="En çok tercih edilenler" separator class="mt-5">
         <div class="grid md:grid-cols-2  lg:grid-cols-4 gap-4 mt-5">
 
