@@ -41,6 +41,7 @@ new #[\Livewire\Attributes\Layout('components.layouts.client')] class extends \L
             ],
         ];
     @endphp
+    
     <x-alert title="Değerlendirmediğiniz randevu bulunuyor."
              description="Görüşleriniz bizim için değerli, bir dakikanızı ayırıp" icon="tabler.star"
              class="alert-info mb-2">

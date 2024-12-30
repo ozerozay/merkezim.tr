@@ -273,7 +273,6 @@
         }
     }
 </script>
-
 <style type="text/css">
     table {
         @apply !static
