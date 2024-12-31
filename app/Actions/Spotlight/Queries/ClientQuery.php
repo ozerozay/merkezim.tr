@@ -28,8 +28,6 @@ class ClientQuery
         return SpotlightQuery::forToken('client', function ($query, SpotlightScopeToken $clientToken) {
             $pages = collect();
 
-            $query = null;
-
             $pages->push(
                 SpotlightResult::make()
                     ->setTitle('Geri Dön')

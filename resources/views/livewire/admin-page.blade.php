@@ -10,7 +10,7 @@
     sections: [
         {
             id: 1,
-            title: 'Hedefler - Satış',
+            title: 'Satış',
             isFavorite: false,
             targetPercentage: 85,
             salesGoal: 10000,
@@ -19,7 +19,7 @@
         },
         {
             id: 2,
-            title: 'Hedefler - Randevu',
+            title: 'Randevu',
             isFavorite: false,
             targetPercentage: 60,
             appointmentsGoal: 20,
@@ -28,7 +28,7 @@
         },
         {
             id: 3,
-            title: 'Hedefler - Tahsilat',
+            title: 'Tahsilat',
             isFavorite: false,
             targetPercentage: 45,
             collectionGoal: 5000,
@@ -37,7 +37,7 @@
         },
         {
             id: 4,
-            title: 'Hedefler - Danışan',
+            title: 'Danışan',
             isFavorite: false,
             targetPercentage: 90,
             consultantGoal: 50,
@@ -64,7 +64,7 @@
             }">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center space-x-2">
-                                <span>🔧</span> <span x-text="section.title"></span>
+                                <span>🎯</span> <span x-text="section.title"></span>
                             </h3>
                             <div class="flex items-center space-x-2">
                                 <div class="drag-handle cursor-move text-gray-500 dark:text-gray-300">
@@ -85,47 +85,47 @@
                         <div class="flex justify-between items-center mt-2">
                             <div class="text-center" x-show="section.salesGoal">
                                 <p class="text-sm text-gray-600 dark:text-gray-400">🎯 Hedef</p>
-                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                <p class="text-sm font-bold text-gray-900 dark:text-gray-100"
                                    x-text="`${section.salesGoal} ₺`"></p>
                             </div>
                             <div class="text-center" x-show="section.currentSales">
                                 <p class="text-sm text-gray-600 dark:text-gray-400">📈 Şu Ana Kadar</p>
-                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                <p class="text-sm font-bold text-gray-900 dark:text-gray-100"
                                    x-text="`${section.currentSales} ₺`"></p>
                             </div>
                             <div class="text-center" x-show="section.remainingDays">
                                 <p class="text-sm text-gray-600 dark:text-gray-400">⏳ Kalan Gün</p>
-                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                <p class="text-sm font-bold text-gray-900 dark:text-gray-100"
                                    x-text="`${section.remainingDays} gün`"></p>
                             </div>
                             <div class="text-center" x-show="section.appointmentsGoal">
                                 <p class="text-sm text-gray-600 dark:text-gray-400">🎯 Hedef</p>
-                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                <p class="text-sm font-bold text-gray-900 dark:text-gray-100"
                                    x-text="`${section.appointmentsGoal} Randevu`"></p>
                             </div>
                             <div class="text-center" x-show="section.completedAppointments">
                                 <p class="text-sm text-gray-600 dark:text-gray-400">📈 Tamamlanan</p>
-                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                <p class="text-sm font-bold text-gray-900 dark:text-gray-100"
                                    x-text="`${section.completedAppointments} Randevu`"></p>
                             </div>
                             <div class="text-center" x-show="section.collectionGoal">
                                 <p class="text-sm text-gray-600 dark:text-gray-400">🎯 Hedef</p>
-                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                <p class="text-sm font-bold text-gray-900 dark:text-gray-100"
                                    x-text="`${section.collectionGoal} ₺`"></p>
                             </div>
                             <div class="text-center" x-show="section.currentCollection">
                                 <p class="text-sm text-gray-600 dark:text-gray-400">📥 Toplanan</p>
-                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                <p class="text-sm font-bold text-gray-900 dark:text-gray-100"
                                    x-text="`${section.currentCollection} ₺`"></p>
                             </div>
                             <div class="text-center" x-show="section.consultantGoal">
                                 <p class="text-sm text-gray-600 dark:text-gray-400">🎯 Hedef</p>
-                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                <p class="text-sm font-bold text-gray-900 dark:text-gray-100"
                                    x-text="`${section.consultantGoal} Danışan`"></p>
                             </div>
                             <div class="text-center" x-show="section.currentConsultants">
                                 <p class="text-sm text-gray-600 dark:text-gray-400">📋 Tamamlanan</p>
-                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                <p class="text-sm font-bold text-gray-900 dark:text-gray-100"
                                    x-text="`${section.currentConsultants} Danışan`"></p>
                             </div>
                         </div>
@@ -254,6 +254,96 @@
                 </template>
             </div>
         </div>
+        <div class="container mx-auto my-10" x-data="setupWizard">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <!-- Adımlar (Kurulum Sihirbazı) -->
+                <template x-for="(step, index) in steps" :key="step.id">
+                    <div
+                        class="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 transition-all duration-300"
+                        :class="{
+                    'border-l-4 border-green-500': step.completed,
+                    'border-l-4 border-gray-300': !step.completed
+                }">
+                        <!-- Durum Simgesi ve Başlık -->
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                                    <span x-text="step.title"></span>
+                                </h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                    <span x-text="step.description"></span>
+                                </p>
+                            </div>
+                            <div class="flex items-center">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-full text-white"
+                              :class="step.completed ? 'bg-green-500' : 'bg-gray-400'">
+                            <span x-text="step.completed ? '✅' : '⏳'"></span>
+                        </span>
+                            </div>
+                        </div>
+                        <!-- İşlem Butonu -->
+                        <button
+                            class="btn btn-primary btn-sm w-full mt-4"
+                            :disabled="!steps[index - 1]?.completed && index !== 0"
+                            x-on:click="markAsCompleted(step.id)">
+                            <span x-text="step.completed ? 'Tamamlandı' : 'Yeni Ekle'"></span>
+                        </button>
+                        <!-- Oluşturulan Çıktılar -->
+                        <div class="mt-6" x-show="step.completed" x-transition>
+                            <h4 class="text-md font-semibold text-gray-800 dark:text-gray-200">Oluşturulanlar:</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-700 dark:text-gray-300 mt-2">
+                                <template x-for="item in step.outputs" :key="item">
+                                    <li x-text="item"></li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('alpine:init', () => {
+                Alpine.data('setupWizard', () => ({
+                    steps: [
+                        {
+                            id: 1,
+                            title: 'Hizmet Kategorileri',
+                            description: 'Kategorilerinizi oluşturun ve yönetin.',
+                            completed: false,
+                            outputs: ['Kategori 1', 'Kategori 2', 'Kategori 3']
+                        },
+                        {
+                            id: 2,
+                            title: 'Hizmetler',
+                            description: 'Hizmetlerinizi tanımlayın.',
+                            completed: false,
+                            outputs: ['Hizmet 1', 'Hizmet 2', 'Hizmet 3']
+                        },
+                        {
+                            id: 3,
+                            title: 'Hizmet Odaları',
+                            description: 'Odalarınızı ekleyin.',
+                            completed: false,
+                            outputs: ['Oda 1', 'Oda 2']
+                        },
+                        {
+                            id: 4,
+                            title: 'Kasalar',
+                            description: 'Kasalarınızı yönetin.',
+                            completed: false,
+                            outputs: ['Kasa 1', 'Kasa 2', 'Kasa 3']
+                        },
+                    ],
+                    markAsCompleted(id) {
+                        const step = this.steps.find(s => s.id === id);
+                        if (step) {
+                            step.completed = true;
+                        }
+                    },
+                }));
+            });
+        </script>
 
 
         @if (1==2)

@@ -40,7 +40,7 @@
                      class="text-white bg-pink-500 hover:bg-pink-700 p-3 rounded-lg transition-all duration-300"
                      icon="tabler.heart" link="{{ route('client.profil.earn') }}"/>
     @endif
-    @if ($this->checkSetting(\App\Enum\SettingsType::client_page_fatura->name))
+    @if ($this->checkSetting(\App\Enum\SettingsType::client_page_fatura->name) && 1==2)
         <x-menu-item title="{{ __('client.menu_invoice') }}"
                      class="text-white bg-gray-500 hover:bg-gray-700 p-3 rounded-lg transition-all duration-300"
                      icon="tabler.file-invoice" link="{{ route('login') }}"/>
