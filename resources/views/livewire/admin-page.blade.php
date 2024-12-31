@@ -4,259 +4,152 @@
             <x-button class="btn btn-primary" @click="openSettings" icon="tabler.settings">Özelleştir</x-button>
         </x-slot:actions>
     </x-header>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <div class="container mx-auto my-5">
-        <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center space-x-2">
-            <span>🏆</span> <span>Hedefler</span>
-        </h2>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="bg-base-100 rounded-lg p-6 dark:bg-gray-800" x-data="{
-    isFavorite: false,
-    targetPercentage: 85,
-    salesGoal: 10000, // Total target in TL
-    currentSales: 8500, // Current sales in TL
-    remainingDays: 5, // Remaining days for the target
-    toggleFavorite() {
-        this.isFavorite = !this.isFavorite;
+        <div x-data="{
+    sections: [
+        {
+            id: 1,
+            title: 'Hedefler - Satış',
+            isFavorite: false,
+            targetPercentage: 85,
+            salesGoal: 10000,
+            currentSales: 8500,
+            remainingDays: 5
+        },
+        {
+            id: 2,
+            title: 'Hedefler - Randevu',
+            isFavorite: false,
+            targetPercentage: 60,
+            appointmentsGoal: 20,
+            completedAppointments: 12,
+            remainingDays: 10
+        },
+        {
+            id: 3,
+            title: 'Hedefler - Tahsilat',
+            isFavorite: false,
+            targetPercentage: 45,
+            collectionGoal: 5000,
+            currentCollection: 2250,
+            remainingDays: 7
+        },
+        {
+            id: 4,
+            title: 'Hedefler - Danışan',
+            isFavorite: false,
+            targetPercentage: 90,
+            consultantGoal: 50,
+            currentConsultants: 45,
+            remainingDays: 10
+        }
+    ],
+    toggleFavorite(id) {
+        const section = this.sections.find(sec => sec.id === id);
+        if (section) {
+            section.isFavorite = !section.isFavorite;
+        }
     }
-}" :class="{
-    'border border-green-500': targetPercentage >= 75,
-    'border border-yellow-500': targetPercentage >= 50 && targetPercentage < 75,
-    'border border-red-500': targetPercentage < 50
-}">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center space-x-2">
-                        <span>📊</span> <span>Satış</span>
-                    </h3>
-                    <div class="dropdown dropdown-end">
-                        <button tabindex="0" class="btn btn-sm btn-circle btn-outline">
-                            <x-icon name="tabler.settings" class="w-5 h-5"/>
-                        </button>
-                        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-48">
-                            <li><a @click="toggleFavorite" x-text="isFavorite ? 'Kaldır' : 'Favorilere Ekle'"></a></li>
-                            <li><a @click="toggleFavorite" x-text="isFavorite ? 'Kaldır' : 'Hedef Belirle'"></a></li>
-                        </ul>
+}" x-init="new Sortable($refs.sortableContainer, { animation: 150, handle: '.drag-handle' })">
+            <h2 class="text-3xl font-bold text-gray-900 mt-5 dark:text-gray-100 mb-6 flex items-center space-x-2">
+                <span>🏆</span> <span>Hedefler</span>
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" x-ref="sortableContainer">
+                <template x-for="section in sections" :key="section.id">
+                    <div class="bg-base-100 rounded-lg p-6 dark:bg-gray-800" :class="{
+                'border border-green-500': section.targetPercentage >= 75,
+                'border border-yellow-500': section.targetPercentage >= 50 && section.targetPercentage < 75,
+                'border border-red-500': section.targetPercentage < 50
+            }">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center space-x-2">
+                                <span>🔧</span> <span x-text="section.title"></span>
+                            </h3>
+                            <div class="flex items-center space-x-2">
+                                <div class="drag-handle cursor-move text-gray-500 dark:text-gray-300">
+                                    <x-icon name="tabler.drag" class="w-5 h-5"/>
+                                </div>
+                                <div class="dropdown dropdown-end">
+                                    <button tabindex="0" class="btn btn-sm btn-circle btn-outline">
+                                        <x-icon name="tabler.settings" class="w-5 h-5"/>
+                                    </button>
+                                    <ul tabindex="0"
+                                        class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-48">
+                                        <li><a @click="toggleFavorite(section.id)"
+                                               x-text="section.isFavorite ? 'Kaldır' : 'Favorilere Ekle'"></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <div class="text-center" x-show="section.salesGoal">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">🎯 Hedef</p>
+                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                   x-text="`${section.salesGoal} ₺`"></p>
+                            </div>
+                            <div class="text-center" x-show="section.currentSales">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">📈 Şu Ana Kadar</p>
+                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                   x-text="`${section.currentSales} ₺`"></p>
+                            </div>
+                            <div class="text-center" x-show="section.remainingDays">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">⏳ Kalan Gün</p>
+                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                   x-text="`${section.remainingDays} gün`"></p>
+                            </div>
+                            <div class="text-center" x-show="section.appointmentsGoal">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">🎯 Hedef</p>
+                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                   x-text="`${section.appointmentsGoal} Randevu`"></p>
+                            </div>
+                            <div class="text-center" x-show="section.completedAppointments">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">📈 Tamamlanan</p>
+                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                   x-text="`${section.completedAppointments} Randevu`"></p>
+                            </div>
+                            <div class="text-center" x-show="section.collectionGoal">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">🎯 Hedef</p>
+                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                   x-text="`${section.collectionGoal} ₺`"></p>
+                            </div>
+                            <div class="text-center" x-show="section.currentCollection">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">📥 Toplanan</p>
+                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                   x-text="`${section.currentCollection} ₺`"></p>
+                            </div>
+                            <div class="text-center" x-show="section.consultantGoal">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">🎯 Hedef</p>
+                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                   x-text="`${section.consultantGoal} Danışan`"></p>
+                            </div>
+                            <div class="text-center" x-show="section.currentConsultants">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">📋 Tamamlanan</p>
+                                <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
+                                   x-text="`${section.currentConsultants} Danışan`"></p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="font-semibold text-gray-900 dark:text-gray-100 flex items-center space-x-2">
+                                <span>⭐</span> <span>Başarı Oranı</span>
+                            </p>
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-2">
+                                <div class="h-2.5 rounded-full" :class="{
+                            'bg-green-500': section.targetPercentage >= 75,
+                            'bg-yellow-500': section.targetPercentage >= 50 && section.targetPercentage < 75,
+                            'bg-red-500': section.targetPercentage < 50
+                        }" :style="`width: ${section.targetPercentage}%`"></div>
+                            </div>
+                            <p class="text-right mt-2 text-sm font-bold flex items-center justify-end space-x-2">
+                                <span x-text="`${section.targetPercentage}%`"></span> <span>🔥</span>
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <div class="flex justify-between items-center mt-2">
-                    <div class="text-center">
-                        <p class="text-sm text-gray-600 dark:text-gray-400">🎯 Hedef</p>
-                        <p class="text-lg font-bold text-gray-900 dark:text-gray-100" x-text="`${salesGoal} ₺`"></p>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-sm text-gray-600 dark:text-gray-400">📈 Şu Ana Kadar</p>
-                        <p class="text-lg font-bold text-gray-900 dark:text-gray-100" x-text="`${currentSales} ₺`"></p>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-sm text-gray-600 dark:text-gray-400">⏳ Kalan Gün</p>
-                        <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
-                           x-text="`${remainingDays} gün`"></p>
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <p class="font-semibold text-gray-900 dark:text-gray-100 flex items-center space-x-2">
-                        <span>⭐</span> <span>Başarı Oranı</span>
-                    </p>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-2">
-                        <div class="h-2.5 rounded-full" :class="{
-                'bg-green-500': targetPercentage >= 75,
-                'bg-yellow-500': targetPercentage >= 50 && targetPercentage < 75,
-                'bg-red-500': targetPercentage < 50
-            }" :style="`width: ${targetPercentage}%`"></div>
-                    </div>
-                    <p class="text-right mt-2 text-sm font-bold flex items-center justify-end space-x-2">
-                        <span x-text="`${targetPercentage}%`"></span> <span>🔥</span>
-                    </p>
-                </div>
+                </template>
             </div>
-            <div class="bg-base-100 rounded-lg p-6 dark:bg-gray-800" x-data="{
-    isFavorite: false,
-    targetPercentage: 60,
-    appointmentsGoal: 20, // Total target in appointments
-    completedAppointments: 12, // Current completed appointments
-    remainingDays: 10, // Remaining days for the target
-    toggleFavorite() {
-        this.isFavorite = !this.isFavorite;
-    }
-}" :class="{
-    'border border-green-500': targetPercentage >= 75,
-    'border border-yellow-500': targetPercentage >= 50 && targetPercentage < 75,
-    'border border-red-500': targetPercentage < 50
-}">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center space-x-2">
-                        <span>📅</span> <span>Randevu</span>
-                    </h3>
-                    <div class="dropdown dropdown-end">
-                        <button tabindex="0" class="btn btn-sm btn-circle btn-outline">
-                            <x-icon name="tabler.settings" class="w-5 h-5"/>
-                        </button>
-                        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-48">
-                            <li><a @click="toggleFavorite" x-text="isFavorite ? 'Kaldır' : 'Favorilere Ekle'"></a></li>
-                            <li><a @click="toggleFavorite" x-text="isFavorite ? 'Kaldır' : 'Hedef Belirle'"></a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="flex justify-between items-center mt-2">
-                    <div class="text-center">
-                        <p class="text-sm text-gray-600 dark:text-gray-400">🎯 Hedef</p>
-                        <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
-                           x-text="`${appointmentsGoal}`"></p>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-sm text-gray-600 dark:text-gray-400">📈 Tamamlanan</p>
-                        <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
-                           x-text="`${completedAppointments}`"></p>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-sm text-gray-600 dark:text-gray-400">⏳ Kalan Gün</p>
-                        <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
-                           x-text="`${remainingDays} gün`"></p>
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <p class="font-semibold text-gray-900 dark:text-gray-100 flex items-center space-x-2">
-                        <span>⭐</span> <span>Başarı Oranı</span>
-                    </p>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-2">
-                        <div class="h-2.5 rounded-full" :class="{
-                'bg-green-500': targetPercentage >= 75,
-                'bg-yellow-500': targetPercentage >= 50 && targetPercentage < 75,
-                'bg-red-500': targetPercentage < 50
-            }" :style="`width: ${targetPercentage}%`"></div>
-                    </div>
-                    <p class="text-right mt-2 text-sm font-bold flex items-center justify-end space-x-2">
-                        <span x-text="`${targetPercentage}%`"></span> <span>🔥</span>
-                    </p>
-                </div>
-            </div>
-
-
-            <div class="bg-base-100 rounded-lg p-6 dark:bg-gray-800" x-data="{
-    isFavorite: false,
-    targetPercentage: 45,
-    collectionGoal: 5000, // Total target in TL
-    currentCollection: 2250, // Current collection in TL
-    remainingDays: 7, // Remaining days for the target
-    toggleFavorite() {
-        this.isFavorite = !this.isFavorite;
-    }
-}" :class="{
-    'border border-green-500': targetPercentage >= 75,
-    'border border-yellow-500': targetPercentage >= 50 && targetPercentage < 75,
-    'border border-red-500': targetPercentage < 50
-}">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center space-x-2">
-                        <span>💳</span> <span>Tahsilat</span>
-                    </h3>
-                    <div class="dropdown dropdown-end">
-                        <button tabindex="0" class="btn btn-sm btn-circle btn-outline">
-                            <x-icon name="tabler.settings" class="w-5 h-5"/>
-                        </button>
-                        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-48">
-                            <li><a @click="toggleFavorite" x-text="isFavorite ? 'Kaldır' : 'Favorilere Ekle'"></a></li>
-                            <li><a @click="toggleFavorite" x-text="isFavorite ? 'Kaldır' : 'Hedef Belirle'"></a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="flex justify-between items-center mt-2">
-                    <div class="text-center">
-                        <p class="text-sm text-gray-600 dark:text-gray-400">🎯 Hedef</p>
-                        <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
-                           x-text="`${collectionGoal} ₺`"></p>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-sm text-gray-600 dark:text-gray-400">📥 Toplanan</p>
-                        <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
-                           x-text="`${currentCollection} ₺`"></p>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-sm text-gray-600 dark:text-gray-400">⏳ Kalan Gün</p>
-                        <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
-                           x-text="`${remainingDays} gün`"></p>
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <p class="font-semibold text-gray-900 dark:text-gray-100 flex items-center space-x-2">
-                        <span>⭐</span> <span>Başarı Oranı</span>
-                    </p>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-2">
-                        <div class="h-2.5 rounded-full" :class="{
-                'bg-green-500': targetPercentage >= 75,
-                'bg-yellow-500': targetPercentage >= 50 && targetPercentage < 75,
-                'bg-red-500': targetPercentage < 50
-            }" :style="`width: ${targetPercentage}%`"></div>
-                    </div>
-                    <p class="text-right mt-2 text-sm font-bold flex items-center justify-end space-x-2">
-                        <span x-text="`${targetPercentage}%`"></span> <span>🔥</span>
-                    </p>
-                </div>
-            </div>
-            <div class="bg-base-100 rounded-lg p-6 dark:bg-gray-800" x-data="{
-    isFavorite: false,
-    targetPercentage: 90,
-    consultantGoal: 50, // Total target in new consultants
-    currentConsultants: 45, // Current new consultants
-    remainingDays: 10, // Remaining days for the target
-    toggleFavorite() {
-        this.isFavorite = !this.isFavorite;
-    }
-}" :class="{
-    'border border-green-500': targetPercentage >= 75,
-    'border border-yellow-500': targetPercentage >= 50 && targetPercentage < 75,
-    'border border-red-500': targetPercentage < 50
-}">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center space-x-2">
-                        <span>👥</span> <span>Danışan</span>
-                    </h3>
-                    <div class="dropdown dropdown-end">
-                        <button tabindex="0" class="btn btn-sm btn-circle btn-outline">
-                            <x-icon name="tabler.settings" class="w-5 h-5"/>
-                        </button>
-                        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-48">
-                            <li><a @click="toggleFavorite" x-text="isFavorite ? 'Kaldır' : 'Favorilere Ekle'"></a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="flex justify-between items-center mt-2">
-                    <div class="text-center">
-                        <p class="text-sm text-gray-600 dark:text-gray-400">🎯 Hedef</p>
-                        <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
-                           x-text="`${consultantGoal} Danışan`"></p>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-sm text-gray-600 dark:text-gray-400">📋 Tamamlanan</p>
-                        <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
-                           x-text="`${currentConsultants} Danışan`"></p>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-sm text-gray-600 dark:text-gray-400">⏳ Kalan Gün</p>
-                        <p class="text-lg font-bold text-gray-900 dark:text-gray-100"
-                           x-text="`${remainingDays} gün`"></p>
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <p class="font-semibold text-gray-900 dark:text-gray-100 flex items-center space-x-2">
-                        <span>⭐</span> <span>Başarı Oranı</span>
-                    </p>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-2">
-                        <div class="h-2.5 rounded-full" :class="{
-                'bg-green-500': targetPercentage >= 75,
-                'bg-yellow-500': targetPercentage >= 50 && targetPercentage < 75,
-                'bg-red-500': targetPercentage < 50
-            }" :style="`width: ${targetPercentage}%`"></div>
-                    </div>
-                    <p class="text-right mt-2 text-sm font-bold flex items-center justify-end space-x-2">
-                        <span x-text="`${targetPercentage}%`"></span> <span>🔥</span>
-                    </p>
-                </div>
-            </div>
-
-
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+
         <div x-data="{
     sections: [
         { id: 1, title: 'Son Yapılan Kasa İşlemleri', content: `
@@ -269,6 +162,26 @@
                             <p class='text-xs text-gray-600 dark:text-gray-400'>Ahmet Yılmaz • 12.03.2024</p>
                         </div>
                         <p class='text-lg font-bold text-green-600 dark:text-green-400'>+500 ₺</p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class='text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2'>Şube 2</h4>
+                    <div class='bg-gray-100 dark:bg-gray-700 rounded-lg p-3 flex justify-between items-center'>
+                        <div>
+                            <p class='text-sm font-bold text-gray-900 dark:text-gray-100'>Nakit</p>
+                            <p class='text-xs text-gray-600 dark:text-gray-400'>Ayşe Kaya • 14.03.2024</p>
+                        </div>
+                        <p class='text-lg font-bold text-red-600 dark:text-red-400'>-200 ₺</p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class='text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2'>Şube 3</h4>
+                    <div class='bg-gray-100 dark:bg-gray-700 rounded-lg p-3 flex justify-between items-center'>
+                        <div>
+                            <p class='text-sm font-bold text-gray-900 dark:text-gray-100'>Banka</p>
+                            <p class='text-xs text-gray-600 dark:text-gray-400'>Mehmet Çelik • 15.03.2024</p>
+                        </div>
+                        <p class='text-lg font-bold text-green-600 dark:text-green-400'>+1000 ₺</p>
                     </div>
                 </div>
             </div>` },
@@ -286,6 +199,18 @@
                         <button class='btn btn-sm btn-success'>Onayla</button>
                     </div>
                 </div>
+                <div class='bg-gray-100 dark:bg-gray-700 rounded-lg p-4'>
+                    <div class='flex justify-between items-center mb-2'>
+                        <p class='text-sm font-bold text-gray-900 dark:text-gray-100'>Fiyat Revizyonu</p>
+                        <p class='text-xs text-gray-600 dark:text-gray-400'>Şube 2</p>
+                    </div>
+                    <p class='text-xs text-gray-600 dark:text-gray-400'>Ayşe Kaya - 14.03.2024</p>
+                    <p class='text-xs text-gray-500 dark:text-gray-500 italic'>Yeni kampanya nedeniyle %10 indirim yapılması isteniyor.</p>
+                    <div class='flex justify-between mt-4'>
+                        <button class='btn btn-sm btn-error'>İptal Et</button>
+                        <button class='btn btn-sm btn-success'>Onayla</button>
+                    </div>
+                </div>
             </div>` },
         { id: 3, title: 'Bugünün Ajandası', content: `
             <div class='space-y-4'>
@@ -295,10 +220,21 @@
                         <p class='text-sm font-bold text-gray-900 dark:text-gray-100'>09:00 - Müşteri Adı: Ahmet Yılmaz</p>
                         <p class='text-xs text-gray-600 dark:text-gray-400'>Hizmet: Saç Kesimi</p>
                     </div>
+                    <div class='bg-gray-100 dark:bg-gray-700 rounded-lg p-3 mt-2'>
+                        <p class='text-sm font-bold text-gray-900 dark:text-gray-100'>10:30 - Müşteri Adı: Ayşe Kaya</p>
+                        <p class='text-xs text-gray-600 dark:text-gray-400'>Hizmet: Manikür</p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class='text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2'>Öğleden Sonra</h4>
+                    <div class='bg-gray-100 dark:bg-gray-700 rounded-lg p-3'>
+                        <p class='text-sm font-bold text-gray-900 dark:text-gray-100'>13:00 - Müşteri Adı: Mehmet Çelik</p>
+                        <p class='text-xs text-gray-600 dark:text-gray-400'>Hizmet: Cilt Bakımı</p>
+                    </div>
                 </div>
             </div>` }
     ]
-}" x-init="$nextTick(() => new Sortable($refs.sortableContainer, { animation: 150, handle: '.drag-handle' }))">
+}" x-init="new Sortable($refs.sortableContainer, { animation: 150, handle: '.drag-handle' })">
             <h2 class="text-3xl font-bold text-gray-900 mt-5 dark:text-gray-100 mb-6 flex items-center space-x-2">
                 <span>🛠️</span> <span>Yönetim</span>
             </h2>
@@ -310,11 +246,7 @@
                                 <span>🔧</span> <span x-text="section.title"></span>
                             </h3>
                             <div class="drag-handle cursor-move text-gray-500 dark:text-gray-300">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                     stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M4 8h16M4 16h16"/>
-                                </svg>
+                                <x-icon name="tabler.drag" class="w-5 h-5"/>
                             </div>
                         </div>
                         <div x-html="section.content"></div>
