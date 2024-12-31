@@ -28,6 +28,14 @@ class ClientQuery
         return SpotlightQuery::forToken('client', function ($query, SpotlightScopeToken $clientToken) {
             $pages = collect();
 
+            $pages->push([
+                SpotlightResult::make()
+                    ->setTitle('Geri Dön')
+                    ->setGroup('backk')
+                    ->setIcon('arrow-left')
+                    ->setAction('return_action'),
+            ]);
+
             if (SpotlightCheckPermission::run(PermissionType::client_profil)) {
                 $pages->push(SpotlightResult::make()
                     ->setTitle('Anasayfa')
