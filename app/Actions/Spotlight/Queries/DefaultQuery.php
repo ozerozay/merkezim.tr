@@ -157,10 +157,9 @@ class DefaultQuery
                 $pages->push(SpotlightResult::make()
                     ->setTitle($user->name.' - '.$user->client_branch->name)
                     ->setGroup('clients')
-                    ->setImage(asset('kahri.png'))
                     //->setAction('jump_to', ['path' => route('admin.client.profil.index', $user->id)])
                     ->setTokens(['client' => $user])
-                    ->setIcon('check'));
+                    ->setIcon('user-circle'));
             }
 
             if (SpotlightCheckPermission::run(PermissionType::action_client_create)) {
