@@ -16,13 +16,13 @@ class WebsiteSettingsQuery
         return SpotlightQuery::forToken('websitesettings', function (SpotlightScopeToken $websitesettingsToken, $query) {
 
             $results = collect();
-            $results->push([
+            $results->push(
                 SpotlightResult::make()
                     ->setTitle('Geri Dön')
                     ->setGroup('backk')
                     ->setIcon('arrow-left')
                     ->setAction('return_action'),
-            ]);
+            );
 
             /*$results->push(SpotlightResult::make()
                 ->setTitle('Dil Desteği')
