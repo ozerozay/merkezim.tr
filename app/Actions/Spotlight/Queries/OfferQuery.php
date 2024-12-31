@@ -43,6 +43,14 @@ class OfferQuery
                 }
             }
 
+            $results->push(
+                SpotlightResult::make()
+                    ->setTitle('Geri Dön')
+                    ->setGroup('backk')
+                    ->setIcon('arrow-left')
+                    ->setAction('return_action'),
+            );
+
             return $results;
         });
     }

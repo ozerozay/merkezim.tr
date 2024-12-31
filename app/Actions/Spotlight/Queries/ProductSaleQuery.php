@@ -25,6 +25,14 @@ class ProductSaleQuery
                     ['path' => route('admin.client.profil.index', ['user' => $clientToken->getParameter('id'), 'tab' => 'product']),
                     ]));
 
+            $results->push(
+                SpotlightResult::make()
+                    ->setTitle('Geri Dön')
+                    ->setGroup('backk')
+                    ->setIcon('arrow-left')
+                    ->setAction('return_action'),
+            );
+
             return $results;
         });
     }

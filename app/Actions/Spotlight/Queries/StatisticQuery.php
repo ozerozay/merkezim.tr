@@ -17,6 +17,13 @@ class StatisticQuery
 
             $results = collect();
 
+            $results->push(
+                SpotlightResult::make()
+                    ->setTitle('Geri Dön')
+                    ->setGroup('backk')
+                    ->setIcon('arrow-left')
+                    ->setAction('return_action'),
+            );
             $results->push(SpotlightResult::make()
                 ->setTitle('Danışan')
                 ->setGroup('statistics')

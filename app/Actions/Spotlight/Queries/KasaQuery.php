@@ -80,13 +80,13 @@ class KasaQuery
                         ]));
             }
 
-            $results->push([
+            $results->push(
                 SpotlightResult::make()
                     ->setTitle('Geri Dön')
                     ->setGroup('backk')
                     ->setIcon('arrow-left')
                     ->setAction('return_action'),
-            ]);
+            );
 
             return $results;
         });

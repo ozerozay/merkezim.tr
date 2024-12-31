@@ -24,6 +24,14 @@ class ClientServiceQuery
             $clientServiceGroup = $clientServicesList->groupBy('status');
             $results = collect();
 
+            $results->push(
+                SpotlightResult::make()
+                    ->setTitle('Geri Dön')
+                    ->setGroup('backk')
+                    ->setIcon('arrow-left')
+                    ->setAction('return_action'),
+            );
+
             $results->push(SpotlightResult::make()
                 ->setTitle('Tümünü görüntüle')
                 ->setGroup('actions')

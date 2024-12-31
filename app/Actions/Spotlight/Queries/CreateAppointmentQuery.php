@@ -18,6 +18,14 @@ class CreateAppointmentQuery
             $service_categories = GetClientServiceCategory::run($clientToken->getParameter('id'));
             $results = collect();
 
+            $results->push(
+                SpotlightResult::make()
+                    ->setTitle('Geri Dön')
+                    ->setGroup('backk')
+                    ->setIcon('arrow-left')
+                    ->setAction('return_action'),
+            );
+
             if ($service_categories->isEmpty()) {
                 $results->push(SpotlightResult::make()
                     ->setTitle('Aktif hizmet kategorisi bulunamadı.')
