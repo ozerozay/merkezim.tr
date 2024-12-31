@@ -209,7 +209,7 @@ class DefaultQuery
                     ]));
 
             $pages->push(SpotlightResult::make()
-                ->setTitle('☀️ İstanbul’da bugün 28°C - Keyifli bir gün geçirmeniz dileğiyle!')
+                ->setTitle('☀️ İstanbul’da bugün 28°C - Keyifli günler!')
                 ->setGroup('weather'));
 
             $pages = $pages->when(! blank($query), function ($collection) use ($query) {
