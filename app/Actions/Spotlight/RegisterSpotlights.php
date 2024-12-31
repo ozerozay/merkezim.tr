@@ -29,6 +29,7 @@ use App\Actions\Spotlight\Tokens\ClientServiceToken;
 use App\Actions\Spotlight\Tokens\ClientToken;
 use App\Actions\Spotlight\Tokens\CouponToken;
 use App\Actions\Spotlight\Tokens\CreateAppointmentToken;
+use App\Actions\Spotlight\Tokens\DefaultToken;
 use App\Actions\Spotlight\Tokens\KasaToken;
 use App\Actions\Spotlight\Tokens\NoteToken;
 use App\Actions\Spotlight\Tokens\OfferToken;
@@ -64,17 +65,25 @@ class RegisterSpotlights
 
         Spotlight::setup(function () {
             //dump(\App\Actions\Spotlight\Actions\Get\GetUserAllPermissions::run());
+            $this->registerActions();
             $this->registerSpotlightGroups();
             $this->registerSpotlightModes();
             $this->registerSpotlightRandomTips();
             $this->registerSpotlightTokens();
             $this->registerSpotlightScopes();
             $this->registerSpotlightQueries();
+
         });
+    }
+
+    private function registerActions(): void
+    {
+        Spotlight::registerAction('return_action', \App\Actions\Spotlight\ReturnAction::class);
     }
 
     private function registerSpotlightGroups(): void
     {
+        Spotlight::registerGroup('backk', 'Geri');
         Spotlight::registerGroup('pages', 'Sayfalar');
         Spotlight::registerGroup('clients', 'Danışanlar');
         Spotlight::registerGroup('client_notes', 'Notlar');
@@ -120,10 +129,8 @@ class RegisterSpotlights
         /* Ayarlar */
         Spotlight::registerGroup('settings', 'Ayarlar');
         Spotlight::registerGroup('definations', 'Tanımlamalar');
-
-        Spotlight::registerGroup('profile', 'Profil');
-
         Spotlight::registerGroup('site_settings', 'Site Ayarları');
+        Spotlight::registerGroup('profile', 'Profil');
 
     }
 
@@ -171,6 +178,7 @@ class RegisterSpotlights
             WebsiteShopSettingsToken::run(),
             ReportToken::run(),
             StatisticToken::run(),
+            DefaultToken::run(),
         ];
 
         if (SpotlightCheckPermission::run(PermissionType::admin_settings)) {

@@ -4,6 +4,7 @@ namespace App\Actions\Spotlight\Queries;
 
 use App\Actions\Spotlight\SpotlightCheckPermission;
 use App\Enum\PermissionType;
+use App\Models\User;
 use Lorisleiva\Actions\Concerns\AsAction;
 use WireElements\Pro\Components\Spotlight\SpotlightQuery;
 use WireElements\Pro\Components\Spotlight\SpotlightResult;
@@ -18,6 +19,17 @@ class SettingsQuery
         return SpotlightQuery::forToken('settings', function (SpotlightScopeToken $settingsToken, $query) {
 
             $results = collect();
+
+            $results->push(SpotlightResult::make()
+                ->setTitle('Site Ayarları')
+                ->setGroup('site_settings')
+                ->setTokens(['websitesettings' => new User])
+                ->setIcon('cog-6-tooth'));
+            $results->push(SpotlightResult::make()
+                ->setTitle('Online Mağaza Ayarları')
+                ->setGroup('site_settings')
+                ->setTokens(['websiteshopsettings' => new User])
+                ->setIcon('cog-6-tooth'));
 
             if (SpotlightCheckPermission::run(PermissionType::admin_definations)) {
                 $results->push(SpotlightResult::make()

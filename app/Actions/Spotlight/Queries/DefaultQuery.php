@@ -17,16 +17,47 @@ class DefaultQuery
 {
     use AsAction;
 
+    public function permissionList()
+    {
+        $permissionItems = [
+            PermissionType::page_randevu->name => function () use (&$pages) {
+                // Birden fazla şubesi varsa Randevu'yu push et
+                if (count(auth()->user()->staff_branches) > 1) {
+                    $pages->push(
+                        SpotlightResult::make()
+                            ->setTitle('Randevu')
+                            ->setGroup('pages')
+                            ->setTokens(['page_appointment' => new Appointment])
+                            ->setIcon('calendar-days')
+                    );
+                }
+            },
+
+            PermissionType::page_approve->name => function () use (&$pages) {
+                // Onay sayfasını push et
+                $pages->push(
+                    SpotlightResult::make()
+                        ->setTitle('Onay')
+                        ->setGroup('pages')
+                        ->setTokens(['kasa' => new Kasa])
+                        ->setIcon('check-circle')
+                        ->setAction('dispatch_event', [
+                            'name' => 'slide-over.open',
+                            'data' => ['component' => 'modals.approve.approve-modal'],
+                        ])
+                );
+            },
+        ];
+    }
+
     public function handle(): SpotlightQuery
     {
         return SpotlightQuery::asDefault(function ($query) {
-            $pages = collect([
-                SpotlightResult::make()
-                    ->setTitle('Anasayfa')
-                    ->setGroup('pages')
-                    ->setAction('jump_to', ['path' => route('admin.index')])
-                    ->setIcon('home'),
-            ]);
+            $pages = collect([SpotlightResult::make()
+                ->setTitle('Anasayfa')
+                ->setGroup('pages')
+                ->setAction('jump_to', ['path' => route('admin.index')])
+                ->setIcon('home')]);
 
             if (SpotlightCheckPermission::run(PermissionType::page_randevu)) {
                 if (count(auth()->user()->staff_branches) > 1) {
@@ -115,16 +146,23 @@ class DefaultQuery
             $users = User::query()
                 ->where('name', 'like', "%{$query}%")
                 ->take(5)
-                ->get()
-                ->map(function (User $user) {
-                    return SpotlightResult::make()
-                        ->setTitle($user->name.' - '.$user->client_branch->name)
-                        ->setGroup('clients')
-                        ->setImage(asset('kahri.png'))
-                        //->setAction('jump_to', ['path' => route('admin.client.profil.index', $user->id)])
-                        ->setTokens(['client' => $user])
-                        ->setIcon('check');
-                });
+                ->latest()
+                ->whereHas('staff_branch', function ($q) {
+                    $q->whereIn('branch_id', auth()->user()->staff_branches);
+                })
+                ->with('client_branch:id,name')
+                ->get();
+
+            foreach ($users as $user) {
+                $pages->push(SpotlightResult::make()
+                    ->setTitle($user->name.' - '.$user->client_branch->name)
+                    ->setGroup('clients')
+                    ->setImage(asset('kahri.png'))
+                    //->setAction('jump_to', ['path' => route('admin.client.profil.index', $user->id)])
+                    ->setTokens(['client' => $user])
+                    ->setIcon('check'));
+            }
+
             if (SpotlightCheckPermission::run(PermissionType::action_client_create)) {
                 $pages->push(SpotlightResult::make()
                     ->setTitle('Danışan Oluştur')
@@ -143,34 +181,23 @@ class DefaultQuery
                     //->setTokens(['settings' => new User])
                     ->setIcon('finger-print'));
             }*/
+            /*
+                        $general_settings = \App\Actions\Spotlight\Actions\Settings\GetGeneralSettings::run();
 
-            $general_settings = \App\Actions\Spotlight\Actions\Settings\GetGeneralSettings::run();
-
-            if ($general_settings->get(SettingsType::website_active->name)) {
-                if (SpotlightCheckPermission::run(PermissionType::website_settings->name)) {
-                    $pages->push(SpotlightResult::make()
-                        ->setTitle('Site Ayarları')
-                        ->setGroup('site_settings')
-                        ->setTokens(['websitesettings' => new User])
-                        ->setIcon('cog-6-tooth'));
-                    $pages->push(SpotlightResult::make()
-                        ->setTitle('Online Mağaza Ayarları')
-                        ->setGroup('site_settings')
-                        ->setTokens(['websiteshopsettings' => new User])
-                        ->setIcon('cog-6-tooth'));
-                }
-            }
-
-            $pages->push(SpotlightResult::make()
-                ->setTitle('Site Ayarları')
-                ->setGroup('site_settings')
-                ->setTokens(['websitesettings' => new User])
-                ->setIcon('cog-6-tooth'));
-            $pages->push(SpotlightResult::make()
-                ->setTitle('Online Mağaza Ayarları')
-                ->setGroup('site_settings')
-                ->setTokens(['websiteshopsettings' => new User])
-                ->setIcon('cog-6-tooth'));
+                        if ($general_settings->get(SettingsType::website_active->name)) {
+                            if (SpotlightCheckPermission::run(PermissionType::website_settings->name)) {
+                                $pages->push(SpotlightResult::make()
+                                    ->setTitle('Site Ayarları')
+                                    ->setGroup('site_settings')
+                                    ->setTokens(['websitesettings' => new User])
+                                    ->setIcon('cog-6-tooth'));
+                                $pages->push(SpotlightResult::make()
+                                    ->setTitle('Online Mağaza Ayarları')
+                                    ->setGroup('site_settings')
+                                    ->setTokens(['websiteshopsettings' => new User])
+                                    ->setIcon('cog-6-tooth'));
+                            }
+                        }*/
 
             $pages->push(SpotlightResult::make()
                 ->setTitle('Renk Modunu Değiştir')
@@ -185,11 +212,7 @@ class DefaultQuery
                 return $collection->where(fn (SpotlightResult $result) => str($result->title())->lower()->contains(str($query)->lower()));
             });
 
-            $pages = $pages->sortBy(function (SpotlightResult $i) {
-                return $i->title();
-            });
-
-            return collect()->merge($pages)->merge($users);
+            return collect()->merge($pages);
         });
     }
 }

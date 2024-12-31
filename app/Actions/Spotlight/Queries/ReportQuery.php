@@ -18,6 +18,14 @@ class ReportQuery
 
             $results = collect();
 
+            $results->push([
+                SpotlightResult::make()
+                    ->setTitle('Geri Dön')
+                    ->setGroup('backk')
+                    ->setIcon('arrow-left')
+                    ->setAction('return_action'),
+            ]);
+
             $reports = (! auth()->user()->hasRole('admin'))
                 ? UserReport::query()
                     ->where('user_id', auth()->user()->id)

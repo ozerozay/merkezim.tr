@@ -18,6 +18,14 @@ class TalepPageQuery
         return SpotlightQuery::forToken('page_talep', function ($query) {
             $results = collect();
 
+            $results->push([
+                SpotlightResult::make()
+                    ->setTitle('Geri Dön')
+                    ->setGroup('backk')
+                    ->setIcon('arrow-left')
+                    ->setAction('return_action'),
+            ]);
+
             foreach (auth()->user()->staff_branch as $branch) {
                 $talep_group_count = Talep::query()
                     ->where('branch_id', $branch->id)
