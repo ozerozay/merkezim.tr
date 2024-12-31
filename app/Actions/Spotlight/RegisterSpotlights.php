@@ -83,6 +83,7 @@ class RegisterSpotlights
 
     private function registerSpotlightGroups(): void
     {
+        Spotlight::registerGroup('weather', 'Hava');
         Spotlight::registerGroup('backk', 'Geri');
         Spotlight::registerGroup('pages', 'Sayfalar');
         Spotlight::registerGroup('clients', 'Danışanlar');

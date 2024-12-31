@@ -208,6 +208,10 @@ class DefaultQuery
                         'data' => ['component' => 'actions.create-client'],
                     ]));
 
+            $pages->push(SpotlightResult::make()
+                ->setTitle('☀️ İstanbul’da bugün 28°C - Keyifli bir gün geçirmeniz dileğiyle!')
+                ->setGroup('weather'));
+
             $pages = $pages->when(! blank($query), function ($collection) use ($query) {
                 return $collection->where(fn (SpotlightResult $result) => str($result->title())->lower()->contains(str($query)->lower()));
             });
