@@ -11,7 +11,7 @@ class WebsiteShopSettingsQuery
 {
     use AsAction;
 
-    public function handle()
+    public function handle(): SpotlightQuery
     {
         return SpotlightQuery::forToken('websiteshopsettings', function (SpotlightScopeToken $websiteshopsettingsToken, $query) {
 
