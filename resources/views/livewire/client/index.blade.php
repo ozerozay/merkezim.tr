@@ -41,36 +41,36 @@ new #[\Livewire\Attributes\Layout('components.layouts.client')] class extends \L
             ],
         ];
     @endphp
-    
-    <x-alert title="Değerlendirmediğiniz randevu bulunuyor."
-             description="Görüşleriniz bizim için değerli, bir dakikanızı ayırıp" icon="tabler.star"
-             class="alert-info mb-2">
-        <x-slot:actions>
-            <x-button label="Değerlendir"/>
-        </x-slot:actions>
-    </x-alert>
-    <x-alert title="1500₺ gecikmiş ödemeniz bulunuyor."
-             description=" Kredi kartı veya havale ile hemen ödeyebilirsiniz."
-             icon="tabler.mood-look-down" class="alert-warning mb-2">
-        <x-slot:actions>
-            <x-button label="Hemen Öde"/>
-        </x-slot:actions>
-    </x-alert>
-    <x-alert title="Aktif teklifiniz bulunuyor." description="Size özel fırsatlardan yararlanmak için acele edin."
-             icon="tabler.confetti" class="alert-info mb-2">
-        <x-slot:actions>
-            <x-button label="Teklifi Gör"/>
-        </x-slot:actions>
-    </x-alert>
-    <x-alert title="Referans Kampanyası" description="Arkadaşlarınızı davet edin, ücretsiz seans kazanın."
-             icon="tabler.confetti" class="alert-info mb-2">
-        <x-slot:actions>
-            <x-button label="Davet Et"/>
-        </x-slot:actions>
-    </x-alert>
-
     @if (1==2)
-        <x-carousel :slides="$slides" class="mt-2"/>
+        <x-alert title="Değerlendirmediğiniz randevu bulunuyor."
+                 description="Görüşleriniz bizim için değerli, bir dakikanızı ayırıp" icon="tabler.star"
+                 class="alert-info mb-2">
+            <x-slot:actions>
+                <x-button label="Değerlendir" />
+            </x-slot:actions>
+        </x-alert>
+        <x-alert title="1500₺ gecikmiş ödemeniz bulunuyor."
+                 description=" Kredi kartı veya havale ile hemen ödeyebilirsiniz."
+                 icon="tabler.mood-look-down" class="alert-warning mb-2">
+            <x-slot:actions>
+                <x-button label="Hemen Öde" />
+            </x-slot:actions>
+        </x-alert>
+        <x-alert title="Aktif teklifiniz bulunuyor." description="Size özel fırsatlardan yararlanmak için acele edin."
+                 icon="tabler.confetti" class="alert-info mb-2">
+            <x-slot:actions>
+                <x-button label="Teklifi Gör" />
+            </x-slot:actions>
+        </x-alert>
+        <x-alert title="Referans Kampanyası" description="Arkadaşlarınızı davet edin, ücretsiz seans kazanın."
+                 icon="tabler.confetti" class="alert-info mb-2">
+            <x-slot:actions>
+                <x-button label="Davet Et" />
+            </x-slot:actions>
+        </x-alert>
+
+
+        <x-carousel :slides="$slides" class="mt-2" />
     @endif
     @if (1==2)
         <x-card title="En çok tercih edilenler" separator class="mt-5">
@@ -90,7 +90,7 @@ new #[\Livewire\Attributes\Layout('components.layouts.client')] class extends \L
 
                     {{-- MENU --}}
                     <x-slot:menu>
-                        <x-button icon="tabler.woman" tooltip="Sepete Ekle" class="btn-sm" spinner/>
+                        <x-button icon="tabler.woman" tooltip="Sepete Ekle" class="btn-sm" spinner />
                     </x-slot:menu>
                     <div class="absolute top-0 right-0 -mt-4 -mr-1">
                         <span class="badge badge-primary p-3 shadow-lg text-sm"> %40 İndirim </span>
@@ -111,7 +111,7 @@ new #[\Livewire\Attributes\Layout('components.layouts.client')] class extends \L
 
                     {{-- MENU --}}
                     <x-slot:menu>
-                        <x-button icon="tabler.man" tooltip="Sepete Ekle" class="btn-sm" spinner/>
+                        <x-button icon="tabler.man" tooltip="Sepete Ekle" class="btn-sm" spinner />
                     </x-slot:menu>
                     <div class="absolute top-0 right-0 -mt-4 -mr-1">
                         <span class="badge badge-primary p-3 shadow-lg text-sm"> %40 İndirim </span>
@@ -132,7 +132,7 @@ new #[\Livewire\Attributes\Layout('components.layouts.client')] class extends \L
 
                     {{-- MENU --}}
                     <x-slot:menu>
-                        <x-button icon="tabler.friends" tooltip="Sepete Ekle" class="btn-sm" spinner/>
+                        <x-button icon="tabler.friends" tooltip="Sepete Ekle" class="btn-sm" spinner />
                     </x-slot:menu>
                     <div class="absolute top-0 right-0 -mt-4 -mr-1">
                         <span class="badge badge-primary p-3 shadow-lg text-sm"> %40 İndirim </span>
