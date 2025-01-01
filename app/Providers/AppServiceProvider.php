@@ -40,17 +40,8 @@ class AppServiceProvider extends ServiceProvider
 
         \Broadcast::routes(['middleware' => ['web', 'tenant', 'universal']]);
 
-        \Gate::define('viewPulse', function (?\App\Models\User $user) {
-            return true;
-        });
-
-        \Laravel\Pulse\Facades\Pulse::user(fn ($user) => [
-            'name' => '$user->name',
-            'extra' => '$user->email',
-            'avatar' => '$user->avatar_url',
-        ]);
-        //Spotlight::registerAction('show_notes', GetClientNotesAction::class);
-        //Spotlight::registerAction('get_client_notes_action', GetClientNotesAction::class);
+        // Spotlight::registerAction('show_notes', GetClientNotesAction::class);
+        // Spotlight::registerAction('get_client_notes_action', GetClientNotesAction::class);
 
         Relation::enforceMorphMap([
             'service' => 'App\Models\Service',
