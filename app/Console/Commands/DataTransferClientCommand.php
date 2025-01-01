@@ -76,137 +76,127 @@ class DataTransferClientCommand extends Command
     private function transferData($tenant)
     {
         $tenant->run(function () {
-            $customers = Musteri::query()
-                ->orderBy('id')
+            Musteri::query()
                 ->whereIn('sube', [1, 2])
                 ->whereNull('aktar')
-                ->whereHas('Satislari', function ($query) {
-                    $query->where('numara', '>', 0);
-                })
-                ->take(250)
+                ->orderBy('id')
                 ->with(['Satislari.Hizmetleri', 'Satislari.Senetleri', 'Randevulari', 'Notlari'])
-                ->get();
-            foreach ($customers as $customer) {
-                DB::beginTransaction();
+                ->chunk(250, function ($customers) {
+                    foreach ($customers as $customer) {
+                        DB::beginTransaction();
+                        try {
+                            $client = \App\Models\User::firstOrCreate(
+                                ['phone' => $customer->tel],
+                                [
+                                    'branch_id' => $customer->sube,
+                                    'country' => '90',
+                                    'phone_code' => '1111',
+                                    'name' => $customer->ad,
+                                    'tckimlik' => $customer->tckimlik,
+                                    'adres' => $customer->adres,
+                                    'unique_id' => CreateUniqueID::run('user'),
+                                    'gender' => true,
+                                    'first_login' => false,
+                                    'birth_date' => $customer->dtarih,
+                                    'instant_approve' => false,
+                                    'active' => true,
+                                    'can_login' => true,
+                                ]
+                            );
 
-                try {
+                            Note::withoutTimestamps(function () use ($customer, $client) {
+                                foreach ($customer->Notlari as $customer_note) {
+                                    Note::create([
+                                        'user_id' => $this->getNewStaffId($customer_note->kullanici),
+                                        'client_id' => $client->id,
+                                        'message' => $customer_note->aciklama,
+                                        'created_at' => $customer_note->created_at,
+                                        'updated_at' => $customer_note->updated_at,
+                                    ]);
+                                }
+                            });
 
-                    $old_new_customer_service_ids = [];
+                            foreach ($customer->Satislari as $mSatis) {
+                                $customer_sale = Sale::create([
+                                    'branch_id' => $client->branch_id,
+                                    'unique_id' => CreateUniqueID::run('sale'),
+                                    'client_id' => $client->id,
+                                    'user_id' => $this->getNewStaffId($mSatis->kullanici),
+                                    'sale_type_id' => $this->getNewSaleTypeId($mSatis->tip),
+                                    'date' => $mSatis->tarih,
+                                    'status' => $mSatis->durum == 'Aktif' ? SaleStatus::success : SaleStatus::cancel,
+                                    'price' => $mSatis->tutar,
+                                    'price_real' => $mSatis->indirimsiz_tutar,
+                                    'staffs' => $this->getNewStaffIds($mSatis->personel),
+                                    'sale_no' => $mSatis->numara,
+                                    'message' => 'AKTARIM',
+                                    'visible' => true,
+                                ]);
 
-                    $client = \App\Models\User::create([
-                        'branch_id' => $customer->sube,
-                        'phone' => $customer->tel,
-                        'country' => '90',
-                        'phone_code' => '1111',
-                        'name' => $customer->ad,
-                        'tckimlik' => $customer->tckimlik,
-                        'adres' => $customer->adres,
-                        'unique_id' => CreateUniqueID::run('user'),
-                        'gender' => true,
-                        'first_login' => false,
-                        'birth_date' => $customer->dtarih,
-                        'instant_approve' => false,
-                        'active' => true,
-                        'can_login' => true,
-                    ]);
+                                foreach ($mSatis->Senetleri as $senet) {
+                                    $customer_sale->clientTaksits()->create([
+                                        'client_id' => $client->id,
+                                        'branch_id' => $client->branch_id,
+                                        'sale_id' => $customer_sale->id,
+                                        'total' => $senet->tutar,
+                                        'remaining' => $senet->kalan,
+                                        'date' => $senet->tarih,
+                                        'status' => $mSatis->durum == 'Aktif' ? SaleStatus::success : SaleStatus::cancel,
+                                    ]);
+                                }
 
-                    $customer_notes = $customer->Notlari;
-                    Note::withoutTimestamps(function () use ($customer_notes, $client) {
-                        foreach ($customer_notes as $customer_note) {
-                            Note::create([
-                                'user_id' => $this->getNewStaffId($customer_note->kullanici),
-                                'client_id' => $client->id,
-                                'message' => $customer_note->aciklama,
-                                'created_at' => $customer_note->created_at,
-                                'updated_at' => $customer_note->updated_at,
-                            ]);
-                        }
-                    });
+                                foreach ($mSatis->Hizmetleri as $hizmet) {
+                                    $customer_service = $customer_sale->clientServices()->create([
+                                        'client_id' => $client->id,
+                                        'branch_id' => $client->branch_id,
+                                        'service_id' => $this->getNewServiceId($hizmet->id),
+                                        'total' => $hizmet->toplam_seans,
+                                        'remaining' => $hizmet->kalan_seans,
+                                        'gift' => $hizmet->cesit == 'HEDİYE',
+                                        'message' => 'AKTARIM',
+                                        'user_id' => $customer_sale->user_id,
+                                        'status' => $mSatis->durum == 'Aktif' ? SaleStatus::success : SaleStatus::cancel,
+                                    ]);
+                                    $old_new_customer_service_ids[$hizmet->id] = $customer_service->id;
+                                }
+                            }
 
-                    $customer_sales = $customer->Satislari;
-                    foreach ($customer_sales as $mSatis) {
-                        //dump($mSatis->personel);
-                        $customer_sale = Sale::create([
-                            'branch_id' => $client->branch_id,
-                            'unique_id' => CreateUniqueID::run('sale'),
-                            'client_id' => $client->id,
-                            'user_id' => $this->getNewStaffId($mSatis->kullanici),
-                            'sale_type_id' => $this->getNewSaleTypeId($mSatis->tip),
-                            'date' => $mSatis->tarih,
-                            'status' => $mSatis->durum == 'Aktif' ? SaleStatus::success : SaleStatus::cancel,
-                            'price' => $mSatis->tutar,
-                            'price_real' => $mSatis->indirimsiz_tutar,
-                            'staffs' => $this->getNewStaffIds($mSatis->personel),
-                            'sale_no' => $mSatis->numara,
-                            'message' => 'AKTARIM',
-                            'visible' => true,
-                        ]);
+                            Appointment::withoutTimestamps(function () use ($customer, $client, $old_new_customer_service_ids) {
+                                foreach ($customer->Randevulari as $customer_appointment) {
+                                    $client->clientAppointments()->create([
+                                        'branch_id' => $client->branch_id,
+                                        'service_room_id' => $this->getNewRoomId($customer_appointment->oda),
+                                        'service_category_id' => ServiceCategory::first()->id,
+                                        'service_ids' => $this->getNewClientServiceIds($old_new_customer_service_ids, $customer_appointment->hizmetler),
+                                        'date' => $customer_appointment->tarih,
+                                        'duration' => $customer_appointment->sure,
+                                        'date_start' => $customer_appointment->baslangic,
+                                        'date_end' => $customer_appointment->bitis,
+                                        'finish_service_ids' => $customer_appointment->durum == 'Onaylandı'
+                                            ? $this->getNewClientServiceIds($old_new_customer_service_ids, $customer_appointment->hizmetler)
+                                            : null,
+                                        'finish_user_id' => isset($customer_appointment->detay['onay_personel']) && ! is_null($customer_appointment->detay['onay_personel'])
+                                            ? $this->getNewStaffId($customer_appointment->detay['onay_personel'])
+                                            : 1,
+                                        'status' => $this->getNewAppointmentStatus($customer_appointment->durum),
+                                        'message' => 'AKTARIM',
+                                        'type' => AppointmentType::appointment->name,
+                                    ]);
+                                }
+                            });
 
-                        foreach ($mSatis->Senetleri as $senet) {
-                            $customer_sale->clientTaksits()->create([
-                                'client_id' => $client->id,
-                                'branch_id' => $client->branch_id,
-                                'sale_id' => $customer_sale->id,
-                                'total' => $senet->tutar,
-                                'remaining' => $senet->kalan,
-                                'date' => $senet->tarih,
-                                'status' => $mSatis->durum == 'Aktif' ? SaleStatus::success : SaleStatus::cancel,
-                            ]);
-                        }
+                            $customer->update(['aktar' => 1]);
 
-                        foreach ($mSatis->Hizmetleri as $hizmet) {
+                            DB::commit();
 
-                            $customer_service = $customer_sale->clientServices()->create([
-                                'client_id' => $client->id,
-                                'branch_id' => $client->branch_id,
-                                'service_id' => $this->getNewServiceId($hizmet->id),
-                                'total' => $hizmet->toplam_seans,
-                                'remaining' => $hizmet->kalan_seans,
-                                'gift' => $hizmet->cesit == 'HEDİYE',
-                                'message' => 'AKTARIM',
-                                'user_id' => $customer_sale->user_id,
-                                'status' => $mSatis->durum == 'Aktif' ? SaleStatus::success : SaleStatus::cancel,
-                            ]);
-                            $old_new_customer_service_ids[$hizmet->id] = $customer_service->id;
+                            $this->info("Müşteri aktarıldı: {$client->name}");
+                        } catch (\Exception $e) {
+                            DB::rollBack();
+                            $this->error("❌ Hata: {$e->getMessage()} {$e->getLine()} (Müşteri ID: {$customer->ad})");
                         }
                     }
-
-                    $customer_appointments = $customer->Randevulari;
-                    Appointment::withoutTimestamps(function () use ($customer_appointments, $client, $old_new_customer_service_ids) {
-                        foreach ($customer_appointments as $customer_appointment) {
-                            $client->clientAppointments()->create([
-                                'branch_id' => $client->branch_id,
-                                'service_room_id' => $this->getNewRoomId($customer_appointment->oda),
-                                'service_category_id' => ServiceCategory::first()->id,
-                                'service_ids' => $this->getNewClientServiceIds($old_new_customer_service_ids, $customer_appointment->hizmetler),
-                                'date' => $customer_appointment->tarih,
-                                'duration' => $customer_appointment->sure,
-                                'date_start' => $customer_appointment->baslangic,
-                                'date_end' => $customer_appointment->bitis,
-                                'finish_service_ids' => $customer_appointment->durum == 'Onaylandı'
-                                    ? $this->getNewClientServiceIds($old_new_customer_service_ids, $customer_appointment->hizmetler)
-                                    : null,
-                                'finish_user_id' => isset($customer_appointment->detay['onay_personel']) && ! is_null($customer_appointment->detay['onay_personel']) ? $this->getNewStaffId($customer_appointment->detay['onay_personel']) : 1,
-                                'status' => $this->getNewAppointmentStatus($customer_appointment->durum),
-                                'message' => 'AKTARIM',
-                                'type' => AppointmentType::appointment->name,
-                            ]);
-                        }
-                    });
-
-                    $customer->update([
-                        'aktar' => 1,
-                    ]);
-
-                    DB::commit();
-                    $this->info("Müşteri aktarıldı: {$client->name}");
-                } catch (\Exception $e) {
-                    DB::rollBack();
-                    $this->error("❌ Hata: {$e->getMessage()} {$e->getLine()} (Müşteri ID: {$customer->ad})");
-                }
-            }
+                });
         });
-
     }
 
     private function getNewStaffId($old_id)
