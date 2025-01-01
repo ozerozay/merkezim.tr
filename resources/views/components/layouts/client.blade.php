@@ -13,12 +13,12 @@
     <meta name="description" content="Marge Güzellik">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" defer>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr" defer></script>
     <script type="text/javascript"
-            src="https://cdn.jsdelivr.net/gh/robsontenorio/mary@0.44.2/libs/currency/currency.js">
+            src="https://cdn.jsdelivr.net/gh/robsontenorio/mary@0.44.2/libs/currency/currency.js" defer>
     </script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/tr.js"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/tr.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@ryangjchandler/alpine-clipboard@2.x.x/dist/alpine-clipboard.js" defer>
     </script>
 </head>
@@ -29,20 +29,20 @@
 {{-- NAVBAR mobile only --}}
 <x-nav sticky class="lg:hidden">
     <x-slot:brand>
-        <x-app-brand/>
+        <x-app-brand />
     </x-slot:brand>
     <x-slot:actions>
 
         @if (1 == 2)
             <x-button icon="tabler.shopping-bag" class="btn-circle relative">
-                <x-badge value="0" class="badge-error absolute -right-2 -top-2"/>
+                <x-badge value="0" class="badge-error absolute -right-2 -top-2" />
             </x-button>
         @endif
         <x-button icon="tabler.bell" class="btn-circle relative">
-            <x-badge value="0" class="badge-error absolute -right-2 -top-2"/>
+            <x-badge value="0" class="badge-error absolute -right-2 -top-2" />
         </x-button>
         <label for="main-drawer" class="lg:hidden me-3">
-            <x-icon name="o-bars-3" class="cursor-pointer rounded-full"/>
+            <x-icon name="o-bars-3" class="cursor-pointer rounded-full" />
         </label>
 
     </x-slot:actions>
@@ -57,7 +57,7 @@
 
 
             @if (1 == 2)
-                <x-button label="Hi!" class="btn-outline" data-set-theme="cupcake" data-key="mary-theme"/>
+                <x-button label="Hi!" class="btn-outline" data-set-theme="cupcake" data-key="mary-theme" />
             @endif
             @if ($user = auth()->user())
 
@@ -70,15 +70,15 @@
                         <x-dropdown>
                             <x-slot:trigger>
                                 <x-button icon="o-cog-6-tooth"
-                                          class="btn-circle text-white transition-colors duration-200"/>
+                                          class="btn-circle text-white transition-colors duration-200" />
                             </x-slot:trigger>
                             <x-menu-item icon="tabler.user-circle" label="Bilgilerini Düzenle"
-                                         @click.stop="$dispatch('mary-toggle-theme')"/>
+                                         @click.stop="$dispatch('mary-toggle-theme')" />
                             <x-menu-item icon="tabler.camera-plus" label="Profil Fotoğrafı Yükle"
-                                         @click.stop="$dispatch('mary-toggle-theme')"/>
+                                         @click.stop="$dispatch('mary-toggle-theme')" />
                             <x-menu-item icon="tabler.moon" label="Koyu Mod"
-                                         @click.stop="$dispatch('mary-toggle-theme')"/>
-                            <x-menu-item icon="o-power" label="Çıkış" link="{{ route('logout') }}" no-wire-navigate/>
+                                         @click.stop="$dispatch('mary-toggle-theme')" />
+                            <x-menu-item icon="o-power" label="Çıkış" link="{{ route('logout') }}" no-wire-navigate />
                         </x-dropdown>
                     </x-slot:actions>
                 </x-list-item>
@@ -117,11 +117,11 @@
                 @endif
                 <x-menu-item title="Anasayfa"
                              class="text-white bg-cyan-500 hover:bg-cyan-700 p-3 rounded-lg transition-all duration-300"
-                             icon="tabler.home" link="/"/>
+                             icon="tabler.home" link="/" />
                 <x-menu-item title="Bize Ulaşın"
                              class="text-white bg-green-500 hover:bg-green-700 p-3 rounded-lg transition-all duration-300"
-                             icon="tabler.help"/>
-                <livewire:client.menu.client-auth-menu wire:key="mngfjn-{{Str::random(10)}}"/>
+                             icon="tabler.help" />
+                <livewire:client.menu.client-auth-menu wire:key="mngfjn-{{Str::random(10)}}" />
                 @if (1==2)
                     <x-menu-item
                         title="{{ __('client.menu_profil') }}"
@@ -146,40 +146,40 @@
                     <p class="text-2xl font-bold flex-1">
                         {{ $site_name }}
                     </p>
-                    <x-theme-toggle class="btn btn-circle ml-auto"/>
+                    <x-theme-toggle class="btn btn-circle ml-auto" />
                 </div>
-                <x-hr/>
-                <livewire:spotlight.components.login_button wire:key="lg-xks-{{ Str::random(10) }}"/>
-                <x-menu-separator/>
+                <x-hr />
+                <livewire:spotlight.components.login_button wire:key="lg-xks-{{ Str::random(10) }}" />
+                <x-menu-separator />
             @endif
             <div>
                 @if (1==2)
-                    <x-menu-separator/>
+                    <x-menu-separator />
                     <x-menu-sub title="Hizmetlerimiz"
                                 class="text-white bg-orange-500 hover:bg-orange-700 p-3 rounded-lg transition-all duration-300"
                                 icon="tabler.heart">
                         <x-menu-item title="LAZER EPİLASYON"
                                      class="text-white bg-orange-400 hover:bg-orange-600 p-2 rounded-lg transition-all duration-300"
-                                     icon="tabler.arrow-right" link="{{ route('client.service') }}"/>
+                                     icon="tabler.arrow-right" link="{{ route('client.service') }}" />
                         <x-menu-item title="CİLT BAKIMI"
                                      class="text-white bg-orange-400 hover:bg-orange-600 p-2 rounded-lg transition-all duration-300"
-                                     icon="tabler.arrow-right" link="{{ route('client.service') }}"/>
+                                     icon="tabler.arrow-right" link="{{ route('client.service') }}" />
                         <x-menu-item title="BÖLGESEL ZAYIFLAMA"
                                      class="text-white bg-orange-400 hover:bg-orange-600 p-2 rounded-lg transition-all duration-300"
-                                     icon="tabler.arrow-right" link="{{ route('client.service') }}"/>
+                                     icon="tabler.arrow-right" link="{{ route('client.service') }}" />
                     </x-menu-sub>
-                    <x-menu-separator/>
+                    <x-menu-separator />
                 @endif
             </div>
 
 
             @if (1 == 2)
                 <x-menu-item title="0850 241 1010" icon="tabler.phone" external
-                             link="https://www.instagram.com/margeguzellik"/>
+                             link="https://www.instagram.com/margeguzellik" />
                 <x-menu-item title="Instagram" icon="tabler.brand-instagram" external
-                             link="https://www.instagram.com/margeguzellik"/>
+                             link="https://www.instagram.com/margeguzellik" />
                 <x-menu-item title="Whatsapp" icon="tabler.brand-whatsapp" external
-                             link="https://wa.me/905056277636"/>
+                             link="https://wa.me/905056277636" />
             @endif
         </x-menu>
     </x-slot:sidebar>
@@ -193,9 +193,9 @@
 <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2" wire:key="cart-buttson-{{ Str::random(10) }}">
     @if ($shop_active)
         @if (request()->is('shop/*'))
-            <livewire:web.shop.cart-button-page wire:key="djsaxeccr-{{ Str::random(10) }}"/>
+            <livewire:web.shop.cart-button-page wire:key="djsaxeccr-{{ Str::random(10) }}" />
         @else
-            <livewire:spotlight.components.shop_button wire:key="djsafweccr"/>
+            <livewire:spotlight.components.shop_button wire:key="djsafweccr" />
         @endif
     @endif
 </div>
@@ -203,16 +203,16 @@
 @persist('toast-spotlight')
 @livewire('slide-over-pro')
 @livewire('modal-pro')
-<x-toast/>
-<x-theme-toggle class="hidden"/>
+<x-toast />
+<x-theme-toggle class="hidden" />
 @endpersist()
 
 
 </body>
 <script>
-    document.addEventListener('livewire:init', () => {
-        Livewire.hook('request', ({fail}) => {
-            fail(({status, preventDefault}) => {
+    document.addEventListener("livewire:init", () => {
+        Livewire.hook("request", ({ fail }) => {
+            fail(({ status, preventDefault }) => {
                 if (status === 419) {
                     // Sayfayı yenile
                     location.reload();
@@ -231,17 +231,17 @@
     }, false);*/
 </script>
 <script type="text/javascript">
-    window.addEventListener('message', function (event) {
-        if (event.data.type === 'triggerLivewireEvent') {
-            Livewire.dispatch('checkout-result-changed', [event.data.data, event.data.status, event.data.message]);
+    window.addEventListener("message", function(event) {
+        if (event.data.type === "triggerLivewireEvent") {
+            Livewire.dispatch("checkout-result-changed", [event.data.data, event.data.status, event.data.message]);
         }
     });
 </script>
 <script type="text/javascript">
     function otpSend(num) {
-        const milliseconds = num * 1000 //60 seconds
-        const currentDate = Date.now() + milliseconds
-        var countDownTime = new Date(currentDate).getTime()
+        const milliseconds = num * 1000; //60 seconds
+        const currentDate = Date.now() + milliseconds;
+        var countDownTime = new Date(currentDate).getTime();
         let interval;
         return {
             countDown: milliseconds,
@@ -256,21 +256,21 @@
             },
             getTime() {
                 if (this.countDown < 0) {
-                    this.clearTimer()
+                    this.clearTimer();
                 }
                 return this.countDown;
             },
             formatTime(num) {
                 var date = new Date(num);
                 return new Date(this.countDown).toLocaleTimeString(navigator.language, {
-                    minute: '2-digit',
-                    second: '2-digit'
+                    minute: "2-digit",
+                    second: "2-digit"
                 });
             },
             clearTimer() {
                 clearInterval(this.intervalID);
             }
-        }
+        };
     }
 </script>
 <style type="text/css">
