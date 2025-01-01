@@ -31,7 +31,7 @@ importers:
         specifier: ^1.17.1
         version: 1.17.1
       laravel-vite-plugin:
-        specifier: ^1.0
+        specifier: ^1.1.1
         version: 1.1.1(vite@6.0.6(jiti@1.21.6)(terser@5.36.0)(yaml@2.6.1))
       postcss:
         specifier: ^8.4.45
@@ -43,7 +43,7 @@ importers:
         specifier: ^3.4.10
         version: 3.4.16
       vite:
-        specifier: ^6.0.0
+        specifier: ^6.0.6
         version: 6.0.6(jiti@1.21.6)(terser@5.36.0)(yaml@2.6.1)
       vite-plugin-minify:
         specifier: ^2.0.0
