@@ -1,3 +1,6 @@
+import {defineConfig} from 'vite';
+import laravel from 'laravel-vite-plugin';
+
 export default defineConfig({
     plugins: [
         laravel({
@@ -8,6 +11,5 @@ export default defineConfig({
     build: {
         outDir: 'public/tenancy/assets/build',
         emptyOutDir: true,
-        manifest: true,
     },
 });
