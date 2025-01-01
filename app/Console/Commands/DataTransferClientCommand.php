@@ -84,6 +84,7 @@ class DataTransferClientCommand extends Command
                 ->chunk(250, function ($customers) {
                     foreach ($customers as $customer) {
                         DB::beginTransaction();
+                        $old_new_customer_service_ids = [];
                         try {
                             $client = \App\Models\User::firstOrCreate(
                                 ['phone' => $customer->tel],
