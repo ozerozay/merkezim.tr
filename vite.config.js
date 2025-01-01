@@ -10,6 +10,7 @@ export default defineConfig({
     ],
     build: {
         outDir: 'public/tenancy/assets/build',
+        assetsDir: '.',
         emptyOutDir: true,
     },
 });
