@@ -112,6 +112,16 @@ enum PermissionType: string
             self::website_settings => 'Web sitesi ayarları yetkisi',
 
             self::note_process => 'Not işlemleri yetkisi',
+            self::coupon_process => 'Kupon işlemleri',
+            self::offer_process => 'Teklif işlemleri',
+            self::service_process => 'Hizmet işlemleri',
+            self::taksit_process => 'Taksit işlemleri',
+            self::sale_process => 'Satış işlemleri',
+            self::sale_product_process => 'Ürün satış işlemleri',
+            self::kasa_detail_process => 'Kasa detay işlemleri',
+            self::appointment_process => 'Randevu işlemleri',
+            self::adisyon_process => 'Adisyon işlemleri',
+            self::talep_process => 'Talep işlemleri',
         };
     }
 }

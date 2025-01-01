@@ -5,6 +5,57 @@
         </x-slot:actions>
     </x-header>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <div
+        class="h-screen flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+        x-data="welcomeScreen"
+        x-init="startSequence()">
+        <!-- Animasyonlu Mesajlar -->
+        <div class="text-center">
+            <h1 class="text-4xl font-bold" x-show="currentStep === 0" x-transition.opacity.duration.1000ms>
+                Merhaba 👋
+            </h1>
+            <p class="text-lg mt-4" x-show="currentStep === 1" x-transition.opacity.duration.1000ms>
+                Bu yazılım iş süreçlerinizi kolaylaştırmak için tasarlandı.
+            </p>
+            <p class="text-lg mt-4" x-show="currentStep === 2" x-transition.opacity.duration.1000ms>
+                Tüm özelliklere kolayca erişebilir ve verimliliğinizi artırabilirsiniz.
+            </p>
+            <p class="text-lg mt-4" x-show="currentStep === 3" x-transition.opacity.duration.1000ms>
+                Kurulum sihirbazına başlamadan önce birkaç adım kaldı.
+            </p>
+        </div>
+
+        <!-- Kurulum Sihirbazı -->
+        <div class="mt-10">
+            <button class="btn btn-primary" x-show="currentStep === 4" @click="startSetupWizard()"
+                    x-transition.opacity.duration.1000ms>
+                Kurulum Sihirbazını Başlat
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('welcomeScreen', () => ({
+                currentStep: 0,
+                startSequence() {
+                    const stepsCount = 4; // Toplam adım sayısı (mesajlar + kurulum butonu)
+                    const delay = 2000; // Her adımın gösterim süresi (ms)
+                    const interval = setInterval(() => {
+                        this.currentStep++;
+                        if (this.currentStep >= stepsCount) {
+                            clearInterval(interval);
+                        }
+                    }, delay);
+                },
+                startSetupWizard() {
+                    console.log('Kurulum sihirbazı başlatılıyor...');
+                    // Burada kurulum sihirbazına yönlendirme yapabilirsiniz
+                }
+            }));
+        });
+    </script>
+
     <div class="container mx-auto my-5">
         <div x-data="{
     sections: [

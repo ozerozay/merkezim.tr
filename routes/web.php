@@ -4,6 +4,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
+Route::middleware(['web'])
+    ->domain('merkezim.tr.test')
+    ->group(function () {
+        Route::get('/', function () {
+            echo 'loe';
+        });
+
+        Route::get('/tenant-add', function () {});
+    });
+
 Volt::route('/anasayfa', 'merkezim.anasayfa');
 
 /*

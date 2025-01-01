@@ -147,7 +147,7 @@ class DefaultQuery
                 ->where('name', 'like', "%{$query}%")
                 ->take(5)
                 ->latest()
-                ->whereHas('staff_branch', function ($q) {
+                ->whereHas('client_branch', function ($q) {
                     $q->whereIn('branch_id', auth()->user()->staff_branches);
                 })
                 ->with('client_branch:id,name')

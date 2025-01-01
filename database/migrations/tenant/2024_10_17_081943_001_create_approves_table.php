@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('approves', function (Blueprint $table) {
             $table->id();
             $table->json('approved_id')->nullable();
-            $table->bigInteger('approved_id')->unsigned()->nullable();
+            $table->bigInteger('approved_by')->unsigned()->nullable();
             $table
                 ->bigInteger('user_id')
                 ->unsigned()

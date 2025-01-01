@@ -21,6 +21,5 @@ class TenantSeeder extends Seeder
                 'domain' => 'marge',
             ]);
         }
-
     }
 }
