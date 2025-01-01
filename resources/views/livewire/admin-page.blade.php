@@ -1,10 +1,4 @@
 <div>
-    <x-header title="Anasayfa" subtitle="{{ \Carbon\Carbon::now()->format('d/m/Y') }}" separator>
-        <x-slot:actions>
-            <x-button class="btn btn-primary" @click="openSettings" icon="tabler.settings">Özelleştir</x-button>
-        </x-slot:actions>
-    </x-header>
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <div
         class="h-screen flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100"
         x-data="welcomeScreen"
@@ -33,6 +27,13 @@
             </button>
         </div>
     </div>
+    <x-header title="Anasayfa" subtitle="{{ \Carbon\Carbon::now()->format('d/m/Y') }}" separator>
+        <x-slot:actions>
+            <x-button class="btn btn-primary" @click="openSettings" icon="tabler.settings">Özelleştir</x-button>
+        </x-slot:actions>
+    </x-header>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
 
     <script>
         document.addEventListener('alpine:init', () => {
