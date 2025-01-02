@@ -117,8 +117,9 @@
                 @endif
                 <x-menu-item title="Anasayfa"
                              class="text-white bg-cyan-500 hover:bg-cyan-700 p-3 rounded-lg transition-all duration-300"
-                             icon="tabler.home" link="/" />
+                             icon="tabler.home" link="{{ route('client.index') }}" />
                 <x-menu-item title="Bize Ulaşın"
+                             link="{{route('client.contact')}}"
                              class="text-white bg-green-500 hover:bg-green-700 p-3 rounded-lg transition-all duration-300"
                              icon="tabler.help" />
                 <livewire:client.menu.client-auth-menu wire:key="mngfjn-{{Str::random(10)}}" />

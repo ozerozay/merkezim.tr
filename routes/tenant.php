@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\AppointmentStatus;
 use App\Enum\SettingsType;
+use App\Http\Controllers\AuthController;
 use App\Jobs\SendReportPdfJob;
 use App\Livewire\Reports\AppointmentReport;
 use App\Livewire\Reports\ClientReport;
@@ -52,6 +53,9 @@ Route::middleware([
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
 
+    Route::get('/auth/{provider}', [AuthController::class, 'redirectToProvider']);
+    Route::get('/auth/{provider}/callback', [AuthController::class, 'handleProviderCallback']);
+
     /* Route::any('broadcasting/auth', function () {
          dump('bur');
 
@@ -88,11 +92,11 @@ Route::middleware([
         return redirect()->route('client.index');
     })->name('logout');
 
-    //Route::get('/spotlight2', [Spotlight::class, 'search'])->name('mary.spotlight');
+    // Route::get('/spotlight2', [Spotlight::class, 'search'])->name('mary.spotlight');
 
     Volt::route('/', 'client.index')->name('client.index');
     Volt::route('/service', 'client.service')->name('client.service');
-    Volt::route('/contact', 'client.contact')->name('client.contact');
+    Volt::route('/contact', 'client.')->name('client.contact');
     Volt::route('/location', 'client.location')->name('client.location');
 
     Route::get('/shop/packages', PackagePage::class)->name('client.shop.packages');
@@ -160,9 +164,9 @@ Route::middleware([
     });
 
     Route::get('/job', function () {
-        //SendReportPdfJob::dispatch();
-        //dump(\Namu\WireChat\Models\Message::all());
-        //MessageCreated::dispatch(\Namu\WireChat\Models\Message::first());
+        // SendReportPdfJob::dispatch();
+        // dump(\Namu\WireChat\Models\Message::all());
+        // MessageCreated::dispatch(\Namu\WireChat\Models\Message::first());
         dispatch(new \Namu\WireChat\Jobs\BroadcastMessage(\Namu\WireChat\Models\Message::create([
             'conversation_id' => 1,
             'sendable_id ' => 1,
@@ -171,7 +175,7 @@ Route::middleware([
             'type' => 'text',
         ])));
 
-        //broadcast(new MessageCreated(\Namu\WireChat\Models\Message::first()))->toOthers();
+        // broadcast(new MessageCreated(\Namu\WireChat\Models\Message::first()))->toOthers();
 
     });
 
@@ -201,7 +205,7 @@ Route::middleware([
         ];
 
         dump(\App\Actions\Appointment\CheckAvailableAppointments::run($info));
-        //dump(\App\Actions\Appointment\CheckAvailableAppointments::run($info_multiple));
+        // dump(\App\Actions\Appointment\CheckAvailableAppointments::run($info_multiple));
 
     });
 
@@ -319,15 +323,15 @@ Route::middleware([
     Route::get('/ta', function () {
         $branch = \App\Models\Branch::first();
         dump($branch->isOpen(\Carbon\Carbon::createFromFormat('Y-m-d', '2024-11-03')->toDateTime()));
-        //dump($branch->startTimeByDay(\Carbon\Carbon::createFromFormat('Y-m-d', '2024-11-03')->toDateTime())->start()->format('H:i'));
-        //dump($branch->startTimeByDay(\Carbon\Carbon::createFromFormat('Y-m-d', '2024-11-03')->toDateTime())->end()->format('H:i'));
+        // dump($branch->startTimeByDay(\Carbon\Carbon::createFromFormat('Y-m-d', '2024-11-03')->toDateTime())->start()->format('H:i'));
+        // dump($branch->startTimeByDay(\Carbon\Carbon::createFromFormat('Y-m-d', '2024-11-03')->toDateTime())->end()->format('H:i'));
     });
 
     Route::get('/per', function () {
         dd(Auth::user()->getAllPermissions());
     });
 
-    //Route::get('/login', Login::class)->name('login');
+    // Route::get('/login', Login::class)->name('login');
 
     Route::get('c', function () {
         $sale = Sale::all();

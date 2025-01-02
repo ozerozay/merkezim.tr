@@ -55,6 +55,11 @@ class LoginPage extends SlideOver
         $this->section = 'phone';
     }
 
+    public function redirectTo($provider)
+    {
+        return redirect()->to('/auth/'.$provider);
+    }
+
     public function submitForm()
     {
         try {
@@ -207,7 +212,7 @@ class LoginPage extends SlideOver
                     return;
                 }
 
-                $user->phone_code = 1111; //rand(100000, 999999);
+                $user->phone_code = 1111; // rand(100000, 999999);
                 $user->save();
             } else {
 

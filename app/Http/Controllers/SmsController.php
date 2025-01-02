@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\SMSStatus;
 use App\Models\SMS;
 
 class SmsController extends Controller
@@ -22,7 +23,7 @@ class SmsController extends Controller
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
             CURLOPT_POSTFIELDS => json_encode($campaign),
-            //CURLOPT_VERIFYPEER => 0,
+            // CURLOPT_VERIFYPEER => 0,
             // CURLOPT_CAINFO => "/tmp/rapidssl.crt",
             // CURLOPT_SSL_VERIFYHOST => 2,
         ]);
@@ -53,6 +54,20 @@ class SmsController extends Controller
         return $http_response;
     }
 
+    public function saveToDatabase($number, $message)
+    {
+        try {
+            SMS::create([
+                'country' => '90',
+                'phone' => $number,
+                'message' => $message,
+                'status_local' => SMSStatus::pending->name,
+            ]);
+        } catch (\Throwable $e) {
+
+        }
+    }
+
     public function send($number, $message, $user_id, $source): bool
     {
         try {
@@ -60,7 +75,7 @@ class SmsController extends Controller
 
             $messages[] = [
                 'msg' => $message,
-                'dest' => "90$number", //"905056277636"
+                'dest' => "90{$number}", // "905056277636"
             ];
 
             $sms_message = SMS::create([
@@ -68,6 +83,7 @@ class SmsController extends Controller
                 'country' => '90',
                 'phone' => $number,
                 'message' => $message,
+                'status_local' => SMSStatus::sent->name,
             ]);
 
             $campaign_id = $this->verimorSend($messages, $sms_message->id, $source);
