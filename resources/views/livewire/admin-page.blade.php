@@ -1,32 +1,34 @@
 <div>
-    <div
-        class="h-screen flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100"
-        x-data="welcomeScreen"
-        x-init="startSequence()">
-        <!-- Animasyonlu Mesajlar -->
-        <div class="text-center">
-            <h1 class="text-4xl font-bold" x-show="currentStep === 0" x-transition.opacity.duration.1000ms>
-                Merhaba 👋
-            </h1>
-            <p class="text-lg mt-4" x-show="currentStep === 1" x-transition.opacity.duration.1000ms>
-                Bu yazılım iş süreçlerinizi kolaylaştırmak için tasarlandı.
-            </p>
-            <p class="text-lg mt-4" x-show="currentStep === 2" x-transition.opacity.duration.1000ms>
-                Tüm özelliklere kolayca erişebilir ve verimliliğinizi artırabilirsiniz.
-            </p>
-            <p class="text-lg mt-4" x-show="currentStep === 3" x-transition.opacity.duration.1000ms>
-                Kurulum sihirbazına başlamadan önce birkaç adım kaldı.
-            </p>
-        </div>
+    @if (1==2)
+        <div
+            class="h-screen flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+            x-data="welcomeScreen"
+            x-init="startSequence()">
+            <!-- Animasyonlu Mesajlar -->
+            <div class="text-center">
+                <h1 class="text-4xl font-bold" x-show="currentStep === 0" x-transition.opacity.duration.1000ms>
+                    Merhaba 👋
+                </h1>
+                <p class="text-lg mt-4" x-show="currentStep === 1" x-transition.opacity.duration.1000ms>
+                    Bu yazılım iş süreçlerinizi kolaylaştırmak için tasarlandı.
+                </p>
+                <p class="text-lg mt-4" x-show="currentStep === 2" x-transition.opacity.duration.1000ms>
+                    Tüm özelliklere kolayca erişebilir ve verimliliğinizi artırabilirsiniz.
+                </p>
+                <p class="text-lg mt-4" x-show="currentStep === 3" x-transition.opacity.duration.1000ms>
+                    Kurulum sihirbazına başlamadan önce birkaç adım kaldı.
+                </p>
+            </div>
 
-        <!-- Kurulum Sihirbazı -->
-        <div class="mt-10">
-            <button class="btn btn-primary" x-show="currentStep === 4" @click="startSetupWizard()"
-                    x-transition.opacity.duration.1000ms>
-                Kurulum Sihirbazını Başlat
-            </button>
+            <!-- Kurulum Sihirbazı -->
+            <div class="mt-10">
+                <button class="btn btn-primary" x-show="currentStep === 4" @click="startSetupWizard()"
+                        x-transition.opacity.duration.1000ms>
+                    Kurulum Sihirbazını Başlat
+                </button>
+            </div>
         </div>
-    </div>
+    @endif
     <x-header title="Anasayfa" subtitle="{{ \Carbon\Carbon::now()->format('d/m/Y') }}" separator>
         <x-slot:actions>
             <x-button class="btn btn-primary" @click="openSettings" icon="tabler.settings">Özelleştir</x-button>
@@ -36,8 +38,8 @@
 
 
     <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('welcomeScreen', () => ({
+        document.addEventListener("alpine:init", () => {
+            Alpine.data("welcomeScreen", () => ({
                 currentStep: 0,
                 startSequence() {
                     const stepsCount = 4; // Toplam adım sayısı (mesajlar + kurulum butonu)
@@ -50,7 +52,7 @@
                     }, delay);
                 },
                 startSetupWizard() {
-                    console.log('Kurulum sihirbazı başlatılıyor...');
+                    console.log("Kurulum sihirbazı başlatılıyor...");
                     // Burada kurulum sihirbazına yönlendirme yapabilirsiniz
                 }
             }));
@@ -120,11 +122,11 @@
                             </h3>
                             <div class="flex items-center space-x-2">
                                 <div class="drag-handle cursor-move text-gray-500 dark:text-gray-300">
-                                    <x-icon name="tabler.drag" class="w-5 h-5"/>
+                                    <x-icon name="tabler.drag" class="w-5 h-5" />
                                 </div>
                                 <div class="dropdown dropdown-end">
                                     <button tabindex="0" class="btn btn-sm btn-circle btn-outline">
-                                        <x-icon name="tabler.settings" class="w-5 h-5"/>
+                                        <x-icon name="tabler.settings" class="w-5 h-5" />
                                     </button>
                                     <ul tabindex="0"
                                         class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-48">
@@ -298,7 +300,7 @@
                                 <span>🔧</span> <span x-text="section.title"></span>
                             </h3>
                             <div class="drag-handle cursor-move text-gray-500 dark:text-gray-300">
-                                <x-icon name="tabler.drag" class="w-5 h-5"/>
+                                <x-icon name="tabler.drag" class="w-5 h-5" />
                             </div>
                         </div>
                         <div x-html="section.content"></div>
@@ -353,50 +355,50 @@
                 </template>
             </div>
         </div>
-
-        <script>
-            document.addEventListener('alpine:init', () => {
-                Alpine.data('setupWizard', () => ({
-                    steps: [
-                        {
-                            id: 1,
-                            title: 'Hizmet Kategorileri',
-                            description: 'Kategorilerinizi oluşturun ve yönetin.',
-                            completed: false,
-                            outputs: ['Kategori 1', 'Kategori 2', 'Kategori 3']
-                        },
-                        {
-                            id: 2,
-                            title: 'Hizmetler',
-                            description: 'Hizmetlerinizi tanımlayın.',
-                            completed: false,
-                            outputs: ['Hizmet 1', 'Hizmet 2', 'Hizmet 3']
-                        },
-                        {
-                            id: 3,
-                            title: 'Hizmet Odaları',
-                            description: 'Odalarınızı ekleyin.',
-                            completed: false,
-                            outputs: ['Oda 1', 'Oda 2']
-                        },
-                        {
-                            id: 4,
-                            title: 'Kasalar',
-                            description: 'Kasalarınızı yönetin.',
-                            completed: false,
-                            outputs: ['Kasa 1', 'Kasa 2', 'Kasa 3']
-                        },
-                    ],
-                    markAsCompleted(id) {
-                        const step = this.steps.find(s => s.id === id);
-                        if (step) {
-                            step.completed = true;
+        @if (1==2)
+            <script>
+                document.addEventListener("alpine:init", () => {
+                    Alpine.data("setupWizard", () => ({
+                        steps: [
+                            {
+                                id: 1,
+                                title: "Hizmet Kategorileri",
+                                description: "Kategorilerinizi oluşturun ve yönetin.",
+                                completed: false,
+                                outputs: ["Kategori 1", "Kategori 2", "Kategori 3"]
+                            },
+                            {
+                                id: 2,
+                                title: "Hizmetler",
+                                description: "Hizmetlerinizi tanımlayın.",
+                                completed: false,
+                                outputs: ["Hizmet 1", "Hizmet 2", "Hizmet 3"]
+                            },
+                            {
+                                id: 3,
+                                title: "Hizmet Odaları",
+                                description: "Odalarınızı ekleyin.",
+                                completed: false,
+                                outputs: ["Oda 1", "Oda 2"]
+                            },
+                            {
+                                id: 4,
+                                title: "Kasalar",
+                                description: "Kasalarınızı yönetin.",
+                                completed: false,
+                                outputs: ["Kasa 1", "Kasa 2", "Kasa 3"]
+                            }
+                        ],
+                        markAsCompleted(id) {
+                            const step = this.steps.find(s => s.id === id);
+                            if (step) {
+                                step.completed = true;
+                            }
                         }
-                    },
-                }));
-            });
-        </script>
-
+                    }));
+                });
+            </script>
+        @endif
 
         @if (1==2)
             <div class="container mx-auto my-8">
