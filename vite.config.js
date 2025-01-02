@@ -9,9 +9,9 @@ export default defineConfig({
         })
     ],
     build: {
-        outDir: "public/tenancy/assets/build",
-        assetsDir: "assets",
-        emptyOutDir: true,
-        manifest: true
+        outDir: "public/tenancy/assets/build", // Çıkış dizini
+        assetsDir: "assets", // Varlıkların (CSS/JS) çıkış alt dizini
+        manifest: true, // Manifest dosyasını oluşturur
+        emptyOutDir: true // Build sırasında eski dosyaları temizler
     }
 });
