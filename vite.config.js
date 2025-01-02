@@ -5,13 +5,7 @@ export default defineConfig({
     plugins: [
         laravel({
             input: ["resources/css/app.css", "resources/js/app.js"],
-            refresh: true
+            refresh: true // Otomatik sayfa yenileme (Hot Module Replacement)
         })
-    ],
-    build: {
-        outDir: "public/tenancy/assets/build", // Çıkış dizini
-        assetsDir: "assets", // Varlıkların (CSS/JS) çıkış alt dizini
-        manifest: true, // Manifest dosyasını oluşturur
-        emptyOutDir: true // Build sırasında eski dosyaları temizler
-    }
+    ]
 });
