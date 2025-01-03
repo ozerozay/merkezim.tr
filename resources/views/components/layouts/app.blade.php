@@ -19,20 +19,21 @@
 
 <body class="min-h-screen font-sans antialiased bg-base-200/50 dark:bg-base-200">
 
-{{-- NAVBAR mobile only --}}
-<x-nav sticky>
-    <x-slot:brand>
-        <x-app-brand />
+@if (1==2)
+    {{-- NAVBAR mobile only --}}
+    <x-nav sticky>
+        <x-slot:brand>
+            <x-app-brand />
 
-    </x-slot:brand>
-    <x-slot:actions>
-        <livewire:spotlight.components.notification_button wire:key="asdngccc" />
+        </x-slot:brand>
+        <x-slot:actions>
+            <livewire:spotlight.components.notification_button wire:key="asdngccc" />
 
 
-    </x-slot:actions>
+        </x-slot:actions>
 
-</x-nav>
-
+    </x-nav>
+@endif
 {{-- MAIN --}}
 <x-main>
     {{-- SIDEBAR --}}

@@ -223,7 +223,8 @@ new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Vol
                 @foreach ($appointments_group as $room)
                     <div class="col-span-1">
                         {{-- Oda Adı ve Kalanlar (Başlık Kartı) --}}
-                        <div class="flex items-center justify-between bg-base-100 shadow-md p-3 rounded mb-4">
+                        <div
+                            class="flex items-center justify-between bg-base-100 shadow-md p-3 rounded mb-4 sticky top-0 z-10">
                             <span class="text-lg font-bold text-primary">💆‍♀️ {{ $room->name }}</span>
                             <p class="text-sm text-secondary font-semibold">
                                 ⏳ {{ $room->appointments->whereIn('status', \App\AppointmentStatus::active()->all())->count() }}
@@ -232,6 +233,7 @@ new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Vol
                                 DK
                             </p>
                         </div>
+
 
                         {{-- Kart (Randevuları İçeriyor) --}}
                         <div class="flex flex-col space-y-4">

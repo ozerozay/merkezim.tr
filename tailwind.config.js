@@ -109,7 +109,7 @@ export default {
                 }
             }
 
-
+            , "light", "dark"
         ]
     },
     darkMode: "class"
