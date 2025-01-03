@@ -27,14 +27,23 @@ new class extends Component {
     </x-slot:title>
     <x-header separator progress-indicator>
         <x-slot:title>
-            {{ $user->name ?? '' }}
+            <x-avatar :image="$user->avatar" class="!w-14">
+
+                <x-slot:placeholder>
+                    <p class="text-xlg">{{ substr($user->name, 0, 1) }}</p>
+                </x-slot:placeholder>
+                <x-slot:title class="text-3xl pl-1">
+                    {{ $user->name }}
+                </x-slot:title>
+
+            </x-avatar>
         </x-slot:title>
         <x-slot:subtitle>
-            {{ $user->phone ?? '' }} - {{ $user->client_branch->name ?? '' }}
+            {{ $user->phone ?? '' }} - {{ $user->client_branch->name ?? '' }} - {{ $user->unique_id }}
         </x-slot:subtitle>
         <x-slot:actions>
-            <x-button wire:click="$dispatch('spotlight.toggle')" label="İŞLEMLER" responsive icon="o-cog-6-tooth"
-                      class="btn-primary" />
+            <x-button wire:click="$dispatch('spotlight.toggle')" label="⚙️ İŞLEMLER" class="btn-primary" />
+
             @if (1 == 2)
                 <x-dropdown label="İŞLEMLER" responsive icon="o-cog-6-tooth" class="btn-primary" right>
                     <x-menu-item icon="tabler.edit" title="Bilgilerini Düzenle" />
