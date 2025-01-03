@@ -43,5 +43,5 @@ new class extends Component {
         option-label="name"
         label="Etiketler"
         icon="o-magnifying-glass"
-        searchable/>
+        compact />
 </div>

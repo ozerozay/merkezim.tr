@@ -254,9 +254,11 @@ new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Vol
                             @endphp
 
                             @if ($filteredAppointments->isEmpty())
-                                <p class="text-center text-neutral-content">
-                                    📭 Randevu bulunmuyor.
+                                <p class="text-center text-base-content font-semibold flex flex-col items-center">
+                                    <span class="text-2xl mb-2">📅</span>
+                                    <span>Henüz randevu bulunmuyor!</span>
                                 </p>
+
                             @else
                                 {{-- Filtrelenmiş Randevular --}}
                                 @foreach ($filteredAppointments as $index => $appointment)
