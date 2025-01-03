@@ -308,15 +308,15 @@ new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Vol
 
                                             <!-- Süre, Gecikmiş Ödeme, ve Aktif Teklif -->
                                             <div class="flex text-sm text-center">
-                                                <div class="text-white py-2 px-4">
+                                                <div class="py-2 px-4">
                                                     <span
                                                         class="block">🕒 Süre: {{ $appointment->duration }} DK</span>
                                                 </div>
-                                                <div class="text-white py-2 px-4">
+                                                <div class="py-2 px-4">
                                                     <span
                                                         class="block">💰 Gecikmiş: {{ $appointment->hasDelayedPayment ? 'Evet' : 'Hayır' }}</span>
                                                 </div>
-                                                <div class="text-white py-2 px-4">
+                                                <div class="py-2 px-4">
                                                     <span
                                                         class="block">📜 Teklif: {{ $appointment->hasActiveOffer ? 'Evet' : 'Hayır' }}</span>
                                                 </div>
