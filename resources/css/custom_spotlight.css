@@ -1,3 +1,47 @@
+/* MorTema Light Mode */
+[data-theme="morTema"] .wep-spotlight-inner-container,
+[data-theme="morTema"] .wep-spotlight-input-container,
+[data-theme="morTema"] .wep-spotlight-input,
+[data-theme="morTema"] .wep-spotlight-footer,
+[data-theme="morTema"] .wep-spotlight-footer-helper,
+[data-theme="morTema"] .wep-spotlight-footer-tip,
+[data-theme="morTema"] .wep-spotlight-footer-helper-key,
+[data-theme="morTema"] .wep-spotlight-group-title,
+[data-theme="morTema"] .wep-spotlight-item-title,
+[data-theme="morTema"] .wep-spotlight-no-results-icon,
+[data-theme="morTema"] .wep-spotlight-no-results-heading {
+    color: #4b4b4b; /* Light mode metin rengi */ /* Light mode daha nötr metin rengi */ /* Light mode metin rengi */
+}
+
+[data-theme="morTema"] .wep-spotlight-item.wep-spotlight-item-active {
+    background-color: #4b367c; /* Light mode aktif item daha nötr */
+    color: #ffffff; /* Aktif item metin rengi */
+}
+
+/* MorTemaDark Dark Mode */
+[data-theme="morTemaDark"] .wep-spotlight-inner-container,
+[data-theme="morTemaDark"] .wep-spotlight-input-container,
+[data-theme="morTemaDark"] .wep-spotlight-input,
+[data-theme="morTemaDark"] .wep-spotlight-footer,
+[data-theme="morTemaDark"] .wep-spotlight-footer-helper,
+[data-theme="morTemaDark"] .wep-spotlight-footer-tip,
+[data-theme="morTemaDark"] .wep-spotlight-footer-helper-key,
+[data-theme="morTemaDark"] .wep-spotlight-group-title,
+[data-theme="morTemaDark"] .wep-spotlight-item-title,
+[data-theme="morTemaDark"] .wep-spotlight-no-results-icon,
+[data-theme="morTemaDark"] .wep-spotlight-no-results-heading {
+    color: #cccccc; /* Dark mode metin rengi */ /* Dark mode daha nötr metin rengi */ /* Dark mode metin rengi */
+}
+
+[data-theme="morTemaDark"] .wep-spotlight-item.wep-spotlight-item-active {
+    background-color: #6b4aa1; /* Dark mode aktif item daha nötr */
+    color: #ffffff; /* Aktif item metin rengi */
+}
+
+[data-theme="morTemaDark"] .wep-spotlight-no-results-message {
+    color: #a065ff; /* Dark mode no results mesaj */
+}
+
 .wep-spotlight {
     @apply relative;
 }

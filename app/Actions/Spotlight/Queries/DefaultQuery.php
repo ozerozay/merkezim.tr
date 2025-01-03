@@ -4,7 +4,6 @@ namespace App\Actions\Spotlight\Queries;
 
 use App\Actions\Spotlight\SpotlightCheckPermission;
 use App\Enum\PermissionType;
-use App\Enum\SettingsType;
 use App\Models\Appointment;
 use App\Models\Kasa;
 use App\Models\Talep;
@@ -54,94 +53,87 @@ class DefaultQuery
     {
         return SpotlightQuery::asDefault(function ($query) {
             $pages = collect([SpotlightResult::make()
-                ->setTitle('Anasayfa')
+                ->setTitle('🏠 Anasayfa')
                 ->setGroup('pages')
-                ->setAction('jump_to', ['path' => route('admin.index')])
-                ->setIcon('home')]);
+                ->setAction('jump_to', ['path' => route('admin.index')]),
+            ]);
 
             if (SpotlightCheckPermission::run(PermissionType::page_randevu)) {
                 if (count(auth()->user()->staff_branches) > 1) {
                     $pages->push(SpotlightResult::make()
-                        ->setTitle('Randevu')
+                        ->setTitle('📅 Randevu')
                         ->setGroup('pages')
                         ->setTokens(['page_appointment' => new Appointment])
-                        ->setIcon('calendar-days'), );
+                    );
                 }
             }
 
             if (SpotlightCheckPermission::run(PermissionType::page_approve)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Onay')
+                    ->setTitle('✔️ Onay')
                     ->setGroup('pages')
                     ->setTokens(['kasa' => new Kasa])
-                    ->setIcon('check-circle')->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'modals.approve.approve-modal'],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'modals.approve.approve-modal'],
+                    ])
+                );
             }
 
             if (SpotlightCheckPermission::run(PermissionType::page_kasa)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Kasa')
+                    ->setTitle('💵 Kasa')
                     ->setGroup('pages')
                     ->setTokens(['kasa' => new Kasa])
-                    ->setIcon('banknotes'), );
+                );
             }
 
             if (SpotlightCheckPermission::run(PermissionType::page_agenda)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Ajanda')
+                    ->setTitle('📆 Ajanda')
                     ->setSubtitle('')
                     ->setGroup('pages')
                     ->setAction('jump_to', ['path' => route('admin.agenda')])
-                    ->setIcon('calendar'), );
+                );
             }
 
             if (SpotlightCheckPermission::run(PermissionType::page_talep)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Talep')
+                    ->setTitle('👍 Talep')
                     ->setGroup('pages')
                     ->setTokens(['page_talep' => new Talep])
-                    ->setIcon('hand-thumb-up'), );
+                );
             }
 
             if (SpotlightCheckPermission::run(PermissionType::page_reports)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Raporlar')
+                    ->setTitle('📊 Raporlar')
                     ->setGroup('pages')
                     ->setTokens(['reports' => new User])
-                    ->setIcon('chart-bar'), );
+                );
             }
 
             if (SpotlightCheckPermission::run(PermissionType::page_statistics)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('İstatistikler')
+                    ->setTitle('📈 İstatistikler')
                     ->setGroup('pages')
                     ->setTokens(['statistics' => new User])
-                    ->setIcon('chart-bar'), );
+                );
             }
 
             if (SpotlightCheckPermission::run(PermissionType::admin_settings)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Ayarlar')
+                    ->setTitle('⚙️ Ayarlar')
                     ->setGroup('pages')
                     ->setTokens(['settings' => new User])
-                    ->setIcon('cog-6-tooth'));
+                );
             }
 
-            /*if (SpotlightCheckPermission::run(PermissionType::page_statistics)) {
-                $pages->push(SpotlightResult::make()
-                    ->setTitle('İstatistikler')
-                    ->setGroup('pages')
-                    ->setTokens(['kasa' => new Kasa])
-                    ->setIcon('chart-pie'), );
-            }*/
-
             $pages->push(SpotlightResult::make()
-                ->setTitle('Çıkış')
+                ->setTitle('🔓 Çıkış')
                 ->setGroup('profile')
                 ->setAction('jump_to', ['path' => route('logout')])
-                ->setIcon('lock-open'), );
+            );
 
             $users = User::query()
                 ->where('name', 'like', "%{$query}%")
@@ -155,57 +147,31 @@ class DefaultQuery
 
             foreach ($users as $user) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle($user->name.' - '.$user->client_branch->name)
+                    ->setTitle('👤 '.$user->name.' - '.$user->client_branch->name)
                     ->setGroup('clients')
-                    //->setAction('jump_to', ['path' => route('admin.client.profil.index', $user->id)])
                     ->setTokens(['client' => $user])
-                    ->setIcon('user-circle'));
+                );
             }
 
             if (SpotlightCheckPermission::run(PermissionType::action_client_create)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Danışan Oluştur')
+                    ->setTitle('➕ Danışan Oluştur')
                     ->setGroup('actions')
-                    ->setIcon('plus-circle')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'actions.create-client'],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'actions.create-client'],
+                    ])
+                );
             }
 
-            /*if (SpotlightCheckPermission::run(PermissionType::page_finger)) {
-                $pages->push(SpotlightResult::make()
-                    ->setTitle('Parmak İzi')
-                    ->setGroup('pages')
-                    //->setTokens(['settings' => new User])
-                    ->setIcon('finger-print'));
-            }*/
-            /*
-                        $general_settings = \App\Actions\Spotlight\Actions\Settings\GetGeneralSettings::run();
-
-                        if ($general_settings->get(SettingsType::website_active->name)) {
-                            if (SpotlightCheckPermission::run(PermissionType::website_settings->name)) {
-                                $pages->push(SpotlightResult::make()
-                                    ->setTitle('Site Ayarları')
-                                    ->setGroup('site_settings')
-                                    ->setTokens(['websitesettings' => new User])
-                                    ->setIcon('cog-6-tooth'));
-                                $pages->push(SpotlightResult::make()
-                                    ->setTitle('Online Mağaza Ayarları')
-                                    ->setGroup('site_settings')
-                                    ->setTokens(['websiteshopsettings' => new User])
-                                    ->setIcon('cog-6-tooth'));
-                            }
-                        }*/
-
             $pages->push(SpotlightResult::make()
-                ->setTitle('Renk Modunu Değiştir')
+                ->setTitle('🎨 Renk Modunu Değiştir')
                 ->setGroup('actions')
-                ->setIcon('plus-circle')
-                ->setAction('dispatch_event',
-                    ['name' => 'mary-toggle-theme',
-                        'data' => ['component' => 'actions.create-client'],
-                    ]));
+                ->setAction('dispatch_event', [
+                    'name' => 'mary-toggle-theme',
+                    'data' => ['component' => 'actions.create-client'],
+                ])
+            );
 
             $pages->push(SpotlightResult::make()
                 ->setTitle('☀️ İstanbul’da bugün 28°C - Keyifli günler!')

@@ -33,17 +33,19 @@ new class extends Component {
 ?>
 <div wire:key="client-mlf-{{ Str::random(10) }}">
     <x-choices-offline wire:model="service_ids" :options="$services" wire:key="client-asd2-{{ Str::random(10) }}"
-        option-label="service.name" :label="$label" icon="o-magnifying-glass" no-result-text="Aktif hizmeti bulunmuyor."
-        searchable>
+                       option-label="service.name" :label="$label" icon="o-magnifying-glass"
+                       no-result-text="Aktif hizmeti bulunmuyor."
+                       compact compact-text="hizmet seçildi"
+    >
         @scope('item', $service)
-            <x-list-item :item="$service" sub-value="service.name">
-                <x-slot:actions>
-                    <x-badge value="Kalan: {{ $service->remaining }} seans" />
-                </x-slot:actions>
-            </x-list-item>
+        <x-list-item :item="$service" sub-value="service.name">
+            <x-slot:actions>
+                <x-badge value="Kalan: {{ $service->remaining }} seans" />
+            </x-slot:actions>
+        </x-list-item>
         @endscope
         @scope('selection', $service)
-            {{ $service->service->duration }} dk - {{ $service->service->name }} ({{ $service->remaining }})
+        {{ $service->service->duration }} dk - {{ $service->service->name }} ({{ $service->remaining }})
         @endscope
     </x-choices-offline>
 </div>

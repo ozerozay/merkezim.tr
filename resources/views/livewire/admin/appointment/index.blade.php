@@ -5,6 +5,10 @@ new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Vol
 
     public array $date_config = [];
 
+    public bool $showOnlyActive = false;
+
+    public bool $showGaps = false;
+
     #[\Livewire\Attributes\Url]
     public ?string $date = null;
 
@@ -158,123 +162,228 @@ new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Vol
 
 ?>
 <div>
-    <x-header title="{{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}" subtitle="{{ $branchName ?? '' }}" separator
-        progress-indicator>
+    <x-header
+        title=" {{ $branchName ?? '' }} - {{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}"
+        separator
+        progress-indicator
+    >
+        <x-slot:middle>
+            <x-datepicker wire:model.live="date" :config="$date_config" />
+        </x-slot:middle>
+
         <x-slot:actions>
-            <x-datepicker wire:model.live="date" :config="$date_config" icon="o-calendar" />
-            <x-dropdown label="Şube" icon="tabler.building-store">
+            <x-dropdown label="🏬 Şube Seç">
                 @foreach (auth()->user()->staff_branch as $branch)
-                    <x-menu-item @click="$wire.filterBranch({{ $branch->id }})" title="{{ $branch->name }}" />
+                    <x-menu-item
+                        @click="$wire.filterBranch({{ $branch->id }})"
+                        title="{{ $branch->name }}"
+                    />
                 @endforeach
                 <x-slot:trigger>
-                    <x-button icon="tabler.building-store" class="btn-outline" label="{{ $branchName ?? 'Şube' }}"
-                        responsive />
+                    <x-button class="btn-outline" label="🏬 {{ $branchName ?? 'Şube' }}" />
                 </x-slot:trigger>
             </x-dropdown>
-            <x-dropdown label="Settings" class="btn-outline">
+
+            <x-dropdown label="⚙️ Ayarlar" class="btn-outline">
                 @foreach (\App\AppointmentStatus::cases() as $status)
                     <x-menu-item @click.stop="">
-                        <x-checkbox wire:model="statutes.{{ $status->name }}" label="{{ $status->label() }}" />
+                        <x-checkbox
+                            wire:model="statutes.{{ $status->name }}"
+                            label="{{ $status->label() }}"
+                        />
                     </x-menu-item>
                 @endforeach
                 <x-menu-item>
-                    <x-button icon="tabler.filter" class="btn-outline btn-sm" label="Filtrele"
-                        wire:click="filterStatus" />
+                    <x-button
+                        class="btn-outline btn-sm"
+                        label="🔍 Filtrele"
+                        wire:click="filterStatus"
+                    />
                 </x-menu-item>
                 <x-slot:trigger>
-                    <x-button icon="tabler.filter" class="btn-outline" label="Filtrele" responsive />
+                    <x-button class="btn-outline" label="🔍 Filtrele" />
                 </x-slot:trigger>
             </x-dropdown>
-            @if (1 == 2)
-                <x-dropdown label="Şube" icon="tabler.building-store">
-                    @foreach ($sortBy as $sortItem)
-                        <x-menu-item title="{{ $sortItem['name'] }}" wire:click="filterSort('{{ $sortItem['key'] }}')"
-                            icon="{{ $sortItem['icon'] }}" />
-                    @endforeach
-                    <x-menu-separator />
-                    <x-menu-item title="Sıfırla" wire:click="filterSort(false)" icon="tabler.filter-off" />
-                    <x-slot:trigger>
-                        <x-button icon="tabler.sort-descending" class="btn-outline" label="Sırala" responsive />
-                    </x-slot:trigger>
-                </x-dropdown>
-            @endif
-            @if (1 == 2)
-                @can('action_client_create_appointment')
-                    <x-button icon="o-plus" link="{{ route('admin.actions.client_create_appointment') }}"
-                        class="btn-primary" label="Randevu Oluştur" responsive />
-                @endcan
-            @endif
         </x-slot:actions>
     </x-header>
+    <div>
+        <div>
+            <div class="flex items-center mb-4 space-x-4">
+                <label class="inline-flex items-center">
+                    <input type="checkbox" class="checkbox checkbox-primary" wire:model.live="showOnlyActive">
+                    <span class="ml-2 text-sm font-semibold text-base-content">Sadece Aktifleri Göster</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" class="checkbox checkbox-secondary" wire:model.live="showGaps">
+                    <span class="ml-2 text-sm font-semibold text-base-content">Boşlukları Göster</span>
+                </label>
+            </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        @foreach ($appointments_group as $room)
-            <x-card separator title="{{ $room->name }}">
-                <x:slot:menu>
-                    Kalan:
-                    {{ $room->appointments->whereIn('status', \App\AppointmentStatus::active()->all())->count() }} -
-                    {{ $room->appointments->whereIn('status', \App\AppointmentStatus::active()->all())->sum('duration') }}
-                    DK
-                </x:slot:menu>
-                @if ($room->appointments->isEmpty())
-                    <p class="text-center">Randevu bulunmuyor.</p>
-                @endif
-                @php
-                    $active_appointments = $room->appointments
-                        ->whereIn('status', \App\AppointmentStatus::active()->all())
-                        ->all();
-                    $other_appointments = $room->appointments
-                        ->whereNotIn('status', \App\AppointmentStatus::active()->all())
-                        ->all();
-                @endphp
-                @foreach ($active_appointments as $appointment)
-                    <x-list-item :item="$appointment" class="cursor-pointer"
-                        wire:click="$dispatch('slide-over.open', {component: 'modals.appointment.appointment-modal', arguments: {'appointment': {{ $appointment->id }}}})">
-                        <x-slot:avatar>
-                            <x-badge value="{{ $appointment->date_start->format('H:i') }}"
-                                class="badge-{{ $appointment->status->color() }}" />
-                            <br />
-                            <x-badge value="{{ $appointment->date_end->format('H:i') }}"
-                                class="badge-{{ $appointment->status->color() }}" />
-                            <br />
-                        </x-slot:avatar>
-                        <x-slot:value>
-                            {{ $appointment->duration }} DK - {{ $appointment->client->name }}
-                        </x-slot:value>
-                        <x-slot:sub-value>
-                            {{ $appointment->serviceNames }}
-                        </x-slot:sub-value>
-                        <x-slot:actions>
-                            <x-badge value="{{ $appointment->status->label() }}"
-                                class="badge-{{ $appointment->status->color() }}" />
-                        </x-slot:actions>
-                    </x-list-item>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                @foreach ($appointments_group as $room)
+                    <div class="col-span-1">
+                        {{-- Oda Adı ve Kalanlar (Başlık Kartı) --}}
+                        <div class="flex items-center justify-between bg-base-100 shadow-md p-3 rounded mb-4">
+                            <span class="text-lg font-bold text-primary">💆‍♀️ {{ $room->name }}</span>
+                            <p class="text-sm text-secondary font-semibold">
+                                ⏳ {{ $room->appointments->whereIn('status', \App\AppointmentStatus::active()->all())->count() }}
+                                Kalan -
+                                {{ $room->appointments->whereIn('status', \App\AppointmentStatus::active()->all())->sum('duration') }}
+                                DK
+                            </p>
+                        </div>
+
+                        {{-- Kart (Randevuları İçeriyor) --}}
+                        <div class="flex flex-col space-y-4">
+                            @php
+                                $filteredAppointments = $showOnlyActive
+                                    ? $room->appointments->whereIn('status', \App\AppointmentStatus::active()->all())->values()
+                                    : $room->appointments
+                                        ->whereIn('status', array_merge(\App\AppointmentStatus::active()->all(), [
+                                            \App\AppointmentStatus::finish,
+                                        ]))
+                                        ->sortBy('date_start')
+                                        ->values();
+
+                                $cancelled = $room->appointments
+                                    ->where('status', \App\AppointmentStatus::cancel)
+                                    ->sortBy('date_start')
+                                    ->values();
+                            @endphp
+
+                            @if ($filteredAppointments->isEmpty())
+                                <p class="text-center text-neutral-content">
+                                    📭 Randevu bulunmuyor.
+                                </p>
+                            @else
+                                {{-- Filtrelenmiş Randevular --}}
+                                @foreach ($filteredAppointments as $index => $appointment)
+                                    @php
+                                        $isCompleted = ($appointment->status === \App\AppointmentStatus::finish);
+                                    @endphp
+
+                                    {{-- Biten Randevu --}}
+                                    @if ($isCompleted)
+                                        <div
+                                            class="flex justify-between items-center text-sm font-semibold text-base-content border-l-4 border-success p-2 rounded cursor-pointer"
+                                            wire:click="$dispatch('slide-over.open', {component: 'modals.appointment.appointment-modal', arguments: {'appointment': {{ $appointment->id }}}})">
+                                            <div>
+                                                ⏰ {{ $appointment->date_start->format('H:i') }}
+                                                - {{ $appointment->date_end->format('H:i') }}
+                                                • {{ $appointment->client->name }}
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <span>{{ $appointment->finish_user->name }}</span>
+                                                <span
+                                                    class="badge badge-{{ $appointment->status->color() }}">{{ $appointment->status->label() }}</span>
+                                            </div>
+                                        </div>
+                                    @else
+                                        {{-- Aktif Randevu (Kart) --}}
+                                        <div
+                                            class="border-l-4 border-primary p-5 bg-base-100 rounded-lg shadow-lg cursor-pointer"
+                                            wire:click="$dispatch('slide-over.open', {component: 'modals.appointment.appointment-modal', arguments: {'appointment': {{ $appointment->id }}}})"
+                                        >
+                                            <!-- Başlık -->
+                                            <div class="flex justify-between items-center mb-4">
+                                                <div>
+                                                    <p class="text-lg font-bold text-primary">
+                                                        ⏰ {{ $appointment->date_start->format('H:i') }}
+                                                        - {{ $appointment->date_end->format('H:i') }}</p>
+                                                </div>
+                                                <span class="badge badge-{{ $appointment->status->color() }} text-sm">
+            {{ $appointment->status->label() }}
+        </span>
+                                            </div>
+
+                                            <!-- Müşteri ve Hizmet Bilgisi -->
+                                            <div class="mb-4">
+                                                <p class="text-base font-semibold text-base-content">
+                                                    👤 {{ $appointment->client->name }}</p>
+                                                <p class="text-sm text-neutral-content">✨
+                                                    Hizmet: {{ $appointment->serviceNames }}</p>
+                                            </div>
+
+                                            <!-- Süre, Gecikmiş Ödeme, ve Aktif Teklif -->
+                                            <div class="flex text-sm text-center">
+                                                <div class="text-white py-2 px-4">
+                                                    <span
+                                                        class="block">🕒 Süre: {{ $appointment->duration }} DK</span>
+                                                </div>
+                                                <div class="text-white py-2 px-4">
+                                                    <span
+                                                        class="block">💰 Gecikmiş: {{ $appointment->hasDelayedPayment ? 'Evet' : 'Hayır' }}</span>
+                                                </div>
+                                                <div class="text-white py-2 px-4">
+                                                    <span
+                                                        class="block">📜 Teklif: {{ $appointment->hasActiveOffer ? 'Evet' : 'Hayır' }}</span>
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+
+                                    @endif
+
+                                    {{-- GAP (Randevular Arasında) --}}
+                                    @if ($showGaps)
+                                        @php
+                                            $nextApt = $filteredAppointments[$index + 1] ?? null;
+                                            $gapMinutes = $nextApt
+                                                ? $appointment->date_end->diffInMinutes($nextApt->date_start)
+                                                : 0;
+                                        @endphp
+                                        @if ($gapMinutes > 0)
+                                            @php
+                                                $gap_hours = intdiv($gapMinutes, 60);
+                                                $gap_mins  = $gapMinutes % 60;
+                                                $gap_display = $gap_hours > 0
+                                                    ? "{$gap_hours} Saat {$gap_mins} DK"
+                                                    : "{$gapMinutes} DK";
+                                            @endphp
+                                            <div
+                                                class="flex justify-between items-center text-sm font-semibold text-base-content border-l-4 border-warning p-2 rounded cursor-pointer">
+                                                <div>
+                                                    🕒 Boşluk: {{ $gap_display }}
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endif
+                                @endforeach
+                            @endif
+
+                            {{-- İptal Randevular --}}
+                            @if (!$showOnlyActive && $cancelled->count())
+                                <x-hr class="my-4" />
+                                @foreach ($cancelled as $appointment)
+                                    <div class="border-l-4 border-error p-3 bg-base-100 rounded-md mb-2 cursor-pointer"
+                                         wire:click="$dispatch('slide-over.open', {component: 'modals.appointment.appointment-modal', arguments: {'appointment': {{ $appointment->id }}}})">
+                                        <div class="flex justify-between items-center">
+                                            <div class="text-sm font-semibold text-base-content flex space-x-2">
+                                        <span>
+                                            ⏰
+                                            {{ $appointment->date_start->format('H:i') }}
+                                            -
+                                            {{ $appointment->date_end->format('H:i') }}
+                                        </span>
+                                                <span>
+                                            • {{ $appointment->client->name }}
+                                        </span>
+                                            </div>
+                                            <span
+                                                class="badge badge-{{ $appointment->status->color() }} badge-sm text-xs font-semibold"
+                                            >
+                                        {{ $appointment->status->label() }}
+                                    </span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+                        </div>
+                    </div>
                 @endforeach
-                <x-hr />
-                @foreach ($other_appointments as $appointment)
-                    <x-list-item :item="$appointment" class="cursor-pointer"
-                        wire:click="$dispatch('slide-over.open', {component: 'modals.appointment.appointment-modal', arguments: {'appointment': {{ $appointment->id }}}})">
-                        <x-slot:avatar>
-                            <x-badge value="{{ $appointment->date_start->format('H:i') }}"
-                                class="badge-{{ $appointment->status->color() }}" />
-                            <br />
-                            <x-badge value="{{ $appointment->date_end->format('H:i') }}"
-                                class="badge-{{ $appointment->status->color() }}" />
-                            <br />
-                        </x-slot:avatar>
-                        <x-slot:value>
-                            {{ $appointment->duration }} DK - {{ $appointment->client->name }}
-                        </x-slot:value>
-                        <x-slot:sub-value>
-                            {{ $appointment->serviceNames }}
-                        </x-slot:sub-value>
-                        <x-slot:actions>
-                            <x-badge value="{{ $appointment->status->label() }}"
-                                class="badge-{{ $appointment->status->color() }}" />
-                        </x-slot:actions>
-                    </x-list-item>
-                @endforeach
-            </x-card>
-        @endforeach
+            </div>
+        </div>
     </div>
 </div>

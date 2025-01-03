@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\OfferStatus;
 use App\SaleStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -460,6 +461,23 @@ class User extends Authenticatable
             ->whereDate('date', '<=', date('Y-m-d'))
             ->where('status', SaleStatus::success)
             ->sum('remaining');
+    }
+
+    public function hasDelayedPayment(): bool
+    {
+        return $this->clientTaksits()
+            ->whereDate('date', '<=', date('Y-m-d'))
+            ->where('status', SaleStatus::success)
+            ->where('remaining', '>', 0)
+            ->exists();
+    }
+
+    public function hasActiveOffer(): bool
+    {
+        return $this->offers()
+            ->where('status', OfferStatus::waiting)
+            ->where('end_date', '>=', date('Y-m-d'))
+            ->exists();
     }
 
     public function canCreateChats(): bool

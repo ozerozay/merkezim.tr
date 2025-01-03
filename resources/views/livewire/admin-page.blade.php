@@ -35,6 +35,22 @@
         </x-slot:actions>
     </x-header>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <x-theme-toggle darkTheme="morTemaDark" lightTheme="morTema" />
+
+    <div class="p-6">
+        <button class="btn btn-primary">Mor Tema Butonu</button>
+        <div class="card bg-neutral text-neutral-content mt-4">
+            <div class="card-body">
+                <h2 class="card-title">Kart Başlığı</h2>
+                <p>Bu kartın içeriği mor tema ile uyumlu olmalı.</p>
+            </div>
+        </div>
+        <div class="progress w-full bg-info mt-4">
+            <div class="progress-bar bg-success" style="width: 50%;"></div>
+        </div>
+    </div>
+
+    <livewire:setup-wizard />
 
 
     <script>

@@ -72,8 +72,8 @@ enum AppointmentStatus: string
     public function color(): string
     {
         return match ($this) {
-            self::waiting => 'badge badge-warning',          // Bekliyor
-            self::awaiting_approve => 'badge badge-warning ',        // Onay Bekliyor
+            self::waiting => 'badge badge-accent',          // Bekliyor
+            self::awaiting_approve => 'badge badge-accent',        // Onay Bekliyor
             self::confirmed => 'badge badge-success',          // Onaylı
             self::rejected => 'badge badge-error',                 // Onaylanmadı
             self::cancel => 'badge badge-error',               // İptal
@@ -83,6 +83,7 @@ enum AppointmentStatus: string
             self::finish => 'badge badge-success',               // Bitti
             self::teyitli => 'badge badge-success',               // Bitti
         };
+
         /*
          * [
     self::waiting => 'badge badge-warning text-yellow-500 bg-yellow-100',          // Bekliyor

@@ -30,259 +30,249 @@ class ClientQuery
 
             $pages->push(
                 SpotlightResult::make()
-                    ->setTitle('Geri Dön')
+                    ->setTitle('⬅️ Geri Dön')
                     ->setGroup('backk')
-                    ->setIcon('arrow-left')
-                    ->setAction('return_action'),
+                    ->setAction('return_action')
             );
 
             if (SpotlightCheckPermission::run(PermissionType::client_profil)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Anasayfa')
+                    ->setTitle('🏠 Anasayfa')
                     ->setGroup('client_actions_pages')
                     ->setSubtitle('Danışanın anasayfasını görüntüle')
                     ->setAction('jump_to', ['path' => route('admin.client.profil.index', ['user' => $clientToken->getParameter('id')])])
-                    ->setIcon('arrow-right'));
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::client_profil_sale)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Satış')
+                    ->setTitle('🛒 Satış')
                     ->setGroup('client_actions_pages')
                     ->setSubtitle('Satışları görüntüle')
-                    //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
                     ->setTokens(['client' => User::find($clientToken->getParameter('id')), 'sale' => new Sale])
-                    ->setIcon('arrow-right'));
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::client_profil_appointment)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Randevu')
+                    ->setTitle('📅 Randevu')
                     ->setGroup('client_actions_pages')
                     ->setSubtitle('Randevuları görüntüle')
-                    //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
                     ->setTokens(['client' => User::find($clientToken->getParameter('id')), 'appointment' => new Appointment])
-                    ->setIcon('arrow-right'));
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::client_profil_service)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Hizmet')
+                    ->setTitle('💆 Hizmet')
                     ->setGroup('client_actions_pages')
                     ->setSubtitle('Hizmetlerini görüntüle')
-                    //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
                     ->setTokens(['client' => User::find($clientToken->getParameter('id')), 'clientService' => new ClientService])
-                    ->setIcon('arrow-right'));
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::client_profil_taksit)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Taksit')
+                    ->setTitle('💳 Taksit')
                     ->setGroup('client_actions_pages')
                     ->setSubtitle('Taksitleri görüntüle')
-                    //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
                     ->setTokens(['client' => User::find($clientToken->getParameter('id')), 'taksit' => new ClientTaksit])
-                    ->setIcon('arrow-right'));
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::client_profil_product)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Ürün Satışları')
+                    ->setTitle('📦 Ürün Satışları')
                     ->setGroup('client_actions_pages')
                     ->setSubtitle('Ürün satışlarını görüntüle')
-                    //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
                     ->setTokens(['client' => User::find($clientToken->getParameter('id')), 'product' => new SaleProduct])
-                    ->setIcon('arrow-right'));
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::client_profil_coupon)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Kupon')
+                    ->setTitle('🎟️ Kupon')
                     ->setGroup('client_actions_pages')
                     ->setSubtitle('İndirim kuponlarını görüntüle')
-                    //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
                     ->setTokens(['client' => User::find($clientToken->getParameter('id')), 'coupon' => new Coupon])
-                    ->setIcon('arrow-right'));
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::client_profil_adisyon)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Adisyon')
+                    ->setTitle('🧾 Adisyon')
                     ->setGroup('client_actions_pages')
                     ->setSubtitle('Adisyonları görüntüle')
-                    //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
                     ->setTokens(['client' => User::find($clientToken->getParameter('id')), 'adisyon' => new Adisyon])
-                    ->setIcon('arrow-right'));
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::client_profil_offer)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Teklif')
+                    ->setTitle('📜 Teklif')
                     ->setGroup('client_actions_pages')
                     ->setSubtitle('Teklifleri görüntüle')
-                    //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
                     ->setTokens(['client' => User::find($clientToken->getParameter('id')), 'offer' => new Offer])
-                    ->setIcon('arrow-right'));
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::client_profil_note)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Notlar')
+                    ->setTitle('📝 Notlar')
                     ->setGroup('client_actions_pages')
                     ->setSubtitle('Notları görüntüle')
-                    //->setAction('jump_to', ['path' => route('admin.client.profil.index', 1)])
                     ->setTokens(['client' => User::find($clientToken->getParameter('id')), 'note' => new Note])
-                    ->setIcon('arrow-right'));
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::action_edit_user)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Bilgilerini Düzenle')
+                    ->setTitle('✏️ Bilgilerini Düzenle')
                     ->setGroup('client_actions_new')
-                    ->setIcon('pencil')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'actions.edit-user',
-                                'arguments' => [
-                                    'client' => $clientToken->getParameter('id')]],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'actions.edit-user',
+                            'arguments' => [
+                                'client' => $clientToken->getParameter('id')]],
+                    ])
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::action_client_tahsilat)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Tahsilat')
+                    ->setTitle('💰 Tahsilat')
                     ->setGroup('client_actions_new')
-                    ->setIcon('plus-circle')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'actions.create-tahsilat',
-                                'arguments' => [
-                                    'client' => $clientToken->getParameter('id')]],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'actions.create-tahsilat',
+                            'arguments' => [
+                                'client' => $clientToken->getParameter('id')]],
+                    ])
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::action_client_sale)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Satış Yap')
+                    ->setTitle('🛒 Satış Yap')
                     ->setGroup('client_actions_new')
-                    ->setIcon('plus-circle')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'actions.create-sale',
-                                'arguments' => [
-                                    'client' => $clientToken->getParameter('id')]],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'actions.create-sale',
+                            'arguments' => [
+                                'client' => $clientToken->getParameter('id')]],
+                    ])
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::action_client_add_note)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Not Al')
+                    ->setTitle('📝 Not Al')
                     ->setGroup('client_actions_new')
-                    ->setIcon('plus-circle')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'actions.create-client-note',
-                                'arguments' => [
-                                    'client' => $clientToken->getParameter('id')]],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'actions.create-client-note',
+                            'arguments' => [
+                                'client' => $clientToken->getParameter('id')]],
+                    ])
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::action_client_add_label)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Etiket Belirle')
+                    ->setTitle('🏷️ Etiket Belirle')
                     ->setGroup('client_actions_new')
-                    ->setIcon('tag')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'actions.create-client-label',
-                                'arguments' => [
-                                    'client' => $clientToken->getParameter('id')]],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'actions.create-client-label',
+                            'arguments' => [
+                                'client' => $clientToken->getParameter('id')]],
+                    ])
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::action_client_create_service)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Hizmet Yükle')
-                    ->setSubtitle('asdasd')
+                    ->setTitle('💇 Hizmet Yükle')
+                    ->setSubtitle('Hizmet yüklemek için tıklayın')
                     ->setTypeahead(true)
                     ->setGroup('client_actions_new')
-                    ->setIcon('plus-circle')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'actions.create-client-service',
-                                'arguments' => [
-                                    'client' => $clientToken->getParameter('id')]],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'actions.create-client-service',
+                            'arguments' => [
+                                'client' => $clientToken->getParameter('id')]],
+                    ])
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::action_client_use_service)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Hizmet Kullandır')
+                    ->setTitle('💇 Hizmet Kullandır')
                     ->setGroup('client_actions_new')
-                    ->setIcon('minus-circle')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'actions.use-client-service',
-                                'arguments' => [
-                                    'client' => $clientToken->getParameter('id')]],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'actions.use-client-service',
+                            'arguments' => [
+                                'client' => $clientToken->getParameter('id')]],
+                    ])
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::action_client_create_offer)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Teklif Oluştur')
+                    ->setTitle('📜 Teklif Oluştur')
                     ->setGroup('client_actions_new')
-                    ->setIcon('plus-circle')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'actions.create-offer',
-                                'arguments' => [
-                                    'client' => $clientToken->getParameter('id')]],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'actions.create-offer',
+                            'arguments' => [
+                                'client' => $clientToken->getParameter('id')]],
+                    ])
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::action_adisyon_create)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Adisyon Oluştur')
+                    ->setTitle('🧾 Adisyon Oluştur')
                     ->setGroup('client_actions_new')
-                    ->setIcon('plus-circle')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'actions.create-adisyon',
-                                'arguments' => [
-                                    'client' => $clientToken->getParameter('id')]],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'actions.create-adisyon',
+                            'arguments' => [
+                                'client' => $clientToken->getParameter('id')]],
+                    ])
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::action_create_coupon)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Kupon Oluştur')
+                    ->setTitle('🎟️ Kupon Oluştur')
                     ->setGroup('client_actions_new')
-                    ->setIcon('receipt-percent')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'actions.create-coupon',
-                                'arguments' => [
-                                    'client' => $clientToken->getParameter('id')]],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'actions.create-coupon',
+                            'arguments' => [
+                                'client' => $clientToken->getParameter('id')]],
+                    ])
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::action_client_create_taksit)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Taksit Oluştur')
+                    ->setTitle('💳 Taksit Oluştur')
                     ->setGroup('client_actions_new')
-                    ->setIcon('plus-circle')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'actions.create-taksit',
-                                'arguments' => [
-                                    'client' => $clientToken->getParameter('id')]],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'actions.create-taksit',
+                            'arguments' => [
+                                'client' => $clientToken->getParameter('id')]],
+                    ])
+                );
             }
             if (SpotlightCheckPermission::run(PermissionType::action_client_product_sale)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('Ürün Sat')
+                    ->setTitle('🛍️ Ürün Sat')
                     ->setGroup('client_actions_new')
-                    ->setIcon('plus-circle')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'actions.create-client-product-sale',
-                                'arguments' => [
-                                    'client' => $clientToken->getParameter('id')]],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'actions.create-client-product-sale',
+                            'arguments' => [
+                                'client' => $clientToken->getParameter('id')]],
+                    ])
+                );
             }
 
             if (SpotlightCheckPermission::run(PermissionType::action_send_sms)) {
                 $pages->push(SpotlightResult::make()
-                    ->setTitle('SMS Gönder')
+                    ->setTitle('📨 SMS Gönder')
                     ->setGroup('client_actions_new')
-                    ->setIcon('plus-circle')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'actions.create-send-sms',
-                                'arguments' => [
-                                    'client' => $clientToken->getParameter('id')]],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'actions.create-send-sms',
+                            'arguments' => [
+                                'client' => $clientToken->getParameter('id')]],
+                    ])
+                );
             }
 
             return collect()->merge($pages->when(! blank($query), function ($collection) use ($query) {

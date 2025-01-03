@@ -29,17 +29,18 @@ class AppBrand extends Component
                 <a href="{{ route('admin.index') }}" wire:navigate>
                     <!-- Hidden when collapsed -->
                     <div {{ $attributes->class(["hidden-when-collapsed"]) }}>
-                       <div class="flex gap-2">
-                            <span class="text-3xl font-bold text-gray-900 dark:text-gray-100 rounded-lg transition-all duration-300">
+                        <div class="flex gap-2">
+                            <span class="text-3xl font-bold text-base-content dark:text-neutral-content bg-base-100 dark:bg-neutral px-4 py-2 rounded-lg transition-all duration-300">
                                 Merkezim
                             </span>
-                       </div>
+                        </div>
                     </div>
                     <!-- Display when collapsed -->
-                    <div class="display-when-collapsed hidden mx-5 mt-4 lg:mb-6 h-[28px]">
-                        <x-icon name="o-home" />
+                    <div class="display-when-collapsed hidden mx-5 mt-4 lg:mb-6 h-[28px] bg-base-100 dark:bg-neutral rounded-full p-2">
+                        <x-icon name="o-home" class="text-base-content dark:text-neutral-content" />
                     </div>
                 </a>
+
             HTML;
     }
 }

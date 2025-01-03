@@ -22,120 +22,131 @@ class SettingsQuery
 
             $results->push(
                 SpotlightResult::make()
-                    ->setTitle('Geri Dön')
+                    ->setTitle('⬅️ Geri Dön')
                     ->setGroup('backk')
-                    ->setIcon('arrow-left')
-                    ->setAction('return_action'),
+                    ->setAction('return_action')
             );
 
             $results->push(SpotlightResult::make()
-                ->setTitle('Site Ayarları')
+                ->setTitle('⚙️ Site Ayarları')
                 ->setGroup('site_settings')
                 ->setTokens(['websitesettings' => new User])
-                ->setIcon('cog-6-tooth'));
+            );
+
             $results->push(SpotlightResult::make()
-                ->setTitle('Online Mağaza Ayarları')
+                ->setTitle('🛒 Online Mağaza Ayarları')
                 ->setGroup('site_settings')
                 ->setTokens(['websiteshopsettings' => new User])
-                ->setIcon('cog-6-tooth'));
+            );
 
             if (SpotlightCheckPermission::run(PermissionType::admin_definations)) {
                 $results->push(SpotlightResult::make()
-                    ->setTitle('Şube')
+                    ->setTitle('🏢 Şube')
                     ->setGroup('definations')
-                    ->setIcon('building-storefront')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'settings.defination.branch.branch-defination'],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'settings.defination.branch.branch-defination'],
+                    ])
+                );
+
                 $results->push(SpotlightResult::make()
-                    ->setTitle('Kasa')
+                    ->setTitle('💵 Kasa')
                     ->setGroup('definations')
-                    ->setIcon('pencil')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'settings.defination.kasa.kasa-defination'],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'settings.defination.kasa.kasa-defination'],
+                    ])
+                );
+
                 $results->push(SpotlightResult::make()
-                    ->setTitle('Hizmet Kategorileri')
+                    ->setTitle('📂 Hizmet Kategorileri')
                     ->setGroup('definations')
-                    ->setIcon('pencil')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'settings.defination.category.category-defination'],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'settings.defination.category.category-defination'],
+                    ])
+                );
+
                 $results->push(SpotlightResult::make()
-                    ->setTitle('Hizmet Odaları')
+                    ->setTitle('🛋️ Hizmet Odaları')
                     ->setGroup('definations')
-                    ->setIcon('pencil')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'settings.defination.room.room-defination'],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'settings.defination.room.room-defination'],
+                    ])
+                );
+
                 $results->push(SpotlightResult::make()
-                    ->setTitle('Hizmetler')
+                    ->setTitle('🔧 Hizmetler')
                     ->setGroup('definations')
-                    ->setIcon('pencil')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'settings.defination.service.service-defination'],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'settings.defination.service.service-defination'],
+                    ])
+                );
+
                 $results->push(SpotlightResult::make()
-                    ->setTitle('Paketler')
+                    ->setTitle('📦 Paketler')
                     ->setGroup('definations')
-                    ->setIcon('pencil')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'settings.defination.package.package-defination'],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'settings.defination.package.package-defination'],
+                    ])
+                );
+
                 $results->push(SpotlightResult::make()
-                    ->setTitle('Danışan Etiketleri')
+                    ->setTitle('🏷️ Danışan Etiketleri')
                     ->setGroup('definations')
-                    ->setIcon('pencil')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'settings.defination.label.label-defination'],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'settings.defination.label.label-defination'],
+                    ])
+                );
+
                 $results->push(SpotlightResult::make()
-                    ->setTitle('Ürünler')
+                    ->setTitle('📦 Ürünler')
                     ->setGroup('definations')
-                    ->setIcon('pencil')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'settings.defination.product.product-defination'],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'settings.defination.product.product-defination'],
+                    ])
+                );
+
                 $results->push(SpotlightResult::make()
-                    ->setTitle('Personel')
+                    ->setTitle('👨‍💼 Personel')
                     ->setGroup('definations')
-                    ->setIcon('pencil')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'settings.defination.staff.staff-defination'],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'settings.defination.staff.staff-defination'],
+                    ])
+                );
+
                 $results->push(SpotlightResult::make()
-                    ->setTitle('Satış Tipi')
+                    ->setTitle('💳 Satış Tipi')
                     ->setGroup('definations')
-                    ->setIcon('pencil')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'settings.defination.sale-type.sale-type-defination'],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'settings.defination.sale-type.sale-type-defination'],
+                    ])
+                );
+
                 $results->push(SpotlightResult::make()
-                    ->setTitle('Masraf')
+                    ->setTitle('🧾 Masraf')
                     ->setGroup('definations')
-                    ->setIcon('pencil')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'settings.defination.masraf.masraf-defination'],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'settings.defination.masraf.masraf-defination'],
+                    ])
+                );
+
                 $results->push(SpotlightResult::make()
-                    ->setTitle('SMS Şablonu')
+                    ->setTitle('✉️ SMS Şablonu')
                     ->setGroup('definations')
-                    ->setIcon('pencil')
-                    ->setAction('dispatch_event',
-                        ['name' => 'slide-over.open',
-                            'data' => ['component' => 'settings.defination.s-m-s-template.s-m-s-template-defination'],
-                        ]));
+                    ->setAction('dispatch_event', [
+                        'name' => 'slide-over.open',
+                        'data' => ['component' => 'settings.defination.s-m-s-template.s-m-s-template-defination'],
+                    ])
+                );
             }
 
             $results = $results->sortBy(function (SpotlightResult $q) {
