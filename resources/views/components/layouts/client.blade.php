@@ -113,7 +113,6 @@
 @livewire('slide-over-pro')
 @livewire('modal-pro')
 <x-toast />
-<x-theme-toggle class="hidden" />
 @endpersist()
 
 

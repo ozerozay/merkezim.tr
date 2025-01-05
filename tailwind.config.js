@@ -33,74 +33,163 @@ export default {
         themes: [
             {
                 morTema: {
-                    primary: "#2563eb", // Güven veren mavi
-                    "primary-focus": "#1d4ed8", // Daha koyu mavi
-                    "primary-content": "#ffffff", // Beyaz yazı
-
-                    secondary: "#6b7280", // Gri tonlar
-                    "secondary-focus": "#4b5563",
+                    primary: "#FF69B4",        // Pembe
+                    "primary-focus": "#FF1493",
+                    "primary-content": "#ffffff",
+                    secondary: "#9370DB",       // Mor
+                    "secondary-focus": "#8A2BE2",
                     "secondary-content": "#ffffff",
-
-                    accent: "#10b981", // Canlı yeşil
-                    "accent-focus": "#059669",
+                    accent: "#FFB6C1",         
+                    "accent-focus": "#FF69B4",
                     "accent-content": "#ffffff",
-
-                    neutral: "#f3f4f6", // Açık gri (nötr)
-                    "neutral-focus": "#e5e7eb",
-                    "neutral-content": "#1f2937", // Koyu metin
-
-                    "base-100": "#ffffff", // Beyaz taban
-                    "base-200": "#f3f4f6", // Daha açık gri taban
-                    "base-300": "#e5e7eb", // Hafif gri
-                    "base-content": "#111827", // Koyu metin rengi
-
-                    info: "#2563eb", // Mavi
-                    "info-content": "#ffffff",
-
-                    success: "#10b981", // Yeşil
-                    "success-content": "#ffffff",
-
-                    warning: "#f59e0b", // Sarı
-                    "warning-content": "#111827", // Koyu metin
-
-                    error: "#ef4444", // Kırmızı
-                    "error-content": "#ffffff"
+                    "base-100": "#ffffff",     
+                    "base-200": "#faf5ff",     
+                    "base-300": "#f3e8ff"
                 }
             },
             {
-                morTemaDark: {
-                    primary: "#2563eb", // Güven veren mavi
-                    "primary-focus": "#1d4ed8",
+                lavanderTema: {
+                    primary: "#9B7EDE",        // Lavanta
+                    "primary-focus": "#8A6FD3",
                     "primary-content": "#ffffff",
-
-                    secondary: "#6b7280", // Gri tonlar
-                    "secondary-focus": "#4b5563",
+                    secondary: "#E6E6FA",      // Açık Lavanta
+                    "secondary-focus": "#D8BFD8",
+                    "secondary-content": "#2D1B69",
+                    accent: "#DCD0FF",         
+                    "accent-focus": "#9B7EDE",
+                    "accent-content": "#2D1B69",
+                    "base-100": "#ffffff",
+                    "base-200": "#F8F7FF",
+                    "base-300": "#F0EBFF"
+                }
+            },
+            {
+                mintTema: {
+                    primary: "#98FF98",        // Nane Yeşili
+                    "primary-focus": "#90EE90",
+                    "primary-content": "#1F4B1F",
+                    secondary: "#E0FFE0",      // Açık Nane
+                    "secondary-focus": "#98FF98",
+                    "secondary-content": "#1F4B1F",
+                    accent: "#BDFFBD",         
+                    "accent-focus": "#98FF98",
+                    "accent-content": "#1F4B1F",
+                    "base-100": "#ffffff",
+                    "base-200": "#F0FFF0",
+                    "base-300": "#E0FFE0"
+                }
+            },
+            {
+                peachTema: {
+                    primary: "#FFDAB9",        // Şeftali
+                    "primary-focus": "#FFB6A1",
+                    "primary-content": "#4B2B20",
+                    secondary: "#FFE4C4",      // Açık Şeftali
+                    "secondary-focus": "#FFDAB9",
+                    "secondary-content": "#4B2B20",
+                    accent: "#FFE4E1",         
+                    "accent-focus": "#FFDAB9",
+                    "accent-content": "#4B2B20",
+                    "base-100": "#ffffff",
+                    "base-200": "#FFF5EE",
+                    "base-300": "#FFE4E1"
+                }
+            },
+            {
+                skyTema: {
+                    primary: "#87CEEB",        // Gök Mavisi
+                    "primary-focus": "#00BFFF",
+                    "primary-content": "#003366",
+                    secondary: "#B0E2FF",      // Açık Mavi
+                    "secondary-focus": "#87CEEB",
+                    "secondary-content": "#003366",
+                    accent: "#E0FFFF",         
+                    "accent-focus": "#87CEEB",
+                    "accent-content": "#003366",
+                    "base-100": "#ffffff",
+                    "base-200": "#F0FFFF",
+                    "base-300": "#E0FFFF"
+                }
+            },
+            {
+                roseTema: {
+                    primary: "#FFB6C1",        // Gül Pembesi
+                    "primary-focus": "#FF69B4",
+                    "primary-content": "#4B0082",
+                    secondary: "#FFC0CB",      // Açık Pembe
+                    "secondary-focus": "#FFB6C1",
+                    "secondary-content": "#4B0082",
+                    accent: "#FFE4E1",         
+                    "accent-focus": "#FFB6C1",
+                    "accent-content": "#4B0082",
+                    "base-100": "#ffffff",
+                    "base-200": "#FFF0F5",
+                    "base-300": "#FFE4E1"
+                }
+            },
+            {
+                sunsetTema: {
+                    primary: "#FFA07A",        // Turuncu
+                    "primary-focus": "#FF7F50",
+                    "primary-content": "#ffffff",
+                    secondary: "#FFB6C1",      // Pembe
+                    "secondary-focus": "#FFA07A",
+                    "secondary-content": "#4B0082",
+                    accent: "#FFE4E1",         
+                    "accent-focus": "#FFA07A",
+                    "accent-content": "#4B0082",
+                    "base-100": "#ffffff",
+                    "base-200": "#FFF5EE",
+                    "base-300": "#FFE4E1"
+                }
+            },
+            // Koyu Temalar
+            {
+                morTemaDark: {
+                    primary: "#FF69B4",
+                    "primary-focus": "#FF1493",
+                    "primary-content": "#ffffff",
+                    secondary: "#9370DB",
+                    "secondary-focus": "#8A2BE2",
                     "secondary-content": "#ffffff",
-
-                    accent: "#10b981", // Canlı yeşil
-                    "accent-focus": "#059669",
+                    accent: "#FFB6C1",
+                    "accent-focus": "#FF69B4",
                     "accent-content": "#ffffff",
-
-                    neutral: "#1f2937", // Koyu gri (nötr arka plan)
-                    "neutral-focus": "#111827",
-                    "neutral-content": "#e5e7eb", // Açık metin rengi
-
-                    "base-100": "#111827", // Siyah-gri taban
-                    "base-200": "#1f2937", // Koyu gri
-                    "base-300": "#374151", // Daha koyu gri
-                    "base-content": "#e5e7eb", // Açık metin rengi
-
-                    info: "#3b82f6", // Daha açık mavi
-                    "info-content": "#ffffff",
-
-                    success: "#22c55e", // Parlak yeşil
-                    "success-content": "#ffffff",
-
-                    warning: "#f59e0b", // Sarı
-                    "warning-content": "#e5e7eb",
-
-                    error: "#dc2626", // Kırmızı
-                    "error-content": "#ffffff"
+                    "base-100": "#0f172a",
+                    "base-200": "#1e1b4b",
+                    "base-300": "#312e81"
+                }
+            },
+            {
+                lavanderTemaDark: {
+                    primary: "#9B7EDE",
+                    "primary-focus": "#8A6FD3",
+                    "primary-content": "#ffffff",
+                    secondary: "#E6E6FA",
+                    "secondary-focus": "#D8BFD8",
+                    "secondary-content": "#ffffff",
+                    accent: "#DCD0FF",
+                    "accent-focus": "#9B7EDE",
+                    "accent-content": "#ffffff",
+                    "base-100": "#1a1625",
+                    "base-200": "#2d1b69",
+                    "base-300": "#3d2a80"
+                }
+            },
+            {
+                mintTemaDark: {
+                    primary: "#98FF98",
+                    "primary-focus": "#90EE90",
+                    "primary-content": "#1F4B1F",
+                    secondary: "#E0FFE0",
+                    "secondary-focus": "#98FF98",
+                    "secondary-content": "#1F4B1F",
+                    accent: "#BDFFBD",
+                    "accent-focus": "#98FF98",
+                    "accent-content": "#1F4B1F",
+                    "base-100": "#1a2e1a",
+                    "base-200": "#1F4B1F",
+                    "base-300": "#2d692d"
                 }
             }
         ]

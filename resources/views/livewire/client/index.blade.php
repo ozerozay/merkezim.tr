@@ -12,93 +12,180 @@ new #[\Livewire\Attributes\Layout('components.layouts.client')] class extends \L
         }
     }
 
+    public function setTheme($theme)
+    {
+        $this->dispatch('theme-changed', theme: $theme);
+    }
+
 };
 
 ?>
-<div class="container mx-auto p-4 space-y-6">
+<div class="container mx-auto p-1 space-y-6">
+    <!-- Header Actions -->
+    <div class="flex justify-end items-center gap-4">
+        <!-- Dil Seçici -->
+        <div class="dropdown dropdown-end">
+            <label tabindex="0" class="btn btn-ghost gap-2">
+                <span>{{ app()->getLocale() === 'tr' ? '🇹🇷' : '🇬🇧' }}</span>
+                <span class="hidden md:inline-block">{{ app()->getLocale() === 'tr' ? 'Türkçe' : 'English' }}</span>
+                <span class="text-xs">🔽</span>
+            </label>
+            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-lg bg-base-200 rounded-box w-40">
+                <li>
+                    <a href="{{ url(request()->path()) }}?lang=tr" class="flex items-center gap-2 {{ app()->getLocale() === 'tr' ? 'active' : '' }}">
+                        <span class="text-xl">🇹🇷</span>
+                        <span>Türkçe</span>
+                        {{ app()->getLocale() === 'tr' ? '✅' : '' }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url(request()->path()) }}?lang=en" class="flex items-center gap-2 {{ app()->getLocale() === 'en' ? 'active' : '' }}">
+                        <span class="text-xl">🇬🇧</span>
+                        <span>English</span>
+                        {{ app()->getLocale() === 'en' ? '✅' : '' }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Dark/Light Mode Toggle -->
+        <button class="btn btn-ghost btn-circle" onclick="toggleDarkMode()">
+            <span class="light-mode-icon text-xl">☀️</span>
+            <span class="dark-mode-icon hidden text-xl">🌙</span>
+        </button>
+
+        <!-- Tema Seçici -->
+        <div class="dropdown dropdown-end">
+            <label tabindex="0" class="btn btn-ghost gap-2">
+                <span class="text-xl">🎨</span>
+                <span>Tema</span>
+                <span class="text-xs">🔽</span>
+            </label>
+            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-lg bg-base-200 rounded-box w-52">
+                <li><button wire:click="setTheme('morTema')">Mor Tema</button></li>
+                <li><button wire:click="setTheme('lavanderTema')">Lavanta</button></li>
+                <li><button wire:click="setTheme('mintTema')">Nane</button></li>
+                <li><button wire:click="setTheme('peachTema')">Şeftali</button></li>
+                <li><button wire:click="setTheme('skyTema')">Gökyüzü</button></li>
+                <li><button wire:click="setTheme('roseTema')">Gül</button></li>
+                <li><button wire:click="setTheme('sunsetTema')">Günbatımı</button></li>
+                <li><button wire:click="setTheme('morTemaDark')">Mor (Koyu)</button></li>
+                <li><button wire:click="setTheme('lavanderTemaDark')">Lavanta (Koyu)</button></li>
+                <li><button wire:click="setTheme('mintTemaDark')">Nane (Koyu)</button></li>
+            </ul>
+        </div>
+
+        <!-- Client Menu -->
+        <div class="dropdown dropdown-end">
+            <!-- ... mevcut client menu kodu ... -->
+        </div>
+    </div>
+
     <!-- Hero Section -->
-    <div class="bg-base-100 rounded-2xl p-6 md:p-8 shadow-sm border border-base-200">
-        <div class="flex flex-col md:flex-row items-center gap-6">
-            <div class="flex-1 space-y-4">
-                <h1 class="text-3xl md:text-4xl font-bold text-base-content">
-                    Hoş Geldiniz 👋
-                </h1>
-                <p class="text-base-content/70 text-lg">
-                    7/24 tüm işlemlerinizi güvenle gerçekleştirin.
-                </p>
-                <div class="flex gap-3">
-                    <x-button label="Hemen Başla" class="btn-primary" icon="tabler.arrow-right"/>
-                    <x-button label="Daha Fazla" class="btn-ghost" icon="tabler.info-circle"/>
+    <div class="bg-base-100/95 backdrop-blur-sm rounded-2xl p-4 md:p-8 shadow-lg border border-base-200">
+        <div class="flex flex-col md:flex-row items-center gap-8">
+            <div class="flex-1 space-y-6">
+                <div class="space-y-2">
+                    <h1 class="text-4xl md:text-5xl font-bold text-base-content">
+                        Marge <span class="text-primary">Güzellik</span> ✨
+                    </h1>
+                    <p class="text-base-content/70 text-lg">
+                        Profesyonel hizmetlerimizle kendinizi özel hissedin. 7/24 online randevu ve özel fırsatlar.
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap gap-4">
+                    <button class="btn btn-primary btn-lg gap-2">
+                        <span>Rezervasyon Yap</span>
+                        <span class="text-xl">📅</span>
+                    </button>
+                </div>
+
+                <!-- İstatistikler -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4">
+                    <div class="text-center p-4 bg-base-200/50 rounded-xl">
+                        <div class="text-2xl font-bold text-primary">5000+</div>
+                        <div class="text-sm text-base-content/70">Mutlu Müşteri</div>
+                    </div>
+                    <div class="text-center p-4 bg-base-200/50 rounded-xl">
+                        <div class="text-2xl font-bold text-primary">15+</div>
+                        <div class="text-sm text-base-content/70">Uzman Kadro</div>
+                    </div>
+                    <div class="text-center p-4 bg-base-200/50 rounded-xl hidden sm:block">
+                        <div class="text-2xl font-bold text-primary">12+</div>
+                        <div class="text-sm text-base-content/70">Yıllık Deneyim</div>
+                    </div>
                 </div>
             </div>
-            <div class="w-full md:w-1/3">
-                <img src="{{ asset('landing2.svg') }}" alt="Hero" class="w-full">
+
+            <div class="w-full md:w-2/5">
+                <img src="{{ asset('landing2.svg') }}" alt="Hero" class="w-full drop-shadow-xl">
             </div>
         </div>
     </div>
 
     <!-- Hızlı İşlemler -->
     <div class="space-y-4">
-        <h2 class="text-xl font-semibold text-base-content flex items-center gap-2">
-            <i class="text-primary">⚡️</i> Hızlı İşlemler
+        <h2 class="text-2xl font-bold text-base-content flex items-center gap-2">
+            <span class="text-primary">⚡️</span> Hızlı İşlemler
         </h2>
 
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <!-- Randevu Al -->
             <a href="/randevu-al" class="group">
-                <div class="bg-base-100 rounded-xl p-6 border border-base-200 hover:border-primary hover:shadow-lg transition-all duration-300">
-                    <div class="flex flex-col items-center text-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div class="bg-base-100/95 backdrop-blur-sm rounded-xl p-6 border border-base-200 hover:border-primary hover:shadow-lg transition-all duration-300">
+                    <div class="flex flex-col items-center text-center gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <span class="text-2xl">📅</span>
                         </div>
                         <div class="space-y-1">
-                            <h3 class="font-medium text-base-content">Randevu Al</h3>
-                            <p class="text-sm text-base-content/70">Hızlıca randevu oluşturun</p>
+                            <h3 class="font-semibold text-base-content">Randevu Al</h3>
+                            <p class="text-sm text-base-content/70">Online Randevu</p>
                         </div>
                     </div>
                 </div>
             </a>
 
-            <!-- Rezervasyon -->
-            <a href="/rezervasyon-talep-et" class="group">
-                <div class="bg-base-100 rounded-xl p-6 border border-base-200 hover:border-primary hover:shadow-lg transition-all duration-300">
-                    <div class="flex flex-col items-center text-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <span class="text-2xl">📝</span>
+            <!-- Paketler -->
+            <a href="/paket-satin-al" class="group">
+                <div class="bg-base-100/95 backdrop-blur-sm rounded-xl p-6 border border-base-200 hover:border-primary hover:shadow-lg transition-all duration-300">
+                    <div class="flex flex-col items-center text-center gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <span class="text-2xl">💝</span>
                         </div>
                         <div class="space-y-1">
-                            <h3 class="font-medium text-base-content">Rezervasyon</h3>
-                            <p class="text-sm text-base-content/70">Özel rezervasyon talebi</p>
+                            <h3 class="font-semibold text-base-content">Paketler</h3>
+                            <p class="text-sm text-base-content/70">Özel Fırsatlar</p>
                         </div>
                     </div>
                 </div>
             </a>
 
-            <!-- Paket Satın Al -->
-            <a href="/paket-satin-al" class="group">
-                <div class="bg-base-100 rounded-xl p-6 border border-base-200 hover:border-primary hover:shadow-lg transition-all duration-300">
-                    <div class="flex flex-col items-center text-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <!-- Hizmetler -->
+            <a href="/hizmetlerimiz" class="group">
+                <div class="bg-base-100/95 backdrop-blur-sm rounded-xl p-6 border border-base-200 hover:border-primary hover:shadow-lg transition-all duration-300">
+                    <div class="flex flex-col items-center text-center gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <span class="text-2xl">💆‍♀️</span>
+                        </div>
+                        <div class="space-y-1">
+                            <h3 class="font-semibold text-base-content">Hizmetler</h3>
+                            <p class="text-sm text-base-content/70">Tüm Hizmetler</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Kampanyalar -->
+            <a href="/kampanyalar" class="group">
+                <div class="bg-base-100/95 backdrop-blur-sm rounded-xl p-6 border border-base-200 hover:border-primary hover:shadow-lg transition-all duration-300">
+                    <div class="flex flex-col items-center text-center gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <span class="text-2xl">🎁</span>
                         </div>
                         <div class="space-y-1">
-                            <h3 class="font-medium text-base-content">Paketler</h3>
-                            <p class="text-sm text-base-content/70">Avantajlı paketler</p>
-                        </div>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Kullandıkça Kazan -->
-            <a href="/kullandikca-kazan" class="group">
-                <div class="bg-base-100 rounded-xl p-6 border border-base-200 hover:border-primary hover:shadow-lg transition-all duration-300">
-                    <div class="flex flex-col items-center text-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <span class="text-2xl">💎</span>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="font-medium text-base-content">Kazan</h3>
-                            <p class="text-sm text-base-content/70">Puan kazanın</p>
+                            <h3 class="font-semibold text-base-content">Kampanyalar</h3>
+                            <p class="text-sm text-base-content/70">Özel İndirimler</p>
                         </div>
                     </div>
                 </div>
@@ -109,8 +196,8 @@ new #[\Livewire\Attributes\Layout('components.layouts.client')] class extends \L
     <!-- Bildirimler -->
     @if(isset($notifications) && count($notifications))
         <div class="space-y-4">
-            <h2 class="text-xl font-semibold text-base-content flex items-center gap-2">
-                <i class="text-primary">🔔</i> Bildirimler
+            <h2 class="text-2xl font-bold text-base-content flex items-center gap-2">
+                <span class="text-primary">🔔</span> Bildirimler
             </h2>
 
             <div class="grid gap-4">
@@ -131,10 +218,10 @@ new #[\Livewire\Attributes\Layout('components.layouts.client')] class extends \L
     <!-- Carousel -->
     @if(isset($slides) && count($slides))
         <div class="space-y-4">
-            <h2 class="text-xl font-semibold text-base-content flex items-center gap-2">
-                <i class="text-primary">✨</i> Öne Çıkanlar
+            <h2 class="text-2xl font-bold text-base-content flex items-center gap-2">
+                <span class="text-primary">✨</span> Öne Çıkanlar
             </h2>
-            <x-carousel :slides="$slides" class="rounded-xl overflow-hidden"/>
+            <x-carousel :slides="$slides" class="rounded-xl overflow-hidden shadow-lg"/>
         </div>
     @endif
 </div>
