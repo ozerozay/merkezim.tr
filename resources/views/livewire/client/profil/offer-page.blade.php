@@ -1,165 +1,145 @@
-<div>
-    <x-header title="{{ __('client.menu_offer') }}" subtitle="{{ __('client.page_offer_subtitle') }}." separator
-              progress-indicator>
-        @if ($show_request)
-            <x-slot:actions>
-                <x-button class="btn-primary"
-                          wire:click="$dispatch('modal.open', {component: 'web.modal.request-offer-modal'})">
-                    ✨ Teklif Al
-                </x-button>
-
-            </x-slot:actions>
-        @endif
-    </x-header>
-    <div class="space-y-10">
-        {{-- Değerlendirilebilir Teklifler --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach ($data->filter(fn($offer) => !$offer->hasPaymentActive() && !$offer->isCompleted()) as $offer)
-                @php
-                    $statusStyles = [
-                        'evaluatable' => [
-                            'color' => 'bg-indigo-100 dark:bg-indigo-800 border-indigo-300 dark:border-indigo-700 text-indigo-900 dark:text-indigo-100',
-                            'emoji' => '✨',
-                        ],
-                    ];
-
-                    $status = 'evaluatable';
-                    $cardColor = $statusStyles[$status]['color'];
-                    $emoji = $statusStyles[$status]['emoji'];
-                @endphp
-
-                <div x-data="{ expanded: false }"
-                     class="relative {{ $cardColor }} rounded-md p-4 shadow-md hover:shadow-lg transition border overflow-hidden">
-                    <div @click="expanded = !expanded; if (expanded) confetti({ particleCount: 100, spread: 70 })"
-                         x-show="!expanded" x-cloak class="cursor-pointer">
-                        <div class="flex flex-col items-center justify-center h-full space-y-4">
-                            <p class="text-center text-lg font-semibold text-gray-800 dark:text-white">✨ Teklifi
-                                Görüntüle</p>
-                            <p class="text-center text-sm text-gray-600 dark:text-gray-400">Bu teklifin detaylarını
-                                görmek için hemen tıklayın!</p>
-                            <span class="badge bg-red-500 text-white px-3 py-1 rounded-full shadow-md text-sm">Son {{ $offer->remainingDay() }} Gün</span>
-                        </div>
-                    </div>
-
-                    <div x-show="expanded" x-cloak class="space-y-6">
-                        {{-- Teklif Detayları --}}
-                        <div class="mb-6 bg-white dark:bg-gray-900 rounded-lg p-5 shadow-md">
-                            <h3 class="text-base font-bold text-center text-indigo-600 dark:text-indigo-300 mb-2">🎉 Özel
-                                Teklif!</h3>
-                            <div class="text-center mb-4">
-                                <span
-                                    class="text-sm font-medium text-gray-600 dark:text-gray-400">Teklif ID: {{ $offer->unique_id }}</span>
-                            </div>
-                            <div class="text-center">
-                                <p class="text-lg font-semibold text-orange-600 dark:text-orange-300">@price($offer->price)</p>
-                            </div>
-                        </div>
-
-                        {{-- Hizmet Listesi --}}
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-6">
-                            @foreach ($offer->items as $item)
-                                <div class="flex items-center bg-gray-50 dark:bg-gray-800 rounded-lg p-2 shadow-sm">
-                                    {{-- Sol: Miktar --}}
-                                    <div
-                                        class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white font-bold">
-                                        {{ $item->quantity }}
-                                    </div>
-
-                                    {{-- Sağ: Hizmet Adı ve Kategorisi --}}
-                                    <div class="ml-3 truncate">
-                                        <p class="text-sm font-medium truncate">{{ $item->itemable->name }}</p>
-                                        <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{{ $item->itemable->category->name ?? 'Paket' }}</p>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        {{-- Alt Aksiyon Bölümü --}}
-                        <div class="mt-4">
-                            <p class="mt-2 text-sm text-center text-gray-600 dark:text-gray-300">Bu fırsat size özel
-                                olarak sunulmuştur.</p>
-                            <button
-                                class="btn w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg shadow"
-                                wire:click="pay({{ $offer->id }})">
-                                ✨ Teklifi Değerlendir
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-
-        {{-- Diğer Durumlar (Tamamlanan ve Ödeme Bekleyen) --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach ($data->filter(fn($offer) => $offer->hasPaymentActive() || $offer->isCompleted()) as $offer)
-                @php
-                    $statusStyles = [
-                        'processing' => [
-                            'color' => 'bg-orange-100 dark:bg-orange-800 border-orange-300 dark:border-orange-700 text-orange-900 dark:text-orange-100',
-                            'emoji' => '⏳',
-                        ],
-                        'completed' => [
-                            'color' => 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100',
-                            'emoji' => '✅',
-                        ],
-                    ];
-
-                    $status = $offer->hasPaymentActive() ? 'processing' : 'completed';
-                    $cardColor = $statusStyles[$status]['color'];
-                    $emoji = $statusStyles[$status]['emoji'];
-                @endphp
-
-                <div x-data="{ expanded: true }"
-                     class="relative {{ $cardColor }} rounded-md p-4 shadow-md hover:shadow-lg transition border overflow-hidden">
-                    <div x-show="expanded" x-cloak class="space-y-6">
-                        {{-- Teklif Detayları --}}
-                        <div class="mb-6 bg-white dark:bg-gray-900 rounded-lg p-5 shadow-md">
-                            <h3 class="text-base font-bold text-center text-indigo-600 dark:text-indigo-300 mb-2">🎉 Özel
-                                Teklif!</h3>
-                            <div class="text-center mb-4">
-                                <span
-                                    class="text-sm font-medium text-gray-600 dark:text-gray-400">Teklif ID: {{ $offer->unique_id }}</span>
-                            </div>
-                            <div class="text-center">
-                                <p class="text-lg font-semibold text-orange-600 dark:text-orange-300">@price($offer->price)</p>
-                            </div>
-                        </div>
-
-                        <div class="absolute top-3 right-3">
-                            <span class="badge bg-red-500 text-white px-3 py-1 rounded-full shadow-md text-xs">{{ $offer->remainingDay() }} Gün</span>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-6">
-                            @foreach ($offer->items as $item)
-                                <div class="flex items-center bg-gray-50 dark:bg-gray-800 rounded-lg p-2 shadow-sm">
-                                    <div
-                                        class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white font-bold">
-                                        {{ $item->quantity }}
-                                    </div>
-                                    <div class="ml-3 truncate">
-                                        <p class="text-sm font-medium truncate">{{ $item->itemable->name }}</p>
-                                        <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{{ $item->itemable->category->name ?? 'Paket' }}</p>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div class="mt-4">
-                            @if ($offer->hasPaymentActive())
-                                <p class="text-xs text-center font-medium text-orange-700 dark:text-orange-300">⏳ Ödeme
-                                    İşlemi Devam Ediyor</p>
-                            @elseif ($offer->isCompleted())
-                                <p class="text-sm text-center font-medium text-green-700 dark:text-green-300">🎉
-                                    Hizmetleriniz aktif edildi! Mutlu günlerde kullanın. 🌟</p>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            @endforeach
+<div class="relative text-base-content p-2 min-h-[200px]">
+    <!-- Loading Indicator -->
+    <div wire:loading class="absolute inset-0 bg-base-200/50 backdrop-blur-sm rounded-lg z-50">
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div class="flex flex-col items-center gap-2">
+                <span class="loading loading-spinner loading-md text-primary"></span>
+                <span class="text-sm text-base-content/70">Yükleniyor...</span>
+            </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Content -->
+    <div class="h-full flex flex-col">
+        <!-- Header Section -->
+        <div class="bg-base-100 rounded-xl shadow-sm border border-base-200 p-4 mb-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-primary/10 rounded-xl">
+                        <i class="text-2xl text-primary">✨</i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold">{{ __('client.menu_offer') }}</h2>
+                        <p class="text-sm text-base-content/70">{{ __('client.page_offer_subtitle') }}</p>
+                    </div>
+                </div>
+                @if ($show_request)
+                    <x-button class="btn-primary" wire:click="$dispatch('modal.open', {component: 'web.modal.request-offer-modal'})">
+                        ✨ Teklif Al
+                    </x-button>
+                @endif
+            </div>
+        </div>
 
+        <!-- Değerlendirilebilir Teklifler -->
+        @if ($data->filter(fn($offer) => !$offer->hasPaymentActive() && !$offer->isCompleted())->isNotEmpty())
+            <div class="bg-base-100 rounded-xl shadow-sm border border-base-200 p-4 mb-4">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="p-1.5 bg-primary/10 rounded-lg">
+                        <i class="text-primary text-lg">🎯</i>
+                    </div>
+                    <h3 class="font-medium">Değerlendirilebilir Teklifler</h3>
+                </div>
 
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    @foreach ($data->filter(fn($offer) => !$offer->hasPaymentActive() && !$offer->isCompleted()) as $offer)
+                        <div x-data="{ expanded: false }" 
+                             class="card bg-base-200/30 p-4 rounded-xl hover:shadow-md transition-all duration-300">
+                            <!-- Kapalı Durum -->
+                            <div x-show="!expanded" @click="expanded = !expanded; if (expanded) confetti({ particleCount: 100, spread: 70 })"
+                                 class="flex flex-col items-center justify-center gap-3 cursor-pointer">
+                                <span class="text-2xl">✨</span>
+                                <div class="text-center">
+                                    <h4 class="font-medium">Teklifi Görüntüle</h4>
+                                    <p class="text-sm text-base-content/70">Detayları görmek için tıklayın</p>
+                                </div>
+                                <div class="badge badge-warning">Son {{ $offer->remainingDay() }} Gün</div>
+                            </div>
+
+                            <!-- Açık Durum -->
+                            <div x-show="expanded" x-cloak class="space-y-4">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-medium">Teklif ID: {{ $offer->unique_id }}</h4>
+                                        <p class="text-2xl font-bold text-primary mt-1">@price($offer->price)</p>
+                                    </div>
+                                    <div class="badge badge-warning">{{ $offer->remainingDay() }} Gün</div>
+                                </div>
+
+                                <div class="space-y-2">
+                                    @foreach ($offer->items as $item)
+                                        <div class="flex items-center gap-3 bg-base-100 rounded-lg p-2">
+                                            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center font-medium">
+                                                {{ $item->quantity }}
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="font-medium truncate">{{ $item->itemable->name }}</p>
+                                                <p class="text-xs text-base-content/70 truncate">{{ $item->itemable->category->name ?? 'Paket' }}</p>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <button class="btn btn-primary btn-block" wire:click="pay({{ $offer->id }})">
+                                    ✨ Teklifi Değerlendir
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+        <!-- Diğer Teklifler -->
+        @if ($data->filter(fn($offer) => $offer->hasPaymentActive() || $offer->isCompleted())->isNotEmpty())
+            <div class="bg-base-100 rounded-xl shadow-sm border border-base-200 p-4">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="p-1.5 bg-success/10 rounded-lg">
+                        <i class="text-success text-lg">📋</i>
+                    </div>
+                    <h3 class="font-medium">Diğer Teklifler</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    @foreach ($data->filter(fn($offer) => $offer->hasPaymentActive() || $offer->isCompleted()) as $offer)
+                        <div class="card bg-base-200/30 p-4 rounded-xl">
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-medium">Teklif ID: {{ $offer->unique_id }}</h4>
+                                        <p class="text-2xl font-bold text-primary mt-1">@price($offer->price)</p>
+                                    </div>
+                                    <div class="badge {{ $offer->hasPaymentActive() ? 'badge-warning' : 'badge-success' }}">
+                                        {{ $offer->hasPaymentActive() ? '⏳ İşlemde' : '✅ Tamamlandı' }}
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2">
+                                    @foreach ($offer->items as $item)
+                                        <div class="flex items-center gap-3 bg-base-100 rounded-lg p-2">
+                                            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center font-medium">
+                                                {{ $item->quantity }}
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="font-medium truncate">{{ $item->itemable->name }}</p>
+                                                <p class="text-xs text-base-content/70 truncate">{{ $item->itemable->category->name ?? 'Paket' }}</p>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                @if ($offer->hasPaymentActive())
+                                    <p class="text-sm text-center text-warning">⏳ Ödeme İşlemi Devam Ediyor</p>
+                                @else
+                                    <p class="text-sm text-center text-success">🎉 Hizmetleriniz aktif edildi!</p>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+    </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
