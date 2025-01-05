@@ -26,8 +26,7 @@ new #[\Livewire\Attributes\Layout('components.layouts.client')] class extends \L
         <!-- Dil Seçici -->
         <div class="dropdown dropdown-end">
             <label tabindex="0" class="btn btn-ghost gap-2">
-                <span>{{ app()->getLocale() === 'tr' ? '🇹🇷' : '🇬🇧' }}</span>
-                <span class="hidden md:inline-block">{{ app()->getLocale() === 'tr' ? 'Türkçe' : 'English' }}</span>
+                <span>{{ app()->getLocale() === 'tr' ? '🇹🇷 Türkçe' : 'English' }}</span>
                 <span class="text-xs">🔽</span>
             </label>
             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-lg bg-base-200 rounded-box w-40">
@@ -40,7 +39,6 @@ new #[\Livewire\Attributes\Layout('components.layouts.client')] class extends \L
                 </li>
                 <li>
                     <a href="{{ url(request()->path()) }}?lang=en" class="flex items-center gap-2 {{ app()->getLocale() === 'en' ? 'active' : '' }}">
-                        <span class="text-xl">🇬🇧</span>
                         <span>English</span>
                         {{ app()->getLocale() === 'en' ? '✅' : '' }}
                     </a>
@@ -59,19 +57,70 @@ new #[\Livewire\Attributes\Layout('components.layouts.client')] class extends \L
             <label tabindex="0" class="btn btn-ghost gap-2">
                 <span class="text-xl">🎨</span>
                 <span>Tema</span>
-                <span class="text-xs">🔽</span>
             </label>
             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-lg bg-base-200 rounded-box w-52">
-                <li><button wire:click="setTheme('morTema')">Mor Tema</button></li>
-                <li><button wire:click="setTheme('lavanderTema')">Lavanta</button></li>
-                <li><button wire:click="setTheme('mintTema')">Nane</button></li>
-                <li><button wire:click="setTheme('peachTema')">Şeftali</button></li>
-                <li><button wire:click="setTheme('skyTema')">Gökyüzü</button></li>
-                <li><button wire:click="setTheme('roseTema')">Gül</button></li>
-                <li><button wire:click="setTheme('sunsetTema')">Günbatımı</button></li>
-                <li><button wire:click="setTheme('morTemaDark')">Mor (Koyu)</button></li>
-                <li><button wire:click="setTheme('lavanderTemaDark')">Lavanta (Koyu)</button></li>
-                <li><button wire:click="setTheme('mintTemaDark')">Nane (Koyu)</button></li>
+                <li class="menu-title">Açık Temalar</li>
+                <li>
+                    <button wire:click="setTheme('morTema')" class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-[#FF69B4]"></span>
+                        Mor
+                    </button>
+                </li>
+                <li>
+                    <button wire:click="setTheme('lavanderTema')" class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-[#9B7EDE]"></span>
+                        Lavanta
+                    </button>
+                </li>
+                <li>
+                    <button wire:click="setTheme('mintTema')" class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-[#98FF98]"></span>
+                        Nane
+                    </button>
+                </li>
+                <li>
+                    <button wire:click="setTheme('peachTema')" class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-[#FFDAB9]"></span>
+                        Şeftali
+                    </button>
+                </li>
+                <li>
+                    <button wire:click="setTheme('skyTema')" class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-[#87CEEB]"></span>
+                        Gökyüzü
+                    </button>
+                </li>
+                <li>
+                    <button wire:click="setTheme('roseTema')" class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-[#FFB6C1]"></span>
+                        Gül
+                    </button>
+                </li>
+                <li>
+                    <button wire:click="setTheme('sunsetTema')" class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-[#FFA07A]"></span>
+                        Günbatımı
+                    </button>
+                </li>
+                <div class="divider my-0">Koyu Temalar</div>
+                <li>
+                    <button wire:click="setTheme('morTemaDark')" class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-[#FF69B4] ring-1 ring-white/20"></span>
+                        Mor (Koyu)
+                    </button>
+                </li>
+                <li>
+                    <button wire:click="setTheme('lavanderTemaDark')" class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-[#9B7EDE] ring-1 ring-white/20"></span>
+                        Lavanta (Koyu)
+                    </button>
+                </li>
+                <li>
+                    <button wire:click="setTheme('mintTemaDark')" class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-[#98FF98] ring-1 ring-white/20"></span>
+                        Nane (Koyu)
+                    </button>
+                </li>
             </ul>
         </div>
 
