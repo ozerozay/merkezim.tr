@@ -136,7 +136,7 @@
                         <div class="flex items-center gap-1.5">
                             <span class="text-primary text-sm font-medium">
                                 {{ number_format(collect($branchesData)->sum('bakiye'), 2) }}₺
-                            </span>
+                                </span> 
                         </div>
                 </div>
             </div>
