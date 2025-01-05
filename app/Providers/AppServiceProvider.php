@@ -96,6 +96,7 @@ class AppServiceProvider extends ServiceProvider
             'chat_message' => 'Namu\WireChat\Models\Message',
             'shop_package' => 'App\Models\ShopPackage',
             'shop_service' => 'App\Models\ShopService',
+            'admin_home_widget' => 'App\Models\AdminHomeWidget',
         ]);
 
         Blade::directive('price', function ($price) {

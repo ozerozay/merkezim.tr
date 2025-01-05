@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\AppointmentStatus;
+use App\BranchSMSTemplateType;
 use App\Enum\SettingsType;
 use App\Http\Controllers\AuthController;
 use App\Jobs\SendReportPdfJob;
@@ -215,6 +216,21 @@ Route::middleware([
                 'store_name' => 'MARGE GÜZELLİK',
             ],
         ]);
+    });
+
+    Route::get('/branch_sms', function () {
+        foreach (Branch::all() as $branch) {
+            foreach (BranchSMSTemplateType::cases() as $templateType) {
+                \App\Models\SmsTemplateBranch::create([
+                    'branch_id' => $branch->id,
+                    'type' => $templateType->value,
+                    'name' => $templateType->turkishName(),
+                    'content' => $templateType->label(),
+                    'active' => true,
+                ]);
+            }
+        }
+
     });
 
     Route::get('/setb', function () {

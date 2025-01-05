@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Spatie\OpeningHours\OpeningHours;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Branch extends Model
 {
@@ -21,6 +22,11 @@ class Branch extends Model
             'active' => 'boolean',
             'opening_hours' => 'json',
         ];
+    }
+
+    public function smsTemplates(): HasMany
+    {
+        return $this->hasMany(SmsTemplateBranch::class, 'branch_id');
     }
 
     public function sales()

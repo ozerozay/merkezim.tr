@@ -224,7 +224,7 @@ new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Vol
                     <div class="col-span-1">
                         {{-- Oda Adı ve Kalanlar (Başlık Kartı) --}}
                         <div
-                            class="flex items-center justify-between bg-base-100 shadow-md p-3 rounded mb-4 sticky top-0 z-10">
+                            class="flex items-center justify-between bg-base-100 p-3 rounded mb-4 sticky top-0 z-10">
                             <span class="text-lg font-bold text-primary">💆‍♀️ {{ $room->name }}</span>
                             <p class="text-sm text-secondary font-semibold">
                                 ⏳ {{ $room->appointments->whereIn('status', \App\AppointmentStatus::active()->all())->count() }}
@@ -269,7 +269,7 @@ new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Vol
                                     {{-- Biten Randevu --}}
                                     @if ($isCompleted)
                                         <div
-                                            class="flex justify-between items-center text-sm font-semibold text-base-content border-l-4 border-success p-2 rounded cursor-pointer"
+                                            class="flex justify-between items-center text-sm font-semibold text-base-content border-l-4 border-success p-1 rounded cursor-pointer"
                                             wire:click="$dispatch('slide-over.open', {component: 'modals.appointment.appointment-modal', arguments: {'appointment': {{ $appointment->id }}}})">
                                             <div>
                                                 ⏰ {{ $appointment->date_start->format('H:i') }}
@@ -285,7 +285,7 @@ new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Vol
                                     @else
                                         {{-- Aktif Randevu (Kart) --}}
                                         <div
-                                            class="border-l-4 border-primary p-5 bg-base-100 rounded-lg shadow-lg cursor-pointer"
+                                            class="border-l-4 border-primary p-2 bg-base-100 rounded-lg cursor-pointer"
                                             wire:click="$dispatch('slide-over.open', {component: 'modals.appointment.appointment-modal', arguments: {'appointment': {{ $appointment->id }}}})"
                                         >
                                             <!-- Başlık -->
@@ -310,7 +310,7 @@ new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Vol
 
                                             <!-- Süre, Gecikmiş Ödeme, ve Aktif Teklif -->
                                             <div class="flex text-sm text-center">
-                                                <div class="py-2 px-4">
+                                                <div class="py-2 px-2">
                                                     <span
                                                         class="block">🕒 Süre: {{ $appointment->duration }} DK</span>
                                                 </div>

@@ -1,5 +1,6 @@
 import '../../vendor/wire-elements/pro/resources/js/overlay-component.js'
 import '../../vendor/wire-elements/pro/resources/js/spotlight-component.js'
+import 'livewire-sortable'
 
 /*
 import axios from 'axios';

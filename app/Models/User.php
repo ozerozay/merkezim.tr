@@ -5,6 +5,7 @@ namespace App\Models;
 use App\OfferStatus;
 use App\SaleStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -390,6 +391,11 @@ class User extends Authenticatable
     public function clientClientTimelines()
     {
         return $this->hasMany(ClientTimeline::class, 'client_id');
+    }
+
+    public function adminHomeWidgets(): HasMany
+    {
+        return $this->hasMany(AdminHomeWidget::class, 'user_id');
     }
 
     /**

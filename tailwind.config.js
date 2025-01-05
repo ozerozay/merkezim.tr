@@ -31,85 +31,78 @@ export default {
     plugins: [require("daisyui")],
     daisyui: {
         themes: [
-
             {
                 morTema: {
-                    primary: "#6b4aa1",
-                    "primary-focus": "#55337c",
-                    "primary-content": "#ffffff",
+                    primary: "#2563eb", // Güven veren mavi
+                    "primary-focus": "#1d4ed8", // Daha koyu mavi
+                    "primary-content": "#ffffff", // Beyaz yazı
 
-                    secondary: "#8566b1",
-                    "secondary-focus": "#6b4aa1",
+                    secondary: "#6b7280", // Gri tonlar
+                    "secondary-focus": "#4b5563",
                     "secondary-content": "#ffffff",
 
-                    accent: "#a065ff",
-                    "accent-focus": "#8d4ed0",
+                    accent: "#10b981", // Canlı yeşil
+                    "accent-focus": "#059669",
                     "accent-content": "#ffffff",
 
-                    neutral: "#f6f4fc",
-                    "neutral-focus": "#eae6f7",
-                    "neutral-content": "#4b367c",
+                    neutral: "#f3f4f6", // Açık gri (nötr)
+                    "neutral-focus": "#e5e7eb",
+                    "neutral-content": "#1f2937", // Koyu metin
 
-                    "base-100": "#ffffff",
-                    "base-200": "#f6f4fc",
-                    "base-300": "#eae6f7",
-                    "base-content": "#4b367c",
+                    "base-100": "#ffffff", // Beyaz taban
+                    "base-200": "#f3f4f6", // Daha açık gri taban
+                    "base-300": "#e5e7eb", // Hafif gri
+                    "base-content": "#111827", // Koyu metin rengi
 
-                    // Renk + Renk İçeriği (Metin Rengi)
-                    info: "#3b82f6",
+                    info: "#2563eb", // Mavi
                     "info-content": "#ffffff",
 
-                    success: "#16a34a",
+                    success: "#10b981", // Yeşil
                     "success-content": "#ffffff",
 
-                    warning: "#facc15",
-                    "warning-content": "#4b367c",
-                    // Sarı arka plan üstünde koyu mor (#4b367c) veya siyah (#000000) gibi bir renk seçebilirsiniz
+                    warning: "#f59e0b", // Sarı
+                    "warning-content": "#111827", // Koyu metin
 
-                    error: "#dc2626",
+                    error: "#ef4444", // Kırmızı
                     "error-content": "#ffffff"
                 }
             },
             {
                 morTemaDark: {
-                    primary: "#6b4aa1",
-                    "primary-focus": "#55337c",
+                    primary: "#2563eb", // Güven veren mavi
+                    "primary-focus": "#1d4ed8",
                     "primary-content": "#ffffff",
 
-                    secondary: "#8566b1",
-                    "secondary-focus": "#6b4aa1",
+                    secondary: "#6b7280", // Gri tonlar
+                    "secondary-focus": "#4b5563",
                     "secondary-content": "#ffffff",
 
-                    accent: "#a065ff",
-                    "accent-focus": "#8d4ed0",
+                    accent: "#10b981", // Canlı yeşil
+                    "accent-focus": "#059669",
                     "accent-content": "#ffffff",
 
-                    neutral: "#2d2740",
-                    "neutral-focus": "#1e1b29",
-                    "neutral-content": "#e0d7ff",
+                    neutral: "#1f2937", // Koyu gri (nötr arka plan)
+                    "neutral-focus": "#111827",
+                    "neutral-content": "#e5e7eb", // Açık metin rengi
 
-                    "base-100": "#1e1b29",
-                    "base-200": "#2d2740",
-                    "base-300": "#3e3659",
-                    "base-content": "#e0d7ff",
+                    "base-100": "#111827", // Siyah-gri taban
+                    "base-200": "#1f2937", // Koyu gri
+                    "base-300": "#374151", // Daha koyu gri
+                    "base-content": "#e5e7eb", // Açık metin rengi
 
-                    // Dark Mode Renk + İçerik
-                    info: "#3b82f6",
+                    info: "#3b82f6", // Daha açık mavi
                     "info-content": "#ffffff",
 
-                    success: "#16a34a",
+                    success: "#22c55e", // Parlak yeşil
                     "success-content": "#ffffff",
 
-                    warning: "#facc15",
-                    "warning-content": "#e0d7ff",
-                    // Karanlık modda sarı arka plan üstünde açık renkte yazı
+                    warning: "#f59e0b", // Sarı
+                    "warning-content": "#e5e7eb",
 
-                    error: "#dc2626",
+                    error: "#dc2626", // Kırmızı
                     "error-content": "#ffffff"
                 }
             }
-
-            , "light", "dark"
         ]
     },
     darkMode: "class"
