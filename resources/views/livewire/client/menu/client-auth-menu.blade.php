@@ -1,6 +1,17 @@
 <div class="flex flex-col">
+    @if(auth()->user()->hasRole('admin'))
+        <!-- Admin Panel Butonu -->
+        <a href="{{ route('admin.index') }}" class="flex items-center gap-3 p-2.5 rounded-2xl bg-gradient-to-r from-warning to-warning/80 hover:from-warning/90 hover:to-warning/70 transition-all duration-300 border border-warning/20 shadow-lg shadow-warning/20">
+            <span class="text-xl">⚡</span>
+            <div class="flex flex-col">
+                <span class="font-medium text-warning-content">Yönetim Paneli</span>
+                <span class="text-xs text-warning-content/90">Admin paneline hızlı erişim</span>
+            </div>
+        </a>
+    @endif
+
     <!-- Profil Kartı -->
-    <div class="bg-base-100/50 backdrop-blur-sm rounded-2xl border border-base-200 p-3">
+    <div class="bg-base-100/50 backdrop-blur-sm rounded-2xl border border-base-200 p-3 {{ auth()->user()->hasRole('admin') ? 'mt-2' : '' }}">
         <div class="flex items-center justify-between">
             <!-- Sol: Avatar ve Kullanıcı Bilgileri -->
             <div class="flex items-center gap-3">
