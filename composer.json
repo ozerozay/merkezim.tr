@@ -26,6 +26,7 @@
         "pusher/pusher-php-server": "^7.2",
         "robsontenorio/mary": "^1.35",
         "secondnetwork/blade-tabler-icons": "^3.26",
+        "sentry/sentry-laravel": "^4.10",
         "spatie/laravel-permission": "^6.9",
         "spatie/opening-hours": "^4.0",
         "stancl/tenancy": "^3.8",
