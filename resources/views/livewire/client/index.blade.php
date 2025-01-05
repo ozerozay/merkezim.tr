@@ -31,14 +31,14 @@ new #[\Livewire\Attributes\Layout('components.layouts.client')] class extends \L
             </label>
             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-lg bg-base-200 rounded-box w-40">
                 <li>
-                    <a href="{{ url(request()->path()) }}?lang=tr" class="flex items-center gap-2 {{ app()->getLocale() === 'tr' ? 'active' : '' }}">
+                    <a href="{{ route('client.index') }}?lang=tr" class="flex items-center gap-2 {{ app()->getLocale() === 'tr' ? 'active' : '' }}">
                         <span class="text-xl">🇹🇷</span>
                         <span>Türkçe</span>
                         {{ app()->getLocale() === 'tr' ? '✅' : '' }}
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url(request()->path()) }}?lang=en" class="flex items-center gap-2 {{ app()->getLocale() === 'en' ? 'active' : '' }}">
+                    <a href="{{ route('client.index') }}?lang=en" class="flex items-center gap-2 {{ app()->getLocale() === 'en' ? 'active' : '' }}">
                         <span>English</span>
                         {{ app()->getLocale() === 'en' ? '✅' : '' }}
                     </a>
