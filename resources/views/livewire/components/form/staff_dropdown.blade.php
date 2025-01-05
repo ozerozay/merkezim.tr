@@ -25,6 +25,6 @@ new class extends Component
 };
 ?>
 
-<div>
-    <x-choices-offline label="Personel" wire:model="staff_id" :options="$staffs" single />
+<div wire:key="zzstaff-{{ Str::random(10) }}">
+    <x-select wire:key="staxcgff-{{ Str::random(10) }}" label="Personel" wire:model="staff_id" :options="$staffs" single />
 </div>

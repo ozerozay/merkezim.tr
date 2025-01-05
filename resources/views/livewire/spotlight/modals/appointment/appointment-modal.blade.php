@@ -1,195 +1,273 @@
-<div class="overflow-x-hidden">
-    <x-card title="{{ $appointment->client->name }}"
-        subtitle="{{ $appointment->date_start->format('H:i') }} - {{ $appointment->date_end->format('H:i') }}" separator
-        progress-indicator>
-        <div class="btn-group w-full flex gap-1 mb-3">
-            <x-button icon="tabler.phone" class="btn btn-outline flex-grow" external
-                link="tel:+90{{ $appointment->client->phone }}">Ara</x-button>
-            <x-button icon="tabler.device-mobile-message" class="btn btn-outline flex-grow"
-                wire:click="$dispatch('slide-over.open', {component: 'actions.create-send-sms', arguments: {'client': {{ $appointment->client->id }}}})">SMS</x-button>
-            <x-button icon="tabler.brand-whatsapp" class="btn btn-outline flex-grow" external
-                link="whatsapp://phone=0{{ $appointment->client->phone }}">Mesaj</x-button>
-        </div>
-        <x-accordion wire:model="group" separator class="bg-base-200">
-            <x-collapse name="info">
-                <x-slot:heading>
-                    <x-icon name="tabler.info-circle" label="Bilgi" />
-                </x-slot:heading>
-                <x-slot:content>
-                    <p>{{ $appointment->serviceNames }}</p>
-                    <p>"{{ $appointment->message }}"</p>
-                    <x-list-item :item="$appointment">
-                        <x-slot:value>
-                            TARİH
-                        </x-slot:value>
-                        <x-slot:actions>
-                            {{ $appointment->date->format('d/m/Y') }}
-                        </x-slot:actions>
-                    </x-list-item>
-                    <x-list-item :item="$appointment">
-                        <x-slot:value>
-                            SAAT
-                        </x-slot:value>
-                        <x-slot:actions>
-                            {{ $appointment->date_start->format('H:i') }} - {{ $appointment->date_end->format('H:i') }}
-                        </x-slot:actions>
-                    </x-list-item>
-                    <x-list-item :item="$appointment">
-                        <x-slot:value>
-                            ODA
-                        </x-slot:value>
-                        <x-slot:actions>
-                            {{ $appointment->serviceRoom->name }}
-                        </x-slot:actions>
-                    </x-list-item>
-                    <x-list-item :item="$appointment">
-                        <x-slot:value>
-                            SÜRE
-                        </x-slot:value>
-                        <x-slot:actions>
-                            {{ $appointment->duration }} DK
-                        </x-slot:actions>
-                    </x-list-item>
-                    <x-list-item :item="$appointment">
-                        <x-slot:value>
-                            DURUM
-                        </x-slot:value>
-                        <x-slot:actions>
-                            <x-badge class="{{ $appointment->status->color() }}"
-                                value="{{ $appointment->status->label() }}" />
-                        </x-slot:actions>
-                    </x-list-item>
-                    <x-list-item :item="$appointment">
-                        <x-slot:value>
-                            TOPLAM ÖDEME
-                        </x-slot:value>
-                        <x-slot:actions>
-                            @price($appointment->client->totalDebt())
-                        </x-slot:actions>
-                    </x-list-item>
-                    <x-list-item :item="$appointment">
-                        <x-slot:value>
-                            GECİKMİŞ ÖDEME
-                        </x-slot:value>
-                        <x-slot:actions>
-                            @price($appointment->client->totalLateDebt())
-                        </x-slot:actions>
-                    </x-list-item>
-                    <x-list-item :item="$appointment" class="cursor-pointer">
-                        <x-slot:value>
-                            +90{{ $appointment->client->phone }}
-                        </x-slot:value>
-                        <x-slot:actions>
-                            <x-button icon="o-phone" external link="tel:+90{{ $appointment->client->phone }}" />
-                        </x-slot:actions>
-                    </x-list-item>
-                    <x-slot:menu>
-                        <x-button icon="tabler.x" class="btn-sm btn-outline"
-                            wire:click="$dispatch('slide-over.close')" />
-                    </x-slot:menu>
-                </x-slot:content>
-            </x-collapse>
-            @if (in_array($appointment->status, $allowFinish))
-                <x-collapse name="finish">
-                    <x-slot:heading>
-                        <x-icon name="o-check" label="Tamamla" />
-                    </x-slot:heading>
-                    <x-slot:content>
-                        <x-form wire:submit="finish">
-                            <livewire:components.client.client_service_appointment_dropdown
-                                wire:key="sdoe-{{ Str::random(10) }}" :client_id="$appointment->client->id" label="Hizmetler"
-                                wire:model="appointmentClientServices" />
-                            <livewire:components.form.staff_dropdown wire:key="sdowe-{{ Str::random(10) }}"
-                                wire:model="finishUser" />
-                            <x-input label="Açıklama" wire:model="messageApprove" />
-                            <x-slot:actions>
-                                <x-button label="Gönder" type="submit" spinner="finish" class="btn-primary" />
-                            </x-slot:actions>
-                        </x-form>
-                    </x-slot:content>
-                </x-collapse>
-            @endif
-            @if (in_array($appointment->status, $allowMerkezde))
-                <x-collapse name="merkezde">
-                    <x-slot:heading>
-                        <x-icon name="tabler.checks" label="Merkezde - Teyitli" />
-                    </x-slot:heading>
-                    <x-slot:content>
-                        <x-form wire:submit="confirmAppointment">
-                            <x-select wire:model="merkezdeTeyitliStatus" wire:key="sdccoe-{{ Str::random(10) }}"
-                                :options="$merkezdeTeyitliStatuses" />
-                            <x-input label="Açıklama" wire:model="messageMerkezde" />
-                            <x-slot:actions>
-                                <x-button label="Gönder" type="submit" spinner="confirmAppointment"
-                                    class="btn-primary" />
-                            </x-slot:actions>
-                        </x-form>
-                    </x-slot:content>
-                </x-collapse>
-            @endif
-            @if (in_array($appointment->status, $allowForward))
-                <x-collapse name="forward">
-                    <x-slot:heading>
-                        <x-icon name="tabler.corner-down-right-double" label="Yönlendir" />
-                    </x-slot:heading>
-                    <x-slot:content>
-                        <x-form wire:submit="forwardAppointment">
-                            <livewire:components.form.staff_dropdown wire:key="sdocbsae-{{ Str::random(10) }}"
-                                wire:model="forwardUser" />
-                            <x-input label="Açıklama" wire:model="messageForward" />
-                            <x-slot:actions>
-                                <x-button label="Gönder" type="submit" spinner="forwardAppointment"
-                                    class="btn-primary" />
-                            </x-slot:actions>
-                        </x-form>
-                    </x-slot:content>
-                </x-collapse>
-            @endif
-            @if (!in_array($appointment->status, $allowCancel))
-                <x-collapse name="cancel">
-                    <x-slot:heading>
-                        <x-icon name="tabler.x" label="İptal" />
-                    </x-slot:heading>
-                    <x-slot:content>
-                        <x-form wire:submit="cancelAppointment">
-                            <x-alert title="Emin misiniz ?"
-                                description="İptal ettiğinizde seanslar geri yüklenir ve bu işlem geri alınamaz."
-                                icon="o-minus-circle" class="alert-error" />
-                            <x-input label="Açıklama" wire:model="messageCancel" />
-                            <x-slot:actions>
-                                <x-button label="Gönder" type="submit" spinner="cancelAppointment"
-                                    class="btn-primary" />
-                            </x-slot:actions>
-                        </x-form>
-                    </x-slot:content>
-                </x-collapse>
-            @endif
-            <x-collapse name="past">
-                <x-slot:heading>
-                    <x-icon name="tabler.history" label="Geçmiş" />
-                </x-slot:heading>
-                <x-slot:content>
-                    @foreach ($appointment->appointmentStatuses as $status)
-                        <x-list-item :item="$status" wire:key="sor-{{ Str::random(10) }}" no-separator no-hover>
-                            <x-slot:actions>
-                                <x-badge value="{{ $status->status->label() }}"
-                                    class="badge-{{ $status->status->color() }}" />
-                            </x-slot:actions>
-                            <x-slot:value>
-                                {{ $status->user->name }}
-                            </x-slot:value>
-                            <x-slot:sub-value>
-                                {{ $status->dateHuman }}
-                            </x-slot:sub-value>
-                        </x-list-item>
-                        {{ $status->message }}
-                    @endforeach
-                </x-slot:content>
-            </x-collapse>
-        </x-accordion>
-        <x-slot:menu>
-            <x-button icon="tabler.x" class="btn-sm btn-outline" wire:click="$dispatch('slide-over.close')" />
-        </x-slot:menu>
-    </x-card>
+<div class="overflow-x-hidden" x-data="{ activeTab: 'info' }">
+    <!-- Header -->
+    <div class="bg-base-100 sticky top-0 z-30 border-b border-base-200">
+        <div class="p-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-bold flex items-center gap-2">
+                        <div class="avatar placeholder">
+                            <div class="w-8 h-8 rounded-full bg-primary/10">
+                                <span class="text-primary">👤</span>
+                            </div>
+                        </div>
+                        {{ $appointment->client->name }}
+                    </h2>
+                    <p class="text-sm opacity-70">{{ $appointment->date_start->format('d/m/Y H:i') }} - {{ $appointment->date_end->format('H:i') }}</p>
+                </div>
+                <button class="btn btn-sm btn-ghost" wire:click="$dispatch('slide-over.close')">
+                    <x-icon name="o-x-mark" class="w-5 h-5" />
+                </button>
+            </div>
 
+            <!-- Hızlı İletişim Butonları -->
+            <div class="flex gap-2 mt-4">
+                <a href="tel:+90{{ $appointment->client->phone }}" 
+                   class="btn btn-sm flex-1 gap-2">
+                    <x-icon name="o-phone" class="w-4 h-4" />
+                    Ara
+                </a>
+                <button wire:click="$dispatch('slide-over.open', {component: 'actions.create-send-sms', arguments: {'client': {{ $appointment->client->id }}}})"
+                        class="btn btn-sm flex-1 gap-2">
+                    <x-icon name="o-envelope" class="w-4 h-4" />
+                    SMS
+                </button>
+                <a href="whatsapp://phone=0{{ $appointment->client->phone }}"
+                   class="btn btn-sm flex-1 gap-2">
+                    <x-icon name="o-chat-bubble-left-right" class="w-4 h-4" />
+                    Mesaj
+                </a>
+            </div>
+        </div>
+
+        <!-- Tab Menü -->
+        <div class="tabs tabs-boxed bg-base-200 rounded-none px-4 flex justify-center">
+            <button class="tab tooltip tooltip-bottom" 
+                    data-tip="Bilgi"
+                    :class="{ 'tab-active': activeTab === 'info' }"
+                    @click="activeTab = 'info'">
+                <x-icon name="o-information-circle" class="w-5 h-5" />
+            </button>
+            @if(in_array($appointment->status, $allowFinish))
+                <button class="tab tooltip tooltip-bottom" 
+                        data-tip="Tamamla"
+                        :class="{ 'tab-active': activeTab === 'finish' }"
+                        @click="activeTab = 'finish'">
+                    <x-icon name="o-check" class="w-5 h-5" />
+                </button>
+            @endif
+            @if(in_array($appointment->status, $allowMerkezde))
+                <button class="tab tooltip tooltip-bottom" 
+                        data-tip="Merkezde"
+                        :class="{ 'tab-active': activeTab === 'merkezde' }"
+                        @click="activeTab = 'merkezde'">
+                    <x-icon name="o-check-circle" class="w-5 h-5" />
+                </button>
+            @endif
+            @if(in_array($appointment->status, $allowForward))
+                <button class="tab tooltip tooltip-bottom" 
+                        data-tip="Yönlendir"
+                        :class="{ 'tab-active': activeTab === 'forward' }"
+                        @click="activeTab = 'forward'">
+                    <x-icon name="o-arrow-path" class="w-5 h-5" />
+                </button>
+            @endif
+            @if(!in_array($appointment->status, $allowCancel))
+                <button class="tab tooltip tooltip-bottom" 
+                        data-tip="İptal"
+                        :class="{ 'tab-active': activeTab === 'cancel' }"
+                        @click="activeTab = 'cancel'">
+                    <x-icon name="o-x-circle" class="w-5 h-5" />
+                </button>
+            @endif
+            <button class="tab tooltip tooltip-bottom" 
+                    data-tip="Geçmiş"
+                    :class="{ 'tab-active': activeTab === 'history' }"
+                    @click="activeTab = 'history'">
+                <x-icon name="o-clock" class="w-5 h-5" />
+            </button>
+        </div>
+    </div>
+
+    <!-- Tab İçerikleri -->
+    <div class="p-4">
+        <!-- Bilgi Tab -->
+        <div x-show="activeTab === 'info'" class="space-y-4">
+            <!-- Durum ve Müşteri Bilgileri -->
+            <div class="card bg-base-200">
+                <div class="card-body p-4 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium">Durum</span>
+                        <span class="badge badge-{{ $appointment->status->color() }}">
+                            {{ $appointment->status->label() }}
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm">Telefon</span>
+                        <a href="tel:+90{{ $appointment->client->phone }}" class="text-sm font-medium link">
+                            +90{{ $appointment->client->phone }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Randevu Detayları -->
+            <div class="card bg-base-200">
+                <div class="card-body p-4 space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm">Hizmetler</span>
+                        <span class="text-sm font-medium">{{ $appointment->serviceNames }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm">Oda</span>
+                        <span class="text-sm font-medium">{{ $appointment->serviceRoom->name }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm">Süre</span>
+                        <span class="text-sm font-medium">{{ $appointment->duration }} DK</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm">Tarih</span>
+                        <span class="text-sm font-medium">{{ $appointment->date->format('d/m/Y') }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm">Saat</span>
+                        <span class="text-sm font-medium">
+                            {{ $appointment->date_start->format('H:i') }} - {{ $appointment->date_end->format('H:i') }}
+                        </span>
+                    </div>
+                    @if($appointment->message)
+                        <div class="pt-2 border-t border-base-300">
+                            <p class="text-sm opacity-70">{{ $appointment->message }}</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Ödeme Bilgileri -->
+            <div class="card bg-base-200">
+                <div class="card-body p-4 space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm">Toplam Borç</span>
+                        <span class="text-sm font-medium">@price($appointment->client->totalDebt())</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm">Gecikmiş Ödeme</span>
+                        <span class="text-sm font-medium text-error">@price($appointment->client->totalLateDebt())</span>
+                    </div>
+                    @if($appointment->hasDelayedPayment)
+                        <div class="alert alert-error alert-sm">
+                            <x-icon name="o-exclamation-triangle" class="w-4 h-4" />
+                            <span class="text-sm">Gecikmiş Ödeme Mevcut</span>
+                        </div>
+                    @endif
+                    @if($appointment->hasActiveOffer)
+                        <div class="alert alert-info alert-sm">
+                            <x-icon name="o-information-circle" class="w-4 h-4" />
+                            <span class="text-sm">Aktif Teklif Mevcut</span>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- Tamamla Tab -->
+        <div x-show="activeTab === 'finish'" class="space-y-4">
+            <x-form wire:submit="finish">
+                <livewire:components.client.client_service_appointment_dropdown
+                    wire:key="finish-services-{{ $appointment->id }}"
+                    :client_id="$appointment->client->id"
+                    label="Hizmetler"
+                    wire:model="appointmentClientServices" />
+
+                <div class="relative">
+                    <livewire:components.form.staff_dropdown
+                        wire:key="finish-staff-{{ $appointment->id }}"
+                        label="Personel"
+                        wire:model="finishUser"
+                        dropdownPosition="bottom" />
+                </div>
+
+                <x-textarea label="Açıklama" wire:model="messageApprove" />
+
+                <x-button label="Tamamla" 
+                         type="submit" 
+                         class="btn-primary w-full" 
+                         spinner="finish" />
+            </x-form>
+        </div>
+
+        <!-- Merkezde Tab -->
+        <div x-show="activeTab === 'merkezde'" class="space-y-4">
+            <x-form wire:submit="confirmAppointment">
+                <x-select label="Durum"
+                         wire:model="merkezdeTeyitliStatus"
+                         :options="$merkezdeTeyitliStatuses" />
+
+                <x-textarea label="Açıklama" wire:model="messageMerkezde" />
+
+                <x-button label="Kaydet" 
+                         type="submit" 
+                         class="btn-primary w-full" 
+                         spinner="confirmAppointment" />
+            </x-form>
+        </div>
+
+        <!-- Yönlendir Tab -->
+        <div x-show="activeTab === 'forward'" class="space-y-4">
+            <x-form wire:submit="forwardAppointment">
+                <div class="relative">
+                    <livewire:components.form.staff_dropdown
+                        wire:key="forward-staff-{{ $appointment->id }}"
+                        label="Personel"
+                        wire:model="forwardUser"
+                        dropdownPosition="bottom" />
+                </div>
+
+                <x-textarea label="Açıklama" wire:model="messageForward" />
+
+                <x-button label="Yönlendir" 
+                         type="submit" 
+                         class="btn-primary w-full" 
+                         spinner="forwardAppointment" />
+            </x-form>
+        </div>
+
+        <!-- İptal Tab -->
+        <div x-show="activeTab === 'cancel'" class="space-y-4">
+            <x-form wire:submit="cancelAppointment">
+                <x-alert title="Dikkat!"
+                        description="İptal ettiğinizde seanslar geri yüklenir ve bu işlem geri alınamaz."
+                        class="alert-error mb-4" />
+
+                <x-textarea label="İptal Nedeni" wire:model="messageCancel" />
+
+                <x-button label="İptal Et" 
+                         type="submit" 
+                         class="btn-error w-full" 
+                         spinner="cancelAppointment" />
+            </x-form>
+        </div>
+
+        <!-- Geçmiş Tab -->
+        <div x-show="activeTab === 'history'" class="space-y-3">
+            @foreach ($appointment->appointmentStatuses as $status)
+                <div class="card bg-base-200">
+                    <div class="card-body p-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="badge badge-{{ $status->status->color() }} mb-1">
+                                    {{ $status->status->label() }}
+                                </span>
+                                <p class="text-sm">{{ $status->message }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-medium">{{ $status->user->name }}</p>
+                                <p class="text-xs opacity-70">{{ $status->dateHuman }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
 </div>

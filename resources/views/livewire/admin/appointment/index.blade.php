@@ -162,232 +162,243 @@ new #[\Livewire\Attributes\Title('Randevu')] #[Lazy] class extends \Livewire\Vol
 
 ?>
 <div>
-    <x-header
-        title=" {{ $branchName ?? '' }} - {{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}"
-        separator
-        progress-indicator
-    >
+    <!-- Header -->
+    <x-header title="Randevular" separator progress-indicator>
         <x-slot:middle>
-            <x-datepicker wire:model.live="date" :config="$date_config" />
+            <div class="flex items-center gap-3">
+                <x-datepicker wire:model.live="date" :config="$date_config" />
+
+                <!-- Özel Şube Seçici -->
+                <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                    <button @click="open = !open" class="btn btn-outline gap-2">
+                        <x-icon name="o-building-office-2" class="w-5 h-5" />
+                        <span>{{ $branchName ?? 'Şube Seç' }}</span>
+                    </button>
+                    <div x-show="open" 
+                         x-transition
+                         class="absolute right-0 mt-2 w-56 bg-base-100 rounded-lg shadow-xl z-50">
+                        <div class="p-2">
+                            @foreach (auth()->user()->staff_branch as $branch)
+                                <button wire:click="filterBranch({{ $branch->id }})"
+                                        @click="open = false"
+                                        class="w-full text-left px-4 py-2 text-sm hover:bg-base-200 rounded-lg">
+                                    {{ $branch->name }}
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
         </x-slot:middle>
 
         <x-slot:actions>
-            <x-dropdown label="🏬 Şube Seç">
-                @foreach (auth()->user()->staff_branch as $branch)
-                    <x-menu-item
-                        @click="$wire.filterBranch({{ $branch->id }})"
-                        title="{{ $branch->name }}"
-                    />
-                @endforeach
-                <x-slot:trigger>
-                    <x-button class="btn-outline" label="🏬 {{ $branchName ?? 'Şube' }}" />
-                </x-slot:trigger>
-            </x-dropdown>
+            <!-- Özel Filtre Dropdown -->
+            <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                <button @click="open = !open" class="btn btn-outline gap-2">
+                    <x-icon name="o-funnel" class="w-5 h-5" />
+                    <span>Filtrele</span>
+                </button>
 
-            <x-dropdown label="⚙️ Ayarlar" class="btn-outline">
-                @foreach (\App\AppointmentStatus::cases() as $status)
-                    <x-menu-item @click.stop="">
-                        <x-checkbox
-                            wire:model="statutes.{{ $status->name }}"
-                            label="{{ $status->label() }}"
-                        />
-                    </x-menu-item>
-                @endforeach
-                <x-menu-item>
-                    <x-button
-                        class="btn-outline btn-sm"
-                        label="🔍 Filtrele"
-                        wire:click="filterStatus"
-                    />
-                </x-menu-item>
-                <x-slot:trigger>
-                    <x-button class="btn-outline" label="🔍 Filtrele" />
-                </x-slot:trigger>
-            </x-dropdown>
+                <div x-show="open" 
+                     x-transition
+                     class="absolute right-0 mt-2 w-72 bg-base-100 rounded-lg shadow-xl z-50">
+                    <div class="p-4 space-y-4">
+                        <!-- Durum Filtreleri -->
+                        <div>
+                            <div class="font-medium text-sm mb-2">Durumlar</div>
+                            <div class="space-y-2">
+                                @foreach (\App\AppointmentStatus::cases() as $status)
+                                    <label class="flex items-center gap-2 cursor-pointer hover:bg-base-200 p-2 rounded-lg">
+                                        <input type="checkbox" 
+                                               class="checkbox checkbox-sm" 
+                                               wire:model.defer="statutes.{{ $status->name }}" />
+                                        <span class="text-sm">{{ $status->label() }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                            <div class="mt-3">
+                                <button wire:click="filterStatus" 
+                                        @click="open = false"
+                                        class="btn btn-primary btn-sm w-full">
+                                    Durumları Uygula
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="divider my-2"></div>
+
+                        <!-- Görünüm Seçenekleri -->
+                        <div>
+                            <div class="font-medium text-sm mb-2">Görünüm</div>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 cursor-pointer hover:bg-base-200 p-2 rounded-lg">
+                                    <input type="checkbox" 
+                                           class="checkbox checkbox-sm" 
+                                           wire:model.live="showOnlyActive" />
+                                    <span class="text-sm">Sadece Aktifler</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:bg-base-200 p-2 rounded-lg">
+                                    <input type="checkbox" 
+                                           class="checkbox checkbox-sm" 
+                                           wire:model.live="showGaps" />
+                                    <span class="text-sm">Boşlukları Göster</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="divider my-2"></div>
+
+                        <!-- Sıralama -->
+                        @if (1==2)
+                        <div>
+                            <div class="font-medium text-sm mb-2">Sıralama</div>
+                            <div class="space-y-1">
+                                @foreach($sortBy as $sort)
+                                    <button wire:click="filterSort('{{ $sort['key'] }}')"
+                                            class="w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-base-200 rounded-lg {{ $sortKey === $sort['key'] ? 'bg-primary/10' : '' }}">
+                                        <x-icon :name="$sort['icon']" class="w-4 h-4" />
+                                        <span>{{ $sort['name'] }}</span>
+                                        @if($sortKey === $sort['key'])
+                                            <x-icon name="o-check" class="w-4 h-4 ml-auto text-primary" />
+                                        @endif
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
         </x-slot:actions>
     </x-header>
-    <div>
-        <div>
-            <div class="flex items-center mb-4 space-x-4">
-                <label class="inline-flex items-center">
-                    <input type="checkbox" class="checkbox checkbox-primary" wire:model.live="showOnlyActive">
-                    <span class="ml-2 text-sm font-semibold text-base-content">Sadece Aktifleri Göster</span>
-                </label>
-                <label class="inline-flex items-center">
-                    <input type="checkbox" class="checkbox checkbox-secondary" wire:model.live="showGaps">
-                    <span class="ml-2 text-sm font-semibold text-base-content">Boşlukları Göster</span>
-                </label>
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-                @foreach ($appointments_group as $room)
-                    <div class="col-span-1">
-                        {{-- Oda Adı ve Kalanlar (Başlık Kartı) --}}
-                        <div
-                            class="flex items-center justify-between bg-base-100 p-3 rounded mb-4 sticky top-0 z-10">
-                            <span class="text-lg font-bold text-primary">💆‍♀️ {{ $room->name }}</span>
-                            <p class="text-sm text-secondary font-semibold">
-                                ⏳ {{ $room->appointments->whereIn('status', \App\AppointmentStatus::active()->all())->count() }}
-                                Kalan -
-                                {{ $room->appointments->whereIn('status', \App\AppointmentStatus::active()->all())->sum('duration') }}
-                                DK
-                            </p>
-                        </div>
-
-
-                        {{-- Kart (Randevuları İçeriyor) --}}
-                        <div class="flex flex-col space-y-4">
-                            @php
-                                $filteredAppointments = $showOnlyActive
-                                    ? $room->appointments->whereIn('status', \App\AppointmentStatus::active()->all())->values()
-                                    : $room->appointments
-                                        ->whereIn('status', array_merge(\App\AppointmentStatus::active()->all(), [
-                                            \App\AppointmentStatus::finish,
-                                        ]))
-                                        ->sortBy('date_start')
-                                        ->values();
-
-                                $cancelled = $room->appointments
-                                    ->where('status', \App\AppointmentStatus::cancel)
-                                    ->sortBy('date_start')
-                                    ->values();
-                            @endphp
-
-                            @if ($filteredAppointments->isEmpty())
-                                <p class="text-center text-base-content font-semibold flex flex-col items-center">
-                                    <span class="text-2xl mb-2">📅</span>
-                                    <span>Henüz randevu bulunmuyor!</span>
+    <!-- Ana İçerik -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        @foreach ($appointments_group as $room)
+            <div class="card bg-base-100">
+                <!-- Oda Başlığı -->
+                <div class="card-header p-4 border-b border-base-200 sticky top-0 bg-base-100 z-20">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="avatar placeholder">
+                                <div class="w-8 h-8 rounded-lg bg-primary/10">
+                                    <span class="text-primary">🏠</span>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-bold">{{ $room->name }}</h3>
+                                <p class="text-xs opacity-70">
+                                    {{ $room->appointments->whereIn('status', \App\AppointmentStatus::active()->all())->count() }} Aktif Randevu
                                 </p>
-
-                            @else
-                                {{-- Filtrelenmiş Randevular --}}
-                                @foreach ($filteredAppointments as $index => $appointment)
-                                    @php
-                                        $isCompleted = ($appointment->status === \App\AppointmentStatus::finish);
-                                    @endphp
-
-                                    {{-- Biten Randevu --}}
-                                    @if ($isCompleted)
-                                        <div
-                                            class="flex justify-between items-center text-sm font-semibold text-base-content border-l-4 border-success p-1 rounded cursor-pointer"
-                                            wire:click="$dispatch('slide-over.open', {component: 'modals.appointment.appointment-modal', arguments: {'appointment': {{ $appointment->id }}}})">
-                                            <div>
-                                                ⏰ {{ $appointment->date_start->format('H:i') }}
-                                                - {{ $appointment->date_end->format('H:i') }}
-                                                • {{ $appointment->client->name }}
-                                            </div>
-                                            <div class="flex items-center space-x-2">
-                                                <span>{{ $appointment->finish_user->name }}</span>
-                                                <span
-                                                    class="badge badge-{{ $appointment->status->color() }}">{{ $appointment->status->label() }}</span>
-                                            </div>
-                                        </div>
-                                    @else
-                                        {{-- Aktif Randevu (Kart) --}}
-                                        <div
-                                            class="border-l-4 border-primary p-2 bg-base-100 rounded-lg cursor-pointer"
-                                            wire:click="$dispatch('slide-over.open', {component: 'modals.appointment.appointment-modal', arguments: {'appointment': {{ $appointment->id }}}})"
-                                        >
-                                            <!-- Başlık -->
-                                            <div class="flex justify-between items-center mb-4">
-                                                <div>
-                                                    <p class="text-lg font-bold text-primary">
-                                                        ⏰ {{ $appointment->date_start->format('H:i') }}
-                                                        - {{ $appointment->date_end->format('H:i') }}</p>
-                                                </div>
-                                                <span class="badge badge-{{ $appointment->status->color() }} text-sm">
-            {{ $appointment->status->label() }}
-        </span>
-                                            </div>
-
-                                            <!-- Müşteri ve Hizmet Bilgisi -->
-                                            <div class="mb-4">
-                                                <p class="text-base font-semibold text-base-content">
-                                                    👤 {{ $appointment->client->name }}</p>
-                                                <p class="text-sm text-neutral-content">✨
-                                                    Hizmet: {{ $appointment->serviceNames }}</p>
-                                            </div>
-
-                                            <!-- Süre, Gecikmiş Ödeme, ve Aktif Teklif -->
-                                            <div class="flex text-sm text-center">
-                                                <div class="py-2 px-2">
-                                                    <span
-                                                        class="block">🕒 Süre: {{ $appointment->duration }} DK</span>
-                                                </div>
-                                                <div class="py-2 px-4">
-                                                    <span
-                                                        class="block">💰 Gecikmiş: {{ $appointment->hasDelayedPayment ? 'Evet' : 'Hayır' }}</span>
-                                                </div>
-                                                <div class="py-2 px-4">
-                                                    <span
-                                                        class="block">📜 Teklif: {{ $appointment->hasActiveOffer ? 'Evet' : 'Hayır' }}</span>
-                                                </div>
-
-                                            </div>
-
-
-                                        </div>
-
-                                    @endif
-
-                                    {{-- GAP (Randevular Arasında) --}}
-                                    @if ($showGaps)
-                                        @php
-                                            $nextApt = $filteredAppointments[$index + 1] ?? null;
-                                            $gapMinutes = $nextApt
-                                                ? $appointment->date_end->diffInMinutes($nextApt->date_start)
-                                                : 0;
-                                        @endphp
-                                        @if ($gapMinutes > 0)
-                                            @php
-                                                $gap_hours = intdiv($gapMinutes, 60);
-                                                $gap_mins  = $gapMinutes % 60;
-                                                $gap_display = $gap_hours > 0
-                                                    ? "{$gap_hours} Saat {$gap_mins} DK"
-                                                    : "{$gapMinutes} DK";
-                                            @endphp
-                                            <div
-                                                class="flex justify-between items-center text-sm font-semibold text-base-content border-l-4 border-warning p-2 rounded cursor-pointer">
-                                                <div>
-                                                    🕒 Boşluk: {{ $gap_display }}
-                                                </div>
-                                            </div>
-                                        @endif
-                                    @endif
-                                @endforeach
-                            @endif
-
-                            {{-- İptal Randevular --}}
-                            @if (!$showOnlyActive && $cancelled->count())
-                                <x-hr class="my-4" />
-                                @foreach ($cancelled as $appointment)
-                                    <div class="border-l-4 border-error p-3 bg-base-100 rounded-md mb-2 cursor-pointer"
-                                         wire:click="$dispatch('slide-over.open', {component: 'modals.appointment.appointment-modal', arguments: {'appointment': {{ $appointment->id }}}})">
-                                        <div class="flex justify-between items-center">
-                                            <div class="text-sm font-semibold text-base-content flex space-x-2">
-                                        <span>
-                                            ⏰
-                                            {{ $appointment->date_start->format('H:i') }}
-                                            -
-                                            {{ $appointment->date_end->format('H:i') }}
-                                        </span>
-                                                <span>
-                                            • {{ $appointment->client->name }}
-                                        </span>
-                                            </div>
-                                            <span
-                                                class="badge badge-{{ $appointment->status->color() }} badge-sm text-xs font-semibold"
-                                            >
-                                        {{ $appointment->status->label() }}
-                                    </span>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            @endif
+                            </div>
+                        </div>
+                        <div class="badge badge-primary">
+                            {{ $room->appointments->whereIn('status', \App\AppointmentStatus::active()->all())->sum('duration') }} DK
                         </div>
                     </div>
-                @endforeach
+                </div>
+
+                <!-- Randevular -->
+                <div class="card-body p-4 space-y-3">
+                    @php
+                        $filteredAppointments = $showOnlyActive
+                            ? $room->appointments->whereIn('status', \App\AppointmentStatus::active()->all())->values()
+                            : $room->appointments->whereIn('status', array_merge(\App\AppointmentStatus::active()->all(), [\App\AppointmentStatus::finish]))->sortBy('date_start')->values();
+                        $cancelled = $room->appointments->where('status', \App\AppointmentStatus::cancel)->sortBy('date_start')->values();
+                    @endphp
+
+                    @forelse($filteredAppointments as $index => $appointment)
+                        <!-- Randevu Kartı -->
+                        <div class="card bg-base-200 hover:bg-base-300 transition-colors cursor-pointer"
+                             wire:click="$dispatch('slide-over.open', {component: 'modals.appointment.appointment-modal', arguments: {'appointment': {{ $appointment->id }}}})">
+                            <div class="card-body p-3">
+                                <!-- Üst Bilgiler -->
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <span class="badge badge-{{ $appointment->status->color() }}">
+                                            {{ $appointment->status->label() }}
+                                        </span>
+                                        <span class="text-sm font-medium">
+                                            {{ $appointment->date_start->format('H:i') }} - {{ $appointment->date_end->format('H:i') }}
+                                        </span>
+                                    </div>
+                                    <div class="text-sm opacity-70">{{ $appointment->duration }} DK</div>
+                                </div>
+
+                                <!-- Müşteri ve Hizmet -->
+                                <div class="mt-2">
+                                    <div class="flex items-center gap-2">
+                                        <div class="avatar placeholder">
+                                            <div class="w-6 h-6 rounded-full bg-neutral/10">
+                                                <span class="text-neutral text-xs">👤</span>
+                                            </div>
+                                        </div>
+                                        <span class="font-medium">{{ $appointment->client->name }}</span>
+                                    </div>
+                                    <div class="mt-1 text-sm opacity-70">
+                                        {{ $appointment->serviceNames }}
+                                    </div>
+                                </div>
+
+                                <!-- Alt Bilgiler -->
+                                <div class="mt-2 flex items-center gap-4 text-xs">
+                                    @if($appointment->hasDelayedPayment)
+                                        <span class="text-error">Gecikmiş Ödeme</span>
+                                    @endif
+                                    @if($appointment->hasActiveOffer)
+                                        <span class="text-primary">Aktif Teklif</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Boşluk Gösterimi -->
+                        @if ($showGaps)
+                            @php
+                                $nextApt = $filteredAppointments[$index + 1] ?? null;
+                                $gapMinutes = $nextApt ? $appointment->date_end->diffInMinutes($nextApt->date_start) : 0;
+                            @endphp
+                            @if ($gapMinutes > 0)
+                                <div class="flex items-center gap-2 p-2 bg-warning/10 rounded-lg">
+                                    <x-icon name="o-clock" class="w-4 h-4 text-warning" />
+                                    <span class="text-sm">
+                                        {{ $gapMinutes >= 60 
+                                            ? floor($gapMinutes / 60) . ' Saat ' . ($gapMinutes % 60) . ' DK'
+                                            : $gapMinutes . ' DK' 
+                                        }} Boş
+                                    </span>
+                                </div>
+                            @endif
+                        @endif
+                    @empty
+                        <div class="text-center py-6">
+                            <div class="avatar placeholder mb-3">
+                                <div class="w-12 h-12 rounded-full bg-base-300">
+                                    <span class="text-2xl">📅</span>
+                                </div>
+                            </div>
+                            <p class="text-sm opacity-70">Randevu bulunmuyor</p>
+                        </div>
+                    @endforelse
+
+                    <!-- İptal Edilmiş Randevular -->
+                    @if(!$showOnlyActive && $cancelled->count())
+                        <div class="divider text-xs opacity-50">İptal Edilenler</div>
+                        @foreach($cancelled as $appointment)
+                            <div class="p-2 bg-base-200 rounded-lg opacity-50 hover:opacity-100 transition-opacity cursor-pointer"
+                                 wire:click="$dispatch('slide-over.open', {component: 'modals.appointment.appointment-modal', arguments: {'appointment': {{ $appointment->id }}}})">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-sm">{{ $appointment->date_start->format('H:i') }}</span>
+                                        <span class="text-sm font-medium">{{ $appointment->client->name }}</span>
+                                    </div>
+                                    <span class="badge badge-sm badge-error">İptal</span>
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
+                </div>
             </div>
-        </div>
+        @endforeach
     </div>
 </div>

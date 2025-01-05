@@ -17,35 +17,20 @@ class AppointmentModal extends SlideOver
     use Toast;
 
     public int|Appointment $appointment;
-
-    public $group = 'info';
-
+    public string $activeTab = 'info';
     public $messageMerkezde;
-
     public $merkezdeTeyitliStatus = 'teyitli';
-
     public $merkezdeTeyitliStatuses = [];
-
     public $allowMerkezde = [];
-
     public $allowForward = [];
-
     public $allowCancel = [];
-
     public $allowFinish = [];
-
     public $appointmentClientServices = [];
-
     public $messageStatus;
-
     public $finishUser = null;
-
     public $messageApprove;
-
     public $forwardUser;
-
     public $messageForward;
-
     public $messageCancel;
 
     public function mount(Appointment $appointment)
@@ -53,16 +38,14 @@ class AppointmentModal extends SlideOver
         $this->appointment = $appointment->load('client:id,name,phone', 'serviceRoom:id,name', 'services.service');
 
         $this->appointmentClientServices = $this->appointment->status == AppointmentStatus::finish
-        ? $this->appointment->finish_service_ids
-        : $this->appointment->service_ids;
+            ? $this->appointment->finish_service_ids
+            : $this->appointment->service_ids;
 
         $this->dispatch('reload-services', $this->appointment->client_id, $this->appointmentClientServices, 'yok');
 
         $this->merkezdeTeyitliStatuses = [
-            ['id' => AppointmentStatus::merkez->name,
-                'name' => AppointmentStatus::merkez->label()],
-            ['id' => AppointmentStatus::teyitli->name,
-                'name' => AppointmentStatus::teyitli->label()],
+            ['id' => AppointmentStatus::merkez->name, 'name' => AppointmentStatus::merkez->label()],
+            ['id' => AppointmentStatus::teyitli->name, 'name' => AppointmentStatus::teyitli->label()],
         ];
 
         $this->allowMerkezde = [
@@ -72,9 +55,7 @@ class AppointmentModal extends SlideOver
             AppointmentStatus::merkez,
         ];
 
-        $this->allowCancel = [
-            AppointmentStatus::cancel,
-        ];
+        $this->allowCancel = [AppointmentStatus::cancel];
 
         $this->allowForward = [
             AppointmentStatus::waiting,
@@ -137,7 +118,6 @@ class AppointmentModal extends SlideOver
         $this->dispatch('refresh-appointments');
         $this->success('Randevu onaylandı.');
         $this->close();
-
     }
 
     public function confirmAppointment(): void
