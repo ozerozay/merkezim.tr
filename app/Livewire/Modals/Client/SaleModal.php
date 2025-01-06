@@ -15,117 +15,116 @@ class SaleModal extends SlideOver
 
     public int|Sale $sale;
 
+    // Form alanları
     public ?string $messageDelete = null;
-
     public ?string $messageEdit = null;
-
     public ?string $messageStatus = null;
-
     public $sale_staffs = [];
-
     public $sale_type;
-
     public $sale_date;
-
     public $expire_date;
-
     public $sale_status;
-
     public $freeze_date;
-
     public string $group = 'group1';
+
+    // Validasyon kuralları
+    protected array $editRules = [
+        'messageEdit' => 'required',
+        'sale_type' => 'required',
+        'expire_date' => 'nullable|after:today',
+        'sale_date' => 'required',
+        'sale_staffs' => 'nullable',
+    ];
+
+    protected array $statusRules = [
+        'messageStatus' => 'required',
+        'sale_status' => 'required',
+        'freeze_date' => 'required_if:sale_status,freeze',
+    ];
+
+    protected array $deleteRules = [
+        'messageDelete' => 'required',
+    ];
 
     public function mount(Sale $sale): void
     {
         $this->sale = $sale;
+        $this->initializeFormData();
+    }
 
+    protected function initializeFormData(): void
+    {
         $this->sale_type = $this->sale->sale_type_id;
         $this->sale_date = $this->sale->date;
         $this->sale_staffs = $this->sale->staffs;
         $this->expire_date = $this->sale->expire_date;
-
         $this->sale_status = $this->sale->status;
     }
 
     public function changeStatus(): void
     {
-        $validator = \Validator::make([
-            'id' => $this->sale->id,
-            'message' => $this->messageStatus,
-            'status' => $this->sale_status,
-            'freeze_date' => $this->freeze_date,
-        ], [
-            'id' => 'required',
-            'message' => 'required',
-            'status' => 'required',
-            'freeze_date' => 'required_if:status,freeze',
-        ]);
+        try {
+            $data = $this->validate($this->statusRules);
 
-        if ($validator->fails()) {
-            $this->error($validator->messages()->first());
+            UpdateSaleStatusAction::run([
+                'id' => $this->sale->id,
+                'message' => $this->messageStatus,
+                'status' => $this->sale_status,
+                'freeze_date' => $this->freeze_date,
+            ]);
 
-            return;
+            $this->handleSuccess('Durum düzenlendi.');
+        } catch (\Exception $e) {
+            $this->handleError($e->getMessage());
         }
-
-        UpdateSaleStatusAction::run($validator->validated());
-
-        $this->dispatch('refresh-client-sales');
-        $this->success('Durum düzenlendi.');
-        $this->close();
     }
 
     public function edit(): void
     {
-        $validator = \Validator::make([
-            'id' => $this->sale->id,
-            'message' => $this->messageEdit,
-            'sale_type_id' => $this->sale_type,
-            'expire_date' => $this->expire_date,
-            'date' => $this->sale_date,
-            'staffs' => $this->sale_staffs,
-        ], [
-            'id' => 'required',
-            'message' => 'required',
-            'sale_type_id' => 'required',
-            'expire_date' => 'nullable|after:today',
-            'date' => 'required',
-            'staffs' => 'nullable',
-        ]);
+        try {
+            $data = $this->validate($this->editRules);
 
-        if ($validator->fails()) {
-            $this->error($validator->messages()->first());
+            UpdateSaleAction::run([
+                'id' => $this->sale->id,
+                'message' => $this->messageEdit,
+                'sale_type_id' => $this->sale_type,
+                'expire_date' => $this->expire_date,
+                'date' => $this->sale_date,
+                'staffs' => $this->sale_staffs,
+            ]);
 
-            return;
+            $this->handleSuccess('Satış düzenlendi.');
+        } catch (\Exception $e) {
+            $this->handleError($e->getMessage());
         }
-
-        UpdateSaleAction::run($validator->validated());
-
-        $this->dispatch('refresh-client-sales');
-        $this->success('Satış düzenlendi.');
-        $this->close();
     }
 
     public function delete(): void
     {
-        $validator = \Validator::make([
-            'id' => $this->sale->id,
-            'message' => $this->messageDelete,
-        ], [
-            'id' => 'required|exists:sale',
-            'message' => 'required',
-        ]);
+        try {
+            $data = $this->validate($this->deleteRules);
 
-        if ($validator->fails()) {
-            $this->error($validator->messages()->first());
+            DeleteSaleAction::run([
+                'id' => $this->sale->id,
+                'message' => $this->messageDelete,
+            ]);
 
-            return;
+            $this->handleSuccess('Satış silindi.');
+        } catch (\Exception $e) {
+            $this->handleError($e->getMessage());
         }
+    }
 
-        DeleteSaleAction::run($validator->validated());
-
+    protected function handleSuccess(string $message): void
+    {
         $this->dispatch('refresh-client-sales');
-        $this->success('Satış silindi.');
+        $this->success($message);
         $this->close();
+    }
+
+    protected function handleError(string $message): void
+    {
+        $this->error($message);
     }
 
     public function render()

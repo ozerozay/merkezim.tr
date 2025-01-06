@@ -32,6 +32,38 @@ export default {
     daisyui: {
         themes: [
             {
+                shadcnTema: {
+                    primary: "#09090B",
+                    "primary-focus": "#18181B",
+                    "primary-content": "#ffffff",
+                    secondary: "#3F3F46",
+                    "secondary-focus": "#52525B",
+                    "secondary-content": "#ffffff",
+                    accent: "#27272A",
+                    "accent-focus": "#3F3F46",
+                    "accent-content": "#ffffff",
+                    "base-100": "#ffffff",
+                    "base-200": "#fafafa",
+                    "base-300": "#f4f4f5"
+                }
+            },
+            {
+                shadcnTemaDark: {
+                    primary: "#18181B",
+                    "primary-focus": "#27272A",
+                    "primary-content": "#ffffff",
+                    secondary: "#3F3F46",
+                    "secondary-focus": "#52525B",
+                    "secondary-content": "#ffffff",
+                    accent: "#27272A",
+                    "accent-focus": "#3F3F46",
+                    "accent-content": "#ffffff",
+                    "base-100": "#09090B",
+                    "base-200": "#18181B",
+                    "base-300": "#27272A"
+                }
+            },
+            {
                 morTema: {
                     primary: "#FF69B4",        // Pembe
                     "primary-focus": "#FF1493",
