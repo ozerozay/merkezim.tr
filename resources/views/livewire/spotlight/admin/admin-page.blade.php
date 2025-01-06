@@ -60,7 +60,7 @@
     </x-header>
 
     <!-- Widget'lar -->
-    <livewire:admin.dashboard-widgets wire:key="dashboard-widgets-{{ Str::random(10) }}" />
+    <livewire:admin.dashboard-widgets wire:key="dxsashboard-widgets-{{ Str::random(10) }}" />
         
     <!-- Tema Değiştirici -->
   
