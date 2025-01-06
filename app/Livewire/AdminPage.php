@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\AdminHomeWidget;
 use App\Enum\AdminHomeWidgetType;
 use Livewire\Component;
+use Illuminate\Support\Str;
 
 class AdminPage extends Component
 {
@@ -21,9 +22,11 @@ class AdminPage extends Component
         'this_year' => 'Bu Yıl',
         'last_year' => 'Geçen Yıl'
     ];
+    public $uniqueId;
 
     public function mount()
     {
+        $this->uniqueId = Str::random(10); // Benzersiz bir ID oluştur
         $this->loadUserWidgets();
     }
 
@@ -102,6 +105,11 @@ class AdminPage extends Component
     public function updatedSelectedDateRange($value)
     {
         $this->dispatch('dateRangeChanged', range: $value);
+    }
+
+    public function setTheme($theme)
+    {
+        $this->dispatch('theme-changed', theme: $theme);
     }
 
     public function render()

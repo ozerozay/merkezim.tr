@@ -4,15 +4,17 @@ namespace App\Livewire\Admin;
 
 use App\Models\AdminHomeWidget;
 use Livewire\Component;
+use Illuminate\Support\Str;
 
 class DashboardWidgets extends Component
 {
     public $widgets;
     public $loadedWidgets = [];
-    protected $listeners = ['widgetLoaded'];
+    public $uniqueId;
 
     public function mount(): void
     {
+        $this->uniqueId = Str::random(10);
         $this->widgets = auth()->user()->adminHomeWidgets()->orderBy('order')->get();
         foreach ($this->widgets as $widget) {
             $this->loadedWidgets[$widget->id] = false;
@@ -21,34 +23,18 @@ class DashboardWidgets extends Component
 
     public function loadWidget($widgetId): void
     {
-        $this->loadedWidgets[$widgetId] = true;
-        $this->dispatch('widgetLoaded', widgetId: $widgetId);
-    }
-
-    public function widgetLoaded($widgetId): void
-    {
-        $this->loadedWidgets[$widgetId] = true;
-    }
-
-    public function toggleWidget($id): void
-    {
-        $widget = AdminHomeWidget::query()->find($id);
-        if ($widget) {
-            $widget->update(['visible' => ! $widget->visible]);
+        if (!isset($this->loadedWidgets[$widgetId])) {
+            $this->loadedWidgets[$widgetId] = false;
         }
-        $this->mount();
-    }
-
-    public function updateOrder($order): void
-    {
-        foreach ($order as $index => $id) {
-            AdminHomeWidget::query()->where('id', $id)->update(['order' => $index + 1]);
-        }
-        $this->mount();
+        $this->loadedWidgets[$widgetId] = true;
     }
 
     public function render()
     {
-        return view('livewire.spotlight.admin.dashboard-widgets');
+        return view('livewire.spotlight.admin.dashboard-widgets', [
+            'widgets' => $this->widgets,
+            'loadedWidgets' => $this->loadedWidgets,
+            'uniqueId' => $this->uniqueId,
+        ]);
     }
 }
