@@ -114,7 +114,7 @@
 @livewire('modal-pro')
 <x-toast />
 @endpersist()
-
+<x-theme-toggle class="hidden" />
 
 </body>
 <script>

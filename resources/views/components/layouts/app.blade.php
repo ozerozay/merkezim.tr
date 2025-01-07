@@ -142,7 +142,22 @@
 
 
 </body>
+<script>
+    document.addEventListener("livewire:init", () => {
+        Livewire.hook("request", ({ fail }) => {
+            fail(({ status, preventDefault }) => {
+                if (status === 419) {
+                    // Sayfayı yenile
+                    location.reload();
 
+                    // Varsayılan davranışı engelle
+                    preventDefault();
+                }
+            });
+        });
+    });
+
+</script>
 <style type="text/css">
     table {
         @apply !static

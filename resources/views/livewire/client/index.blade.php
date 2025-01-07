@@ -24,20 +24,8 @@ new #[\Livewire\Attributes\Layout('components.layouts.client')] class extends \L
     <!-- Header Actions -->
     <div class="flex justify-end items-center gap-4">
         <!-- Tema Değiştirici -->
-        <button 
-            class="btn btn-ghost gap-2"
-            x-data
-            x-on:click="$dispatch('theme-changed', { theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark' })"
-        >
-            <span x-show="document.documentElement.getAttribute('data-theme') === 'dark'" x-cloak>
-                <x-icon name="tabler.sun" class="w-5 h-5" />
-                <span class="text-sm">Açık Tema</span>
-            </span>
-            <span x-show="document.documentElement.getAttribute('data-theme') !== 'dark'" x-cloak>
-                <x-icon name="tabler.moon" class="w-5 h-5" />
-                <span class="text-sm">Koyu Tema</span>
-            </span>
-        </button>
+        <x-theme-toggle class="btn btn-circle" />
+
 
         <!-- Dil Seçici -->
         <div class="dropdown dropdown-end">
