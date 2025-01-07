@@ -37,7 +37,7 @@ class ReservationPage extends Component
     {
         $this->selectedDate = Carbon::tomorrow()->format('Y-m-d');
         $this->preferredTime = $this->timePreferences[0]['id'];
-
+        //asd
         if (!auth()->check()) {
             $this->selectedBranch = Branch::where('active', true)->first()->id;
         } else {

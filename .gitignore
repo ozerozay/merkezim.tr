@@ -25,3 +25,5 @@ yarn-error.log
 frankenphp
 frankenphp-worker.php
 /public/tenancy/assets/build/
+rr
+.rr.yaml
