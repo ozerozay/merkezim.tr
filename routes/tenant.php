@@ -17,9 +17,11 @@ use App\Livewire\Reports\TaksitReport;
 use App\Livewire\Statistics\ClientStatistic;
 use App\Livewire\Web\Profil\AppointmentPage;
 use App\Livewire\Web\Profil\CouponPage;
+use App\Livewire\Web\Profil\CreateAppointmentPage;
 use App\Livewire\Web\Profil\EarnPage;
 use App\Livewire\Web\Profil\InvitePage;
 use App\Livewire\Web\Profil\OfferPage;
+use App\Livewire\Web\Profil\ReservationPage;
 use App\Livewire\Web\Profil\SeansPage;
 use App\Livewire\Web\Profil\TaksitPage;
 use App\Livewire\Web\Shop\PackagePage;
@@ -64,7 +66,7 @@ Route::middleware([
      });*/
 
     Route::any('/paysuccess', function () {
-        echo "<script type='text/javascript'>window.parent.postMessage({ type: 'triggerLivewireEvent', data: '".request()->get('id')."', status: 'success', message: 'Ödeme başarıyla alındı.' }, '*');
+        echo "<script type='text/javascript'>window.parent.postMessage({ type: 'triggerLivewireEvent', data: '" . request()->get('id') . "', status: 'success', message: 'Ödeme başarıyla alındı.' }, '*');
 </script>";
     });
     Route::any('/payerror', function () {
@@ -76,12 +78,10 @@ Route::middleware([
                 $payment->save();
             }
 
-            echo "<script type='text/javascript'>window.parent.postMessage({ type: 'triggerLivewireEvent', data: '".request()->get('id')."', status: 'error', message: '".request()->get('fail_message')."' }, '*');
+            echo "<script type='text/javascript'>window.parent.postMessage({ type: 'triggerLivewireEvent', data: '" . request()->get('id') . "', status: 'error', message: '" . request()->get('fail_message') . "' }, '*');
 </script>";
         } catch (\Throwable $e) {
-
         }
-
     });
     Volt::route('/login', 'login')->name('login');
 
@@ -97,15 +97,18 @@ Route::middleware([
 
     Volt::route('/', 'client.index')->name('client.index');
     Volt::route('/service', 'client.service')->name('client.service');
-    Volt::route('/contact', 'client.')->name('client.contact');
+    Volt::route('/contact', 'client.contact')->name('client.contact');
     Volt::route('/location', 'client.location')->name('client.location');
 
+
     Route::get('/shop/packages', PackagePage::class)->name('client.shop.packages');
+    Route::get('/reservation-request', ReservationPage::class)->name('client.profil.reservation-request');
 
     Route::middleware('auth')->group(function () {
 
         Route::get('/seans', SeansPage::class)->name('client.profil.seans')->middleware('minify');
         Route::get('/randevu', AppointmentPage::class)->name('client.profil.appointment');
+        Route::get('/randevu/create', CreateAppointmentPage::class)->name('client.profil.create-appointment-page');
         Route::get('/taksit', TaksitPage::class)->name('client.profil.taksit');
         Route::get('/teklif', OfferPage::class)->name('client.profil.offer');
         Route::get('/kupon', CouponPage::class)->name('client.profil.coupon');
@@ -160,7 +163,6 @@ Route::middleware([
             });
 
             Route::get('/wizard', WizardPage::class)->name('admin.wizard');
-
         })->middleware('role:admin,staff');
     });
 
@@ -230,7 +232,6 @@ Route::middleware([
                 ]);
             }
         }
-
     });
 
     Route::get('/setb', function () {
@@ -322,7 +323,6 @@ Route::middleware([
             'merchant_key' => encrypt('1GXhbbBFT5Cw492p'),
             'merchant_salt' => encrypt('NHfc2iinP1nekZwz'),
         ]);
-
     });
 
     Route::get('/ss', function () {});
@@ -356,7 +356,6 @@ Route::middleware([
             $sale->status = SaleStatus::success;
             $sale->save();
         }
-
     });
 
     Route::get('/tt', function () {
@@ -366,7 +365,5 @@ Route::middleware([
         foreach ($offer->items as $item) {
             dump($item);
         }
-
     });
-
 });

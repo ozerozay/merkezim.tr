@@ -10,23 +10,18 @@ class GetClientServiceCategory
 {
     use AsAction;
 
-    public function handle($client, $branch = null)
+    public function handle(array $data)
     {
         return ServiceCategory::query()
-            ->select(['id', 'name', 'active', 'branch_ids'])
+            ->whereHas('services', function ($query) use ($data) {
+                $query->whereHas('clientServices', function ($q) use ($data) {
+                    $q->where('client_id', $data['client_id'])
+                        ->where('remaining', '>', 0)
+                        ->where('status', SaleStatus::success);
+                });
+            })
             ->where('active', true)
-            ->whereHas('services', function ($q) use ($client) {
-                $q->whereHas('clientServices', function ($qc) use ($client) {
-                    $qc->where('client_id', $client)
-                        ->where('status', SaleStatus::success)
-                        ->where('remaining', '>', 0);
-                });
-            })
-            ->when($branch != null, function ($q) use ($branch) {
-                $q->whereHas('branches', function ($q) use ($branch) {
-                    $q->where('id', $branch);
-                });
-            })
+            ->orderBy('name')
             ->get();
     }
 }

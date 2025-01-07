@@ -18,7 +18,7 @@
             <div x-data="{ step: @entangle('step') }" class="w-full max-w-2xl mx-auto space-y-6">
                 <!-- Step 1: Appointment Type -->
                 <div x-show="step === 1" class="space-y-4">
-                    <h3 class="text-lg font-medium text-center mb-6">Randevu Türü Seçin</h3>
+                    <h3 class="text-lg font-medium text-center mb-6">{{ __('client.appointment_type_selection') }}</h3>
                     
                     <!-- Tek Randevu -->
                     <div @click="$wire.selectAppointmentType('date')" 

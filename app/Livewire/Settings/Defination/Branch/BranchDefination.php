@@ -80,6 +80,10 @@ class BranchDefination extends SlideOver
 
     public $client_page_appointment_create_branches = [];
 
+    public $client_page_appointment_show_stats = false;
+
+    public $client_page_seans_show_stats = false;
+
     #[Locked]
     public $payment_types = [
         [
@@ -112,10 +116,22 @@ class BranchDefination extends SlideOver
 
     public $appointment_create_branches = [];
 
+    #[Locked]
+    public $branches = [];
+
+    public $copy_from_branch_id;
+
     public function mount(): void
     {
         try {
-            $this->branch_id = 1;
+            $this->branches = auth()->user()->staff_branch()
+                ->where('active', true)
+                ->get(['id', 'name'])
+                ->toArray();
+
+            $this->branch_id = count($this->branches) === 1
+                ? $this->branches[0]['id']
+                : ($this->branches[0]['id'] ?? 1);
 
             $settings = Settings::query()
                 ->where('branch_id', $this->branch_id)
@@ -123,7 +139,6 @@ class BranchDefination extends SlideOver
 
             if ($settings) {
                 $data = $settings->data;
-
                 $this->fill($data);
             }
 
@@ -134,18 +149,30 @@ class BranchDefination extends SlideOver
                 ];
             }
 
-            foreach (auth()->user()->staff_branch()->where('active', true)->get() as $branch) {
-                $this->appointment_create_branches[] = [
-                    'id' => $branch->id,
-                    'name' => $branch->name,
-                ];
-            }
-
+            $this->appointment_create_branches = auth()->user()->staff_branch()
+                ->where('active', true)
+                ->get(['id', 'name'])
+                ->toArray();
         } catch (\Throwable $e) {
             $this->error('Lütfen tekrar deneyin.');
             $this->close();
         }
+    }
 
+    public function updatedBranchId()
+    {
+        try {
+            $settings = Settings::query()
+                ->where('branch_id', $this->branch_id)
+                ->first();
+
+            if ($settings) {
+                $data = $settings->data;
+                $this->fill($data);
+            }
+        } catch (\Throwable $e) {
+            $this->error('Şube ayarları yüklenirken bir hata oluştu.');
+        }
     }
 
     public function save(): void
@@ -186,6 +213,8 @@ class BranchDefination extends SlideOver
                     'client_page_appointment_create_branches' => $this->client_page_appointment_create_branches,
                     'client_page_shop_include_kdv' => $this->client_page_shop_include_kdv,
                     'client_page_appointment_cancel_time' => $this->client_page_appointment_cancel_time,
+                    'client_page_appointment_show_stats' => $this->client_page_appointment_show_stats,
+                    'client_page_seans_show_stats' => $this->client_page_seans_show_stats,
                 ],
                 [
                     // Boolean validation
@@ -234,6 +263,8 @@ class BranchDefination extends SlideOver
                     'payment_offer_include_komisyon' => 'decimal:0,2|min:0|max:99',
 
                     'client_page_appointment_cancel_time' => 'numeric|min:0',
+                    'client_page_appointment_show_stats' => 'boolean',
+                    'client_page_seans_show_stats' => 'boolean',
                 ]
             );
 
@@ -247,17 +278,59 @@ class BranchDefination extends SlideOver
                 ->where('branch_id', $this->branch_id)
                 ->update(['data' => $validator->validated()]);
 
-            cache()->forget('tenant.'.tenant()->id.'.settings'.$this->branch_id);
+            cache()->forget('tenant.' . tenant()->id . '.settings' . $this->branch_id);
 
-            \Cache::rememberForever('tenant.'.tenant()->id.'.settings'.$this->branch_id, function () {
+            \Cache::rememberForever('tenant.' . tenant()->id . '.settings' . $this->branch_id, function () {
                 return \App\Models\Settings::where('branch_id', 1)->first()->toArray()['data'];
             });
 
-            dump(cache()->get('tenant.'.tenant()->id.'.settings'.$this->branch_id));
-
+            $this->success('Ayarlar başarıyla kaydedildi.');
+            $this->close();
         } catch (\Throwable $e) {
             dump($e->getMessage());
-            $this->error('Lütfen tekrar deneyin.'.$e->getMessage());
+            $this->error('Lütfen tekrar deneyin.' . $e->getMessage());
+        }
+    }
+
+    public function copySettings(): void
+    {
+        try {
+            if (!$this->copy_from_branch_id || !$this->branch_id) {
+                $this->error('Lütfen kaynak ve hedef şubeleri seçin.');
+                return;
+            }
+
+            if ($this->copy_from_branch_id === $this->branch_id) {
+                $this->error('Aynı şubeye kopyalama yapamazsınız.');
+                return;
+            }
+
+            // Kaynak şubenin ayarlarını al
+            $sourceSettings = Settings::query()
+                ->where('branch_id', $this->copy_from_branch_id)
+                ->first();
+
+            if (!$sourceSettings) {
+                $this->error('Kaynak şube ayarları bulunamadı.');
+                return;
+            }
+
+            // Hedef şubeye ayarları kopyala
+            Settings::query()
+                ->where('branch_id', $this->branch_id)
+                ->update(['data' => $sourceSettings->data]);
+
+            // Cache'i temizle
+            cache()->forget('tenant.' . tenant()->id . '.settings' . $this->branch_id);
+
+            // Yeni ayarları yükle
+            $this->fill($sourceSettings->data);
+
+            $this->success('Ayarlar başarıyla kopyalandı.');
+
+            $this->close();
+        } catch (\Throwable $e) {
+            $this->error('Ayarlar kopyalanırken bir hata oluştu.');
         }
     }
 

@@ -84,7 +84,6 @@ class CreateAppointmentModal extends SlideOver
             $this->error('Lütfen tekrar deneyin.');
             $this->close();
         }
-
     }
 
     public function selectAppointmentType($type): void
@@ -124,13 +123,12 @@ class CreateAppointmentModal extends SlideOver
         $this->selectedCategory = $category;
 
         $this->goToService();
-
     }
 
     public function selectService(): void
     {
         $this->selectedServices = collect($this->selectedServices);
-        if ($this->selectedServices->isEmpty() || $this->selectedServices->doesntContain(fn ($value) => $value == true)) {
+        if ($this->selectedServices->isEmpty() || $this->selectedServices->doesntContain(fn($value) => $value == true)) {
             $this->warning('Hizmet seçmelisiniz.');
 
             return;
@@ -152,7 +150,6 @@ class CreateAppointmentModal extends SlideOver
             ->get();
 
         $this->goToDate();
-
     }
 
     public function goToBranch(): void
@@ -257,16 +254,17 @@ class CreateAppointmentModal extends SlideOver
                         'message' => $this->appointmentMessage,
                         'user_id' => auth()->user()->id,
                         'permission' => PermissionType::action_client_create_appointment->name,
-                    ], [
-                        'client_id' => 'required|exists:users,id',
-                        'category_id' => 'required|exists:service_categories,id',
-                        'service_ids' => 'required|array',
-                        'date' => 'required|date|after:now',
-                        'room_id' => 'required|exists:service_rooms,id',
-                        'message' => 'required',
-                        'user_id' => 'required|exists:users,id',
-                        'permission' => 'required',
-                    ]
+                    ],
+                [
+                    'client_id' => 'required|exists:users,id',
+                    'category_id' => 'required|exists:service_categories,id',
+                    'service_ids' => 'required|array',
+                    'date' => 'required|date|after:now',
+                    'room_id' => 'required|exists:service_rooms,id',
+                    'message' => 'required',
+                    'user_id' => 'required|exists:users,id',
+                    'permission' => 'required',
+                ]
             );
 
             if ($validator->fails()) {
@@ -289,7 +287,6 @@ class CreateAppointmentModal extends SlideOver
         } catch (\Throwable $e) {
             $this->error('Lütfen tekrar deneyin.');
         }
-
     }
 
     public function findAvaibleAppointmentsMulti(): void
@@ -338,10 +335,10 @@ class CreateAppointmentModal extends SlideOver
 
             foreach ($available_appointments_range as $key => $dates) {
                 foreach ($dates as $rangeDate) {
-                    $title = \Carbon\Carbon::createFromFormat('Y-m-d', $key)->format('d/m/Y').' - '.$rangeDate['name'];
+                    $title = \Carbon\Carbon::createFromFormat('Y-m-d', $key)->format('d/m/Y') . ' - ' . $rangeDate['name'];
                     foreach ($rangeDate['gaps'] as $gap) {
                         $toSelect[$title][] = [
-                            'id' => \Carbon\Carbon::createFromFormat('Y-m-d', $key)->format('d/m/Y').'||'.$rangeDate['name'].'||'.$gap,
+                            'id' => \Carbon\Carbon::createFromFormat('Y-m-d', $key)->format('d/m/Y') . '||' . $rangeDate['name'] . '||' . $gap,
                             'name' => $gap,
                         ];
                     }
@@ -358,9 +355,8 @@ class CreateAppointmentModal extends SlideOver
             }
 
             $this->available_appointments_range = $toSelect;
-
         } catch (\Throwable $e) {
-            $this->error('Lütfen daha sonra tekrar deneyin.'.$e->getMessage());
+            $this->error('Lütfen daha sonra tekrar deneyin.' . $e->getMessage());
         }
     }
 
@@ -376,7 +372,7 @@ class CreateAppointmentModal extends SlideOver
 
             $service_room_id = \App\Models\ServiceRoom::where('name', $value[1])->first()->id;
             $time_split = explode('-', $value[2]);
-            $range_date = \Carbon\Carbon::createFromFormat('d/m/Y H:i', $value[0].' '.$time_split[0])->format('Y-m-d H:i');
+            $range_date = \Carbon\Carbon::createFromFormat('d/m/Y H:i', $value[0] . ' ' . $time_split[0])->format('Y-m-d H:i');
 
             $this->createAppointmentManuel([
                 'client_id' => auth()->user()->id,
@@ -390,9 +386,8 @@ class CreateAppointmentModal extends SlideOver
                 'user_id' => auth()->user()->id,
                 'permission' => PermissionType::action_client_create_appointment->name,
             ]);
-
         } catch (\Throwable $e) {
-            $this->error('Lütfen daha sonra tekrar deneyin.'.$e->getMessage());
+            $this->error('Lütfen daha sonra tekrar deneyin.' . $e->getMessage());
         }
     }
 
@@ -440,10 +435,10 @@ class CreateAppointmentModal extends SlideOver
 
             foreach ($available_appointments_range as $key => $dates) {
                 foreach ($dates as $rangeDate) {
-                    $title = \Carbon\Carbon::createFromFormat('Y-m-d', $key)->format('d/m/Y').' - '.$rangeDate['name'];
+                    $title = \Carbon\Carbon::createFromFormat('Y-m-d', $key)->format('d/m/Y') . ' - ' . $rangeDate['name'];
                     foreach ($rangeDate['gaps'] as $gap) {
                         $toSelect[$title][] = [
-                            'id' => \Carbon\Carbon::createFromFormat('Y-m-d', $key)->format('d/m/Y').'||'.$rangeDate['name'].'||'.$gap,
+                            'id' => \Carbon\Carbon::createFromFormat('Y-m-d', $key)->format('d/m/Y') . '||' . $rangeDate['name'] . '||' . $gap,
                             'name' => $gap,
                         ];
                     }
@@ -461,7 +456,7 @@ class CreateAppointmentModal extends SlideOver
 
             $this->available_appointments_range = $toSelect;
         } catch (\Throwable $e) {
-            $this->error('Lütfen daha sonra tekrar deneyin.'.$e->getMessage());
+            $this->error('Lütfen daha sonra tekrar deneyin.' . $e->getMessage());
         }
     }
 

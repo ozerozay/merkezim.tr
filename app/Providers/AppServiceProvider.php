@@ -97,6 +97,7 @@ class AppServiceProvider extends ServiceProvider
             'shop_package' => 'App\Models\ShopPackage',
             'shop_service' => 'App\Models\ShopService',
             'admin_home_widget' => 'App\Models\AdminHomeWidget',
+            'web_form' => 'App\Models\WebForm',
         ]);
 
         Blade::directive('price', function ($price) {

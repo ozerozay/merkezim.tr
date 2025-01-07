@@ -6,6 +6,37 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    :root {
+        --background: theme('colors.light.background');
+        --foreground: theme('colors.light.foreground');
+        --primary: theme('colors.light.primary');
+        --secondary: theme('colors.light.secondary');
+        --muted: theme('colors.light.muted');
+        --border: theme('colors.light.border');
+    }
+
+    .dark {
+        --background: theme('colors.dark.background');
+        --foreground: theme('colors.dark.foreground');
+        --primary: theme('colors.dark.primary');
+        --secondary: theme('colors.dark.secondary');
+        --muted: theme('colors.dark.muted');
+        --border: theme('colors.dark.border');
+    }
+
+    body {
+        @apply bg-[var(--background)] text-[var(--foreground)];
+    }
+}
+
+/* Utility classes */
+.bg-primary { @apply bg-[var(--primary)]; }
+.bg-secondary { @apply bg-[var(--secondary)]; }
+.bg-muted { @apply bg-[var(--muted)]; }
+.border-color { @apply border-[var(--border)]; }
+.text-primary { @apply text-[var(--primary)]; }
+.text-secondary { @apply text-[var(--secondary)]; }
 
 /* Table pagination: active page highlight */
 .mary-table-pagination span[aria-current="page"] > span {

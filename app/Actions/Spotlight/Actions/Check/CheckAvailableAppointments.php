@@ -8,6 +8,7 @@ use App\Models\Branch;
 use App\Models\ServiceRoom;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Support\Collection;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Spatie\OpeningHours\OpeningHours;
 
@@ -15,175 +16,157 @@ class CheckAvailableAppointments
 {
     use AsAction;
 
-    public function handle($info): array|\Illuminate\Support\Collection
+    public function handle($info): Collection
     {
         try {
-            $branch = Branch::query()
-                ->where('id', $info['branch_id'])
-                ->first();
+            $branch = Branch::with(['serviceRooms' => function ($q) use ($info) {
+                $q->where('active', true)
+                    ->whereHas('categories', fn($q) => $q->where('id', $info['category_id']));
+            }])
+                ->select('id', 'opening_hours')
+                ->findOrFail($info['branch_id']);
 
             $openingHours = OpeningHours::create($branch->opening_hours);
 
-            $openDates = [];
+            $dates = $this->prepareDates($info);
+            $openDates = $this->prepareOpenDates($dates, $openingHours);
+            $appointments = $this->getAppointments($info, $openDates, $branch->serviceRooms);
 
-            $service_rooms = ServiceRoom::query()
-                ->where('branch_id', $branch->id)
-                ->where('active', true)
-                ->whereRelation('categories', 'id', '=', $info['category_id'])
-                ->get();
+            return $this->calculateGaps($openDates, $appointments, $branch->serviceRooms, $info['duration']);
+        } catch (\Throwable $e) {
+            return collect();
+        }
+    }
 
-            $forDates = null;
+    private function prepareDates($info): Collection
+    {
+        if ($info['type'] === 'range') {
+            $startDate = Carbon::createFromFormat('Y-m-d', $info['search_date_first']);
+            $endDate = Carbon::createFromFormat('Y-m-d', $info['search_date_last']);
 
-            //dump($info);
-            if ($info['type'] === 'range') {
-                $forDates = CarbonPeriod::create(
-                    Carbon::createFromFormat('Y-m-d', $info['search_date_first']),
-                    Carbon::createFromFormat('Y-m-d', $info['search_date_last'])
+            // Maksimum 3 gün kontrolü
+            if ($startDate->diffInDays($endDate) > 2) {
+                $endDate = $startDate->copy()->addDays(2);
+            }
+
+            return collect(CarbonPeriod::create($startDate, $endDate));
+        }
+
+        // Multi mod için maksimum 3 gün kontrolü
+        return collect($info['dates'])
+            ->take(3)
+            ->map(fn($d) => Carbon::createFromFormat('Y-m-d', $d));
+    }
+
+    private function prepareOpenDates($dates, $openingHours): Collection
+    {
+        return collect($dates)->map(function ($date) use ($openingHours) {
+            $hoursForDate = $openingHours->forDate($date->toDateTime());
+
+            $openTime = $closeTime = null;
+            foreach ($hoursForDate as $hours) {
+                $openTime = $hours->start()->format();
+                $closeTime = $hours->end()->format();
+            }
+
+            return [
+                'date' => $date,
+                'open' => $openingHours->isOpenOn($date->format('Y-m-d')),
+                'openTime' => $openTime,
+                'closeTime' => $closeTime,
+            ];
+        })->filter(fn($date) => $date['open']);
+    }
+
+    private function getAppointments($info, $openDates, $serviceRooms): Collection
+    {
+        $dates = $openDates->pluck('date')->map(fn($date) => $date->format('Y-m-d'));
+
+        return Appointment::query()
+            ->select(['id', 'status', 'service_category_id', 'service_room_id', 'date', 'date_start', 'date_end'])
+            ->where('service_category_id', $info['category_id'])
+            ->whereIn('service_room_id', $serviceRooms->pluck('id'))
+            ->whereNotIn('status', [AppointmentStatus::rejected, AppointmentStatus::cancel])
+            ->whereIn('date', $dates)
+            ->get()
+            ->groupBy(['service_room_id', 'date']);
+    }
+
+    private function calculateGaps($openDates, $appointments, $serviceRooms, $duration): Collection
+    {
+        $gaps = [];
+
+        foreach ($openDates as $openDate) {
+            $date = $openDate['date']->format('Y-m-d');
+
+            foreach ($serviceRooms as $room) {
+                $roomAppointments = $appointments->get($room->id, collect())
+                    ->get($date, collect())
+                    ->map(fn($apt) => [
+                        'baslangic' => $apt->date_start->subMinutes(1)->format('H:i'),
+                        'bitis' => $apt->date_end->addMinutes(1)->format('H:i')
+                    ])->toArray();
+
+                $availableGaps = $this->findAppointmentGaps(
+                    $roomAppointments,
+                    Carbon::parse($openDate['openTime']),
+                    Carbon::parse($openDate['closeTime']),
+                    $duration
                 );
 
-            } else {
-                $forDates = collect($info['dates'])->map(function ($d) {
-                    return Carbon::createFromFormat('Y-m-d', $d);
-                });
-            }
-
-            foreach ($forDates as $date) {
-
-                $hoursForDate = $openingHours->forDate($date->toDateTime());
-
-                $openTime = $closeTime = null;
-
-                foreach ($hoursForDate as $hours) {
-                    $openTime = $hours->start()->format();
-                    $closeTime = $hours->end()->format();
-                }
-
-                $openDates[] = [
-                    'date' => $date,
-                    'open' => $openingHours->isOpenOn($date->format('Y-m-d')),
-                    'openTime' => $openTime,
-                    'closeTime' => $closeTime,
-                ];
-            }
-            //dump($openDates);
-
-            $openDates = collect($openDates);
-
-            //dump($openDates);
-
-            $roomGaps = [];
-            //dump($info);
-            foreach ($openDates->where('open', true)->all() as $openDate) {
-                //dump($openDate);
-                foreach ($service_rooms as $service_room) {
-                    $appointments = Appointment::query()
-                        ->select(['id', 'status', 'service_category_id', 'service_room_id', 'date', 'date_start', 'date_end'])
-                        ->where('service_category_id', $info['category_id'])
-                        ->where('service_room_id', $service_room->id)
-                        ->whereNotIn('status', [AppointmentStatus::rejected, AppointmentStatus::cancel])
-                        ->whereDate('date', $openDate['date']->format('Y-m-d'))
-                        ->get();
-
-                    $dolu = [];
-
-                    foreach ($appointments as $appointment) {
-                        $dolu[] = [
-                            'baslangic' => $appointment->date_start->subMinutes(1)->format('H:i'),
-                            'bitis' => $appointment->date_end->addMinutes(1)->format('H:i'),
-                        ];
-                    }
-                    //dump($service_room->id);
-                    //dump($dolu);
-
-                    $roomGaps[] = [
-                        'id' => $service_room->id,
-                        'name' => $service_room->name,
-                        'date' => $openDate['date']->format('Y-m-d'),
-                        'gaps' => $this->findAppointmentGaps($dolu, Carbon::parse($openDate['openTime']), Carbon::parse($openDate['closeTime']), $info['duration']),
+                if (!empty($availableGaps)) {
+                    $gaps[] = [
+                        'id' => $room->id,
+                        'name' => $room->name,
+                        'date' => $date,
+                        'gaps' => $availableGaps
                     ];
-
-                    //dump($roomGaps);
-
-                }
-
-            }
-
-            return collect($roomGaps)->groupBy('date');
-        } catch (\Throwable $e) {
-            return [];
-        }
-
-    }
-
-    public function findAppointmentGaps($dolu, $calisma_baslangic, $calisma_bitis, $aralik): ?array
-    {
-        $bosluklar = [];
-        if (count($dolu) > 0) {
-            for ($i = 0; $i < count($dolu); $i++) {
-                $baslangic = Carbon::parse($dolu[$i]['baslangic']);
-                $bitis = Carbon::parse($dolu[$i]['bitis']);
-
-                if ($i == 0) {
-                    if ($baslangic->diffInMinutes($calisma_baslangic) < 0) {
-                        $bosluklar[] = [
-                            'baslangic' => $calisma_baslangic->format('H:i'),
-                            'bitis' => $baslangic->format('H:i'),
-                        ];
-                    }
-                } else {
-                    if ($baslangic->diffInMinutes(Carbon::parse($dolu[$i - 1]['bitis'])) < 0) {
-                        $bosluklar[] = [
-                            'baslangic' => $dolu[$i - 1]['bitis'],
-                            'bitis' => $dolu[$i]['baslangic'],
-                        ];
-                    }
                 }
             }
-            $bitis = Carbon::parse($dolu[count($dolu) - 1]['bitis']);
-
-            if ($calisma_bitis->diffInMinutes($bitis) < 0) {
-                $bosluklar[] = [
-                    'baslangic' => $dolu[count($dolu) - 1]['bitis'],
-                    'bitis' => $calisma_bitis->format('H:i'),
-                ];
-            }
-        } else {
-            $bosluklar[] = [
-                'baslangic' => $calisma_baslangic->format('H:i'),
-                'bitis' => $calisma_bitis->format('H:i'),
-            ];
         }
 
-        $falan = [];
-        foreach ($bosluklar as $b) {
-            $falan[] = $this->splitTimeIntoIntervals(Carbon::createFromFormat('H:i', $b['baslangic']), Carbon::createFromFormat('H:i', $b['bitis']), $aralik);
-        }
-
-        $aa = [];
-        foreach ($falan as $f) {
-            foreach ($f as $s => $v) {
-                $aa[] = $v;
-            }
-        }
-
-        return $aa;
+        return collect($gaps)->groupBy('date');
     }
 
-    public static function splitTimeIntoIntervals($start_time, $end_time, $aralik): array
+    private function findAppointmentGaps($appointments, $workStart, $workEnd, $duration): array
     {
-        $intervals = [];
+        $gaps = [];
+        $currentTime = $workStart->copy();
 
-        $current_time = $start_time->copy();
-
-        while ($current_time->lt($end_time)) {
-            $next_time = $current_time->copy()->addMinutes($aralik);
-            if ($next_time->gt($end_time)) {
-                break;
+        if (empty($appointments)) {
+            while ($currentTime->copy()->addMinutes($duration)->lte($workEnd)) {
+                $gaps[] = $currentTime->format('H:i');
+                $currentTime->addMinutes($duration);
             }
-            $intervals[] = $current_time->format('H:i').'-'.$next_time->format('H:i');
-            $current_time = $next_time;
+            return $gaps;
         }
 
-        return $intervals;
+        $appointments = collect($appointments)->sortBy('baslangic');
+
+        $firstAppointment = Carbon::parse($appointments->first()['baslangic']);
+        while ($currentTime->copy()->addMinutes($duration)->lte($firstAppointment)) {
+            $gaps[] = $currentTime->format('H:i');
+            $currentTime->addMinutes($duration);
+        }
+
+        foreach ($appointments as $i => $appointment) {
+            if ($i < count($appointments) - 1) {
+                $currentTime = Carbon::parse($appointment['bitis']);
+                $nextStart = Carbon::parse($appointments[$i + 1]['baslangic']);
+
+                while ($currentTime->copy()->addMinutes($duration)->lte($nextStart)) {
+                    $gaps[] = $currentTime->format('H:i');
+                    $currentTime->addMinutes($duration);
+                }
+            }
+        }
+
+        $currentTime = Carbon::parse($appointments->last()['bitis']);
+        while ($currentTime->copy()->addMinutes($duration)->lte($workEnd)) {
+            $gaps[] = $currentTime->format('H:i');
+            $currentTime->addMinutes($duration);
+        }
+
+        return $gaps;
     }
 }

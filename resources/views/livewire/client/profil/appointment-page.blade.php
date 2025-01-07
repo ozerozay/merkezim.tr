@@ -4,7 +4,7 @@
         <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <div class="flex flex-col items-center gap-2">
                 <span class="loading loading-spinner loading-md text-primary"></span>
-                <span class="text-sm text-base-content/70">Yükleniyor...</span>
+                <span class="text-sm text-base-content/70">{{ __('client.loading') }}</span>
             </div>
         </div>
     </div>
@@ -20,43 +20,45 @@
                     </div>
                     <div>
                         <h2 class="text-lg font-bold">{{ __('client.menu_appointment') }}</h2>
-                        <p class="text-sm text-base-content/70">{{ __('client.page_appointment_subtitle') }}</p>
+                        <p class="text-sm text-base-content/70">{{ __('client.page_appointment.subtitle') }}</p>
                     </div>
                 </div>
 
                 @if($create_appointment->isNotEmpty())
                     <x-button class="btn-primary" icon="o-plus"
-                            wire:click="$dispatch('slide-over.open', { 'component': 'web.modal.create-appointment-modal' })">
-                        {{ __('client.page_appointment_create') }}
+                            link="{{ route('client.profil.create-appointment-page') }}">
+                        {{ __('client.page_appointment.create') }}
                     </x-button>
                 @endif
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div class="stat bg-base-200/50 rounded-xl p-4">
-                    <div class="stat-figure text-primary">
-                        <i class="text-2xl">📊</i>
+            @if($show_stats)
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="stat bg-base-200/50 rounded-xl p-4">
+                        <div class="stat-figure text-primary">
+                            <i class="text-2xl">📊</i>
+                        </div>
+                        <div class="stat-title text-xs opacity-70">{{ __('client.page_appointment.stats.total') }}</div>
+                        <div class="stat-value text-lg">{{ $data->count() }}</div>
                     </div>
-                    <div class="stat-title text-xs opacity-70">Toplam Randevu</div>
-                    <div class="stat-value text-lg">{{ $data->count() }}</div>
-                </div>
-                
-                <div class="stat bg-base-200/50 rounded-xl p-4">
-                    <div class="stat-figure text-warning">
-                        <i class="text-2xl">⏳</i>
+                    
+                    <div class="stat bg-base-200/50 rounded-xl p-4">
+                        <div class="stat-figure text-warning">
+                            <i class="text-2xl">⏳</i>
+                        </div>
+                        <div class="stat-title text-xs opacity-70">{{ __('client.page_appointment.stats.pending') }}</div>
+                        <div class="stat-value text-lg">{{ $data->where('status', '!=', \App\AppointmentStatus::finish)->count() }}</div>
                     </div>
-                    <div class="stat-title text-xs opacity-70">Bekleyen</div>
-                    <div class="stat-value text-lg">{{ $data->where('status', '!=', \App\AppointmentStatus::finish)->count() }}</div>
-                </div>
 
-                <div class="stat bg-base-200/50 rounded-xl p-4">
-                    <div class="stat-figure text-success">
-                        <i class="text-2xl">✅</i>
+                    <div class="stat bg-base-200/50 rounded-xl p-4">
+                        <div class="stat-figure text-success">
+                            <i class="text-2xl">✅</i>
+                        </div>
+                        <div class="stat-title text-xs opacity-70">{{ __('client.page_appointment.stats.completed') }}</div>
+                        <div class="stat-value text-lg">{{ $data->where('status', \App\AppointmentStatus::finish)->count() }}</div>
                     </div>
-                    <div class="stat-title text-xs opacity-70">Tamamlanan</div>
-                    <div class="stat-value text-lg">{{ $data->where('status', \App\AppointmentStatus::finish)->count() }}</div>
                 </div>
-            </div>
+            @endif
         </div>
 
         <!-- Active Appointments Section -->
