@@ -292,37 +292,43 @@ return [
     // Sayfa başlıkları
     'reservation_request_title' => 'Rezervasyon Talebi',
     'reservation_request_subtitle' => 'Tercih ettiğiniz hizmetleri ve zamanı seçin',
+    'previous_requests' => 'Önceki Talepleriniz',
 
     // Form alanları
+    'select_branch' => 'Şube Seçimi',
     'select_services' => 'Hizmet Seçimi',
     'select_services_placeholder' => 'Hizmet seçiniz...',
     'search_services' => 'Hizmet ara...',
     'no_services_found' => 'Hizmet bulunamadı',
     'date_and_time_preferences' => 'Tarih ve Zaman Tercihleri',
     'preferred_date' => 'Tercih Ettiğiniz Tarih',
-    'preferred_time' => 'Tercih Ettiğiniz Zaman Dilimi',
-    'additional_notes' => 'Ek Notlar',
-    'reservation_note' => 'Notunuz',
-    'reservation_note_placeholder' => 'Rezervasyonunuz ile ilgili eklemek istediğiniz notları buraya yazabilirsiniz...',
-
-    // Özet bölümü
-    'reservation_summary' => 'Rezervasyon Özeti',
-    'selected_services' => 'Seçilen Hizmetler',
-    'service_duration_minutes' => 'dakika',
-    'minutes_short' => 'dk',
-
-    // Butonlar
-    'submit_reservation_request' => 'Rezervasyon Talebi Oluştur',
-    'view_packages_button' => 'Paketleri İncele',
-    'create_reservation_request_button' => 'Rezervasyon Talebi Oluştur',
-
+    'preferred_time' => 'Tercih Ettiğiniz Zaman',
     'additional_info' => 'İletişim Bilgileri',
     'phone_number' => 'Telefon Numarası',
     'phone_placeholder' => '5XX XXX XX XX',
-    'error_phone_required' => 'Telefon numarası zorunludur',
-    'error_phone_invalid' => 'Geçerli bir telefon numarası giriniz',
+    'reservation_note_placeholder' => 'Rezervasyonunuz ile ilgili eklemek istediğiniz notları buraya yazabilirsiniz...',
 
-    'select_branch' => 'Şube Seçimi',
-    'error_branch_required' => 'Lütfen bir şube seçin',
+    // Durum ve Bildirimler
+    'status.pending' => 'Bekliyor',
+    'status.approved' => 'Onaylandı',
+    'status.rejected' => 'İptal Edildi',
+    'note' => 'Not',
+
+    // Hata Mesajları
+    'error_service_required' => 'En az bir hizmet seçmelisiniz.',
+    'error_date_required' => 'Tarih seçimi zorunludur.',
+    'error_date_must_be_future' => 'Geçmiş bir tarih seçemezsiniz.',
+    'error_time_required' => 'Tercih ettiğiniz zaman dilimini seçmelisiniz.',
+    'error_phone_required' => 'Telefon numarası zorunludur.',
+    'error_phone_invalid' => 'Geçerli bir telefon numarası giriniz.',
+    'error_branch_required' => 'Lütfen bir şube seçin.',
+
+    // Başarı Mesajları
+    'reservation_request_success' => 'Rezervasyon talebiniz başarıyla oluşturuldu.',
+    'reservation_request_error' => 'Rezervasyon talebi oluşturulurken bir hata oluştu.',
+
+    // Diğer
+    'minutes_short' => 'dk',
+    'submit_reservation_request' => 'Rezervasyon Talebi Oluştur',
 
 ];

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Web\Profil;
 
+use App\Enum\WebFormType;
 use App\Models\Branch;
 use App\Models\Service;
 use App\Models\WebForm;
@@ -24,6 +25,8 @@ class ReservationPage extends Component
     public $preferredTime;
     public $phone;
     public $selectedBranch;
+    public $services;
+    public $previousReservations;
 
     public $timePreferences = [
         ['id' => 'morning', 'name' => 'Öğleden Önce (09:00 - 13:00)'],
@@ -33,10 +36,19 @@ class ReservationPage extends Component
     public function mount(): void
     {
         $this->selectedDate = Carbon::tomorrow()->format('Y-m-d');
+        $this->preferredTime = $this->timePreferences[0]['id'];
 
         if (!auth()->check()) {
-            // İlk aktif şubeyi seç
             $this->selectedBranch = Branch::where('active', true)->first()->id;
+        } else {
+            // Sadece bekleyen ve gelecek tarihli rezervasyonları getir
+            $this->previousReservations = WebForm::where('client_id', auth()->id())
+                ->where('type', WebFormType::RESERVATION_REQUEST)
+                ->where('status', 'pending')
+                ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$.date')) >= ?", [now()->format('Y-m-d')])
+                ->latest()
+                ->take(5)
+                ->get();
         }
     }
 
@@ -54,7 +66,7 @@ class ReservationPage extends Component
             $rules['selectedBranch'] = 'required|exists:branches,id';
         }
 
-        $this->validate($rules, [
+        $validated = $this->validate($rules, [
             'selectedServices.required' => __('client.error_service_required'),
             'selectedServices.min' => __('client.error_service_required'),
             'selectedDate.required' => __('client.error_date_required'),
@@ -65,11 +77,14 @@ class ReservationPage extends Component
             'selectedBranch.required' => __('client.error_branch_required'),
         ]);
 
+        dump($validated);
+
+
         try {
             WebForm::create([
                 'branch_id' => $this->getBranchId(),
                 'client_id' => auth()->check() ? auth()->id() : null,
-                'type' => 'reservation_request',
+                'type' => WebFormType::RESERVATION_REQUEST,
                 'data' => [
                     'services' => $this->selectedServices,
                     'date' => $this->selectedDate,
@@ -98,7 +113,7 @@ class ReservationPage extends Component
 
     public function render()
     {
-        $services = Service::where('active', true)
+        $this->services = Service::where('active', true)
             ->where('is_visible', true)
             ->whereHas('category.branches', function ($query) {
                 $query->where('branches.id', $this->getBranchId());
@@ -127,10 +142,42 @@ class ReservationPage extends Component
         }
 
         return view('livewire.client.profil.reservation-page', [
-            'services' => $services,
+            'services' => $this->services,
             'showPhoneInput' => !auth()->check(),
             'branches' => $branches,
-            'showBranchSelect' => $showBranchSelect
+            'showBranchSelect' => $showBranchSelect,
+            'previousReservations' => $this->previousReservations ?? []
         ]);
+    }
+
+    public function cancelRequest($formId): void
+    {
+        try {
+            $form = WebForm::where('client_id', auth()->id())
+                ->where('id', $formId)
+                ->where('type', WebFormType::RESERVATION_REQUEST)
+                ->where('status', 'pending')
+                ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$.date')) >= ?", [now()->format('Y-m-d')])
+                ->firstOrFail();
+
+            $form->update([
+                'status' => 'rejected',
+                'process_note' => __('messages.contact.cancelled_by_user'),
+                'processed_at' => now(),
+            ]);
+
+            // Sadece bekleyen ve gelecek tarihli rezervasyonları yeniden yükle
+            $this->previousReservations = WebForm::where('client_id', auth()->id())
+                ->where('type', WebFormType::RESERVATION_REQUEST)
+                ->where('status', 'pending')
+                ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$.date')) >= ?", [now()->format('Y-m-d')])
+                ->latest()
+                ->take(5)
+                ->get();
+
+            $this->success(__('messages.contact.cancel_success'));
+        } catch (\Exception $e) {
+            $this->error(__('messages.contact.cancel_error'));
+        }
     }
 }

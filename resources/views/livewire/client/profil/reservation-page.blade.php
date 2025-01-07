@@ -12,7 +12,71 @@
                 </div>
             </div>
         </div>
+            <!-- Previous Reservations -->
+            @if(!empty($previousReservations))
+                <div class="bg-base-100 rounded-xl shadow-sm border border-base-200 p-4 mb-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="p-1.5 bg-primary/10 rounded-lg">
+                            <i class="text-primary text-lg">📋</i>
+                        </div>
+                        <h3 class="font-medium">{{ __('client.previous_requests') }}</h3>
+                    </div>
 
+                    <div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
+                        @foreach($previousReservations as $reservation)
+                            <div class="card bg-base-200/30 p-4 rounded-xl">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div>
+                                        <div class="text-sm text-base-content/70">
+                                            {{ Carbon\Carbon::parse($reservation->created_at)->format('d/m/Y H:i') }}
+                                        </div>
+                                        <div class="font-medium">
+                                            {{ implode(', ', array_column($reservation->data['services'], 'name')) }}
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div @class([
+                                            'badge badge-sm',
+                                            'badge-warning' => $reservation->status->value === 'pending',
+                                            'badge-success' => $reservation->status->value === 'approved',
+                                        ])>
+                                            {{ __('client.status.' . Str::lower($reservation->status->value)) }}
+                                        </div>
+                                        @if($reservation->status->value === 'pending')
+                                            <button
+                                                wire:click="cancelRequest({{ $reservation->id }})"
+                                                wire:confirm="{{ __('messages.contact.cancel_confirm') }}"
+                                                class="btn btn-ghost btn-xs text-error">
+                                                <i class="text-sm">❌</i>
+                                            </button>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="text-sm text-base-content/70 mt-2 border-t border-base-300 pt-2">
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex justify-between">
+                                            <span>{{ __('client.preferred_date') }}:</span>
+                                            <span>{{ \Carbon\Carbon::parse($reservation->data['date'])->format('d/m/Y') }}</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>{{ __('client.preferred_time') }}:</span>
+                                            <span>{{ collect($timePreferences)->firstWhere('id', $reservation->data['time_preference'])['name'] }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if($reservation->process_note)
+                                    <div class="text-sm mt-2 pt-2 border-t border-base-300">
+                                        <span class="font-medium text-base-content/80">{{ __('client.note') }}:</span>
+                                        <p class="text-base-content/70 line-clamp-2">{{ $reservation->process_note }}</p>
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         <!-- Form -->
         <form wire:submit="createReservationRequest" class="space-y-6">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -60,6 +124,7 @@
                                 :multiple="true"
                                 :placeholder="__('client.select_services_placeholder')"
                                 class="w-full"
+                                compact-text="seçildi"
                                 search-placeholder="{{ __('client.search_services') }}"
                                 no-result="{{ __('client.no_services_found') }}"
                             />
@@ -134,13 +199,19 @@
                                     <div>
                                         <h4 class="font-medium mb-2">{{ __('client.selected_services') }}</h4>
                                         <div class="space-y-2">
-                                            @foreach($services->whereIn('id', $selectedServices) as $service)
-                                                <div class="flex justify-between items-center">
-                                                    <span>{{ $service->name }}</span>
-                                                    <span class="text-sm text-base-content/70">
-                                                        {{ $service->duration }} {{ __('client.minutes_short') }}
-                                                    </span>
-                                                </div>
+                                            @foreach($selectedServices as $serviceId)
+                                                @php
+                                                    $service = $services->firstWhere('id', $serviceId);
+                                                    dump($service);
+                                                @endphp
+                                                @if($service)
+                                                    <div class="flex justify-between items-center">
+                                                        <span>{{ $service['name'] }}</span>
+                                                        <span class="text-sm text-base-content/70">
+                                                            {{ $service['description'] }} {{ __('client.minutes_short') }}
+                                                        </span>
+                                                    </div>
+                                                @endif
                                             @endforeach
                                         </div>
                                     </div>
@@ -151,7 +222,7 @@
                                     <div class="border-t pt-4">
                                         <div class="flex justify-between items-center">
                                             <span class="text-base-content/70">{{ __('client.preferred_date') }}</span>
-                                            <span class="font-medium">{{ $selectedDate }}</span>
+                                            <span class="font-medium">{{ \Carbon\Carbon::parse($selectedDate)->format('d/m/Y') }}</span>
                                         </div>
                                     </div>
                                 @endif
@@ -161,7 +232,7 @@
                                     <div class="border-t pt-4">
                                         <div class="flex justify-between items-center">
                                             <span class="text-base-content/70">{{ __('client.preferred_time') }}</span>
-                                            <span class="font-medium">{{ $timePreferences[$preferredTime] }}</span>
+                                            <span class="font-medium">{{ collect($timePreferences)->firstWhere('id', $preferredTime)['name'] }}</span>
                                         </div>
                                     </div>
                                 @endif

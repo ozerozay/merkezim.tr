@@ -30,6 +30,7 @@ new
                 $this->email = auth()->user()->email;
                 $this->webForms = WebForm::where('client_id', auth()->id())
                     ->where('status', '!=', WebFormStatus::REJECTED)
+                    ->where('type', WebFormType::OTHER)
                     ->latest()
                     ->take(5)
                     ->get();
@@ -134,6 +135,7 @@ new
                 // Talep listesini güncelle
                 $this->webForms = WebForm::where('client_id', auth()->id())
                     ->where('status', '!=', WebFormStatus::REJECTED)
+                    ->where('type', WebFormType::OTHER)
                     ->latest()
                     ->take(5)
                     ->get();

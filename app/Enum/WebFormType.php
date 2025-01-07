@@ -13,6 +13,8 @@ enum WebFormType: string
     case PACKAGE_TRANSFER = 'package_transfer';
     case INSTALLMENT_CHANGE = 'installment_change';
     case PRICE_CHANGE = 'price_change';
+
+    case RESERVATION_REQUEST = 'reservation_request';
     case OTHER = 'other';
 
     public function label(): string
@@ -27,6 +29,7 @@ enum WebFormType: string
             self::PACKAGE_TRANSFER => 'Paket Transfer',
             self::INSTALLMENT_CHANGE => 'Taksit Değişikliği',
             self::PRICE_CHANGE => 'Fiyat Değişikliği',
+            self::RESERVATION_REQUEST => 'Rezervasyon İsteği',
             self::OTHER => 'Diğer',
         };
     }
