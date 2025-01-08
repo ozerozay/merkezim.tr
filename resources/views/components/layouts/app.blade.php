@@ -139,7 +139,7 @@
 @livewire('spotlight.components.spotlight_button', [], key(123))
 <x-toast />
 @endpersist()
-
+<x-theme-toggle class="hidden" />
 
 </body>
 <script>

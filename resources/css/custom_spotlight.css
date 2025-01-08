@@ -10,20 +10,21 @@
 
 .wep-spotlight-inner-container {
     @apply mx-auto max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-4xl rounded-lg shadow-lg overflow-hidden divide-y antialiased;
-    @apply bg-base-100 divide-base-200;
+    @apply bg-base-100 dark:bg-base-200 divide-base-200 dark:divide-base-300;
     z-index: 999;
 }
 
 /* Input Alanı */
 .wep-spotlight-input-container {
     @apply relative flex items-center space-x-0.5;
-    @apply bg-base-100;
+    @apply bg-base-100 dark:bg-base-200;
 }
 
 .wep-spotlight-input {
     @apply rounded-none pl-1 py-3 text-sm border-0 block w-full;
-    @apply bg-base-100 text-base-content;
+    @apply bg-base-100 dark:bg-base-200 text-base-content dark:text-base-content;
     @apply focus:outline-none focus:ring-0 !important;
+    @apply placeholder-base-content/50 dark:placeholder-base-content/40;
 }
 
 .wep-spotlight-input-icon {
@@ -31,146 +32,111 @@
 }
 
 .wep-spotlight-input-search-icon {
-    @apply pointer-events-none h-5 w-5 text-base-content/60;
+    @apply pointer-events-none h-5 w-5 text-base-content/60 dark:text-base-content/50;
 }
 
 .wep-spotlight-input-loading-icon {
-    @apply animate-spin h-4 w-4 text-base-content/60;
+    @apply h-4 w-4 text-base-content/60 dark:text-base-content/50;
 }
 
 /* Liste ve Öğeler */
 .wep-spotlight-groups {
     @apply pt-4 pb-2 space-y-2 max-h-96 overflow-y-auto;
+    @apply overflow-x-hidden;
+    scrollbar-width: thin; /* Firefox için */
+    scrollbar-color: var(--tw-text-opacity) transparent; /* Firefox için */
+}
+
+.wep-spotlight-groups::-webkit-scrollbar {
+    @apply w-2;
+}
+
+.wep-spotlight-groups::-webkit-scrollbar-track {
+    @apply bg-transparent;
+}
+
+.wep-spotlight-groups::-webkit-scrollbar-thumb {
+    @apply bg-base-300 dark:bg-base-300 rounded-full;
+}
+
+.wep-spotlight-groups::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary dark:bg-primary/70;
 }
 
 .wep-spotlight-group {
-    @apply border-b border-base-200 px-2.5 pb-2 mb-4;
+    @apply border-b border-base-200 dark:border-base-300 px-2.5 pb-2 mb-4;
 }
 
 .wep-spotlight-group-title {
-    @apply text-sm font-medium text-base-content/70 mb-2;
+    @apply text-sm font-medium text-base-content/70 dark:text-base-content/60 mb-2;
 }
 
 .wep-spotlight-item {
     @apply flex px-3 py-2 items-center text-sm rounded-md relative cursor-pointer;
-    @apply text-base-content transition-colors;
+    @apply text-base-content dark:text-base-content;
 }
 
 .wep-spotlight-item:hover {
-    @apply bg-primary text-primary-content;
-}
-
-.wep-spotlight-item:hover .wep-spotlight-item-icon {
-    @apply text-primary-content;
-}
-
-.wep-spotlight-item:hover .wep-spotlight-item-title {
-    @apply text-primary-content;
-}
-
-.wep-spotlight-item:hover .wep-spotlight-item-instructions {
-    @apply flex text-primary-content/70;
-}
-
-.wep-spotlight-item.wep-spotlight-item-active {
-    @apply bg-primary text-primary-content;
+    @apply bg-primary dark:bg-primary/90;
 }
 
 .wep-spotlight-item-icon {
     @apply h-5 w-5 mr-2 flex-none shrink-0;
-    @apply text-base-content/60;
+    @apply text-base-content/60 dark:text-base-content/50;
+}
+
+.wep-spotlight-item.wep-spotlight-item-active {
+    @apply bg-primary/80 dark:bg-primary/90 text-primary-content;
 }
 
 .wep-spotlight-item.wep-spotlight-item-active .wep-spotlight-item-icon,
 .wep-spotlight-item.wep-spotlight-item-active .wep-spotlight-item-title {
-    @apply text-primary-content;
+    @apply text-primary-content dark:text-primary-content/90;
 }
 
 .wep-spotlight-item-title {
-    @apply text-base-content;
+    @apply text-base-content dark:text-base-content;
 }
 
 .wep-spotlight-item-instructions {
     @apply hidden ml-auto text-xs space-x-2 shrink-0;
+    @apply text-base-content/60 dark:text-base-content/50;
 }
 
 .wep-spotlight-item.wep-spotlight-item-active .wep-spotlight-item-instructions {
-    @apply flex text-primary-content/70;
+    @apply flex text-primary-content/70 dark:text-primary-content/60;
 }
 
 /* Footer */
 .wep-spotlight-footer {
     @apply flex flex-wrap items-center justify-between py-2.5 px-4 text-xs;
-    @apply bg-base-200/50;
+    @apply bg-base-200/50 dark:bg-base-300/50;
 }
 
 .wep-spotlight-footer-helper,
 .wep-spotlight-footer-tip {
-    @apply text-base-content/70;
+    @apply text-base-content/70 dark:text-base-content/60;
     @apply flex items-center gap-1;
 }
 
 .wep-spotlight-footer-helper-key {
     @apply mx-1 flex h-5 w-5 items-center justify-center rounded border sm:mx-2;
-    @apply bg-base-100 border-base-200 text-base-content;
+    @apply bg-base-100 dark:bg-base-200 border-base-200 dark:border-base-300;
+    @apply text-base-content dark:text-base-content;
     @apply min-w-[1.25rem];
 }
 
 /* Backdrop */
 .wep-spotlight-backdrop {
-    @apply fixed inset-0 transition-opacity backdrop-blur-sm;
-    @apply bg-base-200/80;
+    @apply fixed inset-0 backdrop-blur-sm;
+    @apply bg-base-200/80 dark:bg-base-300/80;
     z-index: 888;
-}
-
-/* Animasyonlar */
-.wep-spotlight-inner-container.enter,
-.wep-spotlight-backdrop.enter {
-    @apply ease-out duration-300;
-}
-
-.wep-spotlight-inner-container.enter.start,
-.wep-spotlight-inner-container.leave.end {
-    @apply opacity-0 scale-95;
-}
-
-.wep-spotlight-inner-container.enter.end,
-.wep-spotlight-inner-container.leave.start {
-    @apply opacity-100 scale-100;
-}
-
-.wep-spotlight-inner-container.leave {
-    @apply ease-in duration-200;
-}
-
-.wep-spotlight-backdrop.enter.start,
-.wep-spotlight-backdrop.leave.end {
-    @apply opacity-0;
-}
-
-.wep-spotlight-backdrop.enter.end,
-.wep-spotlight-backdrop.leave.start {
-    @apply opacity-100;
-}
-
-.wep-spotlight-backdrop.leave {
-    @apply ease-in duration-200;
-}
-
-/* Sonuç Bulunamadı Durumu */
-.wep-spotlight-no-results-icon,
-.wep-spotlight-no-results-heading {
-    @apply text-base-content;
-}
-
-.wep-spotlight-no-results-message {
-    @apply text-base-content/60;
 }
 
 /* Token Stili */
 .wep-spotlight-token {
     @apply inline-flex items-center gap-1 px-1.5 py-0.5 text-xs rounded;
-    @apply bg-base-200 text-base-content;
+    @apply bg-base-200 dark:bg-base-300 text-base-content dark:text-base-content;
     @apply mr-1;
     max-width: 100px;
     min-width: 40px;
@@ -181,7 +147,7 @@
 
 .wep-spotlight-token-remove {
     @apply ml-1 h-3.5 w-3.5 rounded-full flex items-center justify-center shrink-0;
-    @apply hover:bg-base-300 transition-colors;
+    @apply hover:bg-base-300 dark:hover:bg-base-300;
 }
 
 .wep-spotlight-token-remove svg {
@@ -189,11 +155,21 @@
 }
 
 .wep-spotlight-token-divider {
-    @apply inline-flex items-center text-base-content/60;
+    @apply inline-flex items-center text-base-content/60 dark:text-base-content/50;
     @apply mx-1;
 }
 
 /* Token Container */
 .wep-spotlight-token-container {
     @apply flex items-center flex-wrap gap-1;
+}
+
+/* Sonuç Bulunamadı Durumu */
+.wep-spotlight-no-results-icon,
+.wep-spotlight-no-results-heading {
+    @apply text-base-content dark:text-base-content;
+}
+
+.wep-spotlight-no-results-message {
+    @apply text-base-content/60 dark:text-base-content/50;
 }
