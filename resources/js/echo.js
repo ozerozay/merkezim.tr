@@ -8,7 +8,7 @@ window.Echo = new Echo({
     key: 'wmcg01pzuuofvcti7fct',
     wsHost: 'ws.merkezim.tr',
     wsPort: 80,
-    wssPort: 80,
+    wssPort: 443,
     forceTLS: true,
     enabledTransports: ['ws', 'wss'],
 });
