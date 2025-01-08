@@ -7,8 +7,8 @@ window.Echo = new Echo({
     broadcaster: 'reverb',
     key: 'wmcg01pzuuofvcti7fct',
     wsHost: 'ws.merkezim.tr',
-    wsPort: 80,
+    wsPort: 8080,
     wssPort: 443,
-    forceTLS: true,
+    forceTLS: false,
     enabledTransports: ['ws', 'wss'],
 });
