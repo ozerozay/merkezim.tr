@@ -88,24 +88,14 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @forelse($packages as $package)
                 <div class="bg-base-100 rounded-xl shadow-sm border border-base-200 hover:border-primary transition-colors">
-                    <div class="relative">
-                        <!-- Paket Görseli -->
-                        <img 
-                            src="{{ $package->image_url }}" 
-                            alt="{{ $package->name }}"
-                            class="w-full h-48 object-cover rounded-t-xl"
-                        >
-                        <!-- Fiyat Badge -->
-                        <div class="absolute top-3 right-3">
-                            <div class="badge badge-primary">@price($package->price)</div>
-                        </div>
-                    </div>
-
                     <div class="p-4 space-y-4">
-                        <!-- Paket Başlığı -->
-                        <div>
-                            <h3 class="font-semibold">{{ $package->name }}</h3>
-                            <p class="text-sm text-base-content/70">{{ $package->description }}</p>
+                        <!-- Paket Başlığı ve Fiyat -->
+                        <div class="flex justify-between items-start gap-4">
+                            <div>
+                                <h3 class="font-semibold">{{ $package->name }}</h3>
+                                <p class="text-sm text-base-content/70">{{ $package->description }}</p>
+                            </div>
+                            <div class="badge badge-primary">@price($package->price)</div>
                         </div>
 
                         <!-- Paket İçeriği -->
