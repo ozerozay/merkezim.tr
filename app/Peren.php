@@ -122,7 +122,7 @@ class Peren
 
     public static function whereLike($collection, $key, $term): Collection
     {
-        return $collection->filter(fn ($item) => Str::contains(Str::upper($item[$key]), Str::upper($term)));
+        return $collection->filter(fn($item) => Str::contains(Str::upper($item[$key]), Str::upper($term)));
     }
 
     /**
@@ -134,7 +134,6 @@ class Peren
             \DB::beginTransaction();
 
             return $callback();
-
         } catch (\Throwable $e) {
             \DB::rollBack();
             throw ToastException::error('İşlem tamamlanamadı.');
@@ -157,12 +156,12 @@ class Peren
             \DB::commit();
         } catch (\Throwable $e) {
             \DB::rollBack();
-            throw ToastException::error('İşlem tamamlanamadı.'.$e->getMessage());
+            throw ToastException::error('İşlem tamamlanamadı.');
         }
     }
 
     public static function pluckNames($data)
     {
-        return $data->map(fn ($d) => $d->name)->implode(', ');
+        return $data->map(fn($d) => $d->name)->implode(', ');
     }
 }

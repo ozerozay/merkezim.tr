@@ -38,6 +38,11 @@ return new class extends Migration
                 ->nullable()
                 ->index();
             $table
+                ->bigInteger('offer_id')
+                ->unsigned()
+                ->nullable()
+                ->index();
+            $table
                 ->bigInteger('sale_type_id')
                 ->unsigned()
                 ->index();
@@ -89,6 +94,12 @@ return new class extends Migration
                 ->foreign('client_id')
                 ->references('id')
                 ->on('users')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table
+                ->foreign('offer_id')
+                ->references('id')
+                ->on('offers')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });

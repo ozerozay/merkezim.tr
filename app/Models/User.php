@@ -482,7 +482,10 @@ class User extends Authenticatable
     {
         return $this->offers()
             ->where('status', OfferStatus::waiting)
-            ->where('end_date', '>=', date('Y-m-d'))
+            ->where(function ($query) {
+                $query->whereNull('expire_date')
+                    ->orWhere('expire_date', '>=', date('Y-m-d'));
+            })
             ->exists();
     }
 

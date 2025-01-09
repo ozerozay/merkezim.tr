@@ -29,6 +29,16 @@ class CreateOffer extends SlideOver
         $this->selected_services = collect();
     }
 
+    public static function behavior(): array
+    {
+        return [
+            'close-on-escape' => true,
+            'close-on-backdrop-click' => true,
+            'trap-focus' => true,
+            'remove-state-on-close' => true,
+        ];
+    }
+
     public function save(): void
     {
         $validator = \Validator::make([

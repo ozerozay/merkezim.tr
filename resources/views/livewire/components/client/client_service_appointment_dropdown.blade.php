@@ -31,8 +31,7 @@ new class extends Component {
 };
 
 ?>
-<div wire:key="client-mlf-{{ Str::random(10) }}">
-    <x-choices-offline wire:model="service_ids" :options="$services" wire:key="client-asd2-{{ Str::random(10) }}"
+    <x-choices-offline wire:model="service_ids" :options="$services" wire:key="cxlient-asd2-{{ Str::random(10) }}"
                        option-label="service.name" :label="$label" icon="o-magnifying-glass"
                        no-result-text="Aktif hizmeti bulunmuyor."
                        compact compact-text="hizmet seçildi"
@@ -48,4 +47,3 @@ new class extends Component {
         {{ $service->service->duration }} dk - {{ $service->service->name }} ({{ $service->remaining }})
         @endscope
     </x-choices-offline>
-</div>

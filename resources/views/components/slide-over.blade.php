@@ -27,9 +27,16 @@
         <x-slot:menu>
             @if ($menu)
                 {{ $menu }}
+            @else
+                <div class="flex items-center gap-2">
+                    <x-button wire:key="help-button-{{ Str::random(10) }}"
+                             class="btn-sm btn-ghost"
+                             @click="showHelp = !showHelp">
+                        <x-icon name="o-question-mark-circle" class="w-5 h-5" />
+                    </x-button>
+                    <x-button icon="tabler.x" class="btn-sm btn-outline" wire:click="$dispatch('slide-over.close')" />
+                </div>
             @endif
-            <x-button icon="tabler.x" class="btn-sm btn-outline" wire:click="$dispatch('slide-over.close')" />
         </x-slot:menu>
     </x-card>
-
 </div>

@@ -28,7 +28,7 @@ class CreateOfferAction
                 'client_id' => $info['client_id'],
                 'expires_date' => $info['expire_date'],
                 'price' => $info['price'],
-                'status' => OfferStatus::success,
+                'status' => OfferStatus::waiting,
                 'message' => $info['message'],
                 'month' => $info['month'],
             ]);

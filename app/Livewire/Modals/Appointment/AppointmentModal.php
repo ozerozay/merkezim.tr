@@ -9,6 +9,7 @@ use App\Actions\Spotlight\Actions\Appointment\MerkezdeAppointmentAction;
 use App\AppointmentStatus;
 use App\Enum\PermissionType;
 use App\Models\Appointment;
+use App\OfferStatus;
 use Mary\Traits\Toast;
 use WireElements\Pro\Components\SlideOver\SlideOver;
 
@@ -35,7 +36,19 @@ class AppointmentModal extends SlideOver
 
     public function mount(Appointment $appointment)
     {
-        $this->appointment = $appointment->load('client:id,name,phone', 'serviceRoom:id,name', 'services.service');
+        $this->appointment = $appointment->load([
+            'client:id,name,phone',
+            'serviceRoom:id,name',
+            'services.service',
+            'client.clientOffers' => function ($query) {
+                $query->where('status', OfferStatus::waiting)
+                    ->where(function ($q) {
+                        $q->whereNull('expire_date')
+                            ->orWhere('expire_date', '>=', now());
+                    })
+                    ->latest();
+            }
+        ]);
 
         $this->appointmentClientServices = $this->appointment->status == AppointmentStatus::finish
             ? $this->appointment->finish_service_ids

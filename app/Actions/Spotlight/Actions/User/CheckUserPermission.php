@@ -15,7 +15,7 @@ class CheckUserPermission
         try {
             throw_if(! auth()->user()->can($permission), new AppException('Yetkiniz bulunmuyor.'));
         } catch (\Throwable $e) {
-            throw ToastException::error('İşlem tamamlanamadı.');
+            throw ToastException::error('Yetkiniz bulunmuyor.');
         }
     }
 }

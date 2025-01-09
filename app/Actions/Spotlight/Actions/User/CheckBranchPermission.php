@@ -32,7 +32,7 @@ class CheckBranchPermission
                 throw new AppException('Bu danışan için yetkiniz bulunmuyor.');
             }
         } catch (\Throwable $e) {
-            throw ToastException::error('İşlem tamamlanamadı.');
+            throw ToastException::error('İşlem tamamlanamadı.' . $e->getMessage());
         }
     }
 }

@@ -45,6 +45,7 @@
         "opcodesio/log-viewer": "^3.12",
         "pestphp/pest": "^2.35",
         "pestphp/pest-plugin-laravel": "^2.4",
+        "wire-elements/wire-spy": "^0.0.12",
         "wulfheart/laravel-actions-ide-helper": "^0.8.0"
     },
     "autoload": {

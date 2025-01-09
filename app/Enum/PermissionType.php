@@ -20,6 +20,7 @@ enum PermissionType: string
     case action_client_sale = 'action_client_sale';
     case action_edit_user = 'action_edit_user';
     case action_send_sms = 'action_send_sms';
+    case action_client_finish_offer = 'action_client_finish_offer';
 
     case client_profil = 'client_profil';
     case client_profil_note = 'client_profil_note';
@@ -81,6 +82,7 @@ enum PermissionType: string
             self::action_client_sale => 'Satış işlemi yetkisi',
             self::action_edit_user => 'Kullanıcı düzenleme yetkisi',
             self::action_send_sms => 'SMS gönderme yetkisi',
+            self::action_client_finish_offer => 'Teklif tamamlama yetkisi',
 
             self::client_profil => 'Müşteri profil görüntüleme yetkisi',
             self::client_profil_note => 'Müşteri profil notları görüntüleme yetkisi',
