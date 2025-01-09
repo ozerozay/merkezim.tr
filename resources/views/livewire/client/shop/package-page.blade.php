@@ -22,8 +22,6 @@
                         <h2 class="text-lg font-bold">Online Mağaza</h2>
                         <p class="text-sm text-base-content/70">Size özel hazırlanmış paketlerimizi inceleyin</p>
                     </div>
-                    <livewire:client.shop.cart-dropdown/>
-
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3">
@@ -31,7 +29,6 @@
                     <button 
                         wire:click="toggleGender"
                         class="btn btn-sm btn-ghost gap-2"
-                        x-data
                     >
                         @if($currentGender === 2)
                             <x-icon name="tabler.man" class="w-4 h-4"/>
@@ -90,7 +87,57 @@
         <!-- Paket Listesi -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @forelse($packages as $package)
-                @include('livewire.client.shop.package-card', ['package' => $package])
+                <div class="bg-base-100 rounded-xl shadow-sm border border-base-200 hover:border-primary transition-colors">
+                    <div class="relative">
+                        <!-- Paket Görseli -->
+                        <img 
+                            src="{{ $package->image_url }}" 
+                            alt="{{ $package->name }}"
+                            class="w-full h-48 object-cover rounded-t-xl"
+                        >
+                        <!-- Fiyat Badge -->
+                        <div class="absolute top-3 right-3">
+                            <div class="badge badge-primary">@price($package->price)</div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 space-y-4">
+                        <!-- Paket Başlığı -->
+                        <div>
+                            <h3 class="font-semibold">{{ $package->name }}</h3>
+                            <p class="text-sm text-base-content/70">{{ $package->description }}</p>
+                        </div>
+
+                        <!-- Paket İçeriği -->
+                        <div class="space-y-2">
+                            @foreach($package->package->items as $item)
+                                <div class="flex items-center gap-2 text-sm">
+                                    <x-icon name="tabler.check" class="w-4 h-4 text-success"/>
+                                    <span>{{ $item->service->name }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <!-- Aksiyon Butonları -->
+                        <div class="flex items-center gap-2">
+                            @auth
+                                <button 
+                                    wire:click="addToCart({{ $package->id }})"
+                                    class="btn btn-primary btn-sm flex-1"
+                                >
+                                    Sepete Ekle
+                                </button>
+                            @else
+                                <a 
+                                    href="{{ route('login') }}"
+                                    class="btn btn-primary btn-sm flex-1"
+                                >
+                                    Giriş Yap
+                                </a>
+                            @endauth
+                        </div>
+                    </div>
+                </div>
             @empty
                 <div class="col-span-full">
                     <x-empty-state 

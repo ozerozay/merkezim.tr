@@ -30,23 +30,22 @@ class ShoppingCartManager
 
     public function getCartCount()
     {
-        return $this->getCart()->items()->count();
+        if (Auth::check()) {
+            return $this->getCart()->items()->count();
+        }
+        return $this->getSessionCart()->sum('quantity');
     }
 
     public function addItem(array $product, int $quantity = 1): int
     {
         return Auth::check() ? $this->addToDatabase($product, $quantity) : $this->addToSession($product, $quantity);
-
     }
 
     protected function addToDatabase(array $product, int $quantity): int
     {
         $cart = $this->getDatabaseCart();
-
-        // Ürün veya hizmeti alıyoruz
         $item = $this->getItem($product['type'], $product['id']);
 
-        // Sepette zaten var mı kontrolü
         $existingCartItem = $cart->items()
             ->where('item_id', $item->id)
             ->where('item_type', get_class($item))
@@ -59,90 +58,78 @@ class ShoppingCartManager
                 $existingCartItem->quantity += $quantity;
             }
             $existingCartItem->save();
-            if ($existingCartItem->quantity < 1) {
-                $existingCartItem->delete();
-
-                return 0;
-            }
 
             return $existingCartItem->quantity;
-        } else {
-            $cartItem = new CartItem([
-                'item_id' => $item->id,
-                'item_type' => get_class($item),
-                'quantity' => ($item->buy_max > 0 && $item->buy_max < $quantity) ? $item->buy_max : $quantity,
-                'price' => $item->price,
-            ]);
-            $cart->items()->save($cartItem);
-
-            return $cartItem->quantity;
         }
+
+        $cartItem = new CartItem([
+            'item_id' => $item->id,
+            'item_type' => get_class($item),
+            'quantity' => ($item->buy_max > 0 && $item->buy_max < $quantity) ? $item->buy_max : $quantity,
+            'price' => $item->price,
+        ]);
+        $cart->items()->save($cartItem);
+
+        return $cartItem->quantity;
     }
 
-    protected function addToSession(array $product, int $quantity)
+    protected function addToSession(array $product, int $quantity): int
     {
         $cart = $this->getSessionCart();
         $productId = $product['id'];
 
-        // Sepette zaten var mı kontrolü
-
-        if (isset($cart[$productId])) {
-            $cart[$productId]['quantity'] += $quantity;
+        if ($cart->has($productId)) {
+            $currentItem = $cart->get($productId);
+            $currentItem['quantity'] += $quantity;
+            $cart->put($productId, $currentItem);
         } else {
-            $cart[$productId] = array_merge($product, ['quantity' => $quantity]);
+            $cart->put($productId, array_merge($product, ['quantity' => $quantity]));
         }
 
-        session()->put($this->sessionKey, $cart);
+        session()->put($this->sessionKey, $cart->toArray());
 
-        return $cart[$productId]['quantity'];
+        return $cart->get($productId)['quantity'];
     }
 
-    // Ürün veya hizmeti alıyoruz
     protected function getItem($type, $id)
     {
-        if ($type === 'package') {
-            return ShopPackage::findOrFail($id);
-        } elseif ($type === 'service') {
-            return ShopService::findOrFail($id);
-        }
-
-        throw new \Exception('Unknown item type');
+        return match ($type) {
+            'package' => ShopPackage::findOrFail($id),
+            'service' => ShopService::findOrFail($id),
+            default => throw new \Exception('Unknown item type'),
+        };
     }
 
     public function syncSessionToDatabase()
     {
-        $cart = session()->get($this->sessionKey, []);
+        if (!Auth::check()) return;
 
-        if (empty($cart)) {
-            return;
-        }
+        $sessionCart = $this->getSessionCart();
 
-        foreach ($cart as $productId => $item) {
+        if ($sessionCart->isEmpty()) return;
+
+        foreach ($sessionCart as $item) {
             $this->addToDatabase($item, $item['quantity']);
         }
 
-        session()->forget($this->sessionKey); // Oturumdaki sepeti temizle
+        session()->forget($this->sessionKey);
     }
 
     public function getSubTotal()
     {
-        $cart = collect($this->getCart()->items);
+        if (Auth::check()) {
+            return $this->getCart()->items->sum(function ($item) {
+                return $item->price * $item->quantity;
+            });
+        }
 
-        //dump($cart);
-
-        return $cart->sum(function ($v) {
-            return $v['price'] * $v['quantity'];
+        return $this->getSessionCart()->sum(function ($item) {
+            return $item['price'] * $item['quantity'];
         });
     }
 
     public function getTotalTax()
     {
-        $cart = collect($this->getCart()->items);
-
-        //dump($cart);
-
-        return $cart->sum(function ($v) {
-            return $v['price'] * $v['quantity'];
-        });
+        return $this->getSubTotal(); // Vergi hesaplaması gerekiyorsa burada yapılabilir
     }
 }

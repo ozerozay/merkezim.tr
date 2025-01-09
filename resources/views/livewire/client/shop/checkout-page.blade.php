@@ -23,7 +23,9 @@
             </div>
 
             @if ($frame_code == null)
-                <x-button icon="tabler.x" class="btn-ghost" wire:click="$dispatch('slide-over.close', { force: true })"/>
+                <x-button icon="tabler.x" 
+                         class="btn-ghost absolute top-4 right-4" 
+                         wire:click="$dispatch('slide-over.close', { force: true })"/>
             @endif
         </div>
     </div>

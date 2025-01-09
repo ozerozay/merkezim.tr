@@ -5,47 +5,38 @@ namespace App\Livewire\Login;
 use App\Actions\Spotlight\Actions\Create\CreateUniqueID;
 use App\Models\Branch;
 use App\Models\User;
-use Livewire\Attributes\Locked;
+use App\Managers\ShoppingCartManager;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
+use Livewire\Component;
 use Mary\Traits\Toast;
-use WireElements\Pro\Components\SlideOver\SlideOver;
 
-class LoginPage extends SlideOver
+#[Layout('components.layouts.empty')]
+#[Title('Giriş')]
+class LoginPage extends Component
 {
     use Toast;
 
-    #[Locked]
     public $section = 'phone';
-
     public $phone = '';
-
     public $code = '';
-
     public $gender = 1;
-
     public $name = null;
-
     public $branches;
-
     public $branch;
-
     public $otp;
-
     public $ti = true;
-
     public $kvk = true;
 
-    public bool $redirectOrDispatch = true;
-
-    public function mount(bool $redirectOrDispatch = true)
+    public function mount()
     {
-        if (\Auth::check()) {
-            $this->close();
-            $this->redirectIntended('/');
+        if (auth()->check()) {
+            return redirect()->intended('/');
         }
 
-        $this->redirectOrDispatch = $redirectOrDispatch;
-
-        $this->branches = Branch::select('id', 'active', 'name')->where('active', true)->get();
+        $this->branches = Branch::select('id', 'active', 'name')
+            ->where('active', true)
+            ->get();
 
         $this->branch = $this->branches->first()?->id ?? null;
     }
@@ -57,7 +48,7 @@ class LoginPage extends SlideOver
 
     public function redirectTo($provider)
     {
-        return redirect()->to('/auth/'.$provider);
+        return redirect()->to('/auth/' . $provider);
     }
 
     public function submitForm()
@@ -110,14 +101,10 @@ class LoginPage extends SlideOver
             auth()->login($user, true);
             request()->session()->regenerate();
 
-            if ($this->redirectOrDispatch) {
-                $this->redirectIntended('/');
-            } else {
-                $this->dispatch('client-logged-in');
-                $this->close();
+            // Session cart'ı database'e sync et
+            (new ShoppingCartManager)->syncSessionToDatabase();
 
-            }
-
+            return redirect()->intended('/');
         } catch (\Throwable $e) {
             $this->error($e->getMessage());
         }
@@ -125,9 +112,7 @@ class LoginPage extends SlideOver
 
     public function submitCode()
     {
-
         try {
-
             $validator = \Validator::make([
                 'phone' => $this->phone,
                 'code' => $this->code,
@@ -157,30 +142,22 @@ class LoginPage extends SlideOver
 
             if ($user->name == null) {
                 $this->section = 'form';
-
                 return;
-            } else {
-
-                if ($user->trashed()) {
-                    $user->restore();
-                }
-
-                auth()->login($user, true);
-                //
-
-                if ($this->redirectOrDispatch) {
-                    $this->redirectIntended('/');
-                } else {
-                    $this->dispatch('client-logged-in');
-                    $this->close();
-                }
-
-                request()->session()->regenerate();
-
             }
 
+            if ($user->trashed()) {
+                $user->restore();
+            }
+
+            auth()->login($user, true);
+            request()->session()->regenerate();
+
+            // Session cart'ı database'e sync et
+            (new ShoppingCartManager)->syncSessionToDatabase();
+
+            return redirect()->intended('/');
         } catch (\Throwable $e) {
-            $this->error('Lütfen tekrar deneyin.'.$e->getMessage());
+            $this->error('Lütfen tekrar deneyin.' . $e->getMessage());
         }
     }
 
@@ -229,9 +206,8 @@ class LoginPage extends SlideOver
 
             $this->section = 'code';
         } catch (\Throwable $e) {
-            $this->error('Lütfen tekrar deneyin.'.$e->getMessage());
+            $this->error('Lütfen tekrar deneyin.' . $e->getMessage());
         }
-
     }
 
     public function render()

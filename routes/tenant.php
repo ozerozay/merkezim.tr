@@ -7,6 +7,7 @@ use App\BranchSMSTemplateType;
 use App\Enum\SettingsType;
 use App\Http\Controllers\AuthController;
 use App\Jobs\SendReportPdfJob;
+use App\Livewire\Login\LoginPage;
 use App\Livewire\Reports\AppointmentReport;
 use App\Livewire\Reports\ClientReport;
 use App\Livewire\Reports\KasaReport;
@@ -83,7 +84,8 @@ Route::middleware([
         } catch (\Throwable $e) {
         }
     });
-    Volt::route('/login', 'login')->name('login');
+    Route::get('/login', LoginPage::class)->name('login');
+    //Volt::route('/login', 'login')->name('login');
 
     Route::get('/logout', function () {
         \Illuminate\Support\Facades\Auth::logout();

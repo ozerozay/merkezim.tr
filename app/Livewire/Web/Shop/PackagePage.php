@@ -48,6 +48,10 @@ class PackagePage extends Component
 
     public function addToCart($package)
     {
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+
         $package = ShopPackage::find($package);
 
         $product = [

@@ -12,12 +12,12 @@ class AppBrand extends Component
 
     public function __construct()
     {
-        /* try {
-             $general_settings = \App\Actions\Spotlight\Actions\Settings\GetGeneralSettings::run();
-             $this->site_name = $general_settings->get(\App\Enum\SettingsType::site_name->name);
-         } catch (\Throwable $e) {
-
-         }*/
+        try {
+            $general_settings = \App\Actions\Spotlight\Actions\Settings\GetGeneralSettings::run();
+            $this->site_name = $general_settings->get(\App\Enum\SettingsType::site_name->name);
+            //dump($this->site_name);
+        } catch (\Throwable $e) {
+        }
     }
 
     /**
@@ -31,7 +31,7 @@ class AppBrand extends Component
                     <div {{ $attributes->class(["hidden-when-collapsed"]) }}>
                         <div class="flex gap-2">
                             <span class="text-3xl font-bold text-base-content dark:text-neutral-content bg-base-100 dark:bg-neutral px-4 py-2 rounded-lg transition-all duration-300">
-                                Merkezim
+                                {{ $site_name }}
                             </span>
                         </div>
                     </div>

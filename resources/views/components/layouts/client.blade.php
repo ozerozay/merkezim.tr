@@ -29,80 +29,181 @@
 {{-- NAVBAR mobile only --}}
 <x-nav sticky class="lg:hidden">
     <x-slot:brand>
-        <x-app-brand />
+        <h1 class="text-xl font-bold text-base-content">
+            {{ $site_name }}
+        </h1>
     </x-slot:brand>
     <x-slot:actions>
+        <div class="flex items-center gap-2">
+            <!-- Giriş Yapılmamış Kullanıcı İçin Giriş Butonu -->
+            @guest
+                <x-button :link="route('login')"
+                        class="btn btn-primary btn-sm normal-case">
+                    <span class="hidden sm:inline text-xs">Giriş Yap</span>
+                    <span class="sm:hidden text-xs">Giriş</span>
+                </x-button>
+            @else
+                <!-- Mobil Menü (Sadece Giriş Yapmış Kullanıcılar İçin) -->
+                <label for="main-drawer" class="btn btn-ghost btn-sm lg:hidden">
+                    <x-icon name="o-bars-3" class="w-5 h-5" />
+                </label>
+            @endguest
+<!-- Dil Seçimi Butonu -->
+<button wire:click="$dispatch('modal.open', {component: 'web.modal.language-modal'})" 
+        class="btn btn-ghost btn-sm normal-case gap-2">
+    <div class="w-6 h-6 rounded-full bg-base-200 flex items-center justify-center">
+        <span class="text-base">{{ app()->getLocale() === 'tr' ? '🇹🇷' : '🇬🇧' }}</span>
+    </div>
+    <span class="hidden sm:inline text-xs font-medium">
+        {{ app()->getLocale() === 'tr' ? 'Türkçe' : 'English' }}
+    </span>
+    <span class="text-lg">🌐</span>
+</button>
 
-        @if (1 == 2)
-            <x-button icon="tabler.shopping-bag" class="btn-circle relative">
-                <x-badge value="0" class="badge-error absolute -right-2 -top-2" />
-            </x-button>
-        @endif
-        <x-button icon="tabler.bell" class="btn-circle relative">
-            <x-badge value="0" class="badge-error absolute -right-2 -top-2" />
-        </x-button>
-        <label for="main-drawer" class="lg:hidden me-3">
-            <x-icon name="o-bars-3" class="cursor-pointer rounded-full" />
-        </label>
-
+            <!-- Tema Değiştirici -->
+            <x-theme-toggle class="btn btn-ghost btn-sm p-0 hover:bg-transparent">
+                <span class="text-base">🌙</span>
+            </x-theme-toggle>
+        </div>
     </x-slot:actions>
 </x-nav>
 
 {{-- MAIN --}}
 <x-main>
     {{-- SIDEBAR --}}
-    <x-slot:sidebar drawer="main-drawer" class="bg-base-100 p-3 lg:bg-inherit">
-
-        <x-menu class="mt-2" activate-by-route>
-            @if ($user = auth()->user())
-                <livewire:client.menu.client-auth-menu wire:key="mngfjn-{{Str::random(10)}}" />
-            @else
-                {{-- Giriş Yapılmamış Kullanıcı --}}
-                <div class="flex flex-col">
-                    <!-- Site Başlığı -->
-                    <div class="bg-base-100/50 backdrop-blur-sm rounded-2xl border border-base-200 p-3">
-                        <div class="flex items-center justify-between">
-                            <p class="text-xl font-bold text-base-content">
-                                {{ $site_name }}
-                            </p>
+    <x-slot:sidebar drawer="main-drawer" class="bg-base-100 lg:bg-inherit">
+        @auth
+            <!-- Giriş Yapılmış Kullanıcı -->
+            <div class="flex flex-col gap-2 p-3">
+                <!-- Profil Kartı -->
+                <div class="bg-base-100/50 backdrop-blur-sm rounded-2xl border border-base-200 p-3 {{ auth()->user()->hasRole('admin') ? 'mt-2' : '' }}">
+                    <div class="flex items-center justify-between">
+                        <!-- Sol: Avatar ve Kullanıcı Bilgileri -->
+                        <div class="flex items-center gap-3">
+                            <!-- Avatar -->
+                            <div class="relative">
+                                @if(auth()->user()->avatar)
+                                    <img class="w-12 h-12 rounded-xl object-cover" 
+                                         src="{{ auth()->user()->avatar }}" 
+                                         alt="{{ auth()->user()->name }}">
+                                @else
+                                    <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                                        <span class="text-xl text-primary font-medium">
+                                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                        </span>
+                                    </div>
+                                @endif
+                                <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-success rounded-full border-2 border-base-100"></div>
+                            </div>
+            
+                            <!-- Kullanıcı Bilgileri -->
+                            <div class="flex flex-col">
+                                <span class="font-medium text-base-content">
+                                    {{ auth()->user()->name }}
+                                </span>
+                                <span class="text-sm text-base-content/70">
+                                    {{ auth()->user()->client_branch->name }}
+                                </span>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Marge Shop - Canlı Tasarım -->
-                    @if ($shop_active)
-                        <a href="{{ route('client.shop.packages') }}" class="flex items-center gap-2 p-2 mt-2 rounded-xl bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90 transition-all duration-300 transform hover:scale-[1.02] shadow-md shadow-primary/20 group-hover:shadow-lg group-hover:shadow-primary/30">
-                            <span class="text-lg text-white">✨</span>
-                            <div class="flex flex-col">
-                                <span class="text-sm font-medium text-white">{{ __('client.menu_shop') }}</span>
-                                <span class="text-[11px] text-white/90">Özel hizmet paketleri</span>
-                            </div>
-                            <div class="ml-auto text-white/90">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </a>
-                    @endif
-
-                    <!-- Giriş Butonu -->
-                    <div class="bg-base-100 p-2 mt-2 rounded-2xl border border-base-200">
-                        <livewire:spotlight.components.login_button wire:key="lg-xks-{{ Str::random(10) }}" />
+                </div>
+            
+                @if ($shop_active)
+                <!-- Shop Butonu -->
+                <a href="{{ route('client.shop.packages') }}" class="flex items-center gap-3 p-2.5 mt-2 rounded-2xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 border border-primary/20 shadow-lg shadow-primary/20">
+                    <span class="text-xl">✨</span>
+                    <div class="flex flex-col">
+                        <span class="font-medium text-white">{{ __('client.menu_shop') }}</span>
+                        <span class="text-xs text-white/90">Özel hizmet paketleri</span>
+                    </div>
+                </a>
+            @endif
+                <!-- Ana Menü -->
+                <div class="bg-base-100 rounded-xl border border-base-200">
+                    <div class="p-2">
+                        <livewire:client.menu.client-auth-menu wire:key="mngfjn-{{Str::random(10)}}" />
                     </div>
                 </div>
+                @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('staff'))
+                <!-- Admin Panel Butonu -->
+                <a href="{{ route('admin.index') }}" class="flex items-center gap-3 p-2.5 rounded-2xl bg-gradient-to-r from-warning to-warning/80 hover:from-warning/90 hover:to-warning/70 transition-all duration-300 border border-warning/20 shadow-lg shadow-warning/20">
+                    <span class="text-xl">⚡</span>
+                    <div class="flex flex-col">
+                        <span class="font-medium text-warning-content">Yönetim Paneli</span>
+                        <span class="text-xs text-warning-content/90">Admin paneline hızlı erişim</span>
+                    </div>
+                </a>
             @endif
-        </x-menu>
+               
+            </div>
+        @else
+            <!-- Giriş Yapılmamış Kullanıcı -->
+            <div class="flex flex-col gap-2 p-3">
+                <!-- Site Başlığı -->
+                <div class="bg-base-100 rounded-xl border border-base-200">
+                    <div class="p-4">
+                        <div class="flex items-center gap-3">
+                            <div>
+                                <h1 class="text-xl font-bold text-base-content">
+                                    {{ $site_name }}
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Giriş Butonu -->
+                <div class="bg-base-100 rounded-xl border border-base-200">
+                    <div class="p-4">
+                        <div class="flex flex-col gap-2">
+                            <x-button :link="route('login')"
+                                    class="btn btn-primary w-full">
+                                Giriş Yap / Üye Ol
+                            </x-button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dil ve Tema Seçimi -->
+                <div class="bg-base-100 rounded-xl border border-base-200">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between">
+                            <!-- Dil Seçimi -->
+                            <button wire:click="$dispatch('modal.open', {component: 'web.modal.language-modal'})" 
+                            class="btn btn-ghost btn-sm normal-case gap-2">
+                        <div class="w-6 h-6 rounded-full bg-base-200 flex items-center justify-center">
+                            <span class="text-base">{{ app()->getLocale() === 'tr' ? '🇹🇷' : '🇬🇧' }}</span>
+                        </div>
+                        <span class="hidden sm:inline text-xs font-medium">
+                            {{ app()->getLocale() === 'tr' ? 'Türkçe' : 'English' }}
+                        </span>
+                        <span class="text-lg">🌐</span>
+                    </button>
+
+                            <!-- Tema Değiştirici -->
+                            <x-theme-toggle class="btn btn-ghost btn-sm">
+                                <span class="text-base">🌙</span>
+                            </x-theme-toggle>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endauth
     </x-slot:sidebar>
 
     {{-- The `$slot` goes here --}}
     <x-slot:content>
         {{ $slot }}
     </x-slot:content>
-
 </x-main>
 <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2" wire:key="cart-buttson-{{ Str::random(10) }}">
     @if ($shop_active)
         @if (request()->is('shop/*'))
-            <livewire:web.shop.cart-button-page wire:key="djsaxeccr-{{ Str::random(10) }}" />
+        @auth
+        <livewire:web.shop.cart-button-page wire:key="djsaxeccr-{{ Str::random(10) }}" />
+        @endauth
+       
         @else
             <livewire:spotlight.components.shop_button wire:key="djsafweccr" />
         @endif

@@ -13,6 +13,7 @@ enum WebFormType: string
     case PACKAGE_TRANSFER = 'package_transfer';
     case INSTALLMENT_CHANGE = 'installment_change';
     case PRICE_CHANGE = 'price_change';
+    case OFFER_REQUEST = 'offer_request';
 
     case RESERVATION_REQUEST = 'reservation_request';
     case OTHER = 'other';
@@ -30,6 +31,7 @@ enum WebFormType: string
             self::INSTALLMENT_CHANGE => 'Taksit Değişikliği',
             self::PRICE_CHANGE => 'Fiyat Değişikliği',
             self::RESERVATION_REQUEST => 'Rezervasyon İsteği',
+            self::OFFER_REQUEST => 'Teklif İsteği',
             self::OTHER => 'Diğer',
         };
     }

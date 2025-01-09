@@ -1,62 +1,8 @@
+<div>
 <div class="flex flex-col">
-    @if(auth()->user()->hasRole('admin'))
-        <!-- Admin Panel Butonu -->
-        <a href="{{ route('admin.index') }}" class="flex items-center gap-3 p-2.5 rounded-2xl bg-gradient-to-r from-warning to-warning/80 hover:from-warning/90 hover:to-warning/70 transition-all duration-300 border border-warning/20 shadow-lg shadow-warning/20">
-            <span class="text-xl">⚡</span>
-            <div class="flex flex-col">
-                <span class="font-medium text-warning-content">Yönetim Paneli</span>
-                <span class="text-xs text-warning-content/90">Admin paneline hızlı erişim</span>
-            </div>
-        </a>
-    @endif
-
-    <!-- Profil Kartı -->
-    <div class="bg-base-100/50 backdrop-blur-sm rounded-2xl border border-base-200 p-3 {{ auth()->user()->hasRole('admin') ? 'mt-2' : '' }}">
-        <div class="flex items-center justify-between">
-            <!-- Sol: Avatar ve Kullanıcı Bilgileri -->
-            <div class="flex items-center gap-3">
-                <!-- Avatar -->
-                <div class="relative">
-                    @if(auth()->user()->avatar)
-                        <img class="w-12 h-12 rounded-xl object-cover" 
-                             src="{{ auth()->user()->avatar }}" 
-                             alt="{{ auth()->user()->name }}">
-                    @else
-                        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                            <span class="text-xl text-primary font-medium">
-                                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                            </span>
-                        </div>
-                    @endif
-                    <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-success rounded-full border-2 border-base-100"></div>
-                </div>
-
-                <!-- Kullanıcı Bilgileri -->
-                <div class="flex flex-col">
-                    <span class="font-medium text-base-content">
-                        {{ auth()->user()->name }}
-                    </span>
-                    <span class="text-sm text-base-content/70">
-                        {{ auth()->user()->client_branch->name }}
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Marge Shop - Canlı Tasarım -->
-    @if ($this->checkSetting(\App\Enum\SettingsType::client_page_appointment->name))
-        <a href="{{ route('client.shop.packages') }}" class="flex items-center gap-3 p-2.5 mt-2 rounded-2xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 border border-primary/20 shadow-lg shadow-primary/20">
-            <span class="text-xl">✨</span>
-            <div class="flex flex-col">
-                <span class="font-medium text-white">{{ __('client.menu_shop') }}</span>
-                <span class="text-xs text-white/90">Özel hizmet paketleri</span>
-            </div>
-        </a>
-    @endif
-
+  
     <!-- Ana Menü -->
-    <div class="bg-base-100 p-2 mt-2 rounded-2xl border border-base-200">
+    <div class="bg-base-100 p-2 mt-2 rounded-2xl">
         <div class="grid grid-cols-1 gap-0.5 text-sm">
             <!-- Ana Sayfa -->
             <a href="{{ route('client.index') }}" class="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-base-200 transition-all duration-300 {{ request()->routeIs('client.index') ? 'text-primary font-medium' : 'text-base-content/70' }}">
@@ -64,12 +10,7 @@
                 <span>Anasayfa</span>
             </a>
 
-            <!-- Bize Ulaşın -->
-            <a href="{{ route('client.contact') }}" class="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-base-200 transition-all duration-300 {{ request()->routeIs('client.contact') ? 'text-primary font-medium' : 'text-base-content/70' }}">
-                <span class="text-lg">📞</span>
-                <span>Bize Ulaşın</span>
-            </a>
-
+          
             @if ($this->checkSetting(\App\Enum\SettingsType::client_page_seans->name))
                 <a href="{{ route('client.profil.seans') }}" class="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-base-200 transition-all duration-300 {{ request()->routeIs('client.profil.seans*') ? 'text-primary font-medium' : 'text-base-content/70' }}">
                     <span class="text-lg">✨</span>
@@ -119,10 +60,46 @@
                 </a>
             @endif
 
+              <!-- Bize Ulaşın -->
+              <a href="{{ route('client.contact') }}" class="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-base-200 transition-all duration-300 {{ request()->routeIs('client.contact') ? 'text-primary font-medium' : 'text-base-content/70' }}">
+                <span class="text-lg">📞</span>
+                <span>Bize Ulaşın</span>
+            </a>
+
+
             <a href="{{ route('logout') }}" class="flex items-center gap-2.5 p-1.5 mt-1 rounded-xl hover:bg-error/10 hover:text-error transition-all duration-300 text-base-content/70">
                 <span class="text-lg">🚪</span>
                 <span>{{ __('client.menu_logout') }}</span>
             </a>
+
+            
+        </div>
+        
+    </div>
+    
+</div>
+<div class="bg-base-100 rounded-xl border border-base-200">
+    <div class="p-4">
+        <div class="flex items-center justify-between">
+            <!-- Dil Seçimi -->
+            <button wire:click="$dispatch('modal.open', {component: 'web.modal.language-modal'})" 
+        class="btn btn-ghost btn-sm normal-case gap-2">
+    <div class="w-6 h-6 rounded-full bg-base-200 flex items-center justify-center">
+        <span class="text-base">{{ app()->getLocale() === 'tr' ? '🇹🇷' : '🇬🇧' }}</span>
+    </div>
+    <span class="hidden sm:inline text-xs font-medium">
+        {{ app()->getLocale() === 'tr' ? 'Türkçe' : 'English' }}
+    </span>
+    <span class="text-lg">🌐</span>
+</button>
+
+
+            <!-- Tema Değiştirici -->
+            <x-theme-toggle class="btn btn-ghost btn-sm">
+                <span class="text-base">🌙</span>
+            </x-theme-toggle>
         </div>
     </div>
+</div>
+
 </div>
