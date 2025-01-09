@@ -70,10 +70,10 @@ new #[\Livewire\Attributes\Layout('components.layouts.client')] class extends \L
                 </div>
 
                 <div class="flex flex-wrap gap-4">
-                    <button class="btn btn-primary btn-lg gap-2">
+                    <x-button :link="route('client.profil.reservation-request')" class="btn btn-primary btn-lg gap-2">
                         <span>Rezervasyon Yap</span>
                         <span class="text-xl">📅</span>
-                    </button>
+                    </x-button>
                 </div>
 
                 <!-- İstatistikler -->
