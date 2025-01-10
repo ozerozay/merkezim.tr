@@ -110,22 +110,21 @@
                                 <div class="absolute inset-y-0 left-0 flex items-center pl-4"
                                      x-data="{ 
                                         isListening: false,
+                                        hasError: false,
                                         recognition: null,
                                         isSupportedBrowser: 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window,
                                         
                                         async startListening() {
                                             if (!this.isSupportedBrowser) {
-                                                $wire.dispatch('notify', { 
-                                                    type: 'error',
-                                                    message: 'Tarayıcınız ses tanıma özelliğini desteklemiyor.'
-                                                });
                                                 return;
                                             }
 
+                                            this.isListening = true;
+                                            this.hasError = false;
+                                            
                                             try {
-                                                // Mikrofon izni iste
                                                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                                                stream.getTracks().forEach(track => track.stop()); // İzin sonrası stream'i kapat
+                                                stream.getTracks().forEach(track => track.stop());
 
                                                 if (!this.recognition) {
                                                     this.recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -141,6 +140,7 @@
                                                     
                                                     this.recognition.onerror = (event) => {
                                                         console.error('Speech recognition error:', event.error);
+                                                        this.hasError = true;
                                                         this.handleError(event.error);
                                                         this.stopListening();
                                                     };
@@ -151,65 +151,60 @@
                                                 }
                                                 
                                                 this.recognition.start();
-                                                this.isListening = true;
-                                                
-                                                $wire.dispatch('notify', { 
-                                                    type: 'info',
-                                                    message: 'Sizi dinliyorum...'
-                                                });
-                                                
                                             } catch (error) {
-                                                console.error('Microphone error:', error);
-                                                this.handleError(error.name || 'unknown');
+                                                this.hasError = true;
+                                                this.handleError(error);
                                             }
                                         },
-
+                                        
                                         stopListening() {
+                                            this.isListening = false;
                                             if (this.recognition) {
                                                 this.recognition.stop();
                                             }
-                                            this.isListening = false;
                                         },
-
+                                        
                                         handleError(error) {
-                                            let message = 'Bir hata oluştu.';
-                                            
-                                            switch(error) {
-                                                case 'not-allowed':
-                                                    message = 'Mikrofon izni verilmedi. Lütfen tarayıcı izinlerini kontrol edin.';
-                                                    break;
-                                                case 'NotAllowedError':
-                                                    message = 'Mikrofon izni verilmedi. Lütfen tarayıcı izinlerini kontrol edin.';
-                                                    break;
-                                                case 'no-speech':
-                                                    message = 'Ses algılanamadı. Lütfen tekrar deneyin.';
-                                                    break;
-                                                case 'network':
-                                                    message = 'Ağ bağlantısı hatası. Lütfen internet bağlantınızı kontrol edin.';
-                                                    break;
-                                                case 'NotFoundError':
-                                                    message = 'Mikrofon bulunamadı. Lütfen mikrofon bağlantınızı kontrol edin.';
-                                                    break;
-                                            }
-                                            
-                                            $wire.dispatch('notify', { 
-                                                type: 'error',
-                                                message: message
-                                            });
+                                            this.isListening = false;
+                                            this.hasError = true;
+                                            console.error('Speech recognition error:', error);
                                         }
                                      }">
                                     <button @click="startListening()" 
-                                            class="group flex items-center justify-center w-5 h-5 transition-colors"
-                                            :class="{ 'text-primary-500 dark:text-primary-400': isListening, 'text-gray-400 dark:text-gray-500 hover:text-primary-500 dark:hover:text-primary-400': !isListening }">
-                                        <!-- Mikrofon İkonu -->
-                                        <svg x-show="!isListening" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            class="flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-200"
+                                            :class="{
+                                                'bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-500 animate-pulse': isListening,
+                                                'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-primary-500 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-primary-400': !isListening && !hasError && isSupportedBrowser,
+                                                'bg-gray-100 text-red-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700': (!isListening && !isSupportedBrowser) || hasError
+                                            }">
+                                        <!-- Normal Mikrofon İkonu -->
+                                        <svg x-show="!isListening && !hasError && isSupportedBrowser" 
+                                             class="w-4 h-4" 
+                                             xmlns="http://www.w3.org/2000/svg" 
+                                             fill="none" 
+                                             viewBox="0 0 24 24" 
+                                             stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                                         </svg>
                                         
                                         <!-- Dinleme Animasyonu -->
-                                        <svg x-show="isListening" class="w-5 h-5 animate-pulse" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                        <svg x-show="isListening" 
+                                             class="w-4 h-4" 
+                                             xmlns="http://www.w3.org/2000/svg" 
+                                             fill="currentColor" 
+                                             viewBox="0 0 24 24">
                                             <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
                                             <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                                        </svg>
+
+                                        <!-- Hata/Desteklenmiyor İkonu -->
+                                        <svg x-show="(!isListening && !isSupportedBrowser) || hasError" 
+                                             class="w-4 h-4" 
+                                             xmlns="http://www.w3.org/2000/svg" 
+                                             fill="none" 
+                                             viewBox="0 0 24 24" 
+                                             stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
                                     </button>
                                 </div>
@@ -219,7 +214,7 @@
                                     wire:model.live.debounce.300ms="search"
                                     type="text"
                                     placeholder="Menüde ara... (örn: ödeme, fatura, rapor)"
-                                    class="w-full py-2.5 pl-11 pr-10 text-base bg-gray-50 dark:bg-gray-800/50 border-0 rounded-xl focus:bg-white dark:focus:bg-gray-800 focus:ring-2 focus:ring-primary-500/20 dark:focus:ring-primary-400/20 placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100 transition-all"
+                                    class="w-full py-2.5 pl-14 pr-10 text-base bg-gray-50 dark:bg-gray-800/50 border-0 rounded-xl focus:bg-white dark:focus:bg-gray-800 focus:ring-2 focus:ring-primary-500/20 dark:focus:ring-primary-400/20 placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100 transition-all"
                                     @keydown.prevent.stop.enter="$wire.selectItem()"
                                     @keydown.prevent.arrow-up="$wire.decrementSelectedIndex()"
                                     @keydown.prevent.arrow-down="$wire.incrementSelectedIndex()"
