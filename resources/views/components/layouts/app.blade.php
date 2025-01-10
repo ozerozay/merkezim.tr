@@ -141,6 +141,8 @@
 @endpersist()
 <x-theme-toggle class="hidden" />
 
+<livewire:merkezim-spotlight />
+
 </body>
 <script>
     document.addEventListener("livewire:init", () => {

@@ -11,7 +11,7 @@ new class extends Livewire\Volt\Component {
 <div>
     <div class="fixed bottom-6 right-6 z-50">
         <button 
-            wire:click="show"
+            wire:click="$dispatch('merkezim-spotlight-toggle')"
             class="group relative flex h-14 w-14 items-center justify-center 
                    bg-white dark:bg-gray-800 rounded-2xl shadow-lg 
                    hover:rounded-xl active:scale-95 
@@ -28,19 +28,19 @@ new class extends Livewire\Volt\Component {
                        bg-white dark:bg-gray-800 
                        transition-all duration-300"></div>
             
-            <!-- İkon -->
+            <!-- M İkonu -->
             <svg xmlns="http://www.w3.org/2000/svg" 
                  class="relative h-6 w-6 transform 
                         text-gray-700 dark:text-gray-200
                         transition-transform duration-300 
-                        group-hover:scale-110 group-hover:rotate-90" 
+                        group-hover:scale-110 group-hover:rotate-12" 
                  fill="none" 
                  viewBox="0 0 24 24" 
                  stroke="currentColor">
                 <path stroke-linecap="round" 
                       stroke-linejoin="round" 
                       stroke-width="2"
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      d="M20 20l-4-16l-4 8l-4-8l-4 16" />
             </svg>
         </button>
     </div>

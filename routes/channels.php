@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
+use App\Models\Chat\Chat;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 
 Broadcast::routes(['middleware' => [InitializeTenancyByDomain::class, 'auth']]);
