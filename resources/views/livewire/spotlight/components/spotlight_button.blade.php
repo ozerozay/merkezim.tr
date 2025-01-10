@@ -1,10 +1,7 @@
 <?php
 
 new class extends Livewire\Volt\Component {
-    public function show()
-    {
-        $this->dispatch('spotlight.toggle');
-    }
+  
 };
 
 ?>
