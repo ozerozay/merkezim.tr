@@ -1,4 +1,16 @@
-<div class="relative" wire:key="merkezim-spotlight">
+<div class="relative" wire:key="merkezim-spotlight"
+     x-data="{ 
+        lockScroll() {
+            document.body.style.overflow = 'hidden';
+            document.body.style.touchAction = 'none';
+        },
+        unlockScroll() {
+            document.body.style.overflow = '';
+            document.body.style.touchAction = '';
+        }
+     }"
+     x-init="$watch('$wire.isOpen', value => value ? lockScroll() : unlockScroll())"
+>
     <div class="relative z-50">
         @if($isOpen)
             <!-- Backdrop -->
@@ -6,10 +18,29 @@
                  wire:click="close"></div>
 
             <!-- Modal Container -->
-            <div class="fixed inset-0 flex items-start sm:justify-center sm:pt-[15vh]">
-                <div class="relative w-full h-full sm:h-auto sm:w-[640px]" 
+            <div class="fixed inset-0 flex items-start sm:justify-center sm:pt-[15vh] overflow-hidden">
+                <div class="relative w-full h-full sm:h-auto sm:w-[640px] overflow-hidden" 
                      x-on:click.outside="$wire.close()">
                     <div class="h-full sm:h-auto m-0 sm:m-4 bg-white dark:bg-gray-900 sm:rounded-xl shadow-xl ring-1 ring-black/10 dark:ring-white/10 flex flex-col">
+                        <!-- Header -->
+                        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg">🔍</span>
+                                <h2 class="text-base font-medium text-gray-900 dark:text-gray-100">
+                                    Merkezim Arama
+                                </h2>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-gray-500 dark:text-gray-400">
+                                    Hızlı erişim için
+                                </span>
+                                <kbd class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 rounded">
+                                    <span class="text-xs">⌘</span>
+                                    <span>K</span>
+                                </kbd>
+                            </div>
+                        </div>
+
                         <!-- Search Input -->
                         <div class="sticky top-0 z-10 p-4 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
                             <div class="flex items-center gap-3">
@@ -40,20 +71,24 @@
                         </div>
 
                         <!-- Results -->
-                        <div class="flex-1 overflow-y-auto overscroll-contain">
+                        <div class="flex-1 overflow-y-auto overscroll-contain touch-pan-y">
                             <!-- Loading State -->
-                            <div wire:loading wire:target="search" class="p-4">
+                            <div wire:loading class="p-4">
                                 <div class="flex items-center justify-center gap-3 text-gray-400 dark:text-gray-500">
-                                    <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    <span class="text-sm font-medium">Aranıyor...</span>
+                                    <div class="flex items-center justify-center">
+                                        <div class="inline-flex items-center px-4 py-2">
+                                            <svg class="animate-spin h-5 w-5 text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            <span class="ml-2 text-sm font-medium">Aranıyor...</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Results List -->
-                            <div wire:loading.remove wire:target="search" class="py-2">
+                            <div wire:loading.remove class="py-2">
                                 @if(count($filteredItems))
                                     @php
                                         $groupedItems = collect($filteredItems)->groupBy('group');
@@ -194,7 +229,7 @@
             <div class="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm" 
                  wire:click="closeModal"></div>
             
-            <div class="fixed inset-0 sm:inset-x-4 sm:top-8 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:top-[15vh] sm:w-[640px] h-full sm:h-auto max-h-[85vh] overflow-y-auto bg-white dark:bg-gray-900 sm:rounded-xl shadow-xl ring-1 ring-black/10 dark:ring-white/10"
+            <div class="fixed inset-0 sm:inset-x-4 sm:top-8 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:top-[15vh] sm:w-[640px] h-full sm:h-auto max-h-[85vh] overflow-y-auto overscroll-contain touch-pan-y bg-white dark:bg-gray-900 sm:rounded-xl shadow-xl ring-1 ring-black/10 dark:ring-white/10"
                  x-on:click.outside="$wire.closeModal()">
                 <!-- Header -->
                 <div class="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-800">

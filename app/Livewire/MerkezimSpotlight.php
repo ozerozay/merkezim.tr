@@ -28,11 +28,100 @@ class MerkezimSpotlight extends Component
     {
         $this->items = [
             [
-                'id' => 'appointments',
+                'id' => 'home',
+                'icon' => '🏠',
+                'label' => 'Anasayfa',
+                'group' => 'Ana Menü',
+                'description' => 'Kontrol paneline git',
+                'action' => 'goToDashboard'
+            ],
+            [
+                'id' => 'calendar',
                 'icon' => '📅',
+                'label' => 'Ajanda',
+                'group' => 'Ana Menü',
+                'description' => 'Ajanda ve takvim yönetimi',
+                'children' => [
+                    [
+                        'id' => 'calendar-view',
+                        'icon' => '📆',
+                        'label' => 'Takvim Görünümü',
+                        'action' => 'showCalendar'
+                    ],
+                    [
+                        'id' => 'calendar-list',
+                        'icon' => '📋',
+                        'label' => 'Liste Görünümü',
+                        'action' => 'showCalendarList'
+                    ],
+                    [
+                        'id' => 'calendar-add',
+                        'icon' => '➕',
+                        'label' => 'Etkinlik Ekle',
+                        'action' => 'addCalendarEvent'
+                    ]
+                ]
+            ],
+            [
+                'id' => 'requests',
+                'icon' => '📨',
+                'label' => 'Talepler',
+                'group' => 'İşlemler',
+                'description' => 'Talep yönetimi',
+                'children' => [
+                    [
+                        'id' => 'new-request',
+                        'icon' => '✏️',
+                        'label' => 'Yeni Talep',
+                        'action' => 'createRequest'
+                    ],
+                    [
+                        'id' => 'my-requests',
+                        'icon' => '📥',
+                        'label' => 'Taleplerim',
+                        'action' => 'showMyRequests'
+                    ],
+                    [
+                        'id' => 'pending-requests',
+                        'icon' => '⏳',
+                        'label' => 'Bekleyen Talepler',
+                        'action' => 'showPendingRequests'
+                    ]
+                ]
+            ],
+            [
+                'id' => 'approvals',
+                'icon' => '✅',
+                'label' => 'Onaylar',
+                'group' => 'İşlemler',
+                'description' => 'Onay süreçleri',
+                'children' => [
+                    [
+                        'id' => 'pending-approvals',
+                        'icon' => '⌛',
+                        'label' => 'Bekleyen Onaylar',
+                        'action' => 'showPendingApprovals'
+                    ],
+                    [
+                        'id' => 'approved-items',
+                        'icon' => '✔️',
+                        'label' => 'Onaylananlar',
+                        'action' => 'showApprovedItems'
+                    ],
+                    [
+                        'id' => 'rejected-items',
+                        'icon' => '❌',
+                        'label' => 'Reddedilenler',
+                        'action' => 'showRejectedItems'
+                    ]
+                ]
+            ],
+            [
+                'id' => 'appointments',
+                'icon' => '🗓️',
                 'label' => 'Randevular',
                 'group' => 'Randevu Yönetimi',
-                'description' => 'Randevu yönetimi ve takibi',
+                'description' => 'Randevu işlemleri',
                 'children' => [
                     [
                         'id' => 'new-appointment',
@@ -41,180 +130,16 @@ class MerkezimSpotlight extends Component
                         'action' => 'createAppointment'
                     ],
                     [
-                        'id' => 'list-appointments',
+                        'id' => 'my-appointments',
                         'icon' => '📋',
-                        'label' => 'Randevu Listesi',
-                        'action' => 'listAppointments'
+                        'label' => 'Randevularım',
+                        'action' => 'showMyAppointments'
                     ],
                     [
-                        'id' => 'calendar',
-                        'icon' => '📆',
-                        'label' => 'Takvim Görünümü',
-                        'action' => 'showCalendar'
-                    ]
-                ]
-            ],
-            [
-                'id' => 'settings',
-                'icon' => '⚙️',
-                'label' => 'Ayarlar',
-                'group' => 'Sistem',
-                'description' => 'Sistem ayarları',
-                'children' => [
-                    [
-                        'id' => 'site-settings',
-                        'icon' => '🌐',
-                        'label' => 'Site Ayarları',
-                        'description' => 'Genel site ayarları',
-                        'children' => [
-                            [
-                                'id' => 'general-settings',
-                                'icon' => '⚙️',
-                                'label' => 'Genel Ayarlar',
-                                'action' => 'showGeneralSettings'
-                            ],
-                            [
-                                'id' => 'seo-settings',
-                                'icon' => '🔍',
-                                'label' => 'SEO Ayarları',
-                                'action' => 'showSeoSettings'
-                            ],
-                            [
-                                'id' => 'mail-settings',
-                                'icon' => '📧',
-                                'label' => 'Mail Ayarları',
-                                'action' => 'showMailSettings'
-                            ]
-                        ]
-                    ],
-                    [
-                        'id' => 'branch-settings',
-                        'icon' => '🏢',
-                        'label' => 'Şube Ayarları',
-                        'description' => 'Şube yönetimi',
-                        'children' => [
-                            [
-                                'id' => 'branch-list',
-                                'icon' => '📋',
-                                'label' => 'Şube Listesi',
-                                'action' => 'showBranchList'
-                            ],
-                            [
-                                'id' => 'branch-hours',
-                                'icon' => '🕒',
-                                'label' => 'Çalışma Saatleri',
-                                'action' => 'showBranchHours'
-                            ],
-                            [
-                                'id' => 'branch-services',
-                                'icon' => '💇‍♀️',
-                                'label' => 'Şube Hizmetleri',
-                                'action' => 'showBranchServices'
-                            ]
-                        ]
-                    ],
-                    [
-                        'id' => 'definitions',
-                        'icon' => '📝',
-                        'label' => 'Tanımlamalar',
-                        'description' => 'Sistem tanımlamaları',
-                        'children' => [
-                            [
-                                'id' => 'user-roles',
-                                'icon' => '👥',
-                                'label' => 'Kullanıcı Rolleri',
-                                'action' => 'showUserRoles'
-                            ],
-                            [
-                                'id' => 'service-categories',
-                                'icon' => '📑',
-                                'label' => 'Hizmet Kategorileri',
-                                'action' => 'showServiceCategories'
-                            ],
-                            [
-                                'id' => 'payment-methods',
-                                'icon' => '💳',
-                                'label' => 'Ödeme Yöntemleri',
-                                'action' => 'showPaymentMethods'
-                            ]
-                        ]
-                    ]
-                ]
-            ],
-            [
-                'id' => 'reports',
-                'icon' => '📊',
-                'label' => 'Raporlar',
-                'group' => 'Raporlama',
-                'description' => 'Sistem raporları',
-                'children' => [
-                    [
-                        'id' => 'financial-reports',
-                        'icon' => '💰',
-                        'label' => 'Finansal Raporlar',
-                        'children' => [
-                            [
-                                'id' => 'daily-report',
-                                'icon' => '📈',
-                                'label' => 'Günlük Rapor',
-                                'action' => 'showDailyReport'
-                            ],
-                            [
-                                'id' => 'monthly-report',
-                                'icon' => '📊',
-                                'label' => 'Aylık Rapor',
-                                'action' => 'showMonthlyReport'
-                            ]
-                        ]
-                    ],
-                    [
-                        'id' => 'customer-reports',
-                        'icon' => '👥',
-                        'label' => 'Müşteri Raporları',
-                        'children' => [
-                            [
-                                'id' => 'customer-analysis',
-                                'icon' => '📉',
-                                'label' => 'Müşteri Analizi',
-                                'action' => 'showCustomerAnalysis'
-                            ],
-                            [
-                                'id' => 'customer-satisfaction',
-                                'icon' => '⭐',
-                                'label' => 'Müşteri Memnuniyeti',
-                                'action' => 'showCustomerSatisfaction'
-                            ]
-                        ]
-                    ]
-                ]
-            ],
-            [
-                'id' => 'ai-assistant',
-                'icon' => '🤖',
-                'label' => 'Yapay Zeka Asistanı',
-                'description' => 'Size nasıl yardımcı olabilirim?',
-                'group' => 'Yardım',
-                'children' => [
-                    [
-                        'id' => 'ask-general',
-                        'icon' => '💬',
-                        'label' => 'Genel Soru Sor',
-                        'description' => 'Herhangi bir konuda yardım alın',
-                        'action' => 'askGeneral'
-                    ],
-                    [
-                        'id' => 'ask-appointments',
+                        'id' => 'appointment-calendar',
                         'icon' => '📅',
-                        'label' => 'Randevular Hakkında',
-                        'description' => 'Randevu sistemi ile ilgili yardım',
-                        'action' => 'askAppointments'
-                    ],
-                    [
-                        'id' => 'ask-services',
-                        'icon' => '✨',
-                        'label' => 'Hizmetler Hakkında',
-                        'description' => 'Sunulan hizmetler hakkında bilgi',
-                        'action' => 'askServices'
+                        'label' => 'Randevu Takvimi',
+                        'action' => 'showAppointmentCalendar'
                     ]
                 ]
             ]
@@ -225,16 +150,20 @@ class MerkezimSpotlight extends Component
 
     public function updatedSearch()
     {
+        $this->isLoading = true;
         $this->selectedIndex = 0;
         $this->filterItems();
+        $this->isLoading = false;
     }
 
     public function filterItems()
     {
         if (!empty($this->search)) {
+            $this->isLoading = true;
             $menuResults = $this->searchInTree($this->items, $this->search);
             $userResults = $this->searchUsers($this->search);
             $this->filteredItems = array_merge($menuResults, $userResults);
+            $this->isLoading = false;
             return;
         }
 
