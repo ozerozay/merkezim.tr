@@ -7,7 +7,8 @@
 
             <!-- Modal Container -->
             <div class="fixed inset-0 flex items-start sm:justify-center sm:pt-[15vh]">
-                <div class="relative w-full h-full sm:h-auto sm:w-[640px]">
+                <div class="relative w-full h-full sm:h-auto sm:w-[640px]" 
+                     x-on:click.outside="$wire.close()">
                     <div class="h-full sm:h-auto m-0 sm:m-4 bg-white dark:bg-gray-900 sm:rounded-xl shadow-xl ring-1 ring-black/10 dark:ring-white/10 flex flex-col">
                         <!-- Search Input -->
                         <div class="sticky top-0 z-10 p-4 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
@@ -193,7 +194,8 @@
             <div class="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm" 
                  wire:click="closeModal"></div>
             
-            <div class="fixed inset-0 sm:inset-x-4 sm:top-8 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:top-[15vh] sm:w-[640px] h-full sm:h-auto max-h-[85vh] overflow-y-auto bg-white dark:bg-gray-900 sm:rounded-xl shadow-xl ring-1 ring-black/10 dark:ring-white/10">
+            <div class="fixed inset-0 sm:inset-x-4 sm:top-8 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:top-[15vh] sm:w-[640px] h-full sm:h-auto max-h-[85vh] overflow-y-auto bg-white dark:bg-gray-900 sm:rounded-xl shadow-xl ring-1 ring-black/10 dark:ring-white/10"
+                 x-on:click.outside="$wire.closeModal()">
                 <!-- Header -->
                 <div class="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-800">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
