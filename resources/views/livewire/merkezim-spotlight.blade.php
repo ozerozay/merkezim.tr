@@ -64,40 +64,71 @@
                     <!-- Header -->
                     <div class="flex flex-col border-b border-gray-100 dark:border-gray-800">
                         <!-- Üst Kısım: Breadcrumb -->
-                        <div class="flex items-center justify-between px-4 py-3">
-                            <div class="flex items-center gap-2 text-sm">
+                        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+                            <!-- Sol Kısım: Breadcrumb -->
+                            <nav class="flex items-center gap-2 text-sm">
+                                <!-- Ana Menü -->
                                 <button wire:click="resetPath" 
-                                        class="text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2">
-                                    <span class="text-lg">🔍</span>
+                                        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                                    <span class="text-base">🏠</span>
                                     <span class="font-medium">Ana Menü</span>
                                 </button>
 
+                                <!-- Breadcrumbs -->
                                 @foreach($this->getBreadcrumbs() as $index => $crumb)
-                                    <span class="text-gray-400 dark:text-gray-500">/</span>
-                                    @if($index === count($this->getBreadcrumbs()) - 1)
-                                        <span class="text-gray-900 dark:text-gray-100">{{ $crumb['label'] }}</span>
-                                    @else
-                                        <button wire:click="goToPath('{{ $crumb['id'] }}')" 
-                                                class="text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                                            {{ $crumb['label'] }}
-                                        </button>
-                                    @endif
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                        
+                                        @if($index === count($this->getBreadcrumbs()) - 1)
+                                            <span class="px-3 py-1.5 rounded-lg bg-primary-50 dark:bg-primary-900/10 text-primary-600 dark:text-primary-400 font-medium">
+                                                {{ $crumb['label'] }}
+                                            </span>
+                                        @else
+                                            <button wire:click="goToPath('{{ $crumb['id'] }}')" 
+                                                    class="px-3 py-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 text-gray-600 dark:text-gray-300 transition-colors">
+                                                {{ $crumb['label'] }}
+                                            </button>
+                                        @endif
+                                    </div>
                                 @endforeach
 
+                                <!-- Arama Terimi -->
                                 @if(!empty($search))
-                                    <span class="text-gray-400 dark:text-gray-500">/</span>
-                                    <span class="text-gray-900 dark:text-gray-100">Arama: "{{ $search }}"</span>
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                        <span class="px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-gray-900 dark:text-gray-100">
+                                            "{{ $search }}"
+                                        </span>
+                                    </div>
                                 @endif
-                            </div>
+                            </nav>
 
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs text-gray-500 dark:text-gray-400">
-                                    Hızlı erişim için
-                                </span>
-                                <kbd class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 rounded">
-                                    <span class="text-xs">⌘</span>
-                                    <span>K</span>
-                                </kbd>
+                            <!-- Sağ Kısım: Kısayol -->
+                            <div class="flex items-center gap-3"
+                                 x-data="{ 
+                                    time: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }),
+                                    date: new Date().toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' }),
+                                    updateTime() {
+                                        this.time = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+                                    }
+                                 }"
+                                 x-init="setInterval(() => updateTime(), 1000)">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span class="text-sm font-medium text-gray-600 dark:text-gray-300" x-text="time"></span>
+                                </div>
+                                <div class="hidden sm:flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <span class="text-sm text-gray-500 dark:text-gray-400" x-text="date"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -233,18 +264,12 @@
 
                                     <!-- Clear Button -->
                                     <div wire:loading.delay.remove wire:target="search">
-                                        @if($search)
                                             <button wire:click="resetSearch" 
                                                     class="p-1 rounded-lg text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 transition-all">
                                                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                                 </svg>
                                             </button>
-                                        @else
-                                            <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-400 dark:text-gray-500">
-                                                ⌘K
-                                            </span>
-                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -376,40 +401,85 @@
 
                     <!-- Footer -->
                     <div class="sticky bottom-0 z-10 p-4 bg-white dark:bg-gray-900 text-xs text-gray-400 dark:text-gray-500 border-t border-gray-100 dark:border-gray-800">
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0">
-                            <!-- Sol Grup: Tema ve Hava Durumu -->
-                            <div class="flex items-center justify-between sm:justify-start gap-4">
-                                <x-theme-toggle class="btn btn-ghost btn-sm">
-                                    <span class="text-lg sm:text-base">🌙</span>
+                        <!-- Mobil Görünüm -->
+                        <div class="flex sm:hidden items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <!-- Tema Toggle (Mobil) -->
+                                <x-theme-toggle class="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-800/50 dark:hover:bg-gray-800 transition-colors">
+                                    <span class="text-base">🌙</span>
                                 </x-theme-toggle>
 
-                                <div class="flex items-center gap-2 px-3 py-2 sm:py-1.5 bg-gray-50 dark:bg-gray-800/50 rounded-md">
-                                    <span class="text-lg sm:text-base">{{ $weather['icon'] }}</span>
-                                    <span class="font-medium">{{ $weather['temp'] }}</span>
-                                    <span class="text-gray-400 dark:text-gray-500 sm:hidden">{{ $weather['description'] }}</span>
-                                    <span class="hidden sm:inline text-gray-400 dark:text-gray-500">{{ $weather['description'] }}</span>
+                                <!-- SMS Kontör (Mobil) -->
+                                <div class="flex items-center gap-2 px-2.5 py-1.5 bg-gray-50 dark:bg-gray-800/50 rounded-md">
+                                    <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                    </svg>
+                                    <span class="font-medium text-gray-700 dark:text-gray-200">1000</span>
+                                </div>
+
+                                <!-- Lisans (Mobil) -->
+                                <div class="flex items-center gap-2 px-2.5 py-1.5 bg-gray-50 dark:bg-gray-800/50 rounded-md">
+                                    <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                    </svg>
+                                    <span class="font-medium text-gray-700 dark:text-gray-200">365</span>
                                 </div>
                             </div>
 
-                            <!-- Klavye Kısayolları -->
-                            <div class="flex items-center justify-between sm:justify-end gap-2 sm:gap-4">
-                                <span class="flex items-center gap-1 sm:gap-2">
-                                    <kbd class="px-2 py-1.5 sm:px-1.5 sm:py-1 text-xs rounded bg-gray-100 dark:bg-gray-800">↑</kbd>
-                                    <kbd class="px-2 py-1.5 sm:px-1.5 sm:py-1 text-xs rounded bg-gray-100 dark:bg-gray-800">↓</kbd>
-                                    <span>gezin</span>
-                                </span>
-                                <span class="flex items-center gap-1 sm:gap-2">
-                                    <kbd class="px-2 py-1.5 sm:px-1.5 sm:py-1 text-xs rounded bg-gray-100 dark:bg-gray-800">↵</kbd>
-                                    <span>seç</span>
-                                </span>
-                                <button 
-                                    wire:click="close"
-                                    class="flex items-center gap-1 sm:gap-2 px-3 py-1.5 sm:px-2 sm:py-1 text-xs rounded bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
-                                >
-                                    <span>kapat</span>
-                                    <kbd class="px-2 py-1.5 sm:px-1.5 sm:py-1 text-xs rounded bg-gray-200 dark:bg-gray-700">esc</kbd>
-                                </button>
+                            <!-- Kapat Butonu (Mobil) -->
+                            <button 
+                                @click="close()"
+                                class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors"
+                            >
+                                <span>Kapat</span>
+                                <kbd class="px-1.5 py-0.5 text-xs rounded bg-gray-200 dark:bg-gray-700">ESC</kbd>
+                            </button>
+                        </div>
+
+                        <!-- Masaüstü Görünüm -->
+                        <div class="hidden sm:flex sm:items-center sm:justify-between">
+                            <div class="flex items-center gap-4">
+                                <x-theme-toggle class="btn btn-ghost btn-sm">
+                                    <span class="text-base">🌙</span>
+                                </x-theme-toggle>
+
+                                <!-- SMS Kontör (Masaüstü) -->
+                                <div class="flex items-center gap-2 px-3 py-1.5 bg-gray-50 dark:bg-gray-800/50 rounded-md">
+                                    <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                    </svg>
+                                    <span class="font-medium text-gray-700 dark:text-gray-200">1000</span>
+                                    <span class="text-gray-400 dark:text-gray-500">SMS Kontörü</span>
+                                </div>
+
+                                <!-- Lisans (Masaüstü) -->
+                                <div class="flex items-center gap-2 px-3 py-1.5 bg-gray-50 dark:bg-gray-800/50 rounded-md">
+                                    <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                    </svg>
+                                    <span class="font-medium text-gray-700 dark:text-gray-200">365</span>
+                                    <span class="text-gray-400 dark:text-gray-500">gün</span>
+                                </div>
+
+                                <!-- Destek (Masaüstü) -->
+                                <a href="https://wa.me/905555555555" 
+                                   target="_blank"
+                                   class="flex items-center gap-2 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800/50 dark:hover:bg-gray-800 rounded-md transition-colors">
+                                    <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    </svg>
+                                    <span class="text-gray-600 dark:text-gray-300 font-medium">Destek</span>
+                                </a>
                             </div>
+
+                            <!-- Kapat Butonu (Masaüstü) -->
+                            <button 
+                                @click="close()"
+                                class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors"
+                            >
+                                <span>Kapat</span>
+                                <kbd class="px-2 py-1 text-xs rounded bg-gray-200 dark:bg-gray-700">ESC</kbd>
+                            </button>
                         </div>
                     </div>
                 </div>

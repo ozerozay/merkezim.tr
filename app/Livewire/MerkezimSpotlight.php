@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Actions\Spotlight\Actions\Kasa\GetKasaTransactions;
 use App\Enum\PermissionType;
+use Carbon\Carbon;
 
 class MerkezimSpotlight extends Component
 {
@@ -29,6 +30,8 @@ class MerkezimSpotlight extends Component
     public $showPaymentForm = false;
     public $formType = null;
     public $notifications = [];
+    public $smsBalance = 0;
+    public $remainingDays = 365;
 
     public function mount()
     {
@@ -266,6 +269,10 @@ class MerkezimSpotlight extends Component
         ]);
 
         $this->filteredItems = $this->items;
+
+        // Lisans bitiş tarihini al ve kalan günü hesapla
+        $licenseEndDate = Carbon::parse(config('license.end_date'));
+        $this->remainingDays = now()->diffInDays($licenseEndDate, false);
     }
 
     private function filterMenuItemsByPermissions($items, $user)
